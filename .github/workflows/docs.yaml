@@ -2,12 +2,19 @@ name: Build and Deploy Sphinx Docs
 
 on:
   push:
+    branches:
+      - main
     paths:
       - "docs/**"
+      - "src/**"
+
+permissions:
+  contents: write
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -22,21 +29,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e .[docs]
 
-      - name: Clean and generate docs
+      - name: Build docs
         run: |
-          rm -rf docs/api/reactormodels.*.rst docs/api/modules.rst docs/_build/html
+          rm -rf docs/api docs/_build
           sphinx-apidoc -o docs/api src/reactormodels --force --module-first
           cd docs
           make html
 
-      - name: List built docs
-        run: |
-          ls -lh docs/_build/html/genindex.html
-          ls -lh docs/_build/html/index.html
-
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-          personal_token: ${{ secrets.GH_PAGES_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/_build/html
-          force_orphan: true
