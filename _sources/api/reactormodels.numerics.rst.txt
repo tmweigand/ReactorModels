@@ -1,0 +1,18 @@
+reactormodels.numerics package
+==============================
+
+.. automodule:: reactormodels.numerics
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+reactormodels.numerics.orthogonal\_collocation module
+-----------------------------------------------------
+
+.. automodule:: reactormodels.numerics.orthogonal_collocation
+   :members:
+   :show-inheritance:
+   :undoc-members:

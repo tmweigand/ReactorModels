@@ -1,0 +1,404 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>reactormodels.postprocess package &mdash; ReactorModels 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="reactormodels.numerics package" href="reactormodels.numerics.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            ReactorModels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">reactormodels</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="reactormodels.html">reactormodels package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="reactormodels.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html">reactormodels.models package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html">reactormodels.numerics package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">reactormodels.postprocess package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ReactorModels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">reactormodels</a></li>
+          <li class="breadcrumb-item"><a href="reactormodels.html">reactormodels package</a></li>
+      <li class="breadcrumb-item active">reactormodels.postprocess package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/reactormodels.postprocess.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-reactormodels.postprocess">
+<span id="reactormodels-postprocess-package"></span><h1>reactormodels.postprocess package<a class="headerlink" href="#module-reactormodels.postprocess" title="Link to this heading"></a></h1>
+<p>Initialize the postprocess subpackage</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.postprocess.MassBalance">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.postprocess.</span></span><span class="sig-name descname"><span class="pre">MassBalance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">porosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bulk_density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_in</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_history</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_outlet_history</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/postprocess/mass_balance.html#MassBalance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.postprocess.MassBalance" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Compute and verify mass balance for a 1D adsorption column.</p>
+<blockquote>
+<div><p>mass_in - mass_out = mass_fluid + mass_adsorbed</p>
+</div></blockquote>
+<p>mass_in  = v * eps * C_in * t
+mass_out = v * eps * integral_0^t C(L, t’) dt’   ← needs outlet history</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="reactormodels.postprocess.MassBalance.x">
+<span class="sig-name descname"><span class="pre">x</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a class="headerlink" href="#reactormodels.postprocess.MassBalance.x" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="reactormodels.postprocess.MassBalance.C">
+<span class="sig-name descname"><span class="pre">C</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a class="headerlink" href="#reactormodels.postprocess.MassBalance.C" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="reactormodels.postprocess.MassBalance.q">
+<span class="sig-name descname"><span class="pre">q</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a class="headerlink" href="#reactormodels.postprocess.MassBalance.q" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="reactormodels.postprocess.MassBalance.t">
+<span class="sig-name descname"><span class="pre">t</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.postprocess.MassBalance.t" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="reactormodels.postprocess.MassBalance.velocity">
+<span class="sig-name descname"><span class="pre">velocity</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.postprocess.MassBalance.velocity" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="reactormodels.postprocess.MassBalance.porosity">
+<span class="sig-name descname"><span class="pre">porosity</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.postprocess.MassBalance.porosity" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="reactormodels.postprocess.MassBalance.bulk_density">
+<span class="sig-name descname"><span class="pre">bulk_density</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.postprocess.MassBalance.bulk_density" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="reactormodels.postprocess.MassBalance.C_in">
+<span class="sig-name descname"><span class="pre">C_in</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.postprocess.MassBalance.C_in" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="reactormodels.postprocess.MassBalance.t_history">
+<span class="sig-name descname"><span class="pre">t_history</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a class="headerlink" href="#reactormodels.postprocess.MassBalance.t_history" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="reactormodels.postprocess.MassBalance.C_outlet_history">
+<span class="sig-name descname"><span class="pre">C_outlet_history</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a class="headerlink" href="#reactormodels.postprocess.MassBalance.C_outlet_history" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="reactormodels.postprocess.MassBalance.mass_in">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">mass_in</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.postprocess.MassBalance.mass_in" title="Link to this definition"></a></dt>
+<dd><p>v * eps * C_in * t.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Mass entered</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="reactormodels.postprocess.MassBalance.mass_out">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">mass_out</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.postprocess.MassBalance.mass_out" title="Link to this definition"></a></dt>
+<dd><p>v * eps * integral C(L, t’) dt’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Mass exited via outlet</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="reactormodels.postprocess.MassBalance.mass_fluid">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">mass_fluid</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.postprocess.MassBalance.mass_fluid" title="Link to this definition"></a></dt>
+<dd><p>Mass in the fluid phase</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="reactormodels.postprocess.MassBalance.mass_adsorbed">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">mass_adsorbed</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.postprocess.MassBalance.mass_adsorbed" title="Link to this definition"></a></dt>
+<dd><p>Mass in the solid phase.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="reactormodels.postprocess.MassBalance.mass_stored">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">mass_stored</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.postprocess.MassBalance.mass_stored" title="Link to this definition"></a></dt>
+<dd><p>Total mass in fluid and solid phases.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="reactormodels.postprocess.MassBalance.error">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">error</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.postprocess.MassBalance.error" title="Link to this definition"></a></dt>
+<dd><p>(mass_in - mass_out) - mass_stored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Absolute error</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="reactormodels.postprocess.MassBalance.relative_error">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">relative_error</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.postprocess.MassBalance.relative_error" title="Link to this definition"></a></dt>
+<dd><p>Relative mass balance error.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.postprocess.MassBalance.is_balanced">
+<span class="sig-name descname"><span class="pre">is_balanced</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rel_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/reactormodels/postprocess/mass_balance.html#MassBalance.is_balanced"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.postprocess.MassBalance.is_balanced" title="Link to this definition"></a></dt>
+<dd><p>Check for mass balance within specified tolerance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.postprocess.MassBalance.summary">
+<span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/reactormodels/postprocess/mass_balance.html#MassBalance.summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.postprocess.MassBalance.summary" title="Link to this definition"></a></dt>
+<dd><p>Provide mass balance summary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.postprocess.MassBalance.from_solution">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_solution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_history</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_history</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_eval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">porosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bulk_density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_in</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#reactormodels.postprocess.mass_balance.MassBalance" title="reactormodels.postprocess.mass_balance.MassBalance"><span class="pre">MassBalance</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/reactormodels/postprocess/mass_balance.html#MassBalance.from_solution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.postprocess.MassBalance.from_solution" title="Link to this definition"></a></dt>
+<dd><p>Build a MassBalance for every time in t_eval.</p>
+<p>Outlet concentration C(x=L) is the last spatial node at each time.</p>
+</dd></dl>
+
+</dd></dl>
+
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-reactormodels.postprocess.mass_balance">
+<span id="reactormodels-postprocess-mass-balance-module"></span><h2>reactormodels.postprocess.mass_balance module<a class="headerlink" href="#module-reactormodels.postprocess.mass_balance" title="Link to this heading"></a></h2>
+<p>mass_balance.py</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.postprocess.mass_balance.MassBalance">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.postprocess.mass_balance.</span></span><span class="sig-name descname"><span class="pre">MassBalance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">porosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bulk_density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_in</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_history</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_outlet_history</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/postprocess/mass_balance.html#MassBalance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.postprocess.mass_balance.MassBalance" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Compute and verify mass balance for a 1D adsorption column.</p>
+<blockquote>
+<div><p>mass_in - mass_out = mass_fluid + mass_adsorbed</p>
+</div></blockquote>
+<p>mass_in  = v * eps * C_in * t
+mass_out = v * eps * integral_0^t C(L, t’) dt’   ← needs outlet history</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="reactormodels.postprocess.mass_balance.MassBalance.x">
+<span class="sig-name descname"><span class="pre">x</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a class="headerlink" href="#reactormodels.postprocess.mass_balance.MassBalance.x" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="reactormodels.postprocess.mass_balance.MassBalance.C">
+<span class="sig-name descname"><span class="pre">C</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a class="headerlink" href="#reactormodels.postprocess.mass_balance.MassBalance.C" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="reactormodels.postprocess.mass_balance.MassBalance.q">
+<span class="sig-name descname"><span class="pre">q</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a class="headerlink" href="#reactormodels.postprocess.mass_balance.MassBalance.q" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="reactormodels.postprocess.mass_balance.MassBalance.t">
+<span class="sig-name descname"><span class="pre">t</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.postprocess.mass_balance.MassBalance.t" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="reactormodels.postprocess.mass_balance.MassBalance.velocity">
+<span class="sig-name descname"><span class="pre">velocity</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.postprocess.mass_balance.MassBalance.velocity" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="reactormodels.postprocess.mass_balance.MassBalance.porosity">
+<span class="sig-name descname"><span class="pre">porosity</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.postprocess.mass_balance.MassBalance.porosity" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="reactormodels.postprocess.mass_balance.MassBalance.bulk_density">
+<span class="sig-name descname"><span class="pre">bulk_density</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.postprocess.mass_balance.MassBalance.bulk_density" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="reactormodels.postprocess.mass_balance.MassBalance.C_in">
+<span class="sig-name descname"><span class="pre">C_in</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.postprocess.mass_balance.MassBalance.C_in" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="reactormodels.postprocess.mass_balance.MassBalance.t_history">
+<span class="sig-name descname"><span class="pre">t_history</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a class="headerlink" href="#reactormodels.postprocess.mass_balance.MassBalance.t_history" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="reactormodels.postprocess.mass_balance.MassBalance.C_outlet_history">
+<span class="sig-name descname"><span class="pre">C_outlet_history</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a class="headerlink" href="#reactormodels.postprocess.mass_balance.MassBalance.C_outlet_history" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="reactormodels.postprocess.mass_balance.MassBalance.mass_in">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">mass_in</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.postprocess.mass_balance.MassBalance.mass_in" title="Link to this definition"></a></dt>
+<dd><p>v * eps * C_in * t.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Mass entered</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="reactormodels.postprocess.mass_balance.MassBalance.mass_out">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">mass_out</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.postprocess.mass_balance.MassBalance.mass_out" title="Link to this definition"></a></dt>
+<dd><p>v * eps * integral C(L, t’) dt’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Mass exited via outlet</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="reactormodels.postprocess.mass_balance.MassBalance.mass_fluid">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">mass_fluid</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.postprocess.mass_balance.MassBalance.mass_fluid" title="Link to this definition"></a></dt>
+<dd><p>Mass in the fluid phase</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="reactormodels.postprocess.mass_balance.MassBalance.mass_adsorbed">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">mass_adsorbed</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.postprocess.mass_balance.MassBalance.mass_adsorbed" title="Link to this definition"></a></dt>
+<dd><p>Mass in the solid phase.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="reactormodels.postprocess.mass_balance.MassBalance.mass_stored">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">mass_stored</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.postprocess.mass_balance.MassBalance.mass_stored" title="Link to this definition"></a></dt>
+<dd><p>Total mass in fluid and solid phases.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="reactormodels.postprocess.mass_balance.MassBalance.error">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">error</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.postprocess.mass_balance.MassBalance.error" title="Link to this definition"></a></dt>
+<dd><p>(mass_in - mass_out) - mass_stored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Absolute error</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="reactormodels.postprocess.mass_balance.MassBalance.relative_error">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">relative_error</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.postprocess.mass_balance.MassBalance.relative_error" title="Link to this definition"></a></dt>
+<dd><p>Relative mass balance error.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.postprocess.mass_balance.MassBalance.is_balanced">
+<span class="sig-name descname"><span class="pre">is_balanced</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rel_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/reactormodels/postprocess/mass_balance.html#MassBalance.is_balanced"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.postprocess.mass_balance.MassBalance.is_balanced" title="Link to this definition"></a></dt>
+<dd><p>Check for mass balance within specified tolerance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.postprocess.mass_balance.MassBalance.summary">
+<span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/reactormodels/postprocess/mass_balance.html#MassBalance.summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.postprocess.mass_balance.MassBalance.summary" title="Link to this definition"></a></dt>
+<dd><p>Provide mass balance summary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.postprocess.mass_balance.MassBalance.from_solution">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_solution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_history</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_history</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_eval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">porosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bulk_density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_in</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#reactormodels.postprocess.mass_balance.MassBalance" title="reactormodels.postprocess.mass_balance.MassBalance"><span class="pre">MassBalance</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/reactormodels/postprocess/mass_balance.html#MassBalance.from_solution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.postprocess.mass_balance.MassBalance.from_solution" title="Link to this definition"></a></dt>
+<dd><p>Build a MassBalance for every time in t_eval.</p>
+<p>Outlet concentration C(x=L) is the last spatial node at each time.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="reactormodels.numerics.html" class="btn btn-neutral float-left" title="reactormodels.numerics package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Timothy M. Weigand.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

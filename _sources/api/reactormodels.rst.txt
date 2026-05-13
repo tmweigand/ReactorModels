@@ -1,0 +1,17 @@
+reactormodels package
+=====================
+
+.. automodule:: reactormodels
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   reactormodels.models
+   reactormodels.numerics
+   reactormodels.postprocess

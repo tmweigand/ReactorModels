@@ -1,0 +1,269 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>reactormodels.models.advection_diffusion_adsorption &mdash; ReactorModels 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            ReactorModels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">reactormodels</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ReactorModels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">reactormodels.models.advection_diffusion_adsorption</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for reactormodels.models.advection_diffusion_adsorption</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;advection_diffusion_adsorption.py&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.integrate</span><span class="w"> </span><span class="kn">import</span> <span class="n">solve_ivp</span>
+
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.isotherm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Isotherm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..numerics.orthogonal_collocation</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrthogonalCollocation</span>
+
+
+<div class="viewcode-block" id="AdvectionDiffusionAdsorption1D">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption1D">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AdvectionDiffusionAdsorption1D</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Solve the advection-diffusion-adsorption equation on [0, L]:</span>
+
+<span class="sd">        R(C) * dC/dt + v/eps * dC/dx = D * d2C/dx2</span>
+
+<span class="sd">    where R(C) = 1 + (rho_b/eps) * dq*/dC  is the retardation factor.</span>
+
+<span class="sd">    Assumes local equilibrium (q = q*(C) instantaneously).</span>
+
+<span class="sd">    Boundary conditions:</span>
+<span class="sd">        C(0, t) = C_in   (Dirichlet inlet)</span>
+<span class="sd">        dC/dx(L, t) = 0  (Neumann outlet)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        domain_length       : float   L [m]</span>
+<span class="sd">        velocity            : float   pore velocity v [m/s]</span>
+<span class="sd">        diffusion           : float   dispersion coefficient D [m^2/s]</span>
+<span class="sd">        isotherm            : Isotherm</span>
+<span class="sd">        bulk_density        : float   rho_b [kg/m^3]</span>
+<span class="sd">        porosity            : float   eps [-]</span>
+<span class="sd">        orthogonal_collocation : OrthogonalCollocation</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">domain_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">velocity</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">diffusion</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">isotherm</span><span class="p">:</span> <span class="n">Isotherm</span><span class="p">,</span>
+        <span class="n">bulk_density</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">porosity</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">orthogonal_collocation</span><span class="p">:</span> <span class="n">OrthogonalCollocation</span><span class="p">,</span>
+        <span class="n">upwind</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">domain_length</span> <span class="o">=</span> <span class="n">domain_length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="n">velocity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diffusion</span> <span class="o">=</span> <span class="n">diffusion</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span> <span class="o">=</span> <span class="n">isotherm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rho_b</span> <span class="o">=</span> <span class="n">bulk_density</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="n">porosity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oc</span> <span class="o">=</span> <span class="n">orthogonal_collocation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">upwind</span> <span class="o">=</span> <span class="n">upwind</span>
+        <span class="k">if</span> <span class="n">upwind</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_A_upwind</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_upwind</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">oc</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
+
+        <span class="c1"># Precompute scaled linear parts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">oc</span><span class="o">.</span><span class="n">first_derivative</span> <span class="o">/</span> <span class="n">domain_length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">oc</span><span class="o">.</span><span class="n">second_derivative</span> <span class="o">/</span> <span class="n">domain_length</span><span class="o">**</span><span class="mi">2</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_retardation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;R(C) = 1 + (rho_b/eps) * dq*/dC  — vectorized over nodes.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rho_b</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">dq_dC</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_upwind</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;First-order upwind matrix on the collocation nodes.</span>
+
+<span class="sd">        For left-to-right flow (v &gt; 0): dC/dx_i ≈ (C_i - C_{i-1}) / (x_i - x_{i-1})</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
+        <span class="n">A_up</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
+            <span class="n">dx</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">nodes</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">A_up</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">dx</span>
+            <span class="n">A_up</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">dx</span>
+        <span class="n">A_up</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># inlet row (will be pinned anyway)</span>
+        <span class="k">return</span> <span class="n">A_up</span>
+
+<div class="viewcode-block" id="AdvectionDiffusionAdsorption1D.rhs">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption1D.rhs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rhs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">C_in</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Right hand side.&quot;&quot;&quot;</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_A_upwind</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain_length</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">upwind</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_A</span>
+        <span class="n">adv</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">A</span> <span class="o">@</span> <span class="n">C</span><span class="p">)</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffusion</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_B</span> <span class="o">@</span> <span class="n">C</span><span class="p">)</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_retardation</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+
+        <span class="n">dCdt</span> <span class="o">=</span> <span class="p">(</span><span class="n">adv</span> <span class="o">+</span> <span class="n">diff</span><span class="p">)</span> <span class="o">/</span> <span class="n">R</span>
+
+        <span class="n">dCdt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>  <span class="c1"># pin inlet Dirichlet</span>
+        <span class="k">return</span> <span class="n">dCdt</span></div>
+
+
+<div class="viewcode-block" id="AdvectionDiffusionAdsorption1D.jacobian">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption1D.jacobian">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Analytic Jacobian d(rhs)/dC.</span>
+
+<span class="sd">        For nonlinear isotherm R depends on C, so by quotient rule:</span>
+<span class="sd">            d/dC [ (adv+diff)/R ] = (d(adv+diff)/dC * R - (adv+diff) * dR/dC) / R^2</span>
+
+<span class="sd">        dR/dC = (rho_b/eps) * d2q*/dC2  (diagonal matrix)</span>
+<span class="sd">        d(adv+diff)/dC = -v/eps * A + D * B  (the linear operator)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_retardation</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+        <span class="n">adv_diff</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span> <span class="o">@</span> <span class="n">C</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffusion</span> <span class="o">*</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_B</span> <span class="o">@</span> <span class="n">C</span>
+        <span class="p">)</span>
+        <span class="n">L_op</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_A</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffusion</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_B</span>
+
+        <span class="c1"># dR/dC is diagonal: (rho_b/eps) * d2q/dC2</span>
+        <span class="n">d2q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">d2q_dC2</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+        <span class="n">dR_dC</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rho_b</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span> <span class="o">*</span> <span class="n">d2q</span>  <span class="c1"># shape (N,)</span>
+
+        <span class="c1"># Quotient rule: J = (L @ C * R - adv_diff * dR_dC) / R^2</span>
+        <span class="c1"># L_op contributes: diag(1/R) @ L_op</span>
+        <span class="c1"># dR_dC contributes: -diag(adv_diff * dR_dC / R^2)</span>
+        <span class="n">J</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">L_op</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">R</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span>
+            <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">adv_diff</span> <span class="o">*</span> <span class="n">dR_dC</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">C</span><span class="p">)))</span> <span class="o">/</span> <span class="p">(</span><span class="n">R</span><span class="o">**</span><span class="mi">2</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="n">J</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mf">0.0</span>  <span class="c1"># inlet pinned</span>
+        <span class="k">return</span> <span class="n">J</span></div>
+
+
+<div class="viewcode-block" id="AdvectionDiffusionAdsorption1D.jacobian_ivp">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption1D.jacobian_ivp">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">jacobian_ivp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adapter with solve_ivp Jacobian signature jac(t, y).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">jacobian</span><span class="p">(</span><span class="n">C</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AdvectionDiffusionAdsorption1D.solve">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption1D.solve">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">t_span</span><span class="p">,</span>
+        <span class="n">t_eval</span><span class="p">,</span>
+        <span class="n">C_in</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">C_init</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Solve the governing equation.&quot;&quot;&quot;</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">oc</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
+        <span class="n">y0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">C_init</span><span class="p">)</span>
+        <span class="n">y0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">C_in</span>
+        <span class="n">rhs</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rhs</span><span class="p">,</span> <span class="n">C_in</span><span class="o">=</span><span class="n">C_in</span><span class="p">)</span>
+
+        <span class="n">sol</span> <span class="o">=</span> <span class="n">solve_ivp</span><span class="p">(</span>
+            <span class="n">rhs</span><span class="p">,</span>
+            <span class="n">t_span</span><span class="p">,</span>
+            <span class="n">y0</span><span class="p">,</span>
+            <span class="n">method</span><span class="o">=</span><span class="s2">&quot;BDF&quot;</span><span class="p">,</span>
+            <span class="n">t_eval</span><span class="o">=</span><span class="n">t_eval</span><span class="p">,</span>
+            <span class="n">jac</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">jacobian_ivp</span><span class="p">,</span>
+            <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span>
+            <span class="n">atol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">x_physical</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">oc</span><span class="o">.</span><span class="n">nodes</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain_length</span>
+        <span class="k">return</span> <span class="n">x_physical</span><span class="p">,</span> <span class="n">sol</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># (n_times, N)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Timothy M. Weigand.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

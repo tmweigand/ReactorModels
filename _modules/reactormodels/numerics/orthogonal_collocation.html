@@ -1,0 +1,298 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>reactormodels.numerics.orthogonal_collocation &mdash; ReactorModels 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            ReactorModels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">reactormodels</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ReactorModels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">reactormodels.numerics.orthogonal_collocation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for reactormodels.numerics.orthogonal_collocation</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;orthogonal_collocation.py&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+
+<div class="viewcode-block" id="OrthogonalCollocation">
+<a class="viewcode-back" href="../../../api/reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OrthogonalCollocation</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate collocation points and differentiation matrices on [0, 1]</span>
+
+<span class="sd">    Jacobi polynomials, with optional multi-element support.</span>
+
+<span class="sd">    Single element (n_elements=1):</span>
+<span class="sd">        Standard global collocation on [0, 1].</span>
+
+<span class="sd">    Multi-element (n_elements &gt; 1):</span>
+<span class="sd">        Domain split into ne equal elements [k/ne, (k+1)/ne].</span>
+<span class="sd">        Within each element, local collocation applied.</span>
+<span class="sd">        Continuity of C enforced at element boundaries.</span>
+<span class="sd">        Flux continuity enforced via the continuation condition.</span>
+<span class="sd">        This resolves high-Pe oscillations without upwinding.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_interior_points : int     Points per element (excludes endpoints)</span>
+<span class="sd">    alpha, beta       : float   Jacobi polynomial parameters</span>
+<span class="sd">    add_inlet         : bool    Add x=0 as first node</span>
+<span class="sd">    n_elements        : int     Number of elements (default 1)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">n_interior_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">add_inlet</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">n_elements</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_interior_points</span> <span class="o">=</span> <span class="n">n_interior_points</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="n">beta</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_elements</span> <span class="o">=</span> <span class="n">n_elements</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_derivative</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">second_derivative</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build</span><span class="p">(</span>
+            <span class="n">add_inlet</span><span class="o">=</span><span class="n">add_inlet</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="OrthogonalCollocation.jacobi_roots">
+<a class="viewcode-back" href="../../../api/reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation.jacobi_roots">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">jacobi_roots</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Roots of P_n^(alpha,beta) shifted to [0,1].&quot;&quot;&quot;</span>
+        <span class="n">a_coef</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_interior_points</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_interior_points</span><span class="p">):</span>
+            <span class="n">denom</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
+                <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">+</span> <span class="mi">2</span>
+            <span class="p">)</span>
+            <span class="n">a_coef</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">denom</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">denom</span>
+
+        <span class="n">b_coef</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_interior_points</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_interior_points</span><span class="p">):</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span>
+            <span class="n">denom</span> <span class="o">=</span> <span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-14</span> <span class="ow">and</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">b_coef</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">b_coef</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                    <span class="n">k</span>
+                    <span class="o">*</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span>
+                    <span class="o">*</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">)</span>
+                    <span class="o">*</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">)</span>
+                    <span class="o">/</span> <span class="n">denom</span>
+                <span class="p">)</span>
+
+        <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">a_coef</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">b_coef</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">b_coef</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">J</span><span class="p">))</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="OrthogonalCollocation.lagrange_basis_and_deriv">
+<a class="viewcode-back" href="../../../api/reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation.lagrange_basis_and_deriv">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">lagrange_basis_and_deriv</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate first and second derivative matrices.&quot;&quot;&quot;</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span><span class="p">:</span>
+                    <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="n">i</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">=</span> <span class="mf">1.0</span>
+                    <span class="n">den</span> <span class="o">=</span> <span class="mf">1.0</span>
+                    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="n">j</span><span class="p">:</span>
+                            <span class="n">den</span> <span class="o">*=</span> <span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="n">j</span> <span class="ow">and</span> <span class="n">k</span> <span class="o">!=</span> <span class="n">i</span><span class="p">:</span>
+                            <span class="n">num</span> <span class="o">*=</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                    <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">num</span> <span class="o">/</span> <span class="n">den</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">A</span> <span class="o">@</span> <span class="n">A</span>
+        <span class="k">return</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_single_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">add_inlet</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build collocation on [0,1].&quot;&quot;&quot;</span>
+        <span class="n">xi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jacobi_roots</span><span class="p">()</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">add_inlet</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">],</span> <span class="n">x</span><span class="p">])</span>
+        <span class="n">A</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lagrange_basis_and_deriv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_multi_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">add_inlet</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Assemble global differentiation matrices from ne local elements.</span>
+
+<span class="sd">        Each element has (n_interior_points + 2) local nodes:</span>
+<span class="sd">            [left_boundary, interior..., right_boundary]</span>
+
+<span class="sd">        Adjacent elements share one boundary node, so total nodes:</span>
+<span class="sd">            N_total = ne * (n_pts_per_element - 1) + 1</span>
+<span class="sd">        With add_inlet, x=0 is pinned and included.</span>
+
+<span class="sd">        Flux continuity at element junctions is enforced by replacing</span>
+<span class="sd">        the duplicated boundary row with the average of the left and</span>
+<span class="sd">        right element derivative contributions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ne</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_elements</span>
+        <span class="n">xi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jacobi_roots</span><span class="p">()</span>  <span class="c1"># interior roots on [0,1]</span>
+        <span class="n">n_local</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_interior_points</span> <span class="o">+</span> <span class="mi">2</span>  <span class="c1"># nodes per element incl. boundaries</span>
+
+        <span class="c1"># Local nodes on [0,1] for one element</span>
+        <span class="n">x_local</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">],</span> <span class="n">xi</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]])</span>  <span class="c1"># (n_local,)</span>
+        <span class="n">A_loc</span><span class="p">,</span> <span class="n">B_loc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lagrange_basis_and_deriv</span><span class="p">(</span><span class="n">x_local</span><span class="p">)</span>
+
+        <span class="c1"># Scale derivatives for element width h = 1/ne</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">ne</span>
+        <span class="n">A_loc_scaled</span> <span class="o">=</span> <span class="n">A_loc</span> <span class="o">/</span> <span class="n">h</span>
+        <span class="n">B_loc_scaled</span> <span class="o">=</span> <span class="n">B_loc</span> <span class="o">/</span> <span class="n">h</span><span class="o">**</span><span class="mi">2</span>
+
+        <span class="c1"># Global nodes: map each element&#39;s local nodes to [k*h, (k+1)*h]</span>
+        <span class="c1"># Shared boundary nodes appear once</span>
+        <span class="n">n_global</span> <span class="o">=</span> <span class="n">ne</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_local</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">x_global</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_global</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ne</span><span class="p">):</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">k</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_local</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">x_global</span><span class="p">[</span><span class="n">start</span> <span class="p">:</span> <span class="n">start</span> <span class="o">+</span> <span class="n">n_local</span><span class="p">]</span> <span class="o">=</span> <span class="n">k</span> <span class="o">*</span> <span class="n">h</span> <span class="o">+</span> <span class="n">h</span> <span class="o">*</span> <span class="n">x_local</span>
+
+        <span class="c1"># Assemble global A and B matrices</span>
+        <span class="n">A_global</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_global</span><span class="p">,</span> <span class="n">n_global</span><span class="p">))</span>
+        <span class="n">B_global</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_global</span><span class="p">,</span> <span class="n">n_global</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ne</span><span class="p">):</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">k</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_local</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">start</span> <span class="o">+</span> <span class="n">n_local</span><span class="p">)</span>
+
+            <span class="c1"># Interior rows of this element (exclude shared boundaries)</span>
+            <span class="c1"># Left boundary row: only for first element (or average at junctions)</span>
+            <span class="c1"># Right boundary row: averaged at junctions below</span>
+            <span class="n">A_global</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="n">idx</span><span class="p">]</span> <span class="o">+=</span> <span class="n">A_loc_scaled</span>
+            <span class="n">B_global</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="n">idx</span><span class="p">]</span> <span class="o">+=</span> <span class="n">B_loc_scaled</span>
+
+        <span class="c1"># At junction nodes (shared between elements), each element</span>
+        <span class="c1"># contributed once — average the two contributions</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">ne</span><span class="p">):</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="n">k</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_local</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># global index of junction node</span>
+            <span class="n">A_global</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*=</span> <span class="mf">0.5</span>
+            <span class="n">B_global</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*=</span> <span class="mf">0.5</span>
+
+        <span class="c1"># Prepend x=0 if not already first node (add_inlet has no effect</span>
+        <span class="c1"># for multi-element since x=0 is always included as left boundary)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">add_inlet</span><span class="p">:</span>
+            <span class="c1"># Remove x=0 row/col — treat as interior (no pinning)</span>
+            <span class="k">pass</span>  <span class="c1"># x=0 is already first node; caller handles pinning</span>
+
+        <span class="k">return</span> <span class="n">x_global</span><span class="p">,</span> <span class="n">A_global</span><span class="p">,</span> <span class="n">B_global</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">add_inlet</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_elements</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_single_element</span><span class="p">(</span><span class="n">add_inlet</span><span class="o">=</span><span class="n">add_inlet</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_multi_element</span><span class="p">(</span><span class="n">add_inlet</span><span class="o">=</span><span class="n">add_inlet</span><span class="p">)</span>
+
+<div class="viewcode-block" id="OrthogonalCollocation.radial_operator">
+<a class="viewcode-back" href="../../../api/reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation.radial_operator">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">radial_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Spherical Laplacian: (1/r^2)*d/dr(r^2*du/dr) = d^2u/dr^2 + (2/r)*du/dr&quot;&quot;&quot;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">second_derivative</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">xi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">xi</span> <span class="o">&lt;</span> <span class="mf">1e-14</span><span class="p">:</span>
+                <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mf">3.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">second_derivative</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">second_derivative</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>
+                    <span class="o">+</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">/</span> <span class="n">xi</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_derivative</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">L</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Timothy M. Weigand.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

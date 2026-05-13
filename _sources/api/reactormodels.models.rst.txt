@@ -1,0 +1,58 @@
+reactormodels.models package
+============================
+
+.. automodule:: reactormodels.models
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+reactormodels.models.adsorption\_kinetics module
+------------------------------------------------
+
+.. automodule:: reactormodels.models.adsorption_kinetics
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+reactormodels.models.advection\_diffusion module
+------------------------------------------------
+
+.. automodule:: reactormodels.models.advection_diffusion
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+reactormodels.models.advection\_diffusion\_adsorption module
+------------------------------------------------------------
+
+.. automodule:: reactormodels.models.advection_diffusion_adsorption
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+reactormodels.models.advection\_diffusion\_adsorption\_two module
+-----------------------------------------------------------------
+
+.. automodule:: reactormodels.models.advection_diffusion_adsorption_two
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+reactormodels.models.boundary\_conditions module
+------------------------------------------------
+
+.. automodule:: reactormodels.models.boundary_conditions
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+reactormodels.models.isotherm module
+------------------------------------
+
+.. automodule:: reactormodels.models.isotherm
+   :members:
+   :show-inheritance:
+   :undoc-members:
