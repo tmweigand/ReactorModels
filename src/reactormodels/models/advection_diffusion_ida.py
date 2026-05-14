@@ -1,15 +1,4 @@
-"""advection_diffusion_ida.py
-
-IDA (SUNDIALS) DAE formulation of the 1-D advection-diffusion equation.
-
-Residual form  F(t, C, Cdot) = 0  passed directly to IDA:
-
-    Row 0   — algebraic constraint (inlet BC, no Cdot[0])
-    Rows 1: — PDE residuals  Cdot[i] - rhs[i] = 0
-
-Both BCs are expressed as explicit algebraic rows so the state vector is
-always the full N-vector and no manual elimination is needed.
-"""
+"""advection_diffusion_ida.py"""
 
 from functools import partial
 
@@ -127,10 +116,6 @@ class AdvectionDiffusion1DIDA:
 
         Cdot0 = np.zeros(self.N)
         return C0, Cdot0
-
-    # ------------------------------------------------------------------
-    # Public solve
-    # ------------------------------------------------------------------
 
     def solve(self, t_span, t_eval, C_in: float = 1.0, C_init: float = 0.0):
         """Integrate from t_span[0] to t_span[1], returning results at t_eval.

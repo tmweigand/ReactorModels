@@ -3,8 +3,6 @@
 from dataclasses import dataclass
 import numpy as np
 
-trapezoid = getattr(np, "trapezoid", np.trapz)
-
 
 @dataclass
 class MassBalance:
@@ -38,18 +36,18 @@ class MassBalance:
         return (
             self.velocity
             * self.porosity
-            * trapezoid(self.C_outlet_history, self.t_history)
+            * np.trapz(self.C_outlet_history, self.t_history)
         )
 
     @property
     def mass_fluid(self) -> float:
         """Mass in the fluid phase"""
-        return self.porosity * trapezoid(self.C, self.x)
+        return self.porosity * np.trapz(self.C, self.x)
 
     @property
     def mass_adsorbed(self) -> float:
         """Mass in the solid phase."""
-        return self.bulk_density * trapezoid(self.q, self.x)
+        return self.bulk_density * np.trapz(self.q, self.x)
 
     @property
     def mass_stored(self) -> float:
