@@ -37,6 +37,12 @@ jobs:
           brew install gcc sundials
           echo "/opt/homebrew/bin" >> $GITHUB_PATH
 
+          GFORTRAN_BIN="$(find "$(brew --prefix gcc)/bin" -name 'gfortran-*' | head -n 1)"
+          ln -sf "$GFORTRAN_BIN" /opt/homebrew/bin/gfortran
+
+          which gfortran
+          gfortran --version
+
       - name: Cache pip
         uses: actions/cache@v4
         with:
