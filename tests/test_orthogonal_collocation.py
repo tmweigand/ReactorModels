@@ -13,7 +13,7 @@ def test_jabobi_roots_legendre():
     oc = reactormodels.numerics.OrthogonalCollocation(
         n_interior_points=4, alpha=0, beta=0
     )
-    oc_roots = oc.jacobi_roots()
+    oc_roots, _ = oc.jacobi_roots_and_weights()
 
     root_1 = np.sqrt((3.0 / 7.0) - (2.0 / 7.0) * np.sqrt(6 / 5))
     root_2 = np.sqrt((3.0 / 7.0) + (2.0 / 7.0) * np.sqrt(6 / 5))
@@ -39,7 +39,7 @@ def test_jacobi_roots_asymmetric_vs_scipy(n, alpha, beta):
     oc = reactormodels.numerics.OrthogonalCollocation(
         n_interior_points=n, alpha=alpha, beta=beta
     )
-    oc_roots = oc.jacobi_roots()
+    oc_roots, _ = oc.jacobi_roots_and_weights()
 
     scipy_roots, _ = roots_jacobi(n, alpha, beta)
     scaled = 0.5 * (np.sort(scipy_roots) + 1.0)
@@ -53,7 +53,7 @@ def test_jacobi_roots_chebyshev_u():
     oc = reactormodels.numerics.OrthogonalCollocation(
         n_interior_points=n, alpha=0.5, beta=0.5
     )
-    oc_roots = oc.jacobi_roots()
+    oc_roots, _ = oc.jacobi_roots_and_weights()
 
     shift_and_scale = lambda x: 0.5 * (x + 1.0)
     true_roots = sorted([np.cos(k * np.pi / (n + 1)) for k in range(1, n + 1)])

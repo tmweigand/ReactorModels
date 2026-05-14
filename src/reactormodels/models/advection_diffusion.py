@@ -35,7 +35,6 @@ class AdvectionDiffusion1D:
 
     Solves
         dC/dt + v*dC/dx = D*d2C/dx2 on [0, L]
-    using orthogonal collocation.
 
     Inlet boundary conditions (inlet_bc):
         DIRICHLET  : C(0, t) = C_in  (default)

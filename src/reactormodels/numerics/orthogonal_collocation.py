@@ -1,6 +1,7 @@
 """orthogonal_collocation.py"""
 
 import numpy as np
+from scipy.special import beta as beta_fn
 
 
 class OrthogonalCollocation:
@@ -43,8 +44,8 @@ class OrthogonalCollocation:
             add_inlet=add_inlet
         )
 
-    def jacobi_roots(self) -> np.ndarray:
-        """Roots of P_n^(alpha,beta) shifted to [0,1]."""
+    def jacobi_roots_and_weights(self) -> tuple[np.ndarray, np.ndarray]:
+        """Roots and quadrature weights of P_n^(alpha,beta), shifted to [0,1]."""
         a_coef = np.zeros(self.n_interior_points)
         for k in range(self.n_interior_points):
             denom = (2 * k + self.alpha + self.beta) * (
@@ -68,7 +69,21 @@ class OrthogonalCollocation:
                 )
 
         J = np.diag(a_coef) + np.diag(b_coef, 1) + np.diag(b_coef, -1)
-        return 0.5 * (np.sort(np.linalg.eigvalsh(J)) + 1.0)
+        eigenvalues, eigenvectors = np.linalg.eigh(J)
+        idx = np.argsort(eigenvalues)
+        nodes = 0.5 * (eigenvalues[idx] + 1.0)
+
+        # Golub-Welsch: w_j = (v[0,j])^2 * mu_0
+        # mu_0 = integral of weight function over [-1,1] shifted to [0,1]
+
+        mu0 = (
+            0.5
+            * (2 ** (self.alpha + self.beta + 1))
+            * beta_fn(self.alpha + 1, self.beta + 1)
+        )
+        weights = (eigenvectors[0, idx] ** 2) * mu0
+
+        return nodes, weights
 
     @staticmethod
     def lagrange_basis_and_deriv(x: np.ndarray):
@@ -93,75 +108,55 @@ class OrthogonalCollocation:
 
     def _build_single_element(self, add_inlet=False):
         """Build collocation on [0,1]."""
-        xi = self.jacobi_roots()
+        xi, wi = self.jacobi_roots_and_weights()
         x = np.append(xi, 1.0)
+        w = np.append(wi, 0.0)  # outlet node gets zero weight (not a quadrature point)
         if add_inlet:
             x = np.concatenate([[0.0], x])
+            w = np.concatenate([[0.0], w])
         A, B = self.lagrange_basis_and_deriv(x)
+        self.weights = w
         return x, A, B
 
     def _build_multi_element(self, add_inlet=False):
-        """Assemble global differentiation matrices from ne local elements.
-
-        Each element has (n_interior_points + 2) local nodes:
-            [left_boundary, interior..., right_boundary]
-
-        Adjacent elements share one boundary node, so total nodes:
-            N_total = ne * (n_pts_per_element - 1) + 1
-        With add_inlet, x=0 is pinned and included.
-
-        Flux continuity at element junctions is enforced by replacing
-        the duplicated boundary row with the average of the left and
-        right element derivative contributions.
-        """
         ne = self.n_elements
-        xi = self.jacobi_roots()  # interior roots on [0,1]
-        n_local = self.n_interior_points + 2  # nodes per element incl. boundaries
+        xi, wi = self.jacobi_roots_and_weights()  # interior roots + weights on [0,1]
+        n_local = self.n_interior_points + 2
 
-        # Local nodes on [0,1] for one element
-        x_local = np.concatenate([[0.0], xi, [1.0]])  # (n_local,)
+        x_local = np.concatenate([[0.0], xi, [1.0]])
+        # boundary nodes are not quadrature points — zero weight
+        w_local = np.concatenate([[0.0], wi, [0.0]])
+
         A_loc, B_loc = self.lagrange_basis_and_deriv(x_local)
 
-        # Scale derivatives for element width h = 1/ne
         h = 1.0 / ne
         A_loc_scaled = A_loc / h
         B_loc_scaled = B_loc / h**2
+        w_local_scaled = w_local * h  # integral scales with element width
 
-        # Global nodes: map each element's local nodes to [k*h, (k+1)*h]
-        # Shared boundary nodes appear once
         n_global = ne * (n_local - 1) + 1
         x_global = np.zeros(n_global)
-        for k in range(ne):
-            start = k * (n_local - 1)
-            x_global[start : start + n_local] = k * h + h * x_local
-
-        # Assemble global A and B matrices
         A_global = np.zeros((n_global, n_global))
         B_global = np.zeros((n_global, n_global))
+        w_global = np.zeros(n_global)
 
         for k in range(ne):
             start = k * (n_local - 1)
             idx = slice(start, start + n_local)
-
-            # Interior rows of this element (exclude shared boundaries)
-            # Left boundary row: only for first element (or average at junctions)
-            # Right boundary row: averaged at junctions below
+            x_global[start : start + n_local] = k * h + h * x_local
             A_global[idx, idx] += A_loc_scaled
             B_global[idx, idx] += B_loc_scaled
+            w_global[start : start + n_local] += w_local_scaled
 
-        # At junction nodes (shared between elements), each element
-        # contributed once — average the two contributions
+        # Junction nodes were accumulated from two elements — average derivatives,
+        # but SUM weights (each element contributes a distinct piece of the integral)
         for k in range(1, ne):
-            j = k * (n_local - 1)  # global index of junction node
+            j = k * (n_local - 1)
             A_global[j, :] *= 0.5
             B_global[j, :] *= 0.5
+            # w_global[j] is already the correct sum — no averaging needed
 
-        # Prepend x=0 if not already first node (add_inlet has no effect
-        # for multi-element since x=0 is always included as left boundary)
-        if not add_inlet:
-            # Remove x=0 row/col — treat as interior (no pinning)
-            pass  # x=0 is already first node; caller handles pinning
-
+        self.weights = w_global
         return x_global, A_global, B_global
 
     def _build(self, add_inlet=False):
@@ -183,3 +178,23 @@ class OrthogonalCollocation:
                     + (2.0 / xi) * self.first_derivative[i, :]
                 )
         return L
+
+    def gradient(self, f: np.ndarray, node: int) -> float:
+        """Return df/dx at a specific collocation node."""
+        return self.first_derivative[node, :] @ f
+
+    def second_gradient(self, f: np.ndarray, node: int) -> float:
+        """Return d²f/dx² at a specific collocation node."""
+        return self.second_derivative[node, :] @ f
+
+    def gradient_field(self, f: np.ndarray) -> np.ndarray:
+        """Return df/dx at all nodes, shape (N,)."""
+        return self.first_derivative @ f
+
+    def second_gradient_field(self, f: np.ndarray) -> np.ndarray:
+        """Return d²f/dx² at all nodes, shape (N,)."""
+        return self.second_derivative @ f
+
+    def integrate(self, f: np.ndarray) -> float:
+        """Return the weighted integral of f over [0, 1] via quadrature weights."""
+        return self.weights @ f
