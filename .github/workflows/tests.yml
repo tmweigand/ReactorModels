@@ -24,12 +24,27 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install SUNDIALS and Fortran Compiler (Ubuntu)
+      - name: Install SUNDIALS 7.1.1 and Fortran Compiler (Ubuntu)
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y libsundials-dev gfortran
-          echo "/usr/bin" >> $GITHUB_PATH
+          sudo apt-get install -y gfortran cmake libopenblas-dev
+ 
+          SUNDIALS_VERSION="7.1.1"
+          wget -q https://github.com/LLNL/sundials/releases/download/v${SUNDIALS_VERSION}/sundials-${SUNDIALS_VERSION}.tar.gz
+          tar -xzf sundials-${SUNDIALS_VERSION}.tar.gz
+          mkdir sundials-build && cd sundials-build
+          cmake ../sundials-${SUNDIALS_VERSION} \
+            -DCMAKE_INSTALL_PREFIX=/usr/local \
+            -DBUILD_SHARED_LIBS=ON \
+            -DENABLE_MPI=OFF \
+            -DENABLE_LAPACK=OFF \
+            -DBUILD_TESTING=OFF \
+            -DEXAMPLES_INSTALL=OFF
+          make -j$(nproc)
+          sudo make install
+          sudo ldconfig
+ 
           which gfortran
           gfortran --version
 
