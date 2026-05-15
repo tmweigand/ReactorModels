@@ -130,3 +130,99 @@ def test_multi_element_vs_single_smooth():
 
     # Multi-element should be accurate on smooth functions
     assert dfdx_numerical == pytest.approx(dfdx_exact, abs=1e-4)
+
+
+# --- Tests for convenience methods ---
+
+
+@pytest.fixture
+def oc5():
+    return reactormodels.numerics.OrthogonalCollocation(n_interior_points=5)
+
+
+def test_gradient_matches_matrix_row(oc5):
+    """gradient(f, node) == first_derivative[node, :] @ f."""
+    f = oc5.nodes**2
+    for node in range(len(oc5.nodes)):
+        assert oc5.gradient(f, node) == pytest.approx(
+            oc5.first_derivative[node, :] @ f, abs=1e-12
+        )
+
+
+def test_second_gradient_matches_matrix_row(oc5):
+    """second_gradient(f, node) == second_derivative[node, :] @ f."""
+    f = oc5.nodes**3
+    for node in range(len(oc5.nodes)):
+        assert oc5.second_gradient(f, node) == pytest.approx(
+            oc5.second_derivative[node, :] @ f, abs=1e-12
+        )
+
+
+def test_gradient_field_linear(oc5):
+    """gradient_field of a linear function x should be all-ones."""
+    result = oc5.gradient_field(oc5.nodes)
+    np.testing.assert_allclose(result, np.ones(len(oc5.nodes)), atol=1e-10)
+
+
+def test_gradient_field_matches_matrix(oc5):
+    """gradient_field(f) == first_derivative @ f for arbitrary f."""
+    f = np.sin(np.pi * oc5.nodes)
+    np.testing.assert_allclose(
+        oc5.gradient_field(f), oc5.first_derivative @ f, atol=1e-12
+    )
+
+
+def test_gradient_analytic_cubic(oc5):
+    """gradient_field of x³ should equal 3x² exactly (polynomial, no truncation error)."""
+    x = oc5.nodes
+    np.testing.assert_allclose(oc5.gradient_field(x**3), 3 * x**2, atol=1e-10)
+
+
+def test_gradient_analytic_node_cubic(oc5):
+    """gradient(x³, node) == 3*x_node² at every node."""
+    x = oc5.nodes
+    for i, xi in enumerate(x):
+        assert oc5.gradient(x**3, i) == pytest.approx(3 * xi**2, abs=1e-10)
+
+
+def test_second_gradient_field_quadratic(oc5):
+    """second_gradient_field of x² should be ~2 everywhere."""
+    result = oc5.second_gradient_field(oc5.nodes**2)
+    np.testing.assert_allclose(result, 2.0 * np.ones(len(oc5.nodes)), atol=1e-8)
+
+
+def test_second_gradient_field_matches_matrix(oc5):
+    """second_gradient_field(f) == second_derivative @ f for arbitrary f."""
+    f = oc5.nodes**3
+    np.testing.assert_allclose(
+        oc5.second_gradient_field(f), oc5.second_derivative @ f, atol=1e-12
+    )
+
+
+def test_second_gradient_analytic_cubic(oc5):
+    """second_gradient_field of x³ should equal 6x exactly."""
+    x = oc5.nodes
+    np.testing.assert_allclose(oc5.second_gradient_field(x**3), 6 * x, atol=1e-9)
+
+
+def test_second_gradient_analytic_node_cubic(oc5):
+    """second_gradient(x³, node) == 6*x_node at every node."""
+    x = oc5.nodes
+    for i, xi in enumerate(x):
+        assert oc5.second_gradient(x**3, i) == pytest.approx(6 * xi, abs=1e-9)
+
+
+def test_integrate_constant(oc5):
+    """Integral of 1 over [0,1] should be 1."""
+    f = np.ones(len(oc5.nodes))
+    assert oc5.integrate(f) == pytest.approx(1.0, abs=1e-10)
+
+
+def test_integrate_linear(oc5):
+    """Integral of x over [0,1] should be 0.5."""
+    assert oc5.integrate(oc5.nodes) == pytest.approx(0.5, abs=1e-10)
+
+
+def test_integrate_quadratic(oc5):
+    """Integral of x² over [0,1] should be 1/3."""
+    assert oc5.integrate(oc5.nodes**2) == pytest.approx(1.0 / 3.0, abs=1e-10)
