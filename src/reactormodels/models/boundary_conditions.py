@@ -10,6 +10,9 @@ class InletBC:
     and implement the `residual` and `apply` methods.
     """
 
+    def __init__(self, inlet_concentration, velocity=None, diffusion=None):
+        raise NotImplementedError
+
     def apply(self, gradient_concentration_0: None | float = None):
         """Return the value on the boundary"""
         raise NotImplementedError

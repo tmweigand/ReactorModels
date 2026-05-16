@@ -7,7 +7,8 @@ import numpy as np
 
 
 def run_demo(
-    show: bool = True, save_path: str | Path = "data_out/advection_diffusion_demo.png"
+    show: bool = True,
+    save_path: str | Path = "data_out/advection_diffusion_adsorption_demo.png",
 ):
     """Plot the numerical collocation solution against the Ogata-Banks solution."""
     velocity = 1.0  # m/s
@@ -25,21 +26,23 @@ def run_demo(
 
     t_eval = np.array([100.0, 200.0, 500.0, 1000.0])
 
-    oc = reactormodels.numerics.OrthogonalCollocation(
+    numerics = reactormodels.numerics.NumericsConfig(
         n_interior_points=2, n_elements=30, add_inlet=True
     )
-
-    model = reactormodels.models.AdvectionDiffusionAdsorption1D(
-        domain_length=domain_length,
-        velocity=velocity,
-        diffusion=diffusion,
-        isotherm=isotherm,
-        bulk_density=bulk_density,
-        porosity=porosity,
-        orthogonal_collocation=oc,
-        upwind=True,
+    column = reactormodels.Column(
+        length=domain_length, porosity=porosity, bulk_density=bulk_density
     )
-    x, C = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval, C_in=C_in)
+
+    model = reactormodels.models.AdvectionDiffusionAdsorption(
+        column=column,
+        velocity=velocity,
+        dispersion=diffusion,
+        inlet_concentration=C_in,
+        isotherm=isotherm,
+        numerics=numerics,
+        mode=reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
+    )
+    x, C, q = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval, C_in=C_in)
 
     fig, ax = plt.subplots(figsize=(8, 5))
     for i, t in enumerate(t_eval):

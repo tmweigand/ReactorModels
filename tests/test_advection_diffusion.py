@@ -13,13 +13,14 @@ def test_ogata_banks(diffusion):
     column_length = 5.0  # m
     porosity = 0.5
     inlet_concentration = 1.0
+    initial_concentration = 0.0
 
     column = reactormodels.Column(length=column_length, porosity=porosity)
 
     t_eval = np.array([1.0, 2.0, 3.0])
 
-    oc = reactormodels.numerics.OrthogonalCollocation(
-        n_interior_points=30, add_inlet=True
+    numerics = reactormodels.numerics.NumericsConfig(
+        column=column, n_interior_points=30
     )
 
     model = reactormodels.models.AdvectionDiffusion(
@@ -27,9 +28,10 @@ def test_ogata_banks(diffusion):
         velocity=velocity,
         diffusion=diffusion,
         inlet_concentration=inlet_concentration,
-        orthogonal_collocation=oc,
+        initial_concentration=initial_concentration,
+        numerics=numerics,
     )
-    x, C = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval, C_in=inlet_concentration)
+    x, C = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
 
     for i, t in enumerate(t_eval):
         # Only compare interior of domain, away from outlet BC influence
@@ -52,23 +54,25 @@ def test_multi_element_ogata_banks():
     column_length = 5.0
     porosity = 0.5
     inlet_concentration = 1.0
+    initial_concentration = 0.0
     t_eval = np.array([2.0, 4.0])
 
     column = reactormodels.Column(length=column_length, porosity=porosity)
 
-    oc = reactormodels.numerics.OrthogonalCollocation(
+    numerics = reactormodels.numerics.NumericsConfig(
+        column=column,
         n_interior_points=3,
-        n_elements=20,  # 20 elements × 4 pts = fine enough
-        add_inlet=True,
+        n_elements=20,
     )
     model = reactormodels.models.AdvectionDiffusion(
         column=column,
         velocity=velocity,
         diffusion=diffusion,
         inlet_concentration=inlet_concentration,
-        orthogonal_collocation=oc,
+        initial_concentration=initial_concentration,
+        numerics=numerics,
     )
-    x, C = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval, C_in=inlet_concentration)
+    x, C = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
 
     for i, t in enumerate(t_eval):
         mask = x < 0.8 * column_length

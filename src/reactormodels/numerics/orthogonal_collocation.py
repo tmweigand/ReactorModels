@@ -5,15 +5,15 @@ from scipy.special import beta as beta_fn
 
 
 class OrthogonalCollocation:
-    """Generate collocation points and differentiation matrices on [0, 1]
+    """Generate collocation points and differentiation matrices on [0, L].
 
     Jacobi polynomials, with optional multi-element support.
 
     Single element (n_elements=1):
-        Standard global collocation on [0, 1].
+        Standard global collocation on [0, L].
 
     Multi-element (n_elements > 1):
-        Domain split into ne equal elements [k/ne, (k+1)/ne].
+        Domain split into ne equal elements [k*L/ne, (k+1)*L/ne].
         Within each element, local collocation applied.
         Continuity of C enforced at element boundaries.
         Flux continuity enforced via the continuation condition.
@@ -30,19 +30,20 @@ class OrthogonalCollocation:
 
     def __init__(
         self,
+        domain_length: float = 1.0,
         n_interior_points: int = 5,
         alpha: float = 0.0,
         beta: float = 0.0,
         add_inlet: bool = False,
         n_elements: int = 1,
     ):
+        self.domain_length = domain_length
         self.n_interior_points = n_interior_points
         self.alpha = alpha
         self.beta = beta
+        self.add_inlet = add_inlet
         self.n_elements = n_elements
-        self.nodes, self.first_derivative, self.second_derivative = self._build(
-            add_inlet=add_inlet
-        )
+        self.nodes, self.first_derivative, self.second_derivative = self._build()
 
     def jacobi_roots_and_weights(self) -> tuple[np.ndarray, np.ndarray]:
         """Roots and quadrature weights of P_n^(alpha,beta), shifted to [0,1]."""
@@ -75,7 +76,6 @@ class OrthogonalCollocation:
 
         # Golub-Welsch: w_j = (v[0,j])^2 * mu_0
         # mu_0 = integral of weight function over [-1,1] shifted to [0,1]
-
         mu0 = (
             0.5
             * (2 ** (self.alpha + self.beta + 1))
@@ -106,19 +106,19 @@ class OrthogonalCollocation:
         B = A @ A
         return A, B
 
-    def _build_single_element(self, add_inlet=False):
+    def _build_single_element(self):
         """Build collocation on [0,1]."""
         xi, wi = self.jacobi_roots_and_weights()
         x = np.append(xi, 1.0)
         w = np.append(wi, 0.0)  # outlet node gets zero weight (not a quadrature point)
-        if add_inlet:
+        if self.add_inlet:
             x = np.concatenate([[0.0], x])
             w = np.concatenate([[0.0], w])
         A, B = self.lagrange_basis_and_deriv(x)
         self.weights = w
         return x, A, B
 
-    def _build_multi_element(self, add_inlet=False):
+    def _build_multi_element(self):
         ne = self.n_elements
         xi, wi = self.jacobi_roots_and_weights()  # interior roots + weights on [0,1]
         n_local = self.n_interior_points + 2
@@ -159,11 +159,21 @@ class OrthogonalCollocation:
         self.weights = w_global
         return x_global, A_global, B_global
 
-    def _build(self, add_inlet=False):
+    def _build(self):
+        if self.domain_length <= 0:
+            raise ValueError("domain_length must be > 0")
+
         if self.n_elements == 1:
-            return self._build_single_element(add_inlet=add_inlet)
+            nodes, first_derivative, second_derivative = self._build_single_element()
         else:
-            return self._build_multi_element(add_inlet=add_inlet)
+            nodes, first_derivative, second_derivative = self._build_multi_element()
+
+        self.weights = self.weights * self.domain_length
+        return (
+            nodes * self.domain_length,
+            first_derivative / self.domain_length,
+            second_derivative / (self.domain_length**2),
+        )
 
     def radial_operator(self) -> np.ndarray:
         """Spherical Laplacian: (1/r^2)*d/dr(r^2*du/dr) = d^2u/dr^2 + (2/r)*du/dr"""
@@ -179,22 +189,28 @@ class OrthogonalCollocation:
                 )
         return L
 
-    def gradient(self, f: np.ndarray, node: int) -> float:
-        """Return df/dx at a specific collocation node."""
-        return self.first_derivative[node, :] @ f
+    def evaluate_gradient(self, f: np.ndarray, node: None | int = None) -> float:
+        """Return df/dx at a specific collocation node.
 
-    def second_gradient(self, f: np.ndarray, node: int) -> float:
-        """Return d²f/dx² at a specific collocation node."""
-        return self.second_derivative[node, :] @ f
+        If node is provided, only return the value at specified node.
+        """
+        if node is None:
+            return self.first_derivative @ f
+        else:
+            return self.first_derivative[node, :] @ f
 
-    def gradient_field(self, f: np.ndarray) -> np.ndarray:
-        """Return df/dx at all nodes, shape (N,)."""
-        return self.first_derivative @ f
+    def evaluate_second_derivative(
+        self, f: np.ndarray, node: None | int = None
+    ) -> float:
+        """Return d²f/dx² at a specific collocation node.
 
-    def second_gradient_field(self, f: np.ndarray) -> np.ndarray:
-        """Return d²f/dx² at all nodes, shape (N,)."""
-        return self.second_derivative @ f
+        If node is provided, only return the value at specified node.
+        """
+        if node is None:
+            return self.second_derivative @ f
+        else:
+            return self.second_derivative[node, :] @ f
 
     def integrate(self, f: np.ndarray) -> float:
-        """Return the weighted integral of f over [0, 1] via quadrature weights."""
+        """Return the weighted integral of f over [0, L] via quadrature weights."""
         return self.weights @ f
