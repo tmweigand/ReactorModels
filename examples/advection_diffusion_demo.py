@@ -12,18 +12,21 @@ def run_demo(
     velocity = 1.0  # m/s
     diffusion = 0.5  # m^2/s
     domain_length = 5.0  # m
+    porosity = 0.5
     C_in = 1.0
     t_eval = np.array([1.0, 2.0, 3.0])
 
-    oc = reactormodels.numerics.OrthogonalCollocation(
+    numerics = reactormodels.numerics.NumericsConfig(
         n_interior_points=10, n_elements=3, add_inlet=True
     )
+    column = reactormodels.Column(length=domain_length, porosity=porosity)
 
-    model = reactormodels.models.AdvectionDiffusion1D(
-        domain_length=domain_length,
+    model = reactormodels.models.AdvectionDiffusion(
+        column=column,
+        inlet_concentration=C_in,
         velocity=velocity,
         diffusion=diffusion,
-        orthogonal_collocation=oc,
+        numerics=numerics,
     )
     x, C = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval, C_in=C_in)
 

@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 import numpy as np
+import scipy
 
 
 @dataclass
@@ -36,18 +37,18 @@ class MassBalance:
         return (
             self.velocity
             * self.porosity
-            * np.trapezoid(self.C_outlet_history, self.t_history)
+            * scipy.integrate.trapezoid(self.C_outlet_history, self.t_history)
         )
 
     @property
     def mass_fluid(self) -> float:
         """Mass in the fluid phase"""
-        return self.porosity * np.trapezoid(self.C, self.x)
+        return self.porosity * scipy.integrate.trapezoid(self.C, self.x)
 
     @property
     def mass_adsorbed(self) -> float:
         """Mass in the solid phase."""
-        return self.bulk_density * np.trapezoid(self.q, self.x)
+        return self.bulk_density * scipy.integrate.trapezoid(self.q, self.x)
 
     @property
     def mass_stored(self) -> float:

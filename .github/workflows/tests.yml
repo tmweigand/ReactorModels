@@ -1,10 +1,8 @@
 name: Tests
-
 on:
   pull_request:
     branches:
       - "**"
-
   push:
     branches:
       - main
@@ -15,16 +13,51 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-22.04, macos-latest]
         python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
 
     steps:
       - uses: actions/checkout@v2
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+          update-environment: true
+
+      - name: Install SUNDIALS 7.1.1 and Fortran Compiler (Ubuntu)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y gfortran cmake libopenblas-dev libffi-dev 
+ 
+          SUNDIALS_VERSION="7.1.1"
+          wget -q https://github.com/LLNL/sundials/releases/download/v${SUNDIALS_VERSION}/sundials-${SUNDIALS_VERSION}.tar.gz
+          tar -xzf sundials-${SUNDIALS_VERSION}.tar.gz
+          mkdir sundials-build && cd sundials-build
+          cmake ../sundials-${SUNDIALS_VERSION} \
+            -DCMAKE_INSTALL_PREFIX=/usr/local \
+            -DBUILD_SHARED_LIBS=ON \
+            -DENABLE_MPI=OFF \
+            -DENABLE_LAPACK=OFF \
+            -DBUILD_TESTING=OFF \
+            -DEXAMPLES_INSTALL=OFF
+          make -j$(nproc)
+          sudo make install
+          sudo ldconfig
+ 
+          which gfortran
+          gfortran --version
+
+      - name: Install SUNDIALS and Fortran Compiler (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install gcc sundials
+          echo "/opt/homebrew/bin" >> $GITHUB_PATH
+          GFORTRAN_BIN="$(find "$(brew --prefix gcc)/bin" -name 'gfortran-*' | head -n 1)"
+          ln -sf "$GFORTRAN_BIN" /opt/homebrew/bin/gfortran
+          which gfortran
+          gfortran --version
 
       - name: Cache pip
         uses: actions/cache@v4
@@ -41,4 +74,6 @@ jobs:
 
       - name: Run tests with tox
         run: |
-          tox
+          tox --override "testenv.basepython=$(which python)"
+        env:
+          SUNDIALS_INST: ${{ runner.os == 'macOS' && '/opt/homebrew' || '/usr' }}

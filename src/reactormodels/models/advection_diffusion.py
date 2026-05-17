@@ -1,172 +1,106 @@
 """advection_diffusion.py"""
 
-from functools import partial
-
+from typing import Type
 import numpy as np
-from scipy.integrate import solve_ivp
-from scipy.special import erfc, erfcx
 
-from ..numerics.orthogonal_collocation import OrthogonalCollocation
-from .advection_diffusion_adsorption_two import InletBC
-
-
-def ogata_banks(x, time, velocity, diffusion, C0=1.0):
-    """Analytical solution for 1D advection-diffusion with step input.
-
-    Uses erfcx (scaled erfc) to avoid overflow at high Peclet numbers:
-        exp(Pe) * erfc(arg2) = erfcx(arg2) * exp(Pe - arg2^2)
-    which stays finite when exp(Pe) would overflow.
-    """
-    Pe_local = velocity * x / diffusion
-    arg1 = (x - velocity * time) / (2 * np.sqrt(diffusion * time))
-    arg2 = (x + velocity * time) / (2 * np.sqrt(diffusion * time))
-    exponent = Pe_local - arg2**2
-    term2 = np.where(
-        exponent > 500,  # still overflows — shouldn't happen but guard it
-        0.0,
-        erfcx(arg2) * np.exp(exponent),
-    )
-
-    return C0 * 0.5 * (erfc(arg1) + term2)
+from ..column_data import Column
+from ..numerics.config import NumericsConfig
+from .boundary_conditions import InletBC, DirichletBC
 
 
-class AdvectionDiffusion1D:
-    """One-dimensional advection diffusion equation.
+class AdvectionDiffusion:
+    """Advection-diffusion model.
 
-    Solves
-        dC/dt + v*dC/dx = D*d2C/dx2 on [0, L]
-    using orthogonal collocation.
+    Governing equation:
+        dC/dt + v * dC/dx - D * d2C/dx2 = 0
 
-    Inlet boundary conditions (inlet_bc):
-        DIRICHLET  : C(0, t) = C_in  (default)
-        DANCKWERTS : v*C_in = v*C(0) - D*(dC/dx)|_0  (flux-conserving)
-
-    Outlet boundary condition:
-        dC/dx(L, t) = 0  (Neumann, zero-gradient)
     """
 
     def __init__(
         self,
-        domain_length,
-        velocity,
-        diffusion,
-        orthogonal_collocation: OrthogonalCollocation,
-        inlet_bc: InletBC = InletBC.DIRICHLET,
+        column: Column,
+        inlet_concentration: float,
+        initial_concentration: float,
+        velocity: float,
+        diffusion: float,
+        numerics: NumericsConfig,
+        inlet_bc: Type[InletBC] = DirichletBC,
     ):
-        self.domain_length = domain_length
+        self.column = column
         self.velocity = velocity
         self.diffusion = diffusion
-        self.oc = orthogonal_collocation
-        self.inlet_bc = inlet_bc
-        # Danckwerts: C[0] = (v*C_in + D*A[0,1:]@C[1:]) / (v - D*A[0,0])
-        self._danckwerts_denom = (
-            velocity
-            - diffusion * orthogonal_collocation.first_derivative[0, 0] / domain_length
+        self.inlet_concentration = inlet_concentration
+        self.initial_concentration = initial_concentration
+        self.numerics = numerics
+        self.inlet_bc = inlet_bc(
+            self.inlet_concentration, self.velocity, self.diffusion
+        )
+        self.N = len(self.numerics.collocation.nodes)
+
+    def _residual(self, t, C, Cdot, result):
+        """IDA residual callback.  Writes into `result` in-place."""
+        # Inlet boundary condition
+        result[0] = self.inlet_bc.residual(
+            C[0], self.numerics.collocation.evaluate_gradient(C, 0)
         )
 
-    def _inlet_concentration(self, C_inner: np.ndarray, C_in: float) -> float:
-        """Return C[0] from the chosen inlet BC given C[1:] and C_in."""
-        if self.inlet_bc is InletBC.DIRICHLET:
-            return C_in
+        # Inter nodes and outlet
+        rhs = -self.velocity * self.numerics.evaluate_gradient(
+            C
+        ) + self.diffusion * self.numerics.evaluate_second_derivative(C)
+        result[1:] = Cdot[1:] - rhs[1:]
 
-        # DANCKWERTS: v*C_in = v*C[0] - D*(dC/dx)|_0
-        A0inner = self.oc.first_derivative[0, 1:] / self.domain_length
-        return (
-            self.velocity * C_in + self.diffusion * (A0inner @ C_inner)
-        ) / self._danckwerts_denom
+        return 0
 
-    def rhs(self, t, C, C_in):
-        """ODE rhs.
+    def _jacobian(self, t, C, Cdot, result, cj, jac):
+        J = np.zeros((self.N, self.N))
 
-        DIRICHLET : C is (N,) including inlet; C[0] row is zeroed.
-        DANCKWERTS: C is (N-1,) interior+outlet; C[0] recovered each call.
+        # Row 0: algebraic constraint, no Cdot term
+        J[0, :] = self.inlet_bc.jacobian_row(
+            self.numerics.collocation.first_derivative[0, :]
+        )
+
+        # Rows 1:: dF/dC = -pde_jac,  dF/dCdot = I  => full J row = -pde_jac + cj*I
+        pde_jac = (
+            -self.velocity * self.numerics.collocation.first_derivative
+            + self.diffusion * self.numerics.collocation.second_derivative
+        )  # (N,N)
+        J[1:, :] = -pde_jac[1:, :]  # dF/dC contribution
+        for i in range(1, self.N):
+            J[i, i] += cj  # dF/dCdot: Cdot[i] appears only in row i
+
+        jac[:, :] = J
+        return 0
+
+    def _initial_conditions(self):
+        """Set the initial concentration and dcdt."""
+        c = np.full(self.N, self.initial_concentration)
+        c[0] = self.inlet_bc.apply(self.numerics.collocation.evaluate_gradient(c, 0))
+        dcdt = np.zeros(self.N)
+        return c, dcdt
+
+    def _algebraic_vars_idx(self):
+        """Create list identifying which equations are algebraic.
+
+        Only the inlet boundary condition for this model.
         """
-        if self.inlet_bc is InletBC.DIRICHLET:
-            dCdt = -(self.velocity / self.domain_length) * (
-                self.oc.first_derivative @ C
-            ) + (self.diffusion / self.domain_length**2) * (
-                self.oc.second_derivative @ C
+        return [0]
+
+    def solve(self, t_span, t_eval):
+        """Integrate from t_span[0] to t_span[1], returning results at t_eval."""
+        c, dcdt = self._initial_conditions()
+        result = self.numerics.integrate(
+            residual=self._residual,
+            jacobian=self._jacobian,
+            y0=c,
+            yp0=dcdt,
+            t_span=t_span,
+            t_eval=t_eval,
+            algebraic_vars_idx=self._algebraic_vars_idx(),
+        )
+        if result.flag < 0:
+            raise RuntimeError(
+                f"IDA solver failed with flag {result.flag}: {result.message}"
             )
-            dCdt[0] = 0.0
-            return dCdt
-        else:
-            C0 = self._inlet_concentration(C, C_in)
-            C_full = np.concatenate([[C0], C])
-            dCdt = -(self.velocity / self.domain_length) * (
-                self.oc.first_derivative @ C_full
-            ) + (self.diffusion / self.domain_length**2) * (
-                self.oc.second_derivative @ C_full
-            )
-            return dCdt[1:]  # exclude algebraically-constrained inlet
-
-    def jacobian(self, C_in):
-        """Analytic Jacobian of rhs w.r.t. the state vector.
-
-        DIRICHLET : (N, N) with inlet row zeroed.
-        DANCKWERTS: (N-1, N-1) reduced system with C[0] eliminated.
-        """
-        A = self.oc.first_derivative / self.domain_length
-        B = self.oc.second_derivative / self.domain_length**2
-        J_full = -self.velocity * A + self.diffusion * B
-
-        if self.inlet_bc is InletBC.DIRICHLET:
-            J_full[0, :] = 0.0
-            return J_full
-
-        # DANCKWERTS: C_full = E @ C_inner + f*C_in
-        # E[0,:] = D*A[0,1:] / denom;  E[1:,:] = I
-        N = len(self.oc.nodes)
-        E = np.zeros((N, N - 1))
-        E[0, :] = self.diffusion * A[0, 1:] / self._danckwerts_denom
-        E[1:, :] = np.eye(N - 1)
-        return (J_full @ E)[1:, :]  # reduced (N-1, N-1) Jacobian
-
-    def solve(self, t_span, t_eval, C_in=1.0, C_init=0.0):
-        """Solves the governing equation."""
-        N = len(self.oc.nodes)
-        J = self.jacobian(C_in)
-        rhs = partial(self.rhs, C_in=C_in)
-
-        if self.inlet_bc is InletBC.DIRICHLET:
-            y0 = np.full(N, C_init)
-            y0[0] = C_in
-
-            sol = solve_ivp(
-                rhs,
-                t_span,
-                y0,
-                method="BDF",
-                t_eval=t_eval,
-                rtol=1e-8,
-                atol=1e-10,
-                jac=J,
-            )
-            x_physical = self.oc.nodes * self.domain_length
-            return x_physical, sol.y.T  # (n_times, N)
-
-        else:  # DANCKWERTS: state is C[1:]
-            y0 = np.full(N - 1, C_init)
-
-            sol = solve_ivp(
-                rhs,
-                t_span,
-                y0,
-                method="BDF",
-                t_eval=t_eval,
-                rtol=1e-8,
-                atol=1e-10,
-                jac=J,
-            )
-            x_physical = self.oc.nodes * self.domain_length
-            C_inner_history = sol.y.T  # (n_times, N-1)
-            # Recover C[0] at each output time
-            C0_history = np.array(
-                [
-                    self._inlet_concentration(C_inner_history[i], C_in)
-                    for i in range(len(t_eval))
-                ]
-            )[:, np.newaxis]
-            C_out = np.concatenate(
-                [C0_history, C_inner_history], axis=1
-            )  # (n_times, N)
-            return x_physical, C_out
+        C_history = result.values.y[1:]  # (n_times, N), skip the t=t_span[0] row
+        return self.numerics.collocation.nodes, C_history

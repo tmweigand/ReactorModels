@@ -13,7 +13,7 @@ def test_jabobi_roots_legendre():
     oc = reactormodels.numerics.OrthogonalCollocation(
         n_interior_points=4, alpha=0, beta=0
     )
-    oc_roots = oc.jacobi_roots()
+    oc_roots, _ = oc.jacobi_roots_and_weights()
 
     root_1 = np.sqrt((3.0 / 7.0) - (2.0 / 7.0) * np.sqrt(6 / 5))
     root_2 = np.sqrt((3.0 / 7.0) + (2.0 / 7.0) * np.sqrt(6 / 5))
@@ -39,7 +39,7 @@ def test_jacobi_roots_asymmetric_vs_scipy(n, alpha, beta):
     oc = reactormodels.numerics.OrthogonalCollocation(
         n_interior_points=n, alpha=alpha, beta=beta
     )
-    oc_roots = oc.jacobi_roots()
+    oc_roots, _ = oc.jacobi_roots_and_weights()
 
     scipy_roots, _ = roots_jacobi(n, alpha, beta)
     scaled = 0.5 * (np.sort(scipy_roots) + 1.0)
@@ -53,7 +53,7 @@ def test_jacobi_roots_chebyshev_u():
     oc = reactormodels.numerics.OrthogonalCollocation(
         n_interior_points=n, alpha=0.5, beta=0.5
     )
-    oc_roots = oc.jacobi_roots()
+    oc_roots, _ = oc.jacobi_roots_and_weights()
 
     shift_and_scale = lambda x: 0.5 * (x + 1.0)
     true_roots = sorted([np.cos(k * np.pi / (n + 1)) for k in range(1, n + 1)])
@@ -130,3 +130,101 @@ def test_multi_element_vs_single_smooth():
 
     # Multi-element should be accurate on smooth functions
     assert dfdx_numerical == pytest.approx(dfdx_exact, abs=1e-4)
+
+
+# --- Tests for convenience methods ---
+
+
+@pytest.fixture
+def oc5():
+    return reactormodels.numerics.OrthogonalCollocation(n_interior_points=5)
+
+
+def test_gradient_matches_matrix_row(oc5):
+    """gradient(f, node) == first_derivative[node, :] @ f."""
+    f = oc5.nodes**2
+    for node in range(len(oc5.nodes)):
+        assert oc5.evaluate_gradient(f, node) == pytest.approx(
+            oc5.first_derivative[node, :] @ f, abs=1e-12
+        )
+
+
+def test_second_gradient_matches_matrix_row(oc5):
+    """second_gradient(f, node) == second_derivative[node, :] @ f."""
+    f = oc5.nodes**3
+    for node in range(len(oc5.nodes)):
+        assert oc5.evaluate_second_derivative(f, node) == pytest.approx(
+            oc5.second_derivative[node, :] @ f, abs=1e-12
+        )
+
+
+def test_gradient_linear(oc5):
+    """gradient of a linear function x should be all-ones."""
+    result = oc5.evaluate_gradient(oc5.nodes)
+    np.testing.assert_allclose(result, np.ones(len(oc5.nodes)), atol=1e-10)
+
+
+def test_gradient_matches_matrix(oc5):
+    """gradient(f) == first_derivative @ f for arbitrary f."""
+    f = np.sin(np.pi * oc5.nodes)
+    np.testing.assert_allclose(
+        oc5.evaluate_gradient(f), oc5.first_derivative @ f, atol=1e-12
+    )
+
+
+def test_gradient_analytic_cubic(oc5):
+    """gradient of x³ should equal 3x² exactly (polynomial, no truncation error)."""
+    x = oc5.nodes
+    np.testing.assert_allclose(oc5.evaluate_gradient(x**3), 3 * x**2, atol=1e-10)
+
+
+def test_gradient_analytic_node_cubic(oc5):
+    """gradient(x³, node) == 3*x_node² at every node."""
+    x = oc5.nodes
+    for i, xi in enumerate(x):
+        assert oc5.evaluate_gradient(x**3, i) == pytest.approx(3 * xi**2, abs=1e-10)
+
+
+def test_second_gradient_quadratic(oc5):
+    """second_gradient of x² should be ~2 everywhere."""
+    result = oc5.evaluate_second_derivative(oc5.nodes**2)
+    np.testing.assert_allclose(result, 2.0 * np.ones(len(oc5.nodes)), atol=1e-8)
+
+
+def test_second_gradient_matches_matrix(oc5):
+    """second_gradient(f) == second_derivative @ f for arbitrary f."""
+    f = oc5.nodes**3
+    np.testing.assert_allclose(
+        oc5.evaluate_second_derivative(f), oc5.second_derivative @ f, atol=1e-12
+    )
+
+
+def test_second_gradient_analytic_cubic(oc5):
+    """second_gradient of x³ should equal 6x exactly."""
+    x = oc5.nodes
+    np.testing.assert_allclose(oc5.evaluate_second_derivative(x**3), 6 * x, atol=1e-9)
+
+
+def test_second_gradient_analytic_node_cubic(oc5):
+    """second_gradient(x³, node) == 6*x_node at every node."""
+    x = oc5.nodes
+    for i, xi in enumerate(x):
+        assert oc5.evaluate_second_derivative(x**3, i) == pytest.approx(
+            6 * xi, abs=1e-9
+        )
+
+
+def test_integrate_constant(oc5):
+    """Integral of 1 over [0,1] should be 1."""
+    f = np.ones(len(oc5.nodes))
+    assert oc5.integrate(f) == pytest.approx(1.0, abs=1e-10)
+
+
+def test_integrate_linear(oc5):
+    """Integral of x over [0,1] should be 0.5."""
+    assert oc5.integrate(oc5.nodes) == pytest.approx(0.5, abs=1e-10)
+
+
+def test_integrate_quadratic(oc5):
+    """Integral of x² over [0,1] should be 1/3."""
+    assert oc5.integrate(oc5.nodes**2) == pytest.approx(1.0 / 3.0, abs=1e-10)
