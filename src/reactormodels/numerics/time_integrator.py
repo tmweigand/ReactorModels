@@ -24,9 +24,8 @@ class TimeIntegrator:
     ):
         """Integrate a DAE system using the SUNDIALS IDA solver.
 
-        See scikit_odes_sundioals/idas.pyx for more detaisl
+        See scikit_odes_sundioals/idas.pyx for more details.
         """
-
         if jacobian is None:
             solver = dae(
                 "ida",

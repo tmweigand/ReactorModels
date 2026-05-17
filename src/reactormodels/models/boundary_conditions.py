@@ -24,12 +24,7 @@ class InletBC:
         raise NotImplementedError
 
     def jacobian_row(self, A_row: np.ndarray) -> np.ndarray:
-        """Return dF_inlet/dC, the Jacobian row for the inlet constraint.
-
-        Parameters
-        ----------
-        A_row : first-derivative matrix row at the inlet node (physical units).
-        """
+        """Return dF_inlet/dC, the Jacobian row for the inlet constraint."""
         raise NotImplementedError
 
 

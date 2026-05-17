@@ -23,12 +23,13 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+          update-environment: true
 
       - name: Install SUNDIALS 7.1.1 and Fortran Compiler (Ubuntu)
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y gfortran cmake libopenblas-dev
+          sudo apt-get install -y gfortran cmake libopenblas-dev libffi-dev 
  
           SUNDIALS_VERSION="7.1.1"
           wget -q https://github.com/LLNL/sundials/releases/download/v${SUNDIALS_VERSION}/sundials-${SUNDIALS_VERSION}.tar.gz
@@ -72,6 +73,8 @@ jobs:
           pip install tox tox-gh-actions
 
       - name: Run tests with tox
-        run: tox
+        run: |
+          python --version
+          tox
         env:
           SUNDIALS_INST: ${{ runner.os == 'macOS' && '/opt/homebrew' || '/usr' }}

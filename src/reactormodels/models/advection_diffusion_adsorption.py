@@ -8,7 +8,7 @@ from ..column_data import Column
 from ..numerics.config import NumericsConfig
 from .isotherm import Isotherm
 from .adsorption_kinetics import AdsorptionKinetics
-from .boundary_conditions import InletBC, DirichletBC, DanckwertsBC
+from .boundary_conditions import InletBC, DanckwertsBC
 
 __all__ = ["AdvectionDiffusionAdsorption"]
 
