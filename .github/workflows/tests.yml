@@ -74,7 +74,6 @@ jobs:
 
       - name: Run tests with tox
         run: |
-          python --version
-          tox
+          tox --override "testenv.basepython=$(which python)"
         env:
           SUNDIALS_INST: ${{ runner.os == 'macOS' && '/opt/homebrew' || '/usr' }}
