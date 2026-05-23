@@ -34,3 +34,4 @@ def test_breakthrough_class():
     )
 
     print(breakthrough.summary(column_volume))
+    breakthrough.plot_normalized_data()

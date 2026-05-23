@@ -2,6 +2,8 @@
 
 import numpy as np
 import math
+import matplotlib.pyplot as plt
+import os
 
 class Breakthrough:
     """Experimental breakthrough parameters."""
@@ -88,3 +90,22 @@ class Breakthrough:
             )
             
         return summary
+    
+    def plot_normalized_data(self):
+        """Generate and save plots of normalized data."""
+        os.makedirs("./tests/normalized_plots", exist_ok=True)
+
+        plt.figure()
+        
+        plt.plot(
+            self.bed_volumes,
+            self.normalize_concentration(),
+            marker="o"
+        )
+
+        plt.xlabel("Bed Volumes")
+        plt.ylabel("C/Co")
+        plt.title(f"{self.compound} - {self.water_matrix}")
+
+        plt.savefig(f'./tests/normalized_plots/{self.compound} - {self.water_matrix}.png', bbox_inches='tight')
+        plt.close()
