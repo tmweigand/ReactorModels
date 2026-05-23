@@ -73,3 +73,4 @@ class Column:
         """
         v = self.superficial_velocity(flow_rate)
         return v * self.length / (self.porosity * diffusion)
+    
