@@ -1,3 +1,4 @@
+from Breakthrough_PSDM.smoke_test import empty_bed_volume
 from Data_files_reader import read_model_inputs, get_column_parameter
 from breakthrough_class import ExperimentalBreakthroughCurve
 
@@ -35,7 +36,7 @@ for pfas_name, pfas_information in compounds_data.items():
         breakthrough_data=breakthrough_data,
         chemical_properties=chemical_properties,
         flow_rate=flow_rate,
-        bed_volume=bed_volume,
+        empty_bed_volume=empty_bed_volume,
         feed_concentration=feed_concentration,
     )
 
