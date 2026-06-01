@@ -2,7 +2,7 @@ import reactormodels
 import numpy as np
 import pytest
 
-def test_breakthrough_class():
+def test_time_conversion_class():
 
     feed_concentrations = [101, 103]
     compound = "PFOA"
@@ -34,3 +34,5 @@ def test_breakthrough_class():
     )
 
     print(breakthrough.summary(column_volume))
+    print(f"Converted bed volumes: {np.array2string(breakthrough.time_to_bed_volumes(column_volume), precision=3)}\n")
+    print(f"Converted time: {np.array2string(breakthrough.bed_volumes_to_time(column_volume), precision=3)}\n")

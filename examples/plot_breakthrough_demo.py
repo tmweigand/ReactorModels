@@ -1,8 +1,9 @@
 import reactormodels
 import numpy as np
 import pytest
+from pathlib import Path
 
-def test_breakthrough_class():
+def test_breakthrough_plot_class():
 
     feed_concentrations = [101, 103]
     compound = "PFOA"
@@ -34,3 +35,7 @@ def test_breakthrough_class():
     )
 
     print(breakthrough.summary(column_volume))
+
+    output_dir = Path(__file__).parent / "normalized_plots"
+
+    breakthrough.plot_normalized_data(output_dir)
