@@ -9,4 +9,4 @@ docs/_static/*.js
 docs/_static/*.css
 docs/api/*
 *.pyc
-__pycache__/
+__pycache__/.idea/
