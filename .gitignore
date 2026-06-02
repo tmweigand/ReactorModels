@@ -10,3 +10,4 @@ docs/_static/*.css
 docs/api/*
 *.pyc
 __pycache__/.idea/
+.idea/
