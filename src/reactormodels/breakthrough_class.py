@@ -6,36 +6,37 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-class ExperimentalBreakthroughCurve:
+class breakthrough_data:
     """Experimental breakthrough curve for one chemical."""
 
     def __init__(
         self,
-        chemical_name,
-        effluent_concentrations,
-        feed_concentration,
-        times=None,
-        bed_volumes=None,
-    ):
+        chemical_name: str,
+        effluent_concentrations: np.ndarray,
+        feed_concentration: float | np.ndarray,
+        times: np.ndarray | None = None,
+        bed_volumes: np.ndarray | None = None,
+    ) -> None:
         self.chemical_name = chemical_name
-        self.effluent_concentrations = np.asarray(
-            effluent_concentrations,
-            dtype=float,
-        )
-        self.feed_concentration = float(feed_concentration)
-
-        self.times = None if times is None else np.asarray(times, dtype=float)
-        self.bed_volumes = (
-            None if bed_volumes is None else np.asarray(bed_volumes, dtype=float)
-        )
+        self.effluent_concentrations = effluent_concentrations
+        self.feed_concentration = feed_concentration
+        self.times = times
+        self.bed_volumes = bed_volumes
 
         self._validate_inputs()
 
-    def _validate_inputs(self):
+    def _validate_inputs(self) -> None:
         """Validate breakthrough curve inputs."""
 
-        if self.feed_concentration <= 0:
+        if self.effluent_concentrations.size == 0:
+            raise ValueError("effluent_concentrations cannot be empty.")
+
+        if np.any(self.feed_concentration <= 0):
             raise ValueError("feed_concentration must be greater than zero.")
+
+        if np.ndim(self.feed_concentration) > 0:
+            if self.feed_concentration.size == 0:
+                raise ValueError("feed_concentration cannot be empty.")
 
         if self.times is None and self.bed_volumes is None:
             raise ValueError("Either times or bed_volumes must be provided.")
@@ -52,18 +53,77 @@ class ExperimentalBreakthroughCurve:
                     "bed_volumes and effluent_concentrations must have the same shape."
                 )
 
+        if np.ndim(self.feed_concentration) > 0:
+            if (
+                self.feed_concentration.size != 1
+                and self.feed_concentration.shape != self.effluent_concentrations.shape
+            ):
+                raise ValueError(
+                    "feed_concentration must be a single value, an array with one "
+                    "value, or an array with the same shape as effluent_concentrations."
+                )
+
     @property
-    def normalized_concentrations(self):
+    def representative_feed_concentration(self) -> float:
+        """Return a representative feed concentration value."""
+
+        if np.ndim(self.feed_concentration) == 0:
+            return self.feed_concentration
+
+        return np.mean(self.feed_concentration)
+
+    @property
+    def normalized_concentrations(self) -> np.ndarray:
         """Return normalized effluent concentrations, C/C0."""
 
-        return self.effluent_concentrations / self.feed_concentration
+        if np.ndim(self.feed_concentration) == 0:
+            return self.effluent_concentrations / self.feed_concentration
 
-    def has_breakthrough(self, breakthrough_fraction=0.05):
+        if self.feed_concentration.shape == self.effluent_concentrations.shape:
+            return self.effluent_concentrations / self.feed_concentration
+
+        return self.effluent_concentrations / self.representative_feed_concentration
+
+    def time_to_bed_volumes(self, empty_bed_contact_time: float) -> np.ndarray:
+        """Convert times to bed volumes using the empty bed contact time."""
+
+        if self.times is None:
+            raise ValueError("times were not provided.")
+
+        if empty_bed_contact_time <= 0:
+            raise ValueError("empty_bed_contact_time must be greater than zero.")
+
+        return self.times / empty_bed_contact_time
+
+    def bed_volumes_to_time(self, empty_bed_contact_time: float) -> np.ndarray:
+        """Convert bed volumes to times using the empty bed contact time."""
+
+        if self.bed_volumes is None:
+            raise ValueError("bed_volumes were not provided.")
+
+        if empty_bed_contact_time <= 0:
+            raise ValueError("empty_bed_contact_time must be greater than zero.")
+
+        return self.bed_volumes * empty_bed_contact_time
+
+    def add_bed_volumes_from_times(self, empty_bed_contact_time: float) -> None:
+        """Set bed_volumes by converting existing times."""
+
+        self.bed_volumes = self.time_to_bed_volumes(empty_bed_contact_time)
+        self._validate_inputs()
+
+    def add_times_from_bed_volumes(self, empty_bed_contact_time: float) -> None:
+        """Set times by converting existing bed volumes."""
+
+        self.times = self.bed_volumes_to_time(empty_bed_contact_time)
+        self._validate_inputs()
+
+    def has_breakthrough(self, breakthrough_fraction: float = 0.05) -> bool:
         """Return True if C/C0 reaches the breakthrough fraction."""
 
         return bool(np.any(self.normalized_concentrations >= breakthrough_fraction))
 
-    def breakthrough_index(self, breakthrough_fraction=0.05):
+    def breakthrough_index(self, breakthrough_fraction: float = 0.05) -> int | None:
         """Return the first index where breakthrough occurs."""
 
         indices = np.where(self.normalized_concentrations >= breakthrough_fraction)[0]
@@ -73,7 +133,10 @@ class ExperimentalBreakthroughCurve:
 
         return int(indices[0])
 
-    def breakthrough_point(self, breakthrough_fraction=0.05):
+    def breakthrough_point(
+        self,
+        breakthrough_fraction: float = 0.05,
+    ) -> dict[str, str | float] | None:
         """Return the first breakthrough point."""
 
         index = self.breakthrough_index(breakthrough_fraction)
@@ -95,7 +158,7 @@ class ExperimentalBreakthroughCurve:
 
         return point
 
-    def summary_line(self, breakthrough_fraction=0.05):
+    def summary_line(self, breakthrough_fraction: float = 0.05) -> str:
         """Return a one-line summary for the chemical."""
 
         point = self.breakthrough_point(breakthrough_fraction)
@@ -107,17 +170,29 @@ class ExperimentalBreakthroughCurve:
         else:
             location = f"time={point['time']:.6g}"
 
+        if np.ndim(self.feed_concentration) == 0:
+            feed_concentration_summary = f"{self.feed_concentration:.6g}"
+        else:
+            feed_concentration_summary = (
+                f"mean={self.representative_feed_concentration:.6g}"
+            )
+
         return (
             f"{self.chemical_name}: "
             f"points={self.effluent_concentrations.size}, "
-            f"feed_concentration={self.feed_concentration:.6g}, "
+            f"feed_concentration={feed_concentration_summary}, "
             f"max_normalized_concentration="
             f"{np.max(self.normalized_concentrations):.6g}, "
             f"breakthrough={self.has_breakthrough(breakthrough_fraction)}, "
             f"breakthrough_location={location}"
         )
 
-    def plot(self, x_axis="bed_volume", save_path=None, show=True):
+    def plot(
+        self,
+        x_axis: str = "bed_volume",
+        save_path: str | Path | None = None,
+        show: bool = True,
+    ) -> None:
         """Plot C/C0 versus bed volume or time."""
 
         if x_axis == "bed_volume":

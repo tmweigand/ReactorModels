@@ -8,7 +8,7 @@ def _base_curve():
     feed_concentration = 10.0
     bed_volumes = np.array([1000.0, 2000.0, 3000.0, 4000.0])
     effluent_concentrations = np.array([0.0, 0.2, 0.8, 2.0])
-    return reactormodels.ExperimentalBreakthroughCurve(
+    return reactormodels.breakthrough_data(
         chemical_name=chemical_name,
         bed_volumes=bed_volumes,
         effluent_concentrations=effluent_concentrations,
