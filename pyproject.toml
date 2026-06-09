@@ -9,7 +9,6 @@ dependencies = [
   "scipy>=1.13",
   "scikits.odes",
     "matplotlib",
-    "scipy",
 ]
 
 

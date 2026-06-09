@@ -4,76 +4,79 @@ import numpy as np
 from scipy.optimize import curve_fit
 
 
+def langmuir(
+    concentrations: np.ndarray,
+    q_max: float,
+    K: float,
+) -> np.ndarray:
+    """Return sorbent concentrations for the Langmuir isotherm.
+
+    q = q_max * K * C / (1 + K * C)
+    """
+
+    return (q_max * K * concentrations) / (1 + K * concentrations)
+
+
+def linear(
+    concentrations: np.ndarray,
+    K: float,
+) -> np.ndarray:
+    """Return sorbent concentrations for the linear isotherm.
+
+    q = K * C
+    """
+
+    return K * concentrations
+
+
+def freundlich(
+    concentrations: np.ndarray,
+    K: float,
+    n: float,
+) -> np.ndarray:
+    """Return sorbent concentrations for the freundlich isotherm.
+
+    q = K * C**n
+    """
+
+    return K * concentrations**n
+
+
+def q(
+    concentrations: np.ndarray,
+    isotherm_type: str,
+    **parameters: float,
+) -> np.ndarray:
+    """Return sorbent concentrations for a selected isotherm model."""
+
+    if isotherm_type == "linear":
+        return linear(
+            concentrations=concentrations,
+            K=parameters["K"],
+        )
+
+    if isotherm_type == "freundlich":
+        return freundlich(
+            concentrations=concentrations,
+            K=parameters["K"],
+            n=parameters["n"],
+        )
+
+    if isotherm_type == "langmuir":
+        return langmuir(
+            concentrations=concentrations,
+            q_max=parameters["q_max"],
+            K=parameters["K"],
+        )
+
+    raise ValueError("isotherm_type must be 'linear', 'freundlich', or 'langmuir'.")
+
+
 class Isotherm:
     """Equilibrium isotherm models."""
 
-    def linear(
-        self,
-        concentrations: np.ndarray,
-        K: float,
-    ) -> np.ndarray:
-        """Return sorbent concentrations for the linear isotherm.
-
-        q = K * C
-        """
-
-        return K * concentrations
-
-    def freundlich(
-        self,
-        concentrations: np.ndarray,
-        K: float,
-        n: float,
-    ) -> np.ndarray:
-        """Return sorbent concentrations for the Freundlich isotherm.
-
-        q = K * C**n
-        """
-
-        return K * concentrations**n
-
-    def langmuir(
-        self,
-        concentrations: np.ndarray,
-        q_max: float,
-        K: float,
-    ) -> np.ndarray:
-        """Return sorbent concentrations for the Langmuir isotherm.
-
-        q = q_max * K * C / (1 + K * C)
-        """
-
-        return (q_max * K * concentrations) / (1 + K * concentrations)
-
-    def q(
-        self,
-        concentrations: np.ndarray,
-        isotherm_type: str,
-        **parameters: float,
-    ) -> np.ndarray:
-        """Return sorbent concentrations for a selected isotherm model."""
-
-        if isotherm_type == "linear":
-            return self.linear(
-                concentrations=concentrations,
-                K=parameters["K"],
-            )
-
-        if isotherm_type == "freundlich":
-            return self.freundlich(
-                concentrations=concentrations,
-                K=parameters["K"],
-                n=parameters["n"],
-            )
-
-        if isotherm_type == "langmuir":
-            return self.langmuir(
-                concentrations=concentrations,
-                q_max=parameters["q_max"],
-                K=parameters["K"],
-            )
-
-        raise ValueError("isotherm_type must be 'linear', 'freundlich', or 'langmuir'.")
+    def q(self, concentrations, isotherm_type, param):
+        pass
 
 
 def fit_isotherm_parameters(
@@ -111,7 +114,7 @@ def fit_isotherm_parameters(
     def model(
         concentrations: np.ndarray,
         *parameter_values: float,
-    ) -> np.ndarray:
+    ) -> None:
         parameters = dict(zip(parameter_names, parameter_values))
 
         return isotherm.q(
