@@ -2,7 +2,6 @@ from . import models
 from . import numerics
 from . import postprocess
 from .column_data import Column
-from .breakthrough_class import breakthrough_data
 from .Isotherm_class import fit_isotherm_parameters
 
 __all__ = [
@@ -10,6 +9,5 @@ __all__ = [
     "numerics",
     "postprocess",
     "Column",
-    "breakthrough_data",
     "Isotherm_class",
 ]
