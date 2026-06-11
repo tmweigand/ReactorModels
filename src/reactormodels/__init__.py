@@ -1,3 +1,5 @@
+"""__init__.py"""
+
 from . import models
 from . import numerics
 from . import postprocess

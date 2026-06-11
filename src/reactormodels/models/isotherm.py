@@ -98,10 +98,9 @@ def fit_isotherm(
     initial_guess : tuple[float, ...]
         Initial guess for the isotherm parameters.
 
-    Returns
-    -------
     Isotherm
         Fitted isotherm instance.
+
     """
     C = np.asarray(C, dtype=float)
     q = np.asarray(q, dtype=float)
