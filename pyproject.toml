@@ -8,6 +8,7 @@ dependencies = [
   "numpy<2.0",
   "scipy>=1.13",
   "scikits.odes",
+  "matplotlib>=3.0",
 ]
 
 
