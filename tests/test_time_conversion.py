@@ -2,6 +2,7 @@ import reactormodels
 import numpy as np
 import pytest
 
+
 def test_time_conversion_class():
 
     feed_concentrations = [101, 103]
@@ -15,11 +16,7 @@ def test_time_conversion_class():
     diameter = 0.2
     porosity = 0.4
 
-    column = reactormodels.Column(
-        length=length,
-        diameter=diameter,
-        porosity=porosity
-    )
+    column = reactormodels.Column(length=length, diameter=diameter, porosity=porosity)
 
     column_volume = column.column_volume()
 
@@ -30,9 +27,20 @@ def test_time_conversion_class():
         time=time,
         bed_volumes=bed_volumes,
         effluent_concentrations=effluent_concentrations,
-        flow_rate=flow_rate
+        flow_rate=flow_rate,
     )
 
-    print(breakthrough.summary(column_volume))
-    print(f"Converted bed volumes: {np.array2string(breakthrough.time_to_bed_volumes(column_volume), precision=3)}\n")
-    print(f"Converted time: {np.array2string(breakthrough.bed_volumes_to_time(column_volume), precision=3)}\n")
+    print(
+        f"Converted bed volumes: {np.array2string(breakthrough.time_to_bed_volumes(column_volume), precision=3)}\n"
+    )
+    print(
+        f"Converted time: {np.array2string(breakthrough.bed_volumes_to_time(column_volume), precision=3)}\n"
+    )
+
+    assert breakthrough.bed_volumes == pytest.approx(
+        breakthrough.time_to_bed_volumes(column_volume), abs=0.05
+    ), f"Failed: max error = {np.abs(breakthrough.bed_volumes - breakthrough.time_to_bed_volumes(column_volume)).max():.2e}"
+
+    assert breakthrough.time == pytest.approx(
+        breakthrough.bed_volumes_to_time(column_volume), abs=0.05
+    ), f"Failed: max error = {np.abs(breakthrough.time - breakthrough.bed_volumes_to_time(column_volume)).max():.2e}"

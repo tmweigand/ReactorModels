@@ -2,6 +2,7 @@ import reactormodels
 import numpy as np
 import pytest
 
+
 def test_breakthrough_class():
 
     feed_concentrations = [101, 103]
@@ -14,12 +15,9 @@ def test_breakthrough_class():
     length = 2
     diameter = 0.2
     porosity = 0.4
+    threshold = 0.2
 
-    column = reactormodels.Column(
-        length=length,
-        diameter=diameter,
-        porosity=porosity
-    )
+    column = reactormodels.Column(length=length, diameter=diameter, porosity=porosity)
 
     column_volume = column.column_volume()
 
@@ -30,7 +28,7 @@ def test_breakthrough_class():
         time=time,
         bed_volumes=bed_volumes,
         effluent_concentrations=effluent_concentrations,
-        flow_rate=flow_rate
+        flow_rate=flow_rate,
     )
 
-    print(breakthrough.summary(column_volume))
+    print(breakthrough.summary(column_volume, threshold))
