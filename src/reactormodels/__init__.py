@@ -1,4 +1,4 @@
-"""__init__.py"""
+"""ReactorModels package initialization."""
 
 from . import models
 from . import numerics
