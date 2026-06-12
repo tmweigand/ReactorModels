@@ -6,7 +6,7 @@ __all__ = [
     "FreundlichIsotherm",
     "DirichletBC",
     "DanckwertsBC",
-    "ogata_banks",
+    "AnalyticModels",
     "AdvectionDiffusion",
     "AdvectionDiffusionAdsorption",
 ]
@@ -14,6 +14,6 @@ __all__ = [
 from .adsorption_kinetics import AdsorptionKinetics
 from .isotherm import LinearIsotherm, FreundlichIsotherm
 from .boundary_conditions import DirichletBC, DanckwertsBC
-from .analytic_models import ogata_banks
+from .analytic_models import AnalyticModels
 from .advection_diffusion import AdvectionDiffusion
 from .advection_diffusion_adsorption import AdvectionDiffusionAdsorption
