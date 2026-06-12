@@ -1,28 +1,20 @@
 import reactormodels
-import numpy as np
-import pytest
 from pathlib import Path
+import numpy as np
+import matplotlib.pyplot as plt
 
-def test_breakthrough_plot_class():
 
+def run_demo(
+    show: bool = True, save_path: str | Path = "data_out/plot_breakthrough_demo.png"
+):
+    """Plot normalized breakthrough curves."""
     feed_concentrations = [101, 103]
     compound = "PFOA"
     water_matrix = "Surface_Water"
-    time = [0, 1.257, 2.513, 3.77, 5.027, 6.283, 7.54]
-    bed_volumes = [0, 100, 200, 300, 400, 500, 600]
-    effluent_concentrations = [0, 0, 10, 20, 80, 100, 100]
+    bed_volumes = [0, 100, 200, 250, 350, 400, 500, 600]
+    time = np.array(bed_volumes) * np.pi / 8
+    effluent_concentrations = [0, 0, 10, 15, 25, 80, 100, 100]
     flow_rate = 5
-    length = 2
-    diameter = 0.2
-    porosity = 0.4
-
-    column = reactormodels.Column(
-        length=length,
-        diameter=diameter,
-        porosity=porosity
-    )
-
-    column_volume = column.column_volume()
 
     breakthrough = reactormodels.Breakthrough(
         feed_concentrations=feed_concentrations,
@@ -31,11 +23,31 @@ def test_breakthrough_plot_class():
         time=time,
         bed_volumes=bed_volumes,
         effluent_concentrations=effluent_concentrations,
-        flow_rate=flow_rate
+        flow_rate=flow_rate,
     )
 
-    print(breakthrough.summary(column_volume))
+    plt.figure()
 
-    output_dir = Path(__file__).parent / "normalized_plots"
+    plt.plot(
+        breakthrough.bed_volumes, breakthrough.normalize_concentration(), marker="o"
+    )
 
-    breakthrough.plot_normalized_data(output_dir)
+    plt.xlabel("Bed Volumes")
+    plt.ylabel("C/C₀")
+    plt.title(f"{breakthrough.compound} - {breakthrough.water_matrix}")
+
+    save_path = Path(save_path)
+    save_path.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(save_path, dpi=150)
+    print(f"Saved plot to {save_path}")
+
+    if show:
+        plt.show()
+    else:
+        plt.close()
+
+    return plt
+
+
+if __name__ == "__main__":
+    run_demo()

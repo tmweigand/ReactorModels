@@ -2,16 +2,14 @@
 
 import numpy as np
 import math
-import matplotlib.pyplot as plt
-from pathlib import Path
-import pandas as pd
 
 
 class Breakthrough:
-    """Experimental breakthrough parameters."""
+    """Collect information from experimental breakthrough data.
 
-    """water_matrix: label for water that tested."""
-    """feed_concentrations: feed concentrations taken over duration of experiment."""
+    water_matrix: label for water that tested.
+    feed_concentrations: feed concentrations taken over duration of experiment.
+    """
 
     def __init__(
         self,
@@ -23,7 +21,6 @@ class Breakthrough:
         effluent_concentrations: np.ndarray,
         flow_rate: float,
     ):
-        assert compound is not None, "No compound provided"
 
         if bed_volumes is not None:
             assert np.all(np.isfinite(bed_volumes)), "Bed volume data contains NaN(s)"
@@ -88,22 +85,28 @@ class Breakthrough:
             bed_volumes = self.bed_volumes
         else:
             bed_volumes = self.time_to_bed_volumes(column_volume)
-        df = pd.DataFrame(
-            {
-                "bed_volumes": bed_volumes,
-                "normalized_concentrations": self.normalize_concentration(),
-            }
-        )
-        above_threshold = (df["normalized_concentrations"] >= threshold).idxmax()
 
-        bv_below = df.loc[above_threshold - 1, "bed_volumes"]
-        normal_below = df.loc[above_threshold - 1, "normalized_concentrations"]
+        concentrations = self.normalize_concentration()
 
-        bv_above = df.loc[above_threshold, "bed_volumes"]
-        normal_above = df.loc[above_threshold, "normalized_concentrations"]
+        mask = concentrations >= threshold
 
-        return bv_below + (threshold - normal_below) * (bv_above - bv_below) / (
-            normal_above - normal_below
+        if not np.any(mask):
+            raise ValueError(
+                f"Threshold {threshold} is never reached by the breakthrough curve."
+            )
+
+        above_idx = np.argmax(mask)
+        if above_idx == 0:
+            return bed_volumes[0]
+
+        bv_above = bed_volumes[above_idx]
+        c_above = concentrations[above_idx]
+
+        bv_below = bed_volumes[above_idx - 1]
+        c_below = concentrations[above_idx - 1]
+
+        return bv_below + (threshold - c_below) * (bv_above - bv_below) / (
+            c_above - c_below
         )
 
     def summary(self, column_volume: float, threshold: float) -> str:
@@ -123,21 +126,3 @@ class Breakthrough:
             f"Bed volumes to {100*threshold:.0f}% breakthrough: {bv_value:.1f}"
         )
         return summary
-
-    def plot_normalized_data(self, out_dir):
-        """Generate and save plots of normalized data."""
-        out_dir = Path(out_dir)
-        out_dir.mkdir(parents=True, exist_ok=True)
-
-        plt.figure()
-
-        plt.plot(self.bed_volumes, self.normalize_concentration(), marker="o")
-
-        plt.xlabel("Bed Volumes")
-        plt.ylabel("C/Co")
-        plt.title(f"{self.compound} - {self.water_matrix}")
-
-        plt.savefig(
-            out_dir / f"{self.compound} - {self.water_matrix}.png", bbox_inches="tight"
-        )
-        plt.close()
