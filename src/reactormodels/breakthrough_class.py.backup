@@ -30,13 +30,15 @@ class breakthrough_data:
         if self.effluent_concentrations.size == 0:
             raise ValueError("effluent_concentrations cannot be empty.")
 
-        if np.any(self.feed_concentration <= 0):
-            raise ValueError("feed_concentration must be greater than zero.")
-
-        if np.ndim(self.feed_concentration) > 0:
-            feed_concentration = self.feed_concentration_array
+        feed_concentration = self.feed_concentration
+        if isinstance(feed_concentration, np.ndarray):
             if feed_concentration.size == 0:
                 raise ValueError("feed_concentration cannot be empty.")
+
+            if np.any(feed_concentration <= 0):
+                raise ValueError("feed_concentration must be greater than zero.")
+        elif feed_concentration <= 0:
+            raise ValueError("feed_concentration must be greater than zero.")
 
         if self.times is None and self.bed_volumes is None:
             raise ValueError("Either times or bed_volumes must be provided.")
@@ -53,8 +55,7 @@ class breakthrough_data:
                     "bed_volumes and effluent_concentrations must have the same shape."
                 )
 
-        if np.ndim(self.feed_concentration) > 0:
-            feed_concentration = self.feed_concentration_array
+        if isinstance(feed_concentration, np.ndarray):
             if (
                 feed_concentration.size != 1
                 and feed_concentration.shape != self.effluent_concentrations.shape
@@ -65,25 +66,19 @@ class breakthrough_data:
                 )
 
     @property
-    def feed_concentration_array(self) -> np.ndarray:
-        """Return feed concentration as a NumPy array."""
-        return np.asarray(self.feed_concentration)
-
-    @property
     def representative_feed_concentration(self) -> float:
         """Return a representative feed concentration value."""
-        if np.ndim(self.feed_concentration) == 0:
+        if not isinstance(self.feed_concentration, np.ndarray):
             return float(self.feed_concentration)
 
-        return float(np.mean(self.feed_concentration_array))
+        return float(np.mean(self.feed_concentration))
 
     @property
     def normalized_concentrations(self) -> np.ndarray:
         """Return normalized effluent concentrations, C/C0."""
-        if np.ndim(self.feed_concentration) == 0:
-            return self.effluent_concentrations / self.feed_concentration
-
-        feed_concentration = self.feed_concentration_array
+        feed_concentration = self.feed_concentration
+        if not isinstance(feed_concentration, np.ndarray):
+            return self.effluent_concentrations / feed_concentration
 
         if feed_concentration.shape == self.effluent_concentrations.shape:
             return self.effluent_concentrations / feed_concentration
@@ -143,17 +138,17 @@ class breakthrough_data:
         if index is None:
             return None
 
-        point: dict[str, str | float] = {
+        point = {
             "chemical_name": self.chemical_name,
-            "effluent_concentration": float(self.effluent_concentrations[index]),
-            "normalized_concentration": float(self.normalized_concentrations[index]),
+            "effluent_concentration": self.effluent_concentrations[index],
+            "normalized_concentration": self.normalized_concentrations[index],
         }
 
         if self.times is not None:
-            point["time"] = float(self.times[index])
+            point["time"] = self.times[index]
 
         if self.bed_volumes is not None:
-            point["bed_volume"] = float(self.bed_volumes[index])
+            point["bed_volume"] = self.bed_volumes[index]
 
         return point
 
@@ -168,12 +163,12 @@ class breakthrough_data:
         else:
             location = f"time={point['time']:.6g}"
 
-        if np.ndim(self.feed_concentration) == 0:
-            feed_concentration_summary = f"{self.feed_concentration:.6g}"
-        else:
+        if isinstance(self.feed_concentration, np.ndarray):
             feed_concentration_summary = (
                 f"mean={self.representative_feed_concentration:.6g}"
             )
+        else:
+            feed_concentration_summary = f"{self.feed_concentration:.6g}"
 
         return (
             f"{self.chemical_name}: "
