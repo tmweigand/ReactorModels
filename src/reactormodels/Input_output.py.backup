@@ -1,0 +1,40 @@
+"""input & output data file."""
+
+import os
+import numpy as np
+import openpyxl
+
+Raw_data_file = ""
+
+
+def load_input_output_file(Raw_data_file):
+    """Function should load the input file and return a numpy array
+    whether it is
+    csv,
+    txt,
+    or .xlsx
+    type of files
+    """  # noqa: D205, D401
+    _, ext = os.path.splitext(Raw_data_file.lower())
+
+    if ext == ".csv":
+        return np.loadtxt(Raw_data_file, delimiter=",", dtype=None, encoding="utf-8")
+
+    elif ext == ".txt":
+        return np.loadtxt(
+            Raw_data_file, delimiter=None, dtype=None, encoding="utf-8"
+        )  # noqa: E501
+
+    elif ext in [".xlsx", ".xlsm", ".xls"]:
+        wb = openpyxl.load_workbook(Raw_data_file, data_only=True)
+        sheet = wb.active
+
+        data = []
+        for row in sheet.filter_rows(values_only=True):
+            if any(cell is not None for cell in row):
+                data.append(list(row))
+
+        return np.array(data, dtype=object)
+
+    else:
+        raise ValueError(f"Unsupported extension: {ext}")
