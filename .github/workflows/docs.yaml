@@ -25,6 +25,18 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Install SUNDIALS and Fortran Compiler (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install gcc sundials
+          echo "/opt/homebrew/bin" >> $GITHUB_PATH
+
+          GFORTRAN_BIN="$(find "$(brew --prefix gcc)/bin" -name 'gfortran-*' | head -n 1)"
+          ln -sf "$GFORTRAN_BIN" /opt/homebrew/bin/gfortran
+
+          which gfortran
+          gfortran --version
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
