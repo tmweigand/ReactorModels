@@ -31,18 +31,15 @@ templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 # -- LaTeX / imgmath configuration
-
+_sty_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "latex"))
 
 imgmath_latex_preamble = r"""
 \usepackage{amsmath}
-% Prevent amsthm from pre-defining \proof before ctmmath-v3 loads,
-% by letting ctmmath own the definition cleanly.
 \makeatletter
 \let\proof\relax
 \let\endproof\relax
 \makeatother
-\usepackage{ctmmath-v3}
-"""
+""" + f"\\makeatletter\\input{{{_sty_dir}/ctmmath-v3.sty}}\\makeatother"
 
 
 # Optional tweaks
