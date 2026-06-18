@@ -166,15 +166,6 @@ class breakthrough_data:
         """Return removal efficiency information over bed volume or time.
         The function also returns the bed volume or time corresponding to
         every efficiency_step percentage, such as every 10%.
-
-        Parameters
-        ----------
-        x_axis:
-            Use bed_volume or time.
-
-        efficiency_step:
-            Percent step size for reporting x-axis locations.
-            Default is 10.
         """  # noqa: D205
         if x_axis == "bed_volume":
             if self.bed_volumes is None:
@@ -206,18 +197,14 @@ class breakthrough_data:
         max_removal_efficiency = float(removal_efficiencies[max_efficiency_index])
         x_at_max_efficiency = float(x_values[max_efficiency_index])
 
-        # Sort by x-axis value before interpolation.
         sort_indices = np.argsort(x_values)
         sorted_x_values = x_values[sort_indices]
         sorted_removal_efficiencies = removal_efficiencies[sort_indices]
 
-        # Keep only the range from the minimum x-value to the point of max efficiency.
         selected_mask = sorted_x_values <= x_at_max_efficiency
         selected_x_values = sorted_x_values[selected_mask]
         selected_removal_efficiencies = sorted_removal_efficiencies[selected_mask]
 
-        # For interpolation, removal efficiency should be increasing.
-        # If repeated efficiency values exist, keep the first occurrence.
         unique_efficiencies, unique_indices = np.unique(
             selected_removal_efficiencies,
             return_index=True,
