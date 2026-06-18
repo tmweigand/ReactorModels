@@ -30,6 +30,11 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Install LaTeX
+        run: |
+            brew install --cask mactex-no-gui
+            echo "/Library/TeX/texbin" >> $GITHUB_PATH
+
       - name: Install SUNDIALS and Fortran Compiler (macOS)
         if: runner.os == 'macOS'
         run: |
