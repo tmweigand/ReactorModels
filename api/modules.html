@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="reactormodels package" href="reactormodels.html" />
-    <link rel="prev" title="ReactorModels documentation" href="../index.html" /> 
+    <link rel="prev" title="Model Development" href="../model_development/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -42,7 +42,10 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../model_development/index.html">Model Development</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">reactormodels</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="reactormodels.html">reactormodels package</a></li>
@@ -79,35 +82,63 @@
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="reactormodels.html">reactormodels package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="reactormodels.html#reactormodels.Column"><code class="docutils literal notranslate"><span class="pre">Column</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.html#reactormodels.Column.cross_section_area"><code class="docutils literal notranslate"><span class="pre">Column.cross_section_area()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.html#reactormodels.Column.column_volume"><code class="docutils literal notranslate"><span class="pre">Column.column_volume()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.html#reactormodels.Column.superficial_velocity"><code class="docutils literal notranslate"><span class="pre">Column.superficial_velocity()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.html#reactormodels.Column.interstitial_velocity"><code class="docutils literal notranslate"><span class="pre">Column.interstitial_velocity()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.html#reactormodels.Column.get_bulk_density"><code class="docutils literal notranslate"><span class="pre">Column.get_bulk_density()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.html#reactormodels.Column.total_porosity"><code class="docutils literal notranslate"><span class="pre">Column.total_porosity()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.html#reactormodels.Column.peclet"><code class="docutils literal notranslate"><span class="pre">Column.peclet()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="reactormodels.html#subpackages">Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html">reactormodels.models package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.AdsorptionKinetics"><code class="docutils literal notranslate"><span class="pre">AdsorptionKinetics</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.LinearIsotherm"><code class="docutils literal notranslate"><span class="pre">LinearIsotherm</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.FreundlichIsotherm"><code class="docutils literal notranslate"><span class="pre">FreundlichIsotherm</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.InletBC"><code class="docutils literal notranslate"><span class="pre">InletBC</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.DirichletBC"><code class="docutils literal notranslate"><span class="pre">DirichletBC</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.DanckwertsBC"><code class="docutils literal notranslate"><span class="pre">DanckwertsBC</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.ogata_banks"><code class="docutils literal notranslate"><span class="pre">ogata_banks()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.AdvectionDiffusion1D"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusion1D</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption1D"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusionAdsorption1D</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption1D_two"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusionAdsorption1D_two</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.AdvectionDiffusion"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusion</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusionAdsorption</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#module-reactormodels.models.adsorption_kinetics">reactormodels.models.adsorption_kinetics module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#module-reactormodels.models.advection_diffusion">reactormodels.models.advection_diffusion module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#module-reactormodels.models.advection_diffusion_adsorption">reactormodels.models.advection_diffusion_adsorption module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#module-reactormodels.models.advection_diffusion_adsorption_two">reactormodels.models.advection_diffusion_adsorption_two module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#module-reactormodels.models.analytic_models">reactormodels.models.analytic_models module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#module-reactormodels.models.boundary_conditions">reactormodels.models.boundary_conditions module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#module-reactormodels.models.isotherm">reactormodels.models.isotherm module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="reactormodels.numerics.html">reactormodels.numerics package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation"><code class="docutils literal notranslate"><span class="pre">OrthogonalCollocation</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.NumericsConfig"><code class="docutils literal notranslate"><span class="pre">NumericsConfig</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.TimeIntegrator"><code class="docutils literal notranslate"><span class="pre">TimeIntegrator</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#module-reactormodels.numerics.config">reactormodels.numerics.config module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#module-reactormodels.numerics.orthogonal_collocation">reactormodels.numerics.orthogonal_collocation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#module-reactormodels.numerics.time_integrator">reactormodels.numerics.time_integrator module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="reactormodels.postprocess.html">reactormodels.postprocess package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.postprocess.html#reactormodels.postprocess.MassBalance"><code class="docutils literal notranslate"><span class="pre">MassBalance</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.postprocess.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.postprocess.html#module-reactormodels.postprocess.mass_balance">reactormodels.postprocess.mass_balance module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="reactormodels.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reactormodels.html#module-reactormodels.column_data">reactormodels.column_data module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.html#reactormodels.column_data.Column"><code class="docutils literal notranslate"><span class="pre">Column</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.html#reactormodels.column_data.Column.cross_section_area"><code class="docutils literal notranslate"><span class="pre">Column.cross_section_area()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.html#reactormodels.column_data.Column.column_volume"><code class="docutils literal notranslate"><span class="pre">Column.column_volume()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.html#reactormodels.column_data.Column.superficial_velocity"><code class="docutils literal notranslate"><span class="pre">Column.superficial_velocity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.html#reactormodels.column_data.Column.interstitial_velocity"><code class="docutils literal notranslate"><span class="pre">Column.interstitial_velocity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.html#reactormodels.column_data.Column.get_bulk_density"><code class="docutils literal notranslate"><span class="pre">Column.get_bulk_density()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.html#reactormodels.column_data.Column.total_porosity"><code class="docutils literal notranslate"><span class="pre">Column.total_porosity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.html#reactormodels.column_data.Column.peclet"><code class="docutils literal notranslate"><span class="pre">Column.peclet()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -122,7 +153,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../index.html" class="btn btn-neutral float-left" title="ReactorModels documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../model_development/index.html" class="btn btn-neutral float-left" title="Model Development" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="reactormodels.html" class="btn btn-neutral float-right" title="reactormodels package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

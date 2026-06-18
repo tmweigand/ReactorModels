@@ -42,14 +42,32 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../model_development/index.html">Model Development</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">reactormodels</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">reactormodels package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#reactormodels.Column"><code class="docutils literal notranslate"><span class="pre">Column</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#reactormodels.Column.cross_section_area"><code class="docutils literal notranslate"><span class="pre">Column.cross_section_area()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#reactormodels.Column.column_volume"><code class="docutils literal notranslate"><span class="pre">Column.column_volume()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#reactormodels.Column.superficial_velocity"><code class="docutils literal notranslate"><span class="pre">Column.superficial_velocity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#reactormodels.Column.interstitial_velocity"><code class="docutils literal notranslate"><span class="pre">Column.interstitial_velocity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#reactormodels.Column.get_bulk_density"><code class="docutils literal notranslate"><span class="pre">Column.get_bulk_density()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#reactormodels.Column.total_porosity"><code class="docutils literal notranslate"><span class="pre">Column.total_porosity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#reactormodels.Column.peclet"><code class="docutils literal notranslate"><span class="pre">Column.peclet()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html">reactormodels.models package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html">reactormodels.numerics package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.postprocess.html">reactormodels.postprocess package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-reactormodels.column_data">reactormodels.column_data module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#reactormodels.column_data.Column"><code class="docutils literal notranslate"><span class="pre">Column</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -86,6 +104,57 @@
   <section id="module-reactormodels">
 <span id="reactormodels-package"></span><h1>reactormodels package<a class="headerlink" href="#module-reactormodels" title="Link to this heading"></a></h1>
 <p>ReactorModels package initialization.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.Column">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.</span></span><span class="sig-name descname"><span class="pre">Column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">porosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bulk_density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_porosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diameter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/column_data.html#Column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.Column" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Packed bed column parameters.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.Column.cross_section_area">
+<span class="sig-name descname"><span class="pre">cross_section_area</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/column_data.html#Column.cross_section_area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.Column.cross_section_area" title="Link to this definition"></a></dt>
+<dd><p>Cross-sectional area of the column.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.Column.column_volume">
+<span class="sig-name descname"><span class="pre">column_volume</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/column_data.html#Column.column_volume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.Column.column_volume" title="Link to this definition"></a></dt>
+<dd><p>Total column volume.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.Column.superficial_velocity">
+<span class="sig-name descname"><span class="pre">superficial_velocity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/column_data.html#Column.superficial_velocity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.Column.superficial_velocity" title="Link to this definition"></a></dt>
+<dd><p>Superficial velocity v = Q / A.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.Column.interstitial_velocity">
+<span class="sig-name descname"><span class="pre">interstitial_velocity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/column_data.html#Column.interstitial_velocity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.Column.interstitial_velocity" title="Link to this definition"></a></dt>
+<dd><p>Interstitial velocity u = Q / (A * porosity).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.Column.get_bulk_density">
+<span class="sig-name descname"><span class="pre">get_bulk_density</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/column_data.html#Column.get_bulk_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.Column.get_bulk_density" title="Link to this definition"></a></dt>
+<dd><p>Bulk density rho_b = (1 - porosity) * particle_density.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.Column.total_porosity">
+<span class="sig-name descname"><span class="pre">total_porosity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/column_data.html#Column.total_porosity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.Column.total_porosity" title="Link to this definition"></a></dt>
+<dd><p>Total porosity = porosity + (1 - porosity) * particle_porosity.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.Column.peclet">
+<span class="sig-name descname"><span class="pre">peclet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/column_data.html#Column.peclet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.Column.peclet" title="Link to this definition"></a></dt>
+<dd><p>Axial Peclet number Pe = v * L / (porosity * diffusion).</p>
+<p>Pe &gt;&gt; 1: advection dominated.
+Pe &lt;&lt; 1: diffusion dominated.</p>
+</dd></dl>
+
+</dd></dl>
+
 <section id="subpackages">
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
 <div class="toctree-wrapper compound">
@@ -108,29 +177,25 @@
 <li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.FreundlichIsotherm.d2q_dC2"><code class="docutils literal notranslate"><span class="pre">FreundlichIsotherm.d2q_dC2()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.InletBC"><code class="docutils literal notranslate"><span class="pre">InletBC</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.InletBC.DIRICHLET"><code class="docutils literal notranslate"><span class="pre">InletBC.DIRICHLET</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.InletBC.DANCKWERTS"><code class="docutils literal notranslate"><span class="pre">InletBC.DANCKWERTS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.DirichletBC"><code class="docutils literal notranslate"><span class="pre">DirichletBC</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.DirichletBC.apply"><code class="docutils literal notranslate"><span class="pre">DirichletBC.apply()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.DirichletBC.residual"><code class="docutils literal notranslate"><span class="pre">DirichletBC.residual()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.DirichletBC.jacobian_row"><code class="docutils literal notranslate"><span class="pre">DirichletBC.jacobian_row()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.DanckwertsBC"><code class="docutils literal notranslate"><span class="pre">DanckwertsBC</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.DanckwertsBC.apply"><code class="docutils literal notranslate"><span class="pre">DanckwertsBC.apply()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.DanckwertsBC.residual"><code class="docutils literal notranslate"><span class="pre">DanckwertsBC.residual()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.DanckwertsBC.jacobian_row"><code class="docutils literal notranslate"><span class="pre">DanckwertsBC.jacobian_row()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.ogata_banks"><code class="docutils literal notranslate"><span class="pre">ogata_banks()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.AdvectionDiffusion1D"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusion1D</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.AdvectionDiffusion1D.rhs"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusion1D.rhs()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.AdvectionDiffusion1D.jacobian"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusion1D.jacobian()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.AdvectionDiffusion1D.solve"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusion1D.solve()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.AdvectionDiffusion"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusion</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.AdvectionDiffusion.solve"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusion.solve()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption1D"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusionAdsorption1D</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption1D.rhs"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusionAdsorption1D.rhs()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption1D.jacobian"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusionAdsorption1D.jacobian()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption1D.jacobian_ivp"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusionAdsorption1D.jacobian_ivp()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption1D.solve"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusionAdsorption1D.solve()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption1D_two"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusionAdsorption1D_two</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption1D_two.initial_state"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusionAdsorption1D_two.initial_state()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption1D_two.rhs"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusionAdsorption1D_two.rhs()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption1D_two.solve"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusionAdsorption1D_two.solve()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusionAdsorption</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption.solve"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusionAdsorption.solve()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="reactormodels.models.html#submodules">Submodules</a></li>
@@ -143,38 +208,40 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="reactormodels.models.html#module-reactormodels.models.advection_diffusion">reactormodels.models.advection_diffusion module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.advection_diffusion.ogata_banks"><code class="docutils literal notranslate"><span class="pre">ogata_banks()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.advection_diffusion.AdvectionDiffusion1D"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusion1D</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.advection_diffusion.AdvectionDiffusion1D.rhs"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusion1D.rhs()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.advection_diffusion.AdvectionDiffusion1D.jacobian"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusion1D.jacobian()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.advection_diffusion.AdvectionDiffusion1D.solve"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusion1D.solve()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.advection_diffusion.AdvectionDiffusion"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusion</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.advection_diffusion.AdvectionDiffusion.solve"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusion.solve()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="reactormodels.models.html#module-reactormodels.models.advection_diffusion_adsorption">reactormodels.models.advection_diffusion_adsorption module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption1D"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusionAdsorption1D</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption1D.rhs"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusionAdsorption1D.rhs()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption1D.jacobian"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusionAdsorption1D.jacobian()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption1D.jacobian_ivp"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusionAdsorption1D.jacobian_ivp()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption1D.solve"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusionAdsorption1D.solve()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusionAdsorption</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption.solve"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusionAdsorption.solve()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="reactormodels.models.html#module-reactormodels.models.advection_diffusion_adsorption_two">reactormodels.models.advection_diffusion_adsorption_two module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.advection_diffusion_adsorption_two.AdvectionDiffusionAdsorption1D_two"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusionAdsorption1D_two</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.advection_diffusion_adsorption_two.AdvectionDiffusionAdsorption1D_two.initial_state"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusionAdsorption1D_two.initial_state()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.advection_diffusion_adsorption_two.AdvectionDiffusionAdsorption1D_two.rhs"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusionAdsorption1D_two.rhs()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.advection_diffusion_adsorption_two.AdvectionDiffusionAdsorption1D_two.solve"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusionAdsorption1D_two.solve()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="reactormodels.models.html#module-reactormodels.models.analytic_models">reactormodels.models.analytic_models module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.analytic_models.ogata_banks"><code class="docutils literal notranslate"><span class="pre">ogata_banks()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="reactormodels.models.html#module-reactormodels.models.boundary_conditions">reactormodels.models.boundary_conditions module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.boundary_conditions.InletBC"><code class="docutils literal notranslate"><span class="pre">InletBC</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.boundary_conditions.InletBC.DIRICHLET"><code class="docutils literal notranslate"><span class="pre">InletBC.DIRICHLET</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.boundary_conditions.InletBC.DANCKWERTS"><code class="docutils literal notranslate"><span class="pre">InletBC.DANCKWERTS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.boundary_conditions.InletBC.apply"><code class="docutils literal notranslate"><span class="pre">InletBC.apply()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.boundary_conditions.InletBC.residual"><code class="docutils literal notranslate"><span class="pre">InletBC.residual()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.boundary_conditions.InletBC.jacobian_row"><code class="docutils literal notranslate"><span class="pre">InletBC.jacobian_row()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.boundary_conditions.DirichletBC"><code class="docutils literal notranslate"><span class="pre">DirichletBC</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.boundary_conditions.DirichletBC.apply"><code class="docutils literal notranslate"><span class="pre">DirichletBC.apply()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.boundary_conditions.DirichletBC.residual"><code class="docutils literal notranslate"><span class="pre">DirichletBC.residual()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.boundary_conditions.DirichletBC.jacobian_row"><code class="docutils literal notranslate"><span class="pre">DirichletBC.jacobian_row()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.boundary_conditions.DanckwertsBC"><code class="docutils literal notranslate"><span class="pre">DanckwertsBC</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.boundary_conditions.DanckwertsBC.apply"><code class="docutils literal notranslate"><span class="pre">DanckwertsBC.apply()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.boundary_conditions.DanckwertsBC.residual"><code class="docutils literal notranslate"><span class="pre">DanckwertsBC.residual()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.boundary_conditions.DanckwertsBC.jacobian_row"><code class="docutils literal notranslate"><span class="pre">DanckwertsBC.jacobian_row()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -198,23 +265,52 @@
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.isotherm.LinearIsotherm.d2q_dC2"><code class="docutils literal notranslate"><span class="pre">LinearIsotherm.d2q_dC2()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.isotherm.fit_isotherm"><code class="docutils literal notranslate"><span class="pre">fit_isotherm()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="reactormodels.numerics.html">reactormodels.numerics package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation"><code class="docutils literal notranslate"><span class="pre">OrthogonalCollocation</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation.jacobi_roots"><code class="docutils literal notranslate"><span class="pre">OrthogonalCollocation.jacobi_roots()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation.jacobi_roots_and_weights"><code class="docutils literal notranslate"><span class="pre">OrthogonalCollocation.jacobi_roots_and_weights()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation.lagrange_basis_and_deriv"><code class="docutils literal notranslate"><span class="pre">OrthogonalCollocation.lagrange_basis_and_deriv()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation.radial_operator"><code class="docutils literal notranslate"><span class="pre">OrthogonalCollocation.radial_operator()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation.evaluate_gradient"><code class="docutils literal notranslate"><span class="pre">OrthogonalCollocation.evaluate_gradient()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation.evaluate_second_derivative"><code class="docutils literal notranslate"><span class="pre">OrthogonalCollocation.evaluate_second_derivative()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation.integrate"><code class="docutils literal notranslate"><span class="pre">OrthogonalCollocation.integrate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.NumericsConfig"><code class="docutils literal notranslate"><span class="pre">NumericsConfig</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.NumericsConfig.integrate"><code class="docutils literal notranslate"><span class="pre">NumericsConfig.integrate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.TimeIntegrator"><code class="docutils literal notranslate"><span class="pre">TimeIntegrator</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.TimeIntegrator.integrate_ida"><code class="docutils literal notranslate"><span class="pre">TimeIntegrator.integrate_ida()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="reactormodels.numerics.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reactormodels.numerics.html#module-reactormodels.numerics.config">reactormodels.numerics.config module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.config.NumericsConfig"><code class="docutils literal notranslate"><span class="pre">NumericsConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.config.NumericsConfig.integrate"><code class="docutils literal notranslate"><span class="pre">NumericsConfig.integrate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="reactormodels.numerics.html#module-reactormodels.numerics.orthogonal_collocation">reactormodels.numerics.orthogonal_collocation module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation"><code class="docutils literal notranslate"><span class="pre">OrthogonalCollocation</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation.jacobi_roots"><code class="docutils literal notranslate"><span class="pre">OrthogonalCollocation.jacobi_roots()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation.jacobi_roots_and_weights"><code class="docutils literal notranslate"><span class="pre">OrthogonalCollocation.jacobi_roots_and_weights()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation.lagrange_basis_and_deriv"><code class="docutils literal notranslate"><span class="pre">OrthogonalCollocation.lagrange_basis_and_deriv()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation.radial_operator"><code class="docutils literal notranslate"><span class="pre">OrthogonalCollocation.radial_operator()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation.evaluate_gradient"><code class="docutils literal notranslate"><span class="pre">OrthogonalCollocation.evaluate_gradient()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation.evaluate_second_derivative"><code class="docutils literal notranslate"><span class="pre">OrthogonalCollocation.evaluate_second_derivative()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation.integrate"><code class="docutils literal notranslate"><span class="pre">OrthogonalCollocation.integrate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="reactormodels.numerics.html#module-reactormodels.numerics.time_integrator">reactormodels.numerics.time_integrator module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.time_integrator.TimeIntegrator"><code class="docutils literal notranslate"><span class="pre">TimeIntegrator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.time_integrator.TimeIntegrator.integrate_ida"><code class="docutils literal notranslate"><span class="pre">TimeIntegrator.integrate_ida()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -276,6 +372,64 @@
 </li>
 </ul>
 </div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-reactormodels.column_data">
+<span id="reactormodels-column-data-module"></span><h2>reactormodels.column_data module<a class="headerlink" href="#module-reactormodels.column_data" title="Link to this heading"></a></h2>
+<p>column_data.py</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.column_data.Column">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.column_data.</span></span><span class="sig-name descname"><span class="pre">Column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">porosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bulk_density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_porosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diameter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/column_data.html#Column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.column_data.Column" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Packed bed column parameters.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.column_data.Column.cross_section_area">
+<span class="sig-name descname"><span class="pre">cross_section_area</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/column_data.html#Column.cross_section_area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.column_data.Column.cross_section_area" title="Link to this definition"></a></dt>
+<dd><p>Cross-sectional area of the column.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.column_data.Column.column_volume">
+<span class="sig-name descname"><span class="pre">column_volume</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/column_data.html#Column.column_volume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.column_data.Column.column_volume" title="Link to this definition"></a></dt>
+<dd><p>Total column volume.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.column_data.Column.superficial_velocity">
+<span class="sig-name descname"><span class="pre">superficial_velocity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/column_data.html#Column.superficial_velocity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.column_data.Column.superficial_velocity" title="Link to this definition"></a></dt>
+<dd><p>Superficial velocity v = Q / A.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.column_data.Column.interstitial_velocity">
+<span class="sig-name descname"><span class="pre">interstitial_velocity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/column_data.html#Column.interstitial_velocity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.column_data.Column.interstitial_velocity" title="Link to this definition"></a></dt>
+<dd><p>Interstitial velocity u = Q / (A * porosity).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.column_data.Column.get_bulk_density">
+<span class="sig-name descname"><span class="pre">get_bulk_density</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/column_data.html#Column.get_bulk_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.column_data.Column.get_bulk_density" title="Link to this definition"></a></dt>
+<dd><p>Bulk density rho_b = (1 - porosity) * particle_density.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.column_data.Column.total_porosity">
+<span class="sig-name descname"><span class="pre">total_porosity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/column_data.html#Column.total_porosity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.column_data.Column.total_porosity" title="Link to this definition"></a></dt>
+<dd><p>Total porosity = porosity + (1 - porosity) * particle_porosity.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.column_data.Column.peclet">
+<span class="sig-name descname"><span class="pre">peclet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/column_data.html#Column.peclet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.column_data.Column.peclet" title="Link to this definition"></a></dt>
+<dd><p>Axial Peclet number Pe = v * L / (porosity * diffusion).</p>
+<p>Pe &gt;&gt; 1: advection dominated.
+Pe &lt;&lt; 1: diffusion dominated.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 </section>
 

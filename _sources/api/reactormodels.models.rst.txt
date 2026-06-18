@@ -33,10 +33,10 @@ reactormodels.models.advection\_diffusion\_adsorption module
    :show-inheritance:
    :undoc-members:
 
-reactormodels.models.advection\_diffusion\_adsorption\_two module
------------------------------------------------------------------
+reactormodels.models.analytic\_models module
+--------------------------------------------
 
-.. automodule:: reactormodels.models.advection_diffusion_adsorption_two
+.. automodule:: reactormodels.models.analytic_models
    :members:
    :show-inheritance:
    :undoc-members:

@@ -15,3 +15,14 @@ Subpackages
    reactormodels.models
    reactormodels.numerics
    reactormodels.postprocess
+
+Submodules
+----------
+
+reactormodels.column\_data module
+---------------------------------
+
+.. automodule:: reactormodels.column_data
+   :members:
+   :show-inheritance:
+   :undoc-members:

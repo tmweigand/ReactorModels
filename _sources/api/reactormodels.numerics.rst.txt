@@ -9,10 +9,26 @@ reactormodels.numerics package
 Submodules
 ----------
 
+reactormodels.numerics.config module
+------------------------------------
+
+.. automodule:: reactormodels.numerics.config
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 reactormodels.numerics.orthogonal\_collocation module
 -----------------------------------------------------
 
 .. automodule:: reactormodels.numerics.orthogonal_collocation
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+reactormodels.numerics.time\_integrator module
+----------------------------------------------
+
+.. automodule:: reactormodels.numerics.time_integrator
    :members:
    :show-inheritance:
    :undoc-members:

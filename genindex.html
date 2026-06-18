@@ -39,7 +39,10 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="model_development/index.html">Model Development</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api/modules.html">reactormodels</a></li>
 </ul>
@@ -77,10 +80,12 @@
  | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
+ | <a href="#G"><strong>G</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#J"><strong>J</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
+ | <a href="#N"><strong>N</strong></a>
  | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#Q"><strong>Q</strong></a>
@@ -100,24 +105,30 @@
         <li><a href="api/reactormodels.models.html#reactormodels.models.adsorption_kinetics.AdsorptionKinetics">(class in reactormodels.models.adsorption_kinetics)</a>
 </li>
       </ul></li>
-      <li><a href="api/reactormodels.models.html#reactormodels.models.AdvectionDiffusion1D">AdvectionDiffusion1D (class in reactormodels.models)</a>
+      <li><a href="api/reactormodels.models.html#reactormodels.models.AdvectionDiffusion">AdvectionDiffusion (class in reactormodels.models)</a>
 
       <ul>
-        <li><a href="api/reactormodels.models.html#reactormodels.models.advection_diffusion.AdvectionDiffusion1D">(class in reactormodels.models.advection_diffusion)</a>
+        <li><a href="api/reactormodels.models.html#reactormodels.models.advection_diffusion.AdvectionDiffusion">(class in reactormodels.models.advection_diffusion)</a>
+</li>
+      </ul></li>
+      <li><a href="api/reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption">AdvectionDiffusionAdsorption (class in reactormodels.models)</a>
+
+      <ul>
+        <li><a href="api/reactormodels.models.html#reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption">(class in reactormodels.models.advection_diffusion_adsorption)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption1D">AdvectionDiffusionAdsorption1D (class in reactormodels.models)</a>
+      <li><a href="api/reactormodels.models.html#reactormodels.models.boundary_conditions.DanckwertsBC.apply">apply() (reactormodels.models.boundary_conditions.DanckwertsBC method)</a>
 
       <ul>
-        <li><a href="api/reactormodels.models.html#reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption1D">(class in reactormodels.models.advection_diffusion_adsorption)</a>
+        <li><a href="api/reactormodels.models.html#reactormodels.models.boundary_conditions.DirichletBC.apply">(reactormodels.models.boundary_conditions.DirichletBC method)</a>
 </li>
-      </ul></li>
-      <li><a href="api/reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption1D_two">AdvectionDiffusionAdsorption1D_two (class in reactormodels.models)</a>
-
-      <ul>
-        <li><a href="api/reactormodels.models.html#reactormodels.models.advection_diffusion_adsorption_two.AdvectionDiffusionAdsorption1D_two">(class in reactormodels.models.advection_diffusion_adsorption_two)</a>
+        <li><a href="api/reactormodels.models.html#reactormodels.models.boundary_conditions.InletBC.apply">(reactormodels.models.boundary_conditions.InletBC method)</a>
+</li>
+        <li><a href="api/reactormodels.models.html#reactormodels.models.DanckwertsBC.apply">(reactormodels.models.DanckwertsBC method)</a>
+</li>
+        <li><a href="api/reactormodels.models.html#reactormodels.models.DirichletBC.apply">(reactormodels.models.DirichletBC method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -150,12 +161,30 @@
         <li><a href="api/reactormodels.postprocess.html#reactormodels.postprocess.MassBalance.C_in">(reactormodels.postprocess.MassBalance attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/reactormodels.postprocess.html#reactormodels.postprocess.mass_balance.MassBalance.C_outlet_history">C_outlet_history (reactormodels.postprocess.mass_balance.MassBalance attribute)</a>
 
       <ul>
         <li><a href="api/reactormodels.postprocess.html#reactormodels.postprocess.MassBalance.C_outlet_history">(reactormodels.postprocess.MassBalance attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/reactormodels.html#reactormodels.Column">Column (class in reactormodels)</a>
+
+      <ul>
+        <li><a href="api/reactormodels.html#reactormodels.column_data.Column">(class in reactormodels.column_data)</a>
+</li>
+      </ul></li>
+      <li><a href="api/reactormodels.html#reactormodels.Column.column_volume">column_volume() (reactormodels.Column method)</a>
+
+      <ul>
+        <li><a href="api/reactormodels.html#reactormodels.column_data.Column.column_volume">(reactormodels.column_data.Column method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/reactormodels.html#reactormodels.Column.cross_section_area">cross_section_area() (reactormodels.Column method)</a>
+
+      <ul>
+        <li><a href="api/reactormodels.html#reactormodels.column_data.Column.cross_section_area">(reactormodels.column_data.Column method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -176,18 +205,18 @@
         <li><a href="api/reactormodels.models.html#reactormodels.models.LinearIsotherm.d2q_dC2">(reactormodels.models.LinearIsotherm method)</a>
 </li>
       </ul></li>
-      <li><a href="api/reactormodels.models.html#reactormodels.models.boundary_conditions.InletBC.DANCKWERTS">DANCKWERTS (reactormodels.models.boundary_conditions.InletBC attribute)</a>
+      <li><a href="api/reactormodels.models.html#reactormodels.models.DanckwertsBC">DanckwertsBC (class in reactormodels.models)</a>
 
       <ul>
-        <li><a href="api/reactormodels.models.html#reactormodels.models.InletBC.DANCKWERTS">(reactormodels.models.InletBC attribute)</a>
+        <li><a href="api/reactormodels.models.html#reactormodels.models.boundary_conditions.DanckwertsBC">(class in reactormodels.models.boundary_conditions)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/reactormodels.models.html#reactormodels.models.boundary_conditions.InletBC.DIRICHLET">DIRICHLET (reactormodels.models.boundary_conditions.InletBC attribute)</a>
+      <li><a href="api/reactormodels.models.html#reactormodels.models.DirichletBC">DirichletBC (class in reactormodels.models)</a>
 
       <ul>
-        <li><a href="api/reactormodels.models.html#reactormodels.models.InletBC.DIRICHLET">(reactormodels.models.InletBC attribute)</a>
+        <li><a href="api/reactormodels.models.html#reactormodels.models.boundary_conditions.DirichletBC">(class in reactormodels.models.boundary_conditions)</a>
 </li>
       </ul></li>
       <li><a href="api/reactormodels.models.html#reactormodels.models.FreundlichIsotherm.dq_dC">dq_dC() (reactormodels.models.FreundlichIsotherm method)</a>
@@ -214,12 +243,28 @@
         <li><a href="api/reactormodels.postprocess.html#reactormodels.postprocess.MassBalance.error">(reactormodels.postprocess.MassBalance property)</a>
 </li>
       </ul></li>
+      <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation.evaluate_gradient">evaluate_gradient() (reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation method)</a>
+
+      <ul>
+        <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation.evaluate_gradient">(reactormodels.numerics.OrthogonalCollocation method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation.evaluate_second_derivative">evaluate_second_derivative() (reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation method)</a>
+
+      <ul>
+        <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation.evaluate_second_derivative">(reactormodels.numerics.OrthogonalCollocation method)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/reactormodels.models.html#reactormodels.models.isotherm.fit_isotherm">fit_isotherm() (in module reactormodels.models.isotherm)</a>
+</li>
       <li><a href="api/reactormodels.models.html#reactormodels.models.FreundlichIsotherm">FreundlichIsotherm (class in reactormodels.models)</a>
 
       <ul>
@@ -237,23 +282,47 @@
   </ul></td>
 </tr></table>
 
+<h2 id="G">G</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/reactormodels.html#reactormodels.Column.get_bulk_density">get_bulk_density() (reactormodels.Column method)</a>
+
+      <ul>
+        <li><a href="api/reactormodels.html#reactormodels.column_data.Column.get_bulk_density">(reactormodels.column_data.Column method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/reactormodels.models.html#reactormodels.models.advection_diffusion_adsorption_two.AdvectionDiffusionAdsorption1D_two.initial_state">initial_state() (reactormodels.models.advection_diffusion_adsorption_two.AdvectionDiffusionAdsorption1D_two method)</a>
+      <li><a href="api/reactormodels.models.html#reactormodels.models.boundary_conditions.InletBC">InletBC (class in reactormodels.models.boundary_conditions)</a>
+</li>
+      <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.config.NumericsConfig.integrate">integrate() (reactormodels.numerics.config.NumericsConfig method)</a>
 
       <ul>
-        <li><a href="api/reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption1D_two.initial_state">(reactormodels.models.AdvectionDiffusionAdsorption1D_two method)</a>
+        <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.NumericsConfig.integrate">(reactormodels.numerics.NumericsConfig method)</a>
+</li>
+        <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation.integrate">(reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation method)</a>
+</li>
+        <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation.integrate">(reactormodels.numerics.OrthogonalCollocation method)</a>
 </li>
       </ul></li>
-      <li><a href="api/reactormodels.models.html#reactormodels.models.InletBC">InletBC (class in reactormodels.models)</a>
+      <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.time_integrator.TimeIntegrator.integrate_ida">integrate_ida() (reactormodels.numerics.time_integrator.TimeIntegrator method)</a>
 
       <ul>
-        <li><a href="api/reactormodels.models.html#reactormodels.models.boundary_conditions.InletBC">(class in reactormodels.models.boundary_conditions)</a>
+        <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.TimeIntegrator.integrate_ida">(reactormodels.numerics.TimeIntegrator method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/reactormodels.html#reactormodels.Column.interstitial_velocity">interstitial_velocity() (reactormodels.Column method)</a>
+
+      <ul>
+        <li><a href="api/reactormodels.html#reactormodels.column_data.Column.interstitial_velocity">(reactormodels.column_data.Column method)</a>
+</li>
+      </ul></li>
       <li><a href="api/reactormodels.postprocess.html#reactormodels.postprocess.mass_balance.MassBalance.is_balanced">is_balanced() (reactormodels.postprocess.mass_balance.MassBalance method)</a>
 
       <ul>
@@ -268,28 +337,22 @@
 <h2 id="J">J</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation.jacobi_roots">jacobi_roots() (reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation method)</a>
+      <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation.jacobi_roots_and_weights">jacobi_roots_and_weights() (reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation method)</a>
 
       <ul>
-        <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation.jacobi_roots">(reactormodels.numerics.OrthogonalCollocation method)</a>
+        <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation.jacobi_roots_and_weights">(reactormodels.numerics.OrthogonalCollocation method)</a>
 </li>
       </ul></li>
-      <li><a href="api/reactormodels.models.html#reactormodels.models.advection_diffusion.AdvectionDiffusion1D.jacobian">jacobian() (reactormodels.models.advection_diffusion.AdvectionDiffusion1D method)</a>
+      <li><a href="api/reactormodels.models.html#reactormodels.models.boundary_conditions.DanckwertsBC.jacobian_row">jacobian_row() (reactormodels.models.boundary_conditions.DanckwertsBC method)</a>
 
       <ul>
-        <li><a href="api/reactormodels.models.html#reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption1D.jacobian">(reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption1D method)</a>
+        <li><a href="api/reactormodels.models.html#reactormodels.models.boundary_conditions.DirichletBC.jacobian_row">(reactormodels.models.boundary_conditions.DirichletBC method)</a>
 </li>
-        <li><a href="api/reactormodels.models.html#reactormodels.models.AdvectionDiffusion1D.jacobian">(reactormodels.models.AdvectionDiffusion1D method)</a>
+        <li><a href="api/reactormodels.models.html#reactormodels.models.boundary_conditions.InletBC.jacobian_row">(reactormodels.models.boundary_conditions.InletBC method)</a>
 </li>
-        <li><a href="api/reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption1D.jacobian">(reactormodels.models.AdvectionDiffusionAdsorption1D method)</a>
+        <li><a href="api/reactormodels.models.html#reactormodels.models.DanckwertsBC.jacobian_row">(reactormodels.models.DanckwertsBC method)</a>
 </li>
-      </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/reactormodels.models.html#reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption1D.jacobian_ivp">jacobian_ivp() (reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption1D method)</a>
-
-      <ul>
-        <li><a href="api/reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption1D.jacobian_ivp">(reactormodels.models.AdvectionDiffusionAdsorption1D method)</a>
+        <li><a href="api/reactormodels.models.html#reactormodels.models.DirichletBC.jacobian_row">(reactormodels.models.DirichletBC method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -366,13 +429,13 @@
         <li><a href="api/reactormodels.postprocess.html#reactormodels.postprocess.mass_balance.MassBalance">(class in reactormodels.postprocess.mass_balance)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     module
 
       <ul>
         <li><a href="api/reactormodels.html#module-reactormodels">reactormodels</a>
+</li>
+        <li><a href="api/reactormodels.html#module-reactormodels.column_data">reactormodels.column_data</a>
 </li>
         <li><a href="api/reactormodels.models.html#module-reactormodels.models">reactormodels.models</a>
 </li>
@@ -382,7 +445,7 @@
 </li>
         <li><a href="api/reactormodels.models.html#module-reactormodels.models.advection_diffusion_adsorption">reactormodels.models.advection_diffusion_adsorption</a>
 </li>
-        <li><a href="api/reactormodels.models.html#module-reactormodels.models.advection_diffusion_adsorption_two">reactormodels.models.advection_diffusion_adsorption_two</a>
+        <li><a href="api/reactormodels.models.html#module-reactormodels.models.analytic_models">reactormodels.models.analytic_models</a>
 </li>
         <li><a href="api/reactormodels.models.html#module-reactormodels.models.boundary_conditions">reactormodels.models.boundary_conditions</a>
 </li>
@@ -390,11 +453,27 @@
 </li>
         <li><a href="api/reactormodels.numerics.html#module-reactormodels.numerics">reactormodels.numerics</a>
 </li>
+        <li><a href="api/reactormodels.numerics.html#module-reactormodels.numerics.config">reactormodels.numerics.config</a>
+</li>
         <li><a href="api/reactormodels.numerics.html#module-reactormodels.numerics.orthogonal_collocation">reactormodels.numerics.orthogonal_collocation</a>
+</li>
+        <li><a href="api/reactormodels.numerics.html#module-reactormodels.numerics.time_integrator">reactormodels.numerics.time_integrator</a>
 </li>
         <li><a href="api/reactormodels.postprocess.html#module-reactormodels.postprocess">reactormodels.postprocess</a>
 </li>
         <li><a href="api/reactormodels.postprocess.html#module-reactormodels.postprocess.mass_balance">reactormodels.postprocess.mass_balance</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.NumericsConfig">NumericsConfig (class in reactormodels.numerics)</a>
+
+      <ul>
+        <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.config.NumericsConfig">(class in reactormodels.numerics.config)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -406,7 +485,7 @@
       <li><a href="api/reactormodels.models.html#reactormodels.models.ogata_banks">ogata_banks() (in module reactormodels.models)</a>
 
       <ul>
-        <li><a href="api/reactormodels.models.html#reactormodels.models.advection_diffusion.ogata_banks">(in module reactormodels.models.advection_diffusion)</a>
+        <li><a href="api/reactormodels.models.html#reactormodels.models.analytic_models.ogata_banks">(in module reactormodels.models.analytic_models)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -422,6 +501,14 @@
 
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/reactormodels.html#reactormodels.Column.peclet">peclet() (reactormodels.Column method)</a>
+
+      <ul>
+        <li><a href="api/reactormodels.html#reactormodels.column_data.Column.peclet">(reactormodels.column_data.Column method)</a>
+</li>
+      </ul></li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/reactormodels.postprocess.html#reactormodels.postprocess.mass_balance.MassBalance.porosity">porosity (reactormodels.postprocess.mass_balance.MassBalance attribute)</a>
 
@@ -473,6 +560,13 @@
 </li>
       </ul></li>
       <li>
+    reactormodels.column_data
+
+      <ul>
+        <li><a href="api/reactormodels.html#module-reactormodels.column_data">module</a>
+</li>
+      </ul></li>
+      <li>
     reactormodels.models
 
       <ul>
@@ -501,10 +595,10 @@
 </li>
       </ul></li>
       <li>
-    reactormodels.models.advection_diffusion_adsorption_two
+    reactormodels.models.analytic_models
 
       <ul>
-        <li><a href="api/reactormodels.models.html#module-reactormodels.models.advection_diffusion_adsorption_two">module</a>
+        <li><a href="api/reactormodels.models.html#module-reactormodels.models.analytic_models">module</a>
 </li>
       </ul></li>
       <li>
@@ -531,10 +625,24 @@
 </li>
       </ul></li>
       <li>
+    reactormodels.numerics.config
+
+      <ul>
+        <li><a href="api/reactormodels.numerics.html#module-reactormodels.numerics.config">module</a>
+</li>
+      </ul></li>
+      <li>
     reactormodels.numerics.orthogonal_collocation
 
       <ul>
         <li><a href="api/reactormodels.numerics.html#module-reactormodels.numerics.orthogonal_collocation">module</a>
+</li>
+      </ul></li>
+      <li>
+    reactormodels.numerics.time_integrator
+
+      <ul>
+        <li><a href="api/reactormodels.numerics.html#module-reactormodels.numerics.time_integrator">module</a>
 </li>
       </ul></li>
       <li>
@@ -557,18 +665,16 @@
         <li><a href="api/reactormodels.postprocess.html#reactormodels.postprocess.MassBalance.relative_error">(reactormodels.postprocess.MassBalance property)</a>
 </li>
       </ul></li>
-      <li><a href="api/reactormodels.models.html#reactormodels.models.advection_diffusion.AdvectionDiffusion1D.rhs">rhs() (reactormodels.models.advection_diffusion.AdvectionDiffusion1D method)</a>
+      <li><a href="api/reactormodels.models.html#reactormodels.models.boundary_conditions.DanckwertsBC.residual">residual() (reactormodels.models.boundary_conditions.DanckwertsBC method)</a>
 
       <ul>
-        <li><a href="api/reactormodels.models.html#reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption1D.rhs">(reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption1D method)</a>
+        <li><a href="api/reactormodels.models.html#reactormodels.models.boundary_conditions.DirichletBC.residual">(reactormodels.models.boundary_conditions.DirichletBC method)</a>
 </li>
-        <li><a href="api/reactormodels.models.html#reactormodels.models.advection_diffusion_adsorption_two.AdvectionDiffusionAdsorption1D_two.rhs">(reactormodels.models.advection_diffusion_adsorption_two.AdvectionDiffusionAdsorption1D_two method)</a>
+        <li><a href="api/reactormodels.models.html#reactormodels.models.boundary_conditions.InletBC.residual">(reactormodels.models.boundary_conditions.InletBC method)</a>
 </li>
-        <li><a href="api/reactormodels.models.html#reactormodels.models.AdvectionDiffusion1D.rhs">(reactormodels.models.AdvectionDiffusion1D method)</a>
+        <li><a href="api/reactormodels.models.html#reactormodels.models.DanckwertsBC.residual">(reactormodels.models.DanckwertsBC method)</a>
 </li>
-        <li><a href="api/reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption1D.rhs">(reactormodels.models.AdvectionDiffusionAdsorption1D method)</a>
-</li>
-        <li><a href="api/reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption1D_two.rhs">(reactormodels.models.AdvectionDiffusionAdsorption1D_two method)</a>
+        <li><a href="api/reactormodels.models.html#reactormodels.models.DirichletBC.residual">(reactormodels.models.DirichletBC method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -577,18 +683,14 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/reactormodels.models.html#reactormodels.models.advection_diffusion.AdvectionDiffusion1D.solve">solve() (reactormodels.models.advection_diffusion.AdvectionDiffusion1D method)</a>
+      <li><a href="api/reactormodels.models.html#reactormodels.models.advection_diffusion.AdvectionDiffusion.solve">solve() (reactormodels.models.advection_diffusion.AdvectionDiffusion method)</a>
 
       <ul>
-        <li><a href="api/reactormodels.models.html#reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption1D.solve">(reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption1D method)</a>
+        <li><a href="api/reactormodels.models.html#reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption.solve">(reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption method)</a>
 </li>
-        <li><a href="api/reactormodels.models.html#reactormodels.models.advection_diffusion_adsorption_two.AdvectionDiffusionAdsorption1D_two.solve">(reactormodels.models.advection_diffusion_adsorption_two.AdvectionDiffusionAdsorption1D_two method)</a>
+        <li><a href="api/reactormodels.models.html#reactormodels.models.AdvectionDiffusion.solve">(reactormodels.models.AdvectionDiffusion method)</a>
 </li>
-        <li><a href="api/reactormodels.models.html#reactormodels.models.AdvectionDiffusion1D.solve">(reactormodels.models.AdvectionDiffusion1D method)</a>
-</li>
-        <li><a href="api/reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption1D.solve">(reactormodels.models.AdvectionDiffusionAdsorption1D method)</a>
-</li>
-        <li><a href="api/reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption1D_two.solve">(reactormodels.models.AdvectionDiffusionAdsorption1D_two method)</a>
+        <li><a href="api/reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption.solve">(reactormodels.models.AdvectionDiffusionAdsorption method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -597,6 +699,12 @@
 
       <ul>
         <li><a href="api/reactormodels.postprocess.html#reactormodels.postprocess.MassBalance.summary">(reactormodels.postprocess.MassBalance method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/reactormodels.html#reactormodels.Column.superficial_velocity">superficial_velocity() (reactormodels.Column method)</a>
+
+      <ul>
+        <li><a href="api/reactormodels.html#reactormodels.column_data.Column.superficial_velocity">(reactormodels.column_data.Column method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -611,12 +719,24 @@
         <li><a href="api/reactormodels.postprocess.html#reactormodels.postprocess.MassBalance.t">(reactormodels.postprocess.MassBalance attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/reactormodels.postprocess.html#reactormodels.postprocess.mass_balance.MassBalance.t_history">t_history (reactormodels.postprocess.mass_balance.MassBalance attribute)</a>
 
       <ul>
         <li><a href="api/reactormodels.postprocess.html#reactormodels.postprocess.MassBalance.t_history">(reactormodels.postprocess.MassBalance attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.TimeIntegrator">TimeIntegrator (class in reactormodels.numerics)</a>
+
+      <ul>
+        <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.time_integrator.TimeIntegrator">(class in reactormodels.numerics.time_integrator)</a>
+</li>
+      </ul></li>
+      <li><a href="api/reactormodels.html#reactormodels.Column.total_porosity">total_porosity() (reactormodels.Column method)</a>
+
+      <ul>
+        <li><a href="api/reactormodels.html#reactormodels.column_data.Column.total_porosity">(reactormodels.column_data.Column method)</a>
 </li>
       </ul></li>
   </ul></td>

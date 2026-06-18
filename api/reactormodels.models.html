@@ -42,16 +42,22 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../model_development/index.html">Model Development</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">reactormodels</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="reactormodels.html">reactormodels package</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.html#reactormodels.Column"><code class="docutils literal notranslate"><span class="pre">Column</span></code></a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="reactormodels.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l4 current"><a class="current reference internal" href="#">reactormodels.models package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html">reactormodels.numerics package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.postprocess.html">reactormodels.postprocess package</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.html#module-reactormodels.column_data">reactormodels.column_data module</a></li>
 </ul>
 </li>
 </ul>
@@ -116,19 +122,19 @@
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="reactormodels.models.LinearIsotherm.q">
-<span class="sig-name descname"><span class="pre">q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LinearIsotherm.q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.LinearIsotherm.q" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LinearIsotherm.q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.LinearIsotherm.q" title="Link to this definition"></a></dt>
 <dd><p>Return sorbed mass concentration</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="reactormodels.models.LinearIsotherm.dq_dC">
-<span class="sig-name descname"><span class="pre">dq_dC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LinearIsotherm.dq_dC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.LinearIsotherm.dq_dC" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">dq_dC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LinearIsotherm.dq_dC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.LinearIsotherm.dq_dC" title="Link to this definition"></a></dt>
 <dd><p>Calculate the derivative of sorbed mass concentration by concentration.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="reactormodels.models.LinearIsotherm.d2q_dC2">
-<span class="sig-name descname"><span class="pre">d2q_dC2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LinearIsotherm.d2q_dC2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.LinearIsotherm.d2q_dC2" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">d2q_dC2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LinearIsotherm.d2q_dC2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.LinearIsotherm.d2q_dC2" title="Link to this definition"></a></dt>
 <dd><p>Calculate the second derivative.</p>
 </dd></dl>
 
@@ -142,218 +148,130 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>K</strong> (<em>float</em>) – Freundlich capacity factor  [mg/g / (mg/L)^(1/n)]</p></li>
-<li><p><strong>n</strong> (<em>float</em>) – Freundlich intensity factor (n &gt;= 1 → favorable).</p></li>
+<li><p><strong>K</strong> (<em>float</em>) – Freundlich capacity factor</p></li>
+<li><p><strong>n</strong> (<em>float</em>) – Freundlich intensity factor.</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="reactormodels.models.FreundlichIsotherm.q">
-<span class="sig-name descname"><span class="pre">q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#FreundlichIsotherm.q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.FreundlichIsotherm.q" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#FreundlichIsotherm.q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.FreundlichIsotherm.q" title="Link to this definition"></a></dt>
 <dd><p>Return sorbed mass concentration</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="reactormodels.models.FreundlichIsotherm.dq_dC">
-<span class="sig-name descname"><span class="pre">dq_dC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#FreundlichIsotherm.dq_dC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.FreundlichIsotherm.dq_dC" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">dq_dC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#FreundlichIsotherm.dq_dC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.FreundlichIsotherm.dq_dC" title="Link to this definition"></a></dt>
 <dd><p>Calculate the derivative of sorbed mass concentration by concentration.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="reactormodels.models.FreundlichIsotherm.d2q_dC2">
-<span class="sig-name descname"><span class="pre">d2q_dC2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#FreundlichIsotherm.d2q_dC2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.FreundlichIsotherm.d2q_dC2" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">d2q_dC2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#FreundlichIsotherm.d2q_dC2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.FreundlichIsotherm.d2q_dC2" title="Link to this definition"></a></dt>
 <dd><p>Calculate the second derivative.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="reactormodels.models.InletBC">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.</span></span><span class="sig-name descname"><span class="pre">InletBC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/boundary_conditions.html#InletBC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.InletBC" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
-<p>Inlet boundary condition specification.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="reactormodels.models.InletBC.DIRICHLET">
-<span class="sig-name descname"><span class="pre">DIRICHLET</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></span><a class="headerlink" href="#reactormodels.models.InletBC.DIRICHLET" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="reactormodels.models.DirichletBC">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.</span></span><span class="sig-name descname"><span class="pre">DirichletBC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inlet_concentration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/boundary_conditions.html#DirichletBC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.DirichletBC" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#reactormodels.models.boundary_conditions.InletBC" title="reactormodels.models.boundary_conditions.InletBC"><code class="xref py py-class docutils literal notranslate"><span class="pre">InletBC</span></code></a></p>
+<p>Dirichlet inlet boundary condition.</p>
+<dl class="simple">
+<dt>Enforces a fixed inlet concentration:</dt><dd><p>C(0, t) = C_in</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.DirichletBC.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gradient_concentration_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/boundary_conditions.html#DirichletBC.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.DirichletBC.apply" title="Link to this definition"></a></dt>
+<dd><p>Return the value on the boundary</p>
+</dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="reactormodels.models.InletBC.DANCKWERTS">
-<span class="sig-name descname"><span class="pre">DANCKWERTS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></span><a class="headerlink" href="#reactormodels.models.InletBC.DANCKWERTS" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.DirichletBC.residual">
+<span class="sig-name descname"><span class="pre">residual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">concentration_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient_concentration_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/boundary_conditions.html#DirichletBC.residual"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.DirichletBC.residual" title="Link to this definition"></a></dt>
+<dd><p>Compute the residual at inlet boundary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.DirichletBC.jacobian_row">
+<span class="sig-name descname"><span class="pre">jacobian_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A_row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/boundary_conditions.html#DirichletBC.jacobian_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.DirichletBC.jacobian_row" title="Link to this definition"></a></dt>
+<dd><p>dF/dC: residual = C[0] - C_in, so only the C[0] entry is non-zero.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.models.DanckwertsBC">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.</span></span><span class="sig-name descname"><span class="pre">DanckwertsBC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inlet_concentration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/boundary_conditions.html#DanckwertsBC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.DanckwertsBC" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#reactormodels.models.boundary_conditions.InletBC" title="reactormodels.models.boundary_conditions.InletBC"><code class="xref py py-class docutils literal notranslate"><span class="pre">InletBC</span></code></a></p>
+<p>Danckwerts (flux-conserving) inlet boundary condition.</p>
+<dl class="simple">
+<dt>Governing equation:</dt><dd><p>v*C_in = v*C(0) - DL*(dC/dx)|_0</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.DanckwertsBC.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gradient_concentration_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/boundary_conditions.html#DanckwertsBC.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.DanckwertsBC.apply" title="Link to this definition"></a></dt>
+<dd><p>Return the value on the boundary</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.DanckwertsBC.residual">
+<span class="sig-name descname"><span class="pre">residual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">concentration_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient_concentration_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/boundary_conditions.html#DanckwertsBC.residual"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.DanckwertsBC.residual" title="Link to this definition"></a></dt>
+<dd><p>Compute the residual at inlet boundary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.DanckwertsBC.jacobian_row">
+<span class="sig-name descname"><span class="pre">jacobian_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A_row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/boundary_conditions.html#DanckwertsBC.jacobian_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.DanckwertsBC.jacobian_row" title="Link to this definition"></a></dt>
+<dd><p>dF/dC: residual = v*(C_in - C[0]) + D*(A[0,:] &#64; C).</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="reactormodels.models.ogata_banks">
-<span class="sig-prename descclassname"><span class="pre">reactormodels.models.</span></span><span class="sig-name descname"><span class="pre">ogata_banks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion.html#ogata_banks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.ogata_banks" title="Link to this definition"></a></dt>
-<dd><p>Analytical solution for 1D advection-diffusion with step input.</p>
-<dl class="simple">
-<dt>Uses erfcx (scaled erfc) to avoid overflow at high Peclet numbers:</dt><dd><p>exp(Pe) * erfc(arg2) = erfcx(arg2) * exp(Pe - arg2^2)</p>
-</dd>
-</dl>
-<p>which stays finite when exp(Pe) would overflow.</p>
+<span class="sig-prename descclassname"><span class="pre">reactormodels.models.</span></span><span class="sig-name descname"><span class="pre">ogata_banks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inlet_concentration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/analytic_models.html#ogata_banks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.ogata_banks" title="Link to this definition"></a></dt>
+<dd><p>Ogata Banks solution for 1D advection-diffusion with step input.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="reactormodels.models.AdvectionDiffusion1D">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.</span></span><span class="sig-name descname"><span class="pre">AdvectionDiffusion1D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain_length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orthogonal_collocation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation" title="reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation"><span class="pre">OrthogonalCollocation</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">inlet_bc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#reactormodels.models.boundary_conditions.InletBC" title="reactormodels.models.boundary_conditions.InletBC"><span class="pre">InletBC</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">InletBC.DIRICHLET</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion.html#AdvectionDiffusion1D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.AdvectionDiffusion1D" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="reactormodels.models.AdvectionDiffusion">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.</span></span><span class="sig-name descname"><span class="pre">AdvectionDiffusion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="reactormodels.html#reactormodels.column_data.Column" title="reactormodels.column_data.Column"><span class="pre">Column</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">inlet_concentration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_concentration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numerics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.config.NumericsConfig" title="reactormodels.numerics.config.NumericsConfig"><span class="pre">NumericsConfig</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">inlet_bc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#reactormodels.models.boundary_conditions.InletBC" title="reactormodels.models.boundary_conditions.InletBC"><span class="pre">InletBC</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">&lt;class</span> <span class="pre">'reactormodels.models.boundary_conditions.DirichletBC'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion.html#AdvectionDiffusion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.AdvectionDiffusion" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>One-dimensional advection diffusion equation.</p>
+<p>Advection-diffusion model.</p>
 <dl class="simple">
-<dt>Solves</dt><dd><p>dC/dt + v*dC/dx = D*d2C/dx2 on [0, L]</p>
-</dd>
-</dl>
-<p>using orthogonal collocation.</p>
-<dl class="simple">
-<dt>Inlet boundary conditions (inlet_bc):</dt><dd><p>DIRICHLET  : C(0, t) = C_in  (default)
-DANCKWERTS : v*C_in = v*C(0) - D*(dC/dx)|_0  (flux-conserving)</p>
-</dd>
-<dt>Outlet boundary condition:</dt><dd><p>dC/dx(L, t) = 0  (Neumann, zero-gradient)</p>
+<dt>Governing equation:</dt><dd><p>dC/dt + v * dC/dx - D * d2C/dx2 = 0</p>
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="reactormodels.models.AdvectionDiffusion1D.rhs">
-<span class="sig-name descname"><span class="pre">rhs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_in</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion.html#AdvectionDiffusion1D.rhs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.AdvectionDiffusion1D.rhs" title="Link to this definition"></a></dt>
-<dd><p>ODE rhs.</p>
-<p>DIRICHLET : C is (N,) including inlet; C[0] row is zeroed.
-DANCKWERTS: C is (N-1,) interior+outlet; C[0] recovered each call.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="reactormodels.models.AdvectionDiffusion1D.jacobian">
-<span class="sig-name descname"><span class="pre">jacobian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C_in</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion.html#AdvectionDiffusion1D.jacobian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.AdvectionDiffusion1D.jacobian" title="Link to this definition"></a></dt>
-<dd><p>Analytic Jacobian of rhs w.r.t. the state vector.</p>
-<p>DIRICHLET : (N, N) with inlet row zeroed.
-DANCKWERTS: (N-1, N-1) reduced system with C[0] eliminated.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="reactormodels.models.AdvectionDiffusion1D.solve">
-<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_eval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion.html#AdvectionDiffusion1D.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.AdvectionDiffusion1D.solve" title="Link to this definition"></a></dt>
-<dd><p>Solves the governing equation.</p>
+<dt class="sig sig-object py" id="reactormodels.models.AdvectionDiffusion.solve">
+<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_eval</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion.html#AdvectionDiffusion.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.AdvectionDiffusion.solve" title="Link to this definition"></a></dt>
+<dd><p>Integrate from t_span[0] to t_span[1], returning results at t_eval.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="reactormodels.models.AdvectionDiffusionAdsorption1D">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.</span></span><span class="sig-name descname"><span class="pre">AdvectionDiffusionAdsorption1D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isotherm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#reactormodels.models.isotherm.Isotherm" title="reactormodels.models.isotherm.Isotherm"><span class="pre">Isotherm</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bulk_density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">porosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orthogonal_collocation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation" title="reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation"><span class="pre">OrthogonalCollocation</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">upwind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion_adsorption.html#AdvectionDiffusionAdsorption1D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.AdvectionDiffusionAdsorption1D" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Solve the advection-diffusion-adsorption equation on [0, L]:</p>
-<blockquote>
-<div><p>R(C) * dC/dt + v/eps * dC/dx = D * d2C/dx2</p>
-</div></blockquote>
-<p>where R(C) = 1 + (rho_b/eps) * dq*/dC  is the retardation factor.</p>
-<p>Assumes local equilibrium (q = q*(C) instantaneously).</p>
-<dl class="simple">
-<dt>Boundary conditions:</dt><dd><p>C(0, t) = C_in   (Dirichlet inlet)
-dC/dx(L, t) = 0  (Neumann outlet)</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>domain_length</strong> (<em>float   L</em><em> [</em><em>m</em><em>]</em>)</p></li>
-<li><p><strong>velocity</strong> (<em>float   pore velocity v</em><em> [</em><em>m/s</em><em>]</em>)</p></li>
-<li><p><strong>diffusion</strong> (<em>float   dispersion coefficient D</em><em> [</em><em>m^2/s</em><em>]</em>)</p></li>
-<li><p><strong>isotherm</strong> (<a class="reference internal" href="#reactormodels.models.isotherm.Isotherm" title="reactormodels.models.isotherm.Isotherm"><em>Isotherm</em></a>)</p></li>
-<li><p><strong>bulk_density</strong> (<em>float   rho_b</em><em> [</em><em>kg/m^3</em><em>]</em>)</p></li>
-<li><p><strong>porosity</strong> (<em>float   eps</em><em> [</em><em>-</em><em>]</em>)</p></li>
-<li><p><strong>orthogonal_collocation</strong> (<a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation" title="reactormodels.numerics.OrthogonalCollocation"><em>OrthogonalCollocation</em></a>)</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="reactormodels.models.AdvectionDiffusionAdsorption1D.rhs">
-<span class="sig-name descname"><span class="pre">rhs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_in</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion_adsorption.html#AdvectionDiffusionAdsorption1D.rhs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.AdvectionDiffusionAdsorption1D.rhs" title="Link to this definition"></a></dt>
-<dd><p>Right hand side.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="reactormodels.models.AdvectionDiffusionAdsorption1D.jacobian">
-<span class="sig-name descname"><span class="pre">jacobian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion_adsorption.html#AdvectionDiffusionAdsorption1D.jacobian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.AdvectionDiffusionAdsorption1D.jacobian" title="Link to this definition"></a></dt>
-<dd><p>Analytic Jacobian d(rhs)/dC.</p>
-<dl class="simple">
-<dt>For nonlinear isotherm R depends on C, so by quotient rule:</dt><dd><p>d/dC [ (adv+diff)/R ] = (d(adv+diff)/dC * R - (adv+diff) * dR/dC) / R^2</p>
-</dd>
-</dl>
-<p>dR/dC = (rho_b/eps) * d2q*/dC2  (diagonal matrix)
-d(adv+diff)/dC = -v/eps * A + D * B  (the linear operator)</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="reactormodels.models.AdvectionDiffusionAdsorption1D.jacobian_ivp">
-<span class="sig-name descname"><span class="pre">jacobian_ivp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion_adsorption.html#AdvectionDiffusionAdsorption1D.jacobian_ivp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.AdvectionDiffusionAdsorption1D.jacobian_ivp" title="Link to this definition"></a></dt>
-<dd><p>Adapter with solve_ivp Jacobian signature jac(t, y).</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="reactormodels.models.AdvectionDiffusionAdsorption1D.solve">
-<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_eval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_in</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_init</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion_adsorption.html#AdvectionDiffusionAdsorption1D.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.AdvectionDiffusionAdsorption1D.solve" title="Link to this definition"></a></dt>
-<dd><p>Solve the governing equation.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="reactormodels.models.AdvectionDiffusionAdsorption1D_two">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.</span></span><span class="sig-name descname"><span class="pre">AdvectionDiffusionAdsorption1D_two</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dispersion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isotherm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#reactormodels.models.isotherm.Isotherm" title="reactormodels.models.isotherm.Isotherm"><span class="pre">Isotherm</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bulk_density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">porosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation" title="reactormodels.numerics.OrthogonalCollocation"><span class="pre">OrthogonalCollocation</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#reactormodels.models.AdsorptionKinetics" title="reactormodels.models.AdsorptionKinetics"><span class="pre">AdsorptionKinetics</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">AdsorptionKinetics.LOCAL_EQUILIBRIUM</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k_ldf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inlet_bc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#reactormodels.models.InletBC" title="reactormodels.models.InletBC"><span class="pre">InletBC</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">InletBC.DANCKWERTS</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion_adsorption_two.html#AdvectionDiffusionAdsorption1D_two"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.AdvectionDiffusionAdsorption1D_two" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="reactormodels.models.AdvectionDiffusionAdsorption">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.</span></span><span class="sig-name descname"><span class="pre">AdvectionDiffusionAdsorption</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="reactormodels.html#reactormodels.column_data.Column" title="reactormodels.column_data.Column"><span class="pre">Column</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inlet_concentration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_concentration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isotherm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#reactormodels.models.isotherm.Isotherm" title="reactormodels.models.isotherm.Isotherm"><span class="pre">Isotherm</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">numerics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.config.NumericsConfig" title="reactormodels.numerics.config.NumericsConfig"><span class="pre">NumericsConfig</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#reactormodels.models.adsorption_kinetics.AdsorptionKinetics" title="reactormodels.models.adsorption_kinetics.AdsorptionKinetics"><span class="pre">AdsorptionKinetics</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">AdsorptionKinetics.LOCAL_EQUILIBRIUM</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k_ldf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inlet_bc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#reactormodels.models.boundary_conditions.InletBC" title="reactormodels.models.boundary_conditions.InletBC"><span class="pre">InletBC</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">&lt;class</span> <span class="pre">'reactormodels.models.boundary_conditions.DanckwertsBC'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion_adsorption.html#AdvectionDiffusionAdsorption"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.AdvectionDiffusionAdsorption" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>1D advection-diffusion with adsorption in a packed bed.</p>
-<dl class="simple">
-<dt>LOCAL_EQUILIBRIUM:</dt><dd><p>R(C) * dC/dt + v/eps * dC/dx = D * d2C/dx2
-R(C) = 1 + (rho_b/eps_b) * dq*/dC
-state vector: [C_0, …, C_N]</p>
-</dd>
-<dt>LINEAR_DRIVING_FORCE:</dt><dd><p>dC/dt = -v * dC/dx + DL * d2C/dx2 - (rho_b/eps_b) * dq/dt
-dq/dt = k_ldf * (q*(C) - q)
-state vector: [C_0, …, C_N, q_0, …, q_N]</p>
-</dd>
-<dt>Inlet boundary conditions (inlet_bc):</dt><dd><dl class="simple">
-<dt>DIRICHLET<span class="classifier">C(0, t) = C_in</span></dt><dd><p>Simple concentration pin. Does not conserve total flux when DL &gt; 0;
-introduces a spurious dispersive source at the inlet.</p>
-</dd>
-<dt>DANCKWERTS<span class="classifier">v*C_in = v*C(0) - DL*(dC/dx)|_0</span></dt><dd><p>Flux-conserving BC. C[0] is an algebraic function of the interior
-nodes, recovered at each RHS evaluation. Satisfies exact mass balance.</p>
-</dd>
-</dl>
-</dd>
-<dt>Outlet boundary condition (both modes):</dt><dd><p>dC/dx(L) = 0      (Neumann outlet)</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>column_length</strong> (<em>float       L</em><em> [</em><em>m</em><em>]</em>)</p></li>
-<li><p><strong>velocity</strong> (<em>float       interstitial velocity</em><em> [</em><em>m/s</em><em>]</em>)</p></li>
-<li><p><strong>dispersion</strong> (<em>float       axial dispersion DL</em><em> [</em><em>m^2/s</em><em>]</em>)</p></li>
-<li><p><strong>isotherm</strong> (<a class="reference internal" href="#reactormodels.models.isotherm.Isotherm" title="reactormodels.models.isotherm.Isotherm"><em>Isotherm</em></a>)</p></li>
-<li><p><strong>bulk_density</strong> (<em>float       rho_b</em><em> [</em><em>kg/m^3</em><em>]</em>)</p></li>
-<li><p><strong>porosity</strong> (<em>float       eps_b</em><em> [</em><em>-</em><em>]</em>)</p></li>
-<li><p><strong>oc</strong> (<a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation" title="reactormodels.numerics.OrthogonalCollocation"><em>OrthogonalCollocation</em></a><em>   (</em><em>add_inlet=True</em><em>)</em>)</p></li>
-<li><p><strong>mode</strong> (<em>AdsorptionMode</em>)</p></li>
-<li><p><strong>k_ldf</strong> (<em>float</em><em>       [</em><em>1/s</em><em>]  </em><em>required for LDF mode</em>)</p></li>
-<li><p><strong>inlet_bc</strong> (<em>InletBC     DANCKWERTS</em><em> (</em><em>default</em><em>) or </em><a class="reference internal" href="#reactormodels.models.InletBC.DIRICHLET" title="reactormodels.models.InletBC.DIRICHLET"><em>DIRICHLET</em></a>)</p></li>
-</ul>
-</dd>
-</dl>
+<p>The governing equations are:</p>
+<blockquote>
+<div><p>Fluid phase: eps*dC/dt + eps * v * dC/dx - eps* D * d2C/dx2 - rho_b * dq/dt = 0
+Solid phase: dq/dt = k_l <em>(q</em> - C) where q* is provided isotherm.</p>
+</div></blockquote>
+<p>If local_equilibirium is assumed, the solid phase equation is ignored and:</p>
+<blockquote>
+<div><p>dq_dt = dq*/dc*dc/dt</p>
+</div></blockquote>
 <dl class="py method">
-<dt class="sig sig-object py" id="reactormodels.models.AdvectionDiffusionAdsorption1D_two.initial_state">
-<span class="sig-name descname"><span class="pre">initial_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion_adsorption_two.html#AdvectionDiffusionAdsorption1D_two.initial_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.AdvectionDiffusionAdsorption1D_two.initial_state" title="Link to this definition"></a></dt>
-<dd><p>Set initial conditions.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="reactormodels.models.AdvectionDiffusionAdsorption1D_two.rhs">
-<span class="sig-name descname"><span class="pre">rhs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_in</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion_adsorption_two.html#AdvectionDiffusionAdsorption1D_two.rhs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.AdvectionDiffusionAdsorption1D_two.rhs" title="Link to this definition"></a></dt>
-<dd><p>Set the right hand side</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="reactormodels.models.AdvectionDiffusionAdsorption1D_two.solve">
-<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_eval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion_adsorption_two.html#AdvectionDiffusionAdsorption1D_two.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.AdvectionDiffusionAdsorption1D_two.solve" title="Link to this definition"></a></dt>
-<dd><p>Solve the governing equations.</p>
+<dt class="sig sig-object py" id="reactormodels.models.AdvectionDiffusionAdsorption.solve">
+<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_eval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion_adsorption.html#AdvectionDiffusionAdsorption.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.AdvectionDiffusionAdsorption.solve" title="Link to this definition"></a></dt>
+<dd><p>Integrate from t_span[0] to t_span[1], returning results at t_eval.</p>
 </dd></dl>
 
 </dd></dl>
@@ -385,54 +303,19 @@ nodes, recovered at each RHS evaluation. Satisfies exact mass balance.</p>
 <section id="module-reactormodels.models.advection_diffusion">
 <span id="reactormodels-models-advection-diffusion-module"></span><h2>reactormodels.models.advection_diffusion module<a class="headerlink" href="#module-reactormodels.models.advection_diffusion" title="Link to this heading"></a></h2>
 <p>advection_diffusion.py</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="reactormodels.models.advection_diffusion.ogata_banks">
-<span class="sig-prename descclassname"><span class="pre">reactormodels.models.advection_diffusion.</span></span><span class="sig-name descname"><span class="pre">ogata_banks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion.html#ogata_banks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.advection_diffusion.ogata_banks" title="Link to this definition"></a></dt>
-<dd><p>Analytical solution for 1D advection-diffusion with step input.</p>
-<dl class="simple">
-<dt>Uses erfcx (scaled erfc) to avoid overflow at high Peclet numbers:</dt><dd><p>exp(Pe) * erfc(arg2) = erfcx(arg2) * exp(Pe - arg2^2)</p>
-</dd>
-</dl>
-<p>which stays finite when exp(Pe) would overflow.</p>
-</dd></dl>
-
 <dl class="py class">
-<dt class="sig sig-object py" id="reactormodels.models.advection_diffusion.AdvectionDiffusion1D">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.advection_diffusion.</span></span><span class="sig-name descname"><span class="pre">AdvectionDiffusion1D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain_length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orthogonal_collocation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation" title="reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation"><span class="pre">OrthogonalCollocation</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">inlet_bc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#reactormodels.models.boundary_conditions.InletBC" title="reactormodels.models.boundary_conditions.InletBC"><span class="pre">InletBC</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">InletBC.DIRICHLET</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion.html#AdvectionDiffusion1D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.advection_diffusion.AdvectionDiffusion1D" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="reactormodels.models.advection_diffusion.AdvectionDiffusion">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.advection_diffusion.</span></span><span class="sig-name descname"><span class="pre">AdvectionDiffusion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="reactormodels.html#reactormodels.column_data.Column" title="reactormodels.column_data.Column"><span class="pre">Column</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">inlet_concentration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_concentration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numerics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.config.NumericsConfig" title="reactormodels.numerics.config.NumericsConfig"><span class="pre">NumericsConfig</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">inlet_bc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#reactormodels.models.boundary_conditions.InletBC" title="reactormodels.models.boundary_conditions.InletBC"><span class="pre">InletBC</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">&lt;class</span> <span class="pre">'reactormodels.models.boundary_conditions.DirichletBC'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion.html#AdvectionDiffusion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.advection_diffusion.AdvectionDiffusion" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>One-dimensional advection diffusion equation.</p>
+<p>Advection-diffusion model.</p>
 <dl class="simple">
-<dt>Solves</dt><dd><p>dC/dt + v*dC/dx = D*d2C/dx2 on [0, L]</p>
-</dd>
-</dl>
-<p>using orthogonal collocation.</p>
-<dl class="simple">
-<dt>Inlet boundary conditions (inlet_bc):</dt><dd><p>DIRICHLET  : C(0, t) = C_in  (default)
-DANCKWERTS : v*C_in = v*C(0) - D*(dC/dx)|_0  (flux-conserving)</p>
-</dd>
-<dt>Outlet boundary condition:</dt><dd><p>dC/dx(L, t) = 0  (Neumann, zero-gradient)</p>
+<dt>Governing equation:</dt><dd><p>dC/dt + v * dC/dx - D * d2C/dx2 = 0</p>
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="reactormodels.models.advection_diffusion.AdvectionDiffusion1D.rhs">
-<span class="sig-name descname"><span class="pre">rhs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_in</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion.html#AdvectionDiffusion1D.rhs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.advection_diffusion.AdvectionDiffusion1D.rhs" title="Link to this definition"></a></dt>
-<dd><p>ODE rhs.</p>
-<p>DIRICHLET : C is (N,) including inlet; C[0] row is zeroed.
-DANCKWERTS: C is (N-1,) interior+outlet; C[0] recovered each call.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="reactormodels.models.advection_diffusion.AdvectionDiffusion1D.jacobian">
-<span class="sig-name descname"><span class="pre">jacobian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C_in</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion.html#AdvectionDiffusion1D.jacobian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.advection_diffusion.AdvectionDiffusion1D.jacobian" title="Link to this definition"></a></dt>
-<dd><p>Analytic Jacobian of rhs w.r.t. the state vector.</p>
-<p>DIRICHLET : (N, N) with inlet row zeroed.
-DANCKWERTS: (N-1, N-1) reduced system with C[0] eliminated.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="reactormodels.models.advection_diffusion.AdvectionDiffusion1D.solve">
-<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_eval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion.html#AdvectionDiffusion1D.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.advection_diffusion.AdvectionDiffusion1D.solve" title="Link to this definition"></a></dt>
-<dd><p>Solves the governing equation.</p>
+<dt class="sig sig-object py" id="reactormodels.models.advection_diffusion.AdvectionDiffusion.solve">
+<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_eval</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion.html#AdvectionDiffusion.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.advection_diffusion.AdvectionDiffusion.solve" title="Link to this definition"></a></dt>
+<dd><p>Integrate from t_span[0] to t_span[1], returning results at t_eval.</p>
 </dd></dl>
 
 </dd></dl>
@@ -442,129 +325,35 @@ DANCKWERTS: (N-1, N-1) reduced system with C[0] eliminated.</p>
 <span id="reactormodels-models-advection-diffusion-adsorption-module"></span><h2>reactormodels.models.advection_diffusion_adsorption module<a class="headerlink" href="#module-reactormodels.models.advection_diffusion_adsorption" title="Link to this heading"></a></h2>
 <p>advection_diffusion_adsorption.py</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption1D">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.advection_diffusion_adsorption.</span></span><span class="sig-name descname"><span class="pre">AdvectionDiffusionAdsorption1D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isotherm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#reactormodels.models.isotherm.Isotherm" title="reactormodels.models.isotherm.Isotherm"><span class="pre">Isotherm</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bulk_density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">porosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orthogonal_collocation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation" title="reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation"><span class="pre">OrthogonalCollocation</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">upwind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion_adsorption.html#AdvectionDiffusionAdsorption1D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption1D" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.advection_diffusion_adsorption.</span></span><span class="sig-name descname"><span class="pre">AdvectionDiffusionAdsorption</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="reactormodels.html#reactormodels.column_data.Column" title="reactormodels.column_data.Column"><span class="pre">Column</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inlet_concentration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_concentration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isotherm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#reactormodels.models.isotherm.Isotherm" title="reactormodels.models.isotherm.Isotherm"><span class="pre">Isotherm</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">numerics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.config.NumericsConfig" title="reactormodels.numerics.config.NumericsConfig"><span class="pre">NumericsConfig</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#reactormodels.models.adsorption_kinetics.AdsorptionKinetics" title="reactormodels.models.adsorption_kinetics.AdsorptionKinetics"><span class="pre">AdsorptionKinetics</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">AdsorptionKinetics.LOCAL_EQUILIBRIUM</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k_ldf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inlet_bc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#reactormodels.models.boundary_conditions.InletBC" title="reactormodels.models.boundary_conditions.InletBC"><span class="pre">InletBC</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">&lt;class</span> <span class="pre">'reactormodels.models.boundary_conditions.DanckwertsBC'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion_adsorption.html#AdvectionDiffusionAdsorption"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Solve the advection-diffusion-adsorption equation on [0, L]:</p>
+<p>1D advection-diffusion with adsorption in a packed bed.</p>
+<p>The governing equations are:</p>
 <blockquote>
-<div><p>R(C) * dC/dt + v/eps * dC/dx = D * d2C/dx2</p>
+<div><p>Fluid phase: eps*dC/dt + eps * v * dC/dx - eps* D * d2C/dx2 - rho_b * dq/dt = 0
+Solid phase: dq/dt = k_l <em>(q</em> - C) where q* is provided isotherm.</p>
 </div></blockquote>
-<p>where R(C) = 1 + (rho_b/eps) * dq*/dC  is the retardation factor.</p>
-<p>Assumes local equilibrium (q = q*(C) instantaneously).</p>
-<dl class="simple">
-<dt>Boundary conditions:</dt><dd><p>C(0, t) = C_in   (Dirichlet inlet)
-dC/dx(L, t) = 0  (Neumann outlet)</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>domain_length</strong> (<em>float   L</em><em> [</em><em>m</em><em>]</em>)</p></li>
-<li><p><strong>velocity</strong> (<em>float   pore velocity v</em><em> [</em><em>m/s</em><em>]</em>)</p></li>
-<li><p><strong>diffusion</strong> (<em>float   dispersion coefficient D</em><em> [</em><em>m^2/s</em><em>]</em>)</p></li>
-<li><p><strong>isotherm</strong> (<a class="reference internal" href="#reactormodels.models.isotherm.Isotherm" title="reactormodels.models.isotherm.Isotherm"><em>Isotherm</em></a>)</p></li>
-<li><p><strong>bulk_density</strong> (<em>float   rho_b</em><em> [</em><em>kg/m^3</em><em>]</em>)</p></li>
-<li><p><strong>porosity</strong> (<em>float   eps</em><em> [</em><em>-</em><em>]</em>)</p></li>
-<li><p><strong>orthogonal_collocation</strong> (<a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation" title="reactormodels.numerics.OrthogonalCollocation"><em>OrthogonalCollocation</em></a>)</p></li>
-</ul>
-</dd>
-</dl>
+<p>If local_equilibirium is assumed, the solid phase equation is ignored and:</p>
+<blockquote>
+<div><p>dq_dt = dq*/dc*dc/dt</p>
+</div></blockquote>
 <dl class="py method">
-<dt class="sig sig-object py" id="reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption1D.rhs">
-<span class="sig-name descname"><span class="pre">rhs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_in</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion_adsorption.html#AdvectionDiffusionAdsorption1D.rhs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption1D.rhs" title="Link to this definition"></a></dt>
-<dd><p>Right hand side.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption1D.jacobian">
-<span class="sig-name descname"><span class="pre">jacobian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion_adsorption.html#AdvectionDiffusionAdsorption1D.jacobian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption1D.jacobian" title="Link to this definition"></a></dt>
-<dd><p>Analytic Jacobian d(rhs)/dC.</p>
-<dl class="simple">
-<dt>For nonlinear isotherm R depends on C, so by quotient rule:</dt><dd><p>d/dC [ (adv+diff)/R ] = (d(adv+diff)/dC * R - (adv+diff) * dR/dC) / R^2</p>
-</dd>
-</dl>
-<p>dR/dC = (rho_b/eps) * d2q*/dC2  (diagonal matrix)
-d(adv+diff)/dC = -v/eps * A + D * B  (the linear operator)</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption1D.jacobian_ivp">
-<span class="sig-name descname"><span class="pre">jacobian_ivp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion_adsorption.html#AdvectionDiffusionAdsorption1D.jacobian_ivp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption1D.jacobian_ivp" title="Link to this definition"></a></dt>
-<dd><p>Adapter with solve_ivp Jacobian signature jac(t, y).</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption1D.solve">
-<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_eval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_in</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_init</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion_adsorption.html#AdvectionDiffusionAdsorption1D.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption1D.solve" title="Link to this definition"></a></dt>
-<dd><p>Solve the governing equation.</p>
+<dt class="sig sig-object py" id="reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption.solve">
+<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_eval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion_adsorption.html#AdvectionDiffusionAdsorption.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.advection_diffusion_adsorption.AdvectionDiffusionAdsorption.solve" title="Link to this definition"></a></dt>
+<dd><p>Integrate from t_span[0] to t_span[1], returning results at t_eval.</p>
 </dd></dl>
 
 </dd></dl>
 
 </section>
-<section id="module-reactormodels.models.advection_diffusion_adsorption_two">
-<span id="reactormodels-models-advection-diffusion-adsorption-two-module"></span><h2>reactormodels.models.advection_diffusion_adsorption_two module<a class="headerlink" href="#module-reactormodels.models.advection_diffusion_adsorption_two" title="Link to this heading"></a></h2>
-<p>advection_diffusion_adsorption.py</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="reactormodels.models.advection_diffusion_adsorption_two.AdvectionDiffusionAdsorption1D_two">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.advection_diffusion_adsorption_two.</span></span><span class="sig-name descname"><span class="pre">AdvectionDiffusionAdsorption1D_two</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dispersion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isotherm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#reactormodels.models.isotherm.Isotherm" title="reactormodels.models.isotherm.Isotherm"><span class="pre">Isotherm</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bulk_density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">porosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation" title="reactormodels.numerics.OrthogonalCollocation"><span class="pre">OrthogonalCollocation</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#reactormodels.models.AdsorptionKinetics" title="reactormodels.models.AdsorptionKinetics"><span class="pre">AdsorptionKinetics</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">AdsorptionKinetics.LOCAL_EQUILIBRIUM</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k_ldf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inlet_bc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#reactormodels.models.InletBC" title="reactormodels.models.InletBC"><span class="pre">InletBC</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">InletBC.DANCKWERTS</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion_adsorption_two.html#AdvectionDiffusionAdsorption1D_two"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.advection_diffusion_adsorption_two.AdvectionDiffusionAdsorption1D_two" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>1D advection-diffusion with adsorption in a packed bed.</p>
-<dl class="simple">
-<dt>LOCAL_EQUILIBRIUM:</dt><dd><p>R(C) * dC/dt + v/eps * dC/dx = D * d2C/dx2
-R(C) = 1 + (rho_b/eps_b) * dq*/dC
-state vector: [C_0, …, C_N]</p>
-</dd>
-<dt>LINEAR_DRIVING_FORCE:</dt><dd><p>dC/dt = -v * dC/dx + DL * d2C/dx2 - (rho_b/eps_b) * dq/dt
-dq/dt = k_ldf * (q*(C) - q)
-state vector: [C_0, …, C_N, q_0, …, q_N]</p>
-</dd>
-<dt>Inlet boundary conditions (inlet_bc):</dt><dd><dl class="simple">
-<dt>DIRICHLET<span class="classifier">C(0, t) = C_in</span></dt><dd><p>Simple concentration pin. Does not conserve total flux when DL &gt; 0;
-introduces a spurious dispersive source at the inlet.</p>
-</dd>
-<dt>DANCKWERTS<span class="classifier">v*C_in = v*C(0) - DL*(dC/dx)|_0</span></dt><dd><p>Flux-conserving BC. C[0] is an algebraic function of the interior
-nodes, recovered at each RHS evaluation. Satisfies exact mass balance.</p>
-</dd>
-</dl>
-</dd>
-<dt>Outlet boundary condition (both modes):</dt><dd><p>dC/dx(L) = 0      (Neumann outlet)</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>column_length</strong> (<em>float       L</em><em> [</em><em>m</em><em>]</em>)</p></li>
-<li><p><strong>velocity</strong> (<em>float       interstitial velocity</em><em> [</em><em>m/s</em><em>]</em>)</p></li>
-<li><p><strong>dispersion</strong> (<em>float       axial dispersion DL</em><em> [</em><em>m^2/s</em><em>]</em>)</p></li>
-<li><p><strong>isotherm</strong> (<a class="reference internal" href="#reactormodels.models.isotherm.Isotherm" title="reactormodels.models.isotherm.Isotherm"><em>Isotherm</em></a>)</p></li>
-<li><p><strong>bulk_density</strong> (<em>float       rho_b</em><em> [</em><em>kg/m^3</em><em>]</em>)</p></li>
-<li><p><strong>porosity</strong> (<em>float       eps_b</em><em> [</em><em>-</em><em>]</em>)</p></li>
-<li><p><strong>oc</strong> (<a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation" title="reactormodels.numerics.OrthogonalCollocation"><em>OrthogonalCollocation</em></a><em>   (</em><em>add_inlet=True</em><em>)</em>)</p></li>
-<li><p><strong>mode</strong> (<em>AdsorptionMode</em>)</p></li>
-<li><p><strong>k_ldf</strong> (<em>float</em><em>       [</em><em>1/s</em><em>]  </em><em>required for LDF mode</em>)</p></li>
-<li><p><strong>inlet_bc</strong> (<em>InletBC     DANCKWERTS</em><em> (</em><em>default</em><em>) or </em><a class="reference internal" href="#reactormodels.models.InletBC.DIRICHLET" title="reactormodels.models.InletBC.DIRICHLET"><em>DIRICHLET</em></a>)</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="reactormodels.models.advection_diffusion_adsorption_two.AdvectionDiffusionAdsorption1D_two.initial_state">
-<span class="sig-name descname"><span class="pre">initial_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion_adsorption_two.html#AdvectionDiffusionAdsorption1D_two.initial_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.advection_diffusion_adsorption_two.AdvectionDiffusionAdsorption1D_two.initial_state" title="Link to this definition"></a></dt>
-<dd><p>Set initial conditions.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="reactormodels.models.advection_diffusion_adsorption_two.AdvectionDiffusionAdsorption1D_two.rhs">
-<span class="sig-name descname"><span class="pre">rhs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_in</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion_adsorption_two.html#AdvectionDiffusionAdsorption1D_two.rhs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.advection_diffusion_adsorption_two.AdvectionDiffusionAdsorption1D_two.rhs" title="Link to this definition"></a></dt>
-<dd><p>Set the right hand side</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="reactormodels.models.advection_diffusion_adsorption_two.AdvectionDiffusionAdsorption1D_two.solve">
-<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_span</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_eval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/advection_diffusion_adsorption_two.html#AdvectionDiffusionAdsorption1D_two.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.advection_diffusion_adsorption_two.AdvectionDiffusionAdsorption1D_two.solve" title="Link to this definition"></a></dt>
-<dd><p>Solve the governing equations.</p>
-</dd></dl>
-
+<section id="module-reactormodels.models.analytic_models">
+<span id="reactormodels-models-analytic-models-module"></span><h2>reactormodels.models.analytic_models module<a class="headerlink" href="#module-reactormodels.models.analytic_models" title="Link to this heading"></a></h2>
+<p>analytic_models.py</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="reactormodels.models.analytic_models.ogata_banks">
+<span class="sig-prename descclassname"><span class="pre">reactormodels.models.analytic_models.</span></span><span class="sig-name descname"><span class="pre">ogata_banks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inlet_concentration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/analytic_models.html#ogata_banks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.analytic_models.ogata_banks" title="Link to this definition"></a></dt>
+<dd><p>Ogata Banks solution for 1D advection-diffusion with step input.</p>
 </dd></dl>
 
 </section>
@@ -573,18 +362,86 @@ nodes, recovered at each RHS evaluation. Satisfies exact mass balance.</p>
 <p>boundary_conditions.py</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="reactormodels.models.boundary_conditions.InletBC">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.boundary_conditions.</span></span><span class="sig-name descname"><span class="pre">InletBC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/boundary_conditions.html#InletBC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.boundary_conditions.InletBC" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
-<p>Inlet boundary condition specification.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="reactormodels.models.boundary_conditions.InletBC.DIRICHLET">
-<span class="sig-name descname"><span class="pre">DIRICHLET</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></span><a class="headerlink" href="#reactormodels.models.boundary_conditions.InletBC.DIRICHLET" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.boundary_conditions.</span></span><span class="sig-name descname"><span class="pre">InletBC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inlet_concentration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/boundary_conditions.html#InletBC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.boundary_conditions.InletBC" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for inlet boundary conditions.</p>
+<p>All inlet boundary condition classes should inherit from this class
+and implement the <cite>residual</cite> and <cite>apply</cite> methods.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.boundary_conditions.InletBC.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gradient_concentration_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/boundary_conditions.html#InletBC.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.boundary_conditions.InletBC.apply" title="Link to this definition"></a></dt>
+<dd><p>Return the value on the boundary</p>
+</dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="reactormodels.models.boundary_conditions.InletBC.DANCKWERTS">
-<span class="sig-name descname"><span class="pre">DANCKWERTS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></span><a class="headerlink" href="#reactormodels.models.boundary_conditions.InletBC.DANCKWERTS" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.boundary_conditions.InletBC.residual">
+<span class="sig-name descname"><span class="pre">residual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">concentration_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient_concentration_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/boundary_conditions.html#InletBC.residual"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.boundary_conditions.InletBC.residual" title="Link to this definition"></a></dt>
+<dd><p>Compute the residual at inlet boundary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.boundary_conditions.InletBC.jacobian_row">
+<span class="sig-name descname"><span class="pre">jacobian_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A_row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/boundary_conditions.html#InletBC.jacobian_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.boundary_conditions.InletBC.jacobian_row" title="Link to this definition"></a></dt>
+<dd><p>Return dF_inlet/dC, the Jacobian row for the inlet constraint.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.models.boundary_conditions.DirichletBC">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.boundary_conditions.</span></span><span class="sig-name descname"><span class="pre">DirichletBC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inlet_concentration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/boundary_conditions.html#DirichletBC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.boundary_conditions.DirichletBC" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#reactormodels.models.boundary_conditions.InletBC" title="reactormodels.models.boundary_conditions.InletBC"><code class="xref py py-class docutils literal notranslate"><span class="pre">InletBC</span></code></a></p>
+<p>Dirichlet inlet boundary condition.</p>
+<dl class="simple">
+<dt>Enforces a fixed inlet concentration:</dt><dd><p>C(0, t) = C_in</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.boundary_conditions.DirichletBC.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gradient_concentration_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/boundary_conditions.html#DirichletBC.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.boundary_conditions.DirichletBC.apply" title="Link to this definition"></a></dt>
+<dd><p>Return the value on the boundary</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.boundary_conditions.DirichletBC.residual">
+<span class="sig-name descname"><span class="pre">residual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">concentration_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient_concentration_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/boundary_conditions.html#DirichletBC.residual"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.boundary_conditions.DirichletBC.residual" title="Link to this definition"></a></dt>
+<dd><p>Compute the residual at inlet boundary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.boundary_conditions.DirichletBC.jacobian_row">
+<span class="sig-name descname"><span class="pre">jacobian_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A_row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/boundary_conditions.html#DirichletBC.jacobian_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.boundary_conditions.DirichletBC.jacobian_row" title="Link to this definition"></a></dt>
+<dd><p>dF/dC: residual = C[0] - C_in, so only the C[0] entry is non-zero.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.models.boundary_conditions.DanckwertsBC">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.boundary_conditions.</span></span><span class="sig-name descname"><span class="pre">DanckwertsBC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inlet_concentration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/boundary_conditions.html#DanckwertsBC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.boundary_conditions.DanckwertsBC" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#reactormodels.models.boundary_conditions.InletBC" title="reactormodels.models.boundary_conditions.InletBC"><code class="xref py py-class docutils literal notranslate"><span class="pre">InletBC</span></code></a></p>
+<p>Danckwerts (flux-conserving) inlet boundary condition.</p>
+<dl class="simple">
+<dt>Governing equation:</dt><dd><p>v*C_in = v*C(0) - DL*(dC/dx)|_0</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.boundary_conditions.DanckwertsBC.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gradient_concentration_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/boundary_conditions.html#DanckwertsBC.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.boundary_conditions.DanckwertsBC.apply" title="Link to this definition"></a></dt>
+<dd><p>Return the value on the boundary</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.boundary_conditions.DanckwertsBC.residual">
+<span class="sig-name descname"><span class="pre">residual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">concentration_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient_concentration_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/boundary_conditions.html#DanckwertsBC.residual"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.boundary_conditions.DanckwertsBC.residual" title="Link to this definition"></a></dt>
+<dd><p>Compute the residual at inlet boundary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.boundary_conditions.DanckwertsBC.jacobian_row">
+<span class="sig-name descname"><span class="pre">jacobian_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A_row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/boundary_conditions.html#DanckwertsBC.jacobian_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.boundary_conditions.DanckwertsBC.jacobian_row" title="Link to this definition"></a></dt>
+<dd><p>dF/dC: residual = v*(C_in - C[0]) + D*(A[0,:] &#64; C).</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -599,19 +456,19 @@ nodes, recovered at each RHS evaluation. Satisfies exact mass balance.</p>
 <p>Base class for adsorption isotherms.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="reactormodels.models.isotherm.Isotherm.q">
-<span class="sig-name descname"><span class="pre">q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#Isotherm.q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.Isotherm.q" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#Isotherm.q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.Isotherm.q" title="Link to this definition"></a></dt>
 <dd><p>Return sorbed mass concentration</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="reactormodels.models.isotherm.Isotherm.dq_dC">
-<span class="sig-name descname"><span class="pre">dq_dC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#Isotherm.dq_dC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.Isotherm.dq_dC" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">dq_dC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#Isotherm.dq_dC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.Isotherm.dq_dC" title="Link to this definition"></a></dt>
 <dd><p>Calculate the derivative of sorbed mass concentration by concentration.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="reactormodels.models.isotherm.Isotherm.d2q_dC2">
-<span class="sig-name descname"><span class="pre">d2q_dC2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#Isotherm.d2q_dC2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.Isotherm.d2q_dC2" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">d2q_dC2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#Isotherm.d2q_dC2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.Isotherm.d2q_dC2" title="Link to this definition"></a></dt>
 <dd><p>Calculate the second derivative.</p>
 </dd></dl>
 
@@ -625,26 +482,26 @@ nodes, recovered at each RHS evaluation. Satisfies exact mass balance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>K</strong> (<em>float</em>) – Freundlich capacity factor  [mg/g / (mg/L)^(1/n)]</p></li>
-<li><p><strong>n</strong> (<em>float</em>) – Freundlich intensity factor (n &gt;= 1 → favorable).</p></li>
+<li><p><strong>K</strong> (<em>float</em>) – Freundlich capacity factor</p></li>
+<li><p><strong>n</strong> (<em>float</em>) – Freundlich intensity factor.</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="reactormodels.models.isotherm.FreundlichIsotherm.q">
-<span class="sig-name descname"><span class="pre">q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#FreundlichIsotherm.q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.FreundlichIsotherm.q" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#FreundlichIsotherm.q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.FreundlichIsotherm.q" title="Link to this definition"></a></dt>
 <dd><p>Return sorbed mass concentration</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="reactormodels.models.isotherm.FreundlichIsotherm.dq_dC">
-<span class="sig-name descname"><span class="pre">dq_dC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#FreundlichIsotherm.dq_dC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.FreundlichIsotherm.dq_dC" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">dq_dC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#FreundlichIsotherm.dq_dC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.FreundlichIsotherm.dq_dC" title="Link to this definition"></a></dt>
 <dd><p>Calculate the derivative of sorbed mass concentration by concentration.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="reactormodels.models.isotherm.FreundlichIsotherm.d2q_dC2">
-<span class="sig-name descname"><span class="pre">d2q_dC2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#FreundlichIsotherm.d2q_dC2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.FreundlichIsotherm.d2q_dC2" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">d2q_dC2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#FreundlichIsotherm.d2q_dC2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.FreundlichIsotherm.d2q_dC2" title="Link to this definition"></a></dt>
 <dd><p>Calculate the second derivative.</p>
 </dd></dl>
 
@@ -662,22 +519,39 @@ nodes, recovered at each RHS evaluation. Satisfies exact mass balance.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="reactormodels.models.isotherm.LinearIsotherm.q">
-<span class="sig-name descname"><span class="pre">q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LinearIsotherm.q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.LinearIsotherm.q" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LinearIsotherm.q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.LinearIsotherm.q" title="Link to this definition"></a></dt>
 <dd><p>Return sorbed mass concentration</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="reactormodels.models.isotherm.LinearIsotherm.dq_dC">
-<span class="sig-name descname"><span class="pre">dq_dC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LinearIsotherm.dq_dC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.LinearIsotherm.dq_dC" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">dq_dC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LinearIsotherm.dq_dC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.LinearIsotherm.dq_dC" title="Link to this definition"></a></dt>
 <dd><p>Calculate the derivative of sorbed mass concentration by concentration.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="reactormodels.models.isotherm.LinearIsotherm.d2q_dC2">
-<span class="sig-name descname"><span class="pre">d2q_dC2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LinearIsotherm.d2q_dC2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.LinearIsotherm.d2q_dC2" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">d2q_dC2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LinearIsotherm.d2q_dC2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.LinearIsotherm.d2q_dC2" title="Link to this definition"></a></dt>
 <dd><p>Calculate the second derivative.</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="reactormodels.models.isotherm.fit_isotherm">
+<span class="sig-prename descclassname"><span class="pre">reactormodels.models.isotherm.</span></span><span class="sig-name descname"><span class="pre">fit_isotherm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">isotherm_class</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#reactormodels.models.isotherm.Isotherm" title="reactormodels.models.isotherm.Isotherm"><span class="pre">Isotherm</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_guess</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#reactormodels.models.isotherm.Isotherm" title="reactormodels.models.isotherm.Isotherm"><span class="pre">Isotherm</span></a></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#fit_isotherm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.fit_isotherm" title="Link to this definition"></a></dt>
+<dd><p>Fit an isotherm to equilibrium concentration data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>isotherm_class</strong> (<em>type</em><em>[</em><a class="reference internal" href="#reactormodels.models.isotherm.Isotherm" title="reactormodels.models.isotherm.Isotherm"><em>Isotherm</em></a><em>]</em>) – Isotherm class to fit.</p></li>
+<li><p><strong>C</strong> (<em>float</em><em> | </em><em>np.ndarray</em>) – Equilibrium fluid concentrations.</p></li>
+<li><p><strong>q</strong> (<em>float</em><em> | </em><em>np.ndarray</em>) – Equilibrium sorbed concentrations.</p></li>
+<li><p><strong>initial_guess</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>...</em><em>]</em>) – Initial guess for the isotherm parameters.</p></li>
+<li><p><strong>Isotherm</strong> – Fitted isotherm instance.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
