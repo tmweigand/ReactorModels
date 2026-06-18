@@ -29,6 +29,7 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           brew install gcc sundials
+          brew install librsvg
           echo "/opt/homebrew/bin" >> $GITHUB_PATH
 
           GFORTRAN_BIN="$(find "$(brew --prefix gcc)/bin" -name 'gfortran-*' | head -n 1)"
