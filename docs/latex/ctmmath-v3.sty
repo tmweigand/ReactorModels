@@ -1,0 +1,3027 @@
+%%
+%% This is file `ctmmath.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% ctmmath.dtx 
+%% 
+%% IMPORTANT NOTICE:
+%% 
+%% For the copyright see the source file.
+%% 
+%% Any modified versions of this file must be renamed
+%% with new filenames distinct from ctmmath.sty.
+%% 
+%% For distribution of the original source see the terms
+%% for copying and modification in the file ctmmath.dtx.
+%% 
+%% This generated file may be distributed as long as the
+%% original source files, as listed above, are part of the
+%% same distribution. (The sources need not necessarily be
+%% in the same archive or directory.)
+
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+
+\RequirePackage{ifthen}
+
+
+\RequirePackage{color}
+
+
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\RequirePackage[mathscr]{eucal}
+\allowdisplaybreaks
+
+\RequirePackage{verbatim}
+
+
+\definecolor{GreenYellow}{cmyk}{0.15,0,0.69,0}
+\definecolor{Yellow}{cmyk}{0,0,1,0}
+\definecolor{Goldenrod}{cmyk}{0,0.10,0.84,0}
+\definecolor{Dandelion}{cmyk}{0,0.29,0.84,0}
+\definecolor{Apricot}{cmyk}{0,0.32,0.52,0}
+\definecolor{Peach}{cmyk}{0,0.50,0.70,0}
+\definecolor{Melon}{cmyk}{0,0.46,0.50,0}
+\definecolor{YellowOrange}{cmyk}{0,0.42,1,0}
+\definecolor{Orange}{cmyk}{0,0.61,0.87,0}
+\definecolor{BurntOrange}{cmyk}{0,0.51,1,0}
+\definecolor{Bittersweet}{cmyk}{0,0.75,1,0.24}
+\definecolor{RedOrange}{cmyk}{0,0.77,0.87,0}
+\definecolor{Mahogany}{cmyk}{0,0.85,0.87,0.35}
+\definecolor{Maroon}{cmyk}{0,0.87,0.68,0.32}
+\definecolor{BrickRed}{cmyk}{0,0.89,0.94,0.28}
+\definecolor{Red}{cmyk}{0,1,1,0}
+\definecolor{OrangeRed}{cmyk}{0,1,0.50,0}
+\definecolor{RubineRed}{cmyk}{0,1,0.13,0}
+\definecolor{WildStrawberry}{cmyk}{0,0.96,0.39,0}
+\definecolor{Salmon}{cmyk}{0,0.53,0.38,0}
+\definecolor{CarnationPink}{cmyk}{0,0.63,0,0}
+\definecolor{Magenta}{cmyk}{0,1,0,0}
+\definecolor{VioletRed}{cmyk}{0,0.81,0,0}
+\definecolor{Rhodamine}{cmyk}{0,0.82,0,0}
+\definecolor{Mulberry}{cmyk}{0.34,0.90,0,0.02}
+\definecolor{RedViolet}{cmyk}{0.07,0.90,0,0.34}
+\definecolor{Fuchsia}{cmyk}{0.47,0.91,0,0.08}
+\definecolor{Lavender}{cmyk}{0,0.48,0,0}
+\definecolor{Thistle}{cmyk}{0.12,0.59,0,0}
+\definecolor{Orchid}{cmyk}{0.32,0.64,0,0}
+\definecolor{DarkOrchid}{cmyk}{0.40,0.80,0.20,0}
+\definecolor{Purple}{cmyk}{0.45,0.86,0,0}
+\definecolor{Plum}{cmyk}{0.50,1,0,0}
+\definecolor{Violet}{cmyk}{0.79,0.88,0,0}
+\definecolor{RoyalPurple}{cmyk}{0.75,0.90,0,0}
+\definecolor{BlueViolet}{cmyk}{0.86,0.91,0,0.04}
+\definecolor{Periwinkle}{cmyk}{0.57,0.55,0,0}
+\definecolor{CadetBlue}{cmyk}{0.62,0.57,0.23,0}
+\definecolor{CornflowerBlue}{cmyk}{0.65,0.13,0,0}
+\definecolor{MidnightBlue}{cmyk}{0.98,0.13,0,0.43}
+\definecolor{NavyBlue}{cmyk}{0.94,0.54,0,0}
+\definecolor{RoyalBlue}{cmyk}{1,0.50,0,0}
+\definecolor{Blue}{cmyk}{1,1,0,0}
+\definecolor{Cerulean}{cmyk}{0.94,0.11,0,0}
+\definecolor{Cyan}{cmyk}{1,0,0,0}
+\definecolor{ProcessBlue}{cmyk}{0.96,0,0,0}
+\definecolor{SkyBlue}{cmyk}{0.62,0,0.12,0}
+\definecolor{Turquoise}{cmyk}{0.85,0,0.20,0}
+\definecolor{TealBlue}{cmyk}{0.86,0,0.34,0.02}
+\definecolor{Aquamarine}{cmyk}{0.82,0,0.30,0}
+\definecolor{BlueGreen}{cmyk}{0.85,0,0.33,0}
+\definecolor{Emerald}{cmyk}{1,0,0.50,0}
+\definecolor{JungleGreen}{cmyk}{0.99,0,0.52,0}
+\definecolor{SeaGreen}{cmyk}{0.69,0,0.50,0}
+\definecolor{Green}{cmyk}{1,0,1,0}
+\definecolor{ForestGreen}{cmyk}{0.91,0,0.88,0.12}
+\definecolor{PineGreen}{cmyk}{0.92,0,0.59,0.25}
+\definecolor{LimeGreen}{cmyk}{0.50,0,1,0}
+\definecolor{YellowGreen}{cmyk}{0.44,0,0.74,0}
+\definecolor{SpringGreen}{cmyk}{0.26,0,0.76,0}
+\definecolor{OliveGreen}{cmyk}{0.64,0,0.95,0.40}
+\definecolor{RawSienna}{cmyk}{0,0.72,1,0.45}
+\definecolor{Sepia}{cmyk}{0,0.83,1,0.70}
+\definecolor{Brown}{cmyk}{0,0.81,1,0.60}
+\definecolor{Tan}{cmyk}{0.14,0.42,0.56,0}
+\definecolor{Gray}{cmyk}{0,0,0,0.50}
+\definecolor{Black}{cmyk}{0,0,0,1}
+\definecolor{White}{cmyk}{0,0,0,0}
+
+
+\newcommand{\false}{0}
+\newcommand{\true}{1}
+
+\newcounter{stdmathLoad}
+\setcounter{stdmathLoad}\true
+
+\newcounter{tcatLoad}
+\setcounter{tcatLoad}\true
+
+\newcounter{obsoleteLoad}
+\setcounter{obsoleteLoad}\false
+
+\DeclareOption{stdmath}{\setcounter{tcatLoad}\false}
+\DeclareOption{tcat}{\setcounter{tcatLoad}\true}
+\DeclareOption{obsolete}{\setcounter{obsoleteLoad}\true}
+\DeclareOption{noobsolete}{\setcounter{obsoleteLoad}\false}
+
+
+\newcounter{level}
+\setcounter{level}{1}
+
+\DeclareOption{levelone}{\setcounter{level}{1}}
+\DeclareOption{leveltwo}{\setcounter{level}{2}}
+\DeclareOption{levelthree}{\setcounter{level}{3}}
+
+\newcommand{\colorLevelOne}{blue}
+\newcommand{\colorLevelTwo}{Green}
+\newcommand{\colorLevelThree}{Bittersweet}
+\newcommand{\colorLevelException}{red}
+\newcommand{\colorLevel}[2]{{\ifcase #1 #2 \or
+    {\color{\colorLevelOne}#2} \or {\color{\colorLevelTwo}#2} \or
+    {\color{\colorLevelThree}#2} \else
+    {\color{\colorLevelException}Exception Level #1 is not defined:
+      #2}\fi}}
+\newcommand{\level}[3]{{\ifnum\thelevel>#1 {\ifnum\thelevelMode=0
+      \colorLevel{#1}{{\bf Level #1:} #2 {\bf Alternative Text if Level
+      Less Than #1:} #3} \else #2 \fi} \else \levelequal {#1}{#2}{#3} \fi}}
+\newcommand{\levelequal}[3]{{\ifnum\thelevel=#1 {\ifnum\thelevelMode=0
+      \colorLevel{#1}{{\bf Level #1:} #2 {\bf Alternative Text if Level
+      Less Than #1:} #3} \else #2 \fi} \else #3 \fi}}
+
+
+
+\newcounter{shownotes}
+\setcounter{shownotes}{\false}
+
+\DeclareOption{notes}{\setcounter{shownotes}\true}
+\DeclareOption{nonotes}{\setcounter{shownotes}\false}
+\newcommand{\colorLevelNotes}{red}
+\newcommand{\dnote}[2][\colorLevelNotes]{{\ifnum\theshownotes>0
+    \vskip 5 pt {\color {#1}{\bf Note: #2}} \vskip 5 pt \fi}}
+\newcommand{\inote}[2][\colorLevelNotes]{{\ifnum\theshownotes>0
+    {\color{#1}{\bf #2}}\fi}}
+
+
+\newcounter{levelMode}
+\setcounter{levelMode}{1}
+\newcommand{\levelDraft}{0}
+\newcommand{\levelSubmit}{1}
+\DeclareOption{draft}{\setcounter{levelMode}\levelDraft}
+\DeclareOption{submit}{\setcounter{levelMode}\levelSubmit}
+
+\ProcessOptions
+
+
+
+\newcommand{\integers}{\mbox{$\mbox{I}\!\mbox{I}$}}
+\newcommand{\naturals}{\mbox{$\mbox{I}\!\mbox{N}$}}
+\newcommand{\RR}{\mbox{$\mbox{I}\!\mbox{R}$}}
+\renewcommand{\Re}{\RR}
+
+
+\newcommand{\set}[1]{{\ensuremath{\mathscr{#1}}}}
+\newcommand{\sset}[2]{{\ensuremath{\set #1_{#2}}}}
+\newcommand{\srset}[2]{{\ensuremath{\set #1_{\rm #2}}}}
+\newcommand{\srmset}[3]{{\ensuremath{\set #1_{{\rm #2}#3}}}}
+\newcommand{\siset}[3]{{\ensuremath{\set #1_{\set {#2}_{#3}}}}}
+\DeclareMathOperator{\Card}{Card}
+\newcommand{\C}[1]{{\ensuremath{\Card\lrp{#1}}}}
+
+
+\newcommand{\domain}{{\Omega}}
+\newcommand{\boundary}{{\Gamma}}
+\newcommand{\Dm}[1]{{\ensuremath{\domain_{#1}}}}
+\newcommand{\Dmc}[1]{{\ensuremath{\bar \domain_{#1}}}}
+\newcommand{\Bd}[1]{{\ensuremath{\boundary_{#1}}}}
+\newcommand{\Bde}[1]{{\ensuremath{\boundary_{#1 \rm e}}}}
+\newcommand{\Bdi}[1]{{\ensuremath{\boundary_{#1 \rm i}}}}
+
+
+\newcommand{\sL}[1]{{\sum\limits_{#1}\;}}
+\newcommand{\sLb}[2]{{\sum\limits_{#1}^{#2}\;}}
+\newcommand{\sLt}[2]{{\sL{#1}\sL{#2}}}
+\newcommand{\sLtb}[4]{{\sLb{#1}{#2}\sLb{#3}{#4}}}
+
+
+
+
+\DeclareMathAlphabet{\mathsfsl}{OT1}{cmss}{m}{sl}
+\renewcommand{\vec}[1]{{\ensuremath{\boldsymbol{\mathrm #1}}}}
+\newcommand{\vdot}{{\ifnum\thedotStyle=0{\ensuremath\cdot}\else
+    {\boldsymbol{\mathsf{\ensuremath\cdot}}}\fi}}
+\newcommand{\mat}[1]{{\ensuremath{\boldsymbol{\mathrm{#1}}}}}
+\newcommand{\ten}[1]{\ensuremath{\boldsymbol{\mathsf{#1}}}}
+\newcommand{\dd}{\ensuremath{\boldsymbol{\mathsf{:}}}}
+\newcommand{\ddh}{\ensuremath{\boldsymbol{\mathsf{\cdot\cdot}}}}
+\newcommand{\tddt}[2]{\ensuremath{\ten {#1}\dd \ten{#2}}}
+\newcommand{\T}{\ensuremath{^{\mathrm T}}}
+\newcommand{\Tr}[1]{{\ensuremath{\mathrm {Tr}(#1)}}}
+
+
+\newcommand{\tI}{{\ensuremath{\ten I}}}
+\newcommand{\tIs}{\ensuremath{\ten I^\prime}}
+\newcommand{\tIS}{\ensuremath{\ten I^\backprime}}
+\newcommand{\tIc}{\ensuremath{\ten I^{\prime\prime}}}
+\newcommand{\tIC}{\ensuremath{\ten I^{\backprime\backprime}}}
+\newcommand{\tIp}{\ensuremath{\ten I^{\prime\prime\prime}}}
+\newcommand{\tIP}{\ensuremath{\ten I^{\backprime\backprime\backprime}}}
+\newcommand{\tIn}[1]{{\ensuremath{\ten I_{#1}^{(n)}}}}
+\newcommand{\tInqe}{{\tIn\qe}}
+
+
+\newcounter{dotStyle}
+\newcommand{\dotnormal}{0}
+\newcommand{\dotbold}{1}
+\setcounter{dotStyle}\dotbold
+
+
+\newcommand{\df}{\mathrm{d}}
+\newcommand{\od}[2]{\frac{\df{#1}}{\df{#2}}}
+\newcommand{\odn}[3]{\frac{\df^#1{#2}}{\df{#3}^#1}}
+\newcommand{\odil}[2]{\ensuremath{\df{#1}/\df{#2}}}
+\newcommand{\odnil}[3]{\ensuremath{\df^#1{#2}/\df{#3}^#1}}
+
+
+
+\newcommand{\pd}[2]{\frac{\partial{#1}}{\partial{#2}}}
+\newcommand{\pdt}[1]{\pd{#1}t}
+\newcommand{\pdn}[3]{\frac{\partial^#1{#2}}{\partial{{#3}^#1}}}
+\newcommand{\pdsm}[3]{\frac{\partial^2{#1}}{\partial
+   {#2}\,\partial{#3}}}
+\newcommand{\pdi}[2]{\frac{\partial^\prime{#1}}{\partial{#2}}}
+\newcommand{\pdit}[1]{\pdi{#1}t}
+\newcommand{\pdI}[2]{\frac{\partial^\backprime{#1}}{\partial{#2}}}
+\newcommand{\pdIt}[1]{\pdI{#1}t}
+\newcommand{\pdc}[2]{\frac{\partial^{\prime\prime}{#1}}{\partial{#2}}}
+\newcommand{\pdct}[1]{\pdc{#1}t}
+\newcommand{\pdC}[2]{\frac{\partial^{\backprime\backprime}{#1}}{\partial{#2}}}
+\newcommand{\pdCt}[1]{\pdC{#1}t}
+
+
+\newcommand{\pdil}[2]{\ensuremath{\partial{#1}/\partial{#2}}}
+\newcommand{\pdtil}[1]{\ensuremath{\pdil{#1}t}}
+\newcommand{\pdnil}[3]{\ensuremath{\partial^#1{#2}/\partial{{#3}^#1}}}
+\newcommand{\pdsmil}[3]{\ensuremath{\partial^2{#1}/\partial {#2}\,
+   \partial{#3}}}
+\newcommand{\pdiil}[2]{\ensuremath{\partial^\prime{#1}/\partial{#2}}}
+\newcommand{\pdIil}[2]{\ensuremath{\partial^\backprime{#1}/\partial{#2}}}
+\newcommand{\pdcil}[2]{\ensuremath{\partial^{\prime\prime}{#1}/\partial{#2}}}
+\newcommand{\pdCil}[2]{\ensuremath{\partial^{\backprime\backprime}{#1}/
+   \partial{#2}}}
+
+
+
+\newcommand{\del}{\ensuremath{\nabla}}
+\newcommand{\deli}{\ensuremath{\del^\prime}}
+\newcommand{\delI}{\ensuremath{\del^\backprime}}
+\newcommand{\delc}{\ensuremath{\del^{\prime\prime}}}
+\newcommand{\delC}{\ensuremath{\del^{\backprime\backprime}}}
+\newcommand{\deld}{\ensuremath{\del\vdot}}
+\newcommand{\delid}{\ensuremath{\deli\vdot}}
+\newcommand{\delId}{\ensuremath{\delI\vdot}}
+\newcommand{\delcd}{\ensuremath{\delc\vdot}}
+\newcommand{\delCd}{\ensuremath{\delC\vdot}}
+\newcommand{\delX}{\ensuremath{\del_X}}
+\newcommand{\delXx}{\ensuremath{\delX \vec x}}
+
+
+\newcommand{\Df}{\mathrm{D}}
+\newcommand{\adornI}{{\prime}}
+\newcommand{\adornC}{{\prime\prime}}
+
+\newcommand{\Dgm}[5]{\ensuremath{\frac{\Df^{#1}_{#2{#3}}#4}{\Df#5}}}
+\newcommand{\Dgmi}[5]{\ensuremath{\Df^{#1}_{#2{#3}}#4/\Df#5}}
+\newcommand{\Dg}[5]{\ensuremath{\frac{\Df^{{#1}{#2{#3}}}#4}{\Df#5}}}
+\newcommand{\Dgi}[5]{\ensuremath{\Df^{{#1}{#2{#3}}}#4/\Df#5}}
+
+
+\newcommand{\Dn}[1]{\Dgm{}{}{}{#1}t}
+\newcommand{\Di}[2]{\Dgm{}{}{#1}{#2}t}
+\newcommand{\Dii}[2]{\Dgm{\adornI}{}{#1}{#2}t}
+\newcommand{\Dic}[2]{\Dgm{\adornC}{}{#1}{#2}t}
+\newcommand{\Da}[2]{\Dg{}{\sol}{#1}{#2}t}
+\newcommand{\Dai}[2]{\Dg{\adornI}{\sol}{#1}{#2}t}
+\newcommand{\Dac}[2]{\Dg{\adornC}{\sol}{#1}{#2}t}
+
+
+
+\newcommand{\ilims}[2]{\int\limits_{#1}^{#2}}
+\newcommand{\ilim}[1]{\ilims{#1}{}}
+
+
+\newcommand{\oilim}[1]{\oint\limits_{#1}}
+
+
+\newcommand{\gils}[4]{\ilims{#1}{#2}{#3}\dif{#4}}
+\newcommand{\gdils}[7]{\ilims{#1}{#2}\ilims{#3}{#4}{#5}\dif{#6}
+            \dif{#7}}
+\newcommand{\gtils}[8]{\ilims{#1}{#2}\ilims{#3}{#4}\ilims{#5}{#6}
+            {#7}{#8}}
+\newcommand{\gnils}[7]{\ilims{#1}{#2}\cdots\ilims{#3}{#4}{#5}
+            \dif{#6}\dots\dif{#7}}
+
+\newcommand{\gil}[3]{\gils{#1}{}{#2}{#3}}
+\newcommand{\gdil}[5]{\gdils{#1}{}{#2}{}{#3}{#4}{#5}}
+\newcommand{\gtil}[5]{\gtils{#1}{}{#2}{}{#3}{}{#4}{#5}}
+\newcommand{\gnil}[5]{\gnils{#1}{}{#2}{}{#3}{#4}{#5}}
+
+
+\newcommand{\goil}[3]{\oilim{#1}#2\dif{#3}}
+
+
+
+\newcommand{\dif}{\, \mathrm{d}}
+
+\newcommand{\dA}{\dif A}
+\newcommand{\da}{\dif a}
+\newcommand{\dC}{\dif C}
+\newcommand{\dc}{\dif c}
+\newcommand{\dR}{\dif \mathfrak{R}}
+\newcommand{\dr}{\dif \mathfrak{r}}
+\newcommand{\dS}{\dif S}
+\newcommand{\ds}{\dif s}
+\newcommand{\dt}{\dif t}
+\newcommand{\dV}{\dif V}
+\newcommand{\dv}{\dif v}
+\newcommand{\dx}{\dif x}
+\newcommand{\dy}{\dif y}
+\newcommand{\dz}{\dif z}
+
+
+\newtheorem{assumption}{Assumption}
+\newtheorem{AMS-comment}{Comment}
+\newtheorem{closure-approximation}{Closure Approximation}
+\newtheorem{corollary}{Corollary}
+\newtheorem{definition}{Definition}
+\newtheorem{evolution-approximation}{Evolution Approximation}
+\newtheorem{lemma}{Lemma}
+\newtheorem{postulate}{Postulate}
+\newtheorem{primary-restriction}{Primary Restriction}
+\newtheorem{secondary-restriction}{Secondary Restriction}
+\newtheorem{sei-approximation}{SEI Approximation}
+\newtheorem{theorem}{Theorem}
+\newenvironment{proof}{\it Proof.}{\;$\Box$}
+
+
+\newcommand{\gka}{{\ensuremath{\alpha}}}
+\newcommand{\gkb}{{\ensuremath{\beta}}}
+\newcommand{\gkG}{{\ensuremath{\Gamma}}}
+\newcommand{\gkg}{{\ensuremath{\gamma}}}
+\newcommand{\gkD}{{\ensuremath{\Delta}}}
+\newcommand{\gkd}{{\ensuremath{\delta}}}
+\newcommand{\gke}{{\ensuremath{\epsilon}}}
+\newcommand{\gkve}{{\ensuremath{\varepsilon}}}
+\newcommand{\gkz}{{\ensuremath{\zeta}}}
+\newcommand{\gkT}{{\ensuremath{\Theta}}}
+\newcommand{\gkt}{{\ensuremath{\theta}}}
+\newcommand{\gkvt}{{\ensuremath{\vartheta}}}
+\newcommand{\gki}{{\ensuremath{\iota}}}
+\newcommand{\gkk}{{\ensuremath{\kappa}}}
+\newcommand{\gkL}{{\ensuremath{\Lambda}}}
+\newcommand{\gkl}{{\ensuremath{\lambda}}}
+\newcommand{\gkvr}{{\ensuremath{\varrho}}}
+\newcommand{\gkS}{{\ensuremath{\Sigma}}}
+\newcommand{\gks}{{\ensuremath{\sigma}}}
+\newcommand{\gkvs}{{\ensuremath{\varsigma}}}
+\newcommand{\gkU}{{\ensuremath{\Upsilon}}}
+\newcommand{\gku}{{\ensuremath{\upsilon}}}
+\newcommand{\gkvp}{{\ensuremath{\varphi}}}
+\newcommand{\gkO}{{\ensuremath{\Omega}}}
+\newcommand{\gko}{{\ensuremath{\omega}}}
+
+\newcommand{\ab}{{\ensuremath{\alpha\beta}}}
+\newcommand{\ag}{{\ensuremath{\alpha\gamma}}}
+\newcommand{\bg}{{\ensuremath{\beta\gamma}}}
+\newcommand{\wn}{{\ensuremath{wn}}}
+\newcommand{\ws}{{\ensuremath{ws}}}
+\newcommand{\ns}{{\ensuremath{ns}}}
+\newcommand{\abg}{{\ensuremath{\alpha\beta\gamma}}}
+\newcommand{\wns}{{\ensuremath{wns}}}
+\newcommand{\abgd}{{\ensuremath{\alpha\beta\gamma\delta}}}
+\newcommand{\abge}{{\ensuremath{\alpha\beta\gamma\epsilon}}}
+
+
+\newcommand{\lp}{\left(}
+\newcommand{\rp}{\right)}
+\newcommand{\lrp}[1]{\left( #1 \right)}
+\newcommand{\lb}{\left[}
+\newcommand{\rb}{\right]}
+\newcommand{\lrb}[1]{\left[ #1 \right]}
+\newcommand{\lB}{\left\{}
+\newcommand{\rB}{\right\}}
+\newcommand{\lrB}[1]{\left\{ #1 \right\}}
+\newcommand{\lrl}[1]{\left. #1 \right|}
+\newcommand{\lrbp}[3]{\lb{#1}\lp{#2}\rp{#3}\rb}
+\newcommand{\lrBbp}[5]{\lB{#1}\lb{#2}\lp{#3}\rp{#4}\rb{#5}\rB}
+
+
+
+\newcommand{\beq}{\begin {equation}}
+\newcommand{\eeq}{\end{equation}}
+\newcommand{\beqa}{\begin {eqnarray}}
+\newcommand{\eeqa}{\end{eqnarray}}
+
+
+\newcommand{\eql}{\nonumber \\ && \quad}
+\newcommand{\eqlq}{\eql\quad}
+\newcommand{\eqs}{\\ & \quad}
+\newcommand{\eqsq}{\eqs\quad}
+
+
+\newcommand{\eqml}[1]{\\ \qquad {#1}\hfill}
+
+
+\newcommand{\eqn}[1]{eqn (\ref {eq:#1})}
+\newcommand{\Eqn}[1]{Eqn (\ref {eq:#1})}
+\newcommand{\eqnstwo}[2]{eqns (\ref {eq:#1}) and (\ref{eq:#2})}
+\newcommand{\Eqnstwo}[2]{Eqns (\ref{eq:#1}) and (\ref{eq:#2})}
+\newcommand{\eqns}[2]{eqns (\ref{eq:#1})--(\ref {eq:#2})}
+\newcommand{\Eqns}[2]{Eqns (\ref{eq:#1})--(\ref {eq:#2})}
+\newcommand{\eqlist}[1]{(\ref{eq:#1})}
+
+
+\newcounter{eqnline}[equation]
+\newcommand{\eln}{\stepcounter{eqnline}\hfill
+  \hbox{\tiny{\theeqnline}}}
+
+
+\newenvironment{mathlist}{
+    \begin{list}{}{\parsep 0pt
+                   \setlength{\labelwidth}{0.6in}
+                   \setlength{\leftmargin}{0.7in}
+                   \setlength{\labelsep}{0.1in}
+                   \def\makelabel##1{$##1$\hfill}}}{\end{list}}
+
+\ifnum\thetcatLoad>0
+
+
+\newcommand{\Fb}[1]{{\ensuremath{\mathbb{#1}}}}
+\newcommand{\Fc}[1]{{\ensuremath{\mathcal{#1}}}}
+\newcommand{\Fcb}[1]{{\ensuremath{\boldsymbol{\mathcal{#1}}}}}
+\newcommand{\Fe}[1]{{\ensuremath{\mathscr{#1}}}}
+\newcommand{\Feb}[1]{{\ensuremath{\boldsymbol{\mathscr{#1}}}}}
+
+\fi
+\ifnum\thetcatLoad>0
+
+\newcommand{\lscale}{\ell}
+\newcommand{\lmo}{\ensuremath{\lscale_{\rm mo}}}
+\newcommand{\lmi}{\ensuremath{\lscale_{\rm mi}}}
+\newcommand{\lr}{\ensuremath{\lscale_{\rm r}^{\rm r}}}
+\newcommand{\lma}{\ensuremath{\lscale^{\rm ma}}}
+\newcommand{\lme}{\ensuremath{\lscale^{\rm me}}}
+
+\fi
+\ifnum\thetcatLoad>0
+
+
+\newcommand{\E}{{\set E}}
+\newcommand{\EP}{{\srset EP}}
+\newcommand{\EI}{{\srset EI}}
+\newcommand{\EC}{{\srset EC}}
+\newcommand{\EPt}{{\srset E{Pt}}}
+
+\newcommand{\Ec}[1]{{\srmset Ec{#1}}}
+\newcommand{\Ece}{{\Ec\qe}}
+
+
+\newcommand{\Sg}[1]{{\sset S{#1}}}
+
+
+\newcommand{\I}{{\set I}}
+\newcommand{\IP}{{\srset IP}}
+\newcommand{\If}{{\srset If}}
+\newcommand{\II}{{\srset II}}
+\newcommand{\IC}{{\srset IC}}
+\newcommand{\IPt}{{\srset I{Pt}}}
+\newcommand{\IPtq}[1]{{\srmset I{Pt}{#1}}}
+\newcommand{\IPte}{\IPtq\qe}
+\newcommand{\IPtes}{\IPtq\qes}
+\newcommand{\Ii}[2]{{\sset I{{\rm #1}{#2}}}}
+\newcommand{\In}[2]{{\sset I{{\rm #1}/{#2}}}}
+
+
+\newcommand{\Ic}[1]{{\srmset Ic{#1}}}
+\newcommand{\Ice}{{\Ic\qe}}
+\newcommand{\Icep}{\ensuremath{\I_{\mathrm{c}\qe}^+}}
+\newcommand{\Icem}{\ensuremath{\I_{\mathrm{c}\qe}^-}}
+\newcommand{\Icp}[1]{\ensuremath{\I_{\mathrm{c}{{#1}}}^+}}
+\newcommand{\Icm}[1]{\ensuremath{\I_{\mathrm{c}{{#1}}}^-}}
+
+
+\newcommand{\Isg}[1]{\sset I{s{#1}}}
+\newcommand{\Is}{\Isg{}}
+\newcommand{\Ise}{\Isg\qe}
+
+
+\newcommand{\Irxn}{\srset I{rxn}}
+
+
+\newcommand{\ncg}[1]{{\ensuremath{n_{\rm #1}}}}
+\newcommand{\nP}{\ncg P}
+
+\newcommand{\nI}{\ncg I}
+\newcommand{\nC}{\ncg C}
+\newcommand{\nPt}{\ncg {Pt}}
+\newcommand{\nsp}{\ncg s}
+
+\fi
+\ifnum\thetcatLoad>0
+
+\newcommand{\inset}[2]{{\ensuremath{#1\in#2}}}
+\newcommand{\for}[2]{{\ensuremath{\quad\mbox{for }\inset{#1}{#2}}}}
+
+\newcommand{\qeI}{{\inset\qe\I}}
+\newcommand{\qeIr}[1]{{\inset\qe{\srset I{#1}}}}
+\newcommand{\qeIrm}[2]{{\inset\qe{\srmset I{#1}{#2}}}}
+
+\newcommand{\qesI}{{\inset\qes\I}}
+\newcommand{\qesIr}[1]{{\inset\qes{\srset I{#1}}}}
+\newcommand{\qesIrm}[2]{{\inset\qes{\srmset I{#1}{#2}}}}
+
+\newcommand{\fqeI}{{\for\qe\I}}
+\newcommand{\fqeIr}[1]{{\for\qe{\srset I{#1}}}}
+\newcommand{\fqeIrm}[2]{{\for\qe{\srmset I{#1}{#2}}}}
+
+\newcommand{\fqesI}{{\for\qes\I}}
+\newcommand{\fqesIr}[1]{{\for\qes{\srset I{#1}}}}
+\newcommand{\fqesIrm}[2]{{\for\qes{\srmset I{#1}{#2}}}}
+
+\fi
+\ifnum\thetcatLoad>0
+
+\newcommand{\sD}{\set D}
+\newcommand{\sF}{\set F}
+\newcommand{\sJ}{\set J}
+\newcommand{\sLm}{\set L}
+\newcommand{\sM}{\set M}
+\newcommand{\sMmi}[1]{\sset M{#1}}
+\newcommand{\sP}{\set P}
+\newcommand{\sPmi}[1]{\sset P{#1}}
+\newcommand{\sPma}[1]{\ensuremath{\set P^{#1}}}
+\newcommand{\sR}{\set R}
+\newcommand{\sRmi}[1]{\sset R{#1}}
+\newcommand{\sV}{{\set V}}
+\newcommand{\sX}{\set X}
+
+\fi
+
+\ifnum\thetcatLoad>0
+
+\newcommand{\sumset}[2]{{\sL{#1 \in #2\ }}}
+\newcommand{\sumtset}[4]{{\sLt{#1 \in #2}{#3 \in #4\ }}}
+\newcommand{\sumanb}[2]{{\sum\limits_{#1\ne#2}\;}}
+
+\newcommand{\sumI}[1]{{\sumset{#1}\I}}
+\newcommand{\sumIce}[1]{{\sumset{#1}\Ice}}
+\newcommand{\sumIs}[1]{{\sumset{#1}\Is}}
+\newcommand{\sumqeI}{{\sumI\qe}}
+\newcommand{\sumqesIce}{{\sumIce\qes}}
+\newcommand{\sumqsIs}{{\sumIs\qs}}
+
+\newcommand{\sumtIIs}[2]{{\sumtset{#1}\I{#2}\Is}}
+\newcommand{\sumtesIIs}{{\sumtIIs\qe\qs}}
+
+\fi
+\ifnum\thetcatLoad>0
+
+
+\newcommand{\Die}[1]{\Di\qe{#1}}
+\newcommand{\Dae}[1]{\Da\qe{#1}}
+
+\newcommand{\Das}[1]{\Da s{#1}}
+\newcommand{\Daw}[1]{\Da w{#1}}
+\newcommand{\Daws}[1]{\Da\ws{#1}}
+
+
+\newcommand{\Dise}[1]{\Di\qse{#1}}
+\newcommand{\Dase}[1]{\Da\qse{#1}}
+
+\newcommand{\Dais}[1]{\Da {is}{#1}}
+\newcommand{\Daiw}[1]{\Da {iw}{#1}}
+\newcommand{\Daiws}[1]{\Da{i\ws}{#1}}
+
+
+\newcommand{\Dio}[1]{\Di\qrmi{#1}}
+\newcommand{\Diio}[1]{\Dii\qrmi{#1}}
+\newcommand{\Dico}[1]{\Dic\qrmi{#1}}
+\newcommand{\Dao}[1]{\Da\qrma{#1}}
+\newcommand{\Daio}[1]{\Dai\qrma{#1}}
+\newcommand{\Daco}[1]{\Dac\qrma{#1}}
+
+\fi
+\ifnum\thetcatLoad>0
+
+
+\newcommand{\Ln}[1]{{\mathcal{L}^#1}}
+\newcommand{\fV}{{\frac 1V}}
+\newcommand{\iend}{\dr}
+
+
+\newcommand{\gint}[2]{\ilim{#1}#2\iend}
+
+
+\newcommand{\goint}[2]{\oilim{#1}#2\iend}
+
+
+\newcommand{\gaint}[4]{\frac{\gint{#2}{#4#1}}{\gint{#3}{#4}}}
+\newcommand{\gaidm}[4]{\gaint{#1}{\Dm{#2}}{\Dm{#3}}{#4}}
+
+
+\newcommand{\gfint}[3]{\frac 1{#1}\gint{#2}{#3}}
+
+
+\newcommand{\ild}[1]{\ilim{\Dm{#1}}}
+\newcommand{\gid}[2]{\gint{\Dm{#1}}{#2}}
+\newcommand{\goid}[2]{\goint{\Dm{#1}}{#2}}
+\newcommand{\gaid}[4]{\gaint{#1}{\Dm{#2}}{\Dm{#3}}{#4}}
+\newcommand{\gfid}[3]{\gfint{#1}{\Dm{#2}}{#3}}
+
+
+
+\newcommand{\ildp}{\ild\qp}
+\newcommand{\ildi}{\ild\qi}
+\newcommand{\ildc}{\ild\qc}
+
+
+\newcommand{\idp}[1]{\gid\qp{#1}}
+\newcommand{\idi}[1]{\gid\qi{#1}}
+\newcommand{\idc}[1]{\gid\qc{#1}}
+
+
+\newcommand{\fid}[2]{\gfid{V}{#1}{#2}}
+\newcommand{\fidp}[1]{\fid\qp{#1}}
+\newcommand{\fidi}[1]{\fid\qi{#1}}
+\newcommand{\fidc}[1]{\fid\qc{#1}}
+
+\fi
+\ifnum\thetcatLoad>0
+
+
+\newcounter{avgNotation}
+\newcommand{\OmegaSubscript}{0}
+\newcommand{\NoOmegaSubAndSuper}{1}
+\setcounter{avgNotation}\OmegaSubscript
+
+
+\newcommand{\ao}[1]{\left\langle #1 \right\rangle}
+
+\newcommand{\aosub}[4]{{\ao{#1} \ifthenelse
+    {\equal{#4}{}} {_{#2,#3}} {_{#2,#3,#4}}}}
+\newcommand{\aomixed}[4]{{\ao{#1} \ifthenelse
+    {\equal{#4}{}} {^{#2}_{#3}} {^{#2}_{#3,#4}}}}
+\newcommand{\aop}[4]{{\ifnum\theavgNotation=0{\aosub{#1}{\Dm{#2}}
+    {\Dm{#3}}{#4}}\else{\aomixed{#1}{#2}{#3}{#4}}\fi}}
+
+\fi
+\ifnum\thetcatLoad>0
+
+\newcommand{\qp}{{\gka}}
+\newcommand{\qi}{{\ab}}
+\newcommand{\qc}{{\abg}}
+\newcommand{\qpt}{{\abgd}}
+\newcommand{\qe}{{\gka}}
+\newcommand{\qs}{{i}}
+\newcommand{\qes}{{\gkk}}
+\newcommand{\qss}{{j}}
+\newcommand{\qrmi}{{s}}
+\newcommand{\qrma}{{s}}
+\newcommand{\qse}{{\qs\qe}}
+
+\fi
+\ifnum\thetcatLoad>0
+
+
+\newcommand{\gats}[5]{{#1}^{#2\,#3{#4}}_{#5}}
+\newcommand{\sats}[4]{{#1}^{#2{#3}}_{#4}}
+\newcommand{\sdats}[3]{\sats{#1}{\dol}{#2}{#3}}
+\newcommand{\goats}[5]{\gats{\sol{#1}\,}{#2}{#3}{#4}{#5}}
+\newcommand{\soats}[4]{\sats{\sol{#1}\,}{#2}{#3}{#4}}
+\newcommand{\sodats}[3]{\soats{#1}{\dol}{#2}{#3}}
+
+\newcommand{\ga}[4]{{#1}^{#2\,#3{#4}}}
+
+
+\newcommand{\gsmi}[2]{\gats{#1}{}{}{}{#2}}
+\newcommand{\gvmi}[2]{\gsmi{\vec#1}{#2}}
+\newcommand{\gtmi}[2]{\gsmi{\ten#1}{#2}}
+
+
+\newcommand{\gosmi}[2]{\gats{\overline{#1}}{}{}{}{#2}}
+\newcommand{\govmi}[2]{\gsmi{\overline{\vec#1}}{#2}}
+\newcommand{\gotmi}[2]{\gsmi{\overline{\ten#1}}{#2}}
+
+
+\newcommand{\gsma}[2]{\sats{#1}{}{#2}{}}
+\newcommand{\gvma}[2]{\gsma{\vec#1}{#2}}
+\newcommand{\gtma}[2]{\gsma{\ten#1}{#2}}
+
+
+\newcommand{\sol}[1]{{\overline{#1}}}
+\newcommand{\dol}[1]{{\overline{\overline{#1}}}}
+
+
+\newcommand{\gsbs}[3]{\ga{#1}{#2}{\sol}{#3}}
+\newcommand{\gsbv}[3]{\gsbs{\vec#1}{#2}{#3}}
+\newcommand{\gsbt}[3]{\gsbs{\ten#1}{#2}{#3}}
+
+
+\newcommand{\sbs}[2]{\sats{#1}{\sol}{#2}{}}
+\newcommand{\sbv}[2]{\sbs{\vec#1}{#2}}
+\newcommand{\sbt}[2]{\sbs{\ten#1}{#2}}
+
+
+\newcommand{\gdbs}[3]{\ga{#1}{#2}{\dol}{#3}}
+\newcommand{\gdbv}[3]{\gdbs{\vec#1}{#2}{#3}}
+\newcommand{\gdbt}[3]{\gdbs{\ten#1}{#2}{#3}}
+
+
+\newcommand{\dbs}[2]{{#1}^{\dol{#2}}}
+\newcommand{\dbv}[2]{\dbs{\vec#1}{#2}}
+\newcommand{\dbt}[2]{\dbs{\ten#1}{#2}}
+
+\fi
+\ifnum\thetcatLoad>0
+
+
+\newcommand{\mv}[2]{{\vec #1_{#2}}}
+\newcommand{\mvv}[2]{{\mv{#1}{#2}\mv{#1}{#2}}}
+\newcommand{\mvd}[2]{{\mv{#1}{#2}\,\vdot\,}}
+\newcommand{\mvvd}[2]{{\mv{#1}{#2}\mvd{#1}{#2}}}
+
+
+\newcommand{\mn}[1]{{\mv n{#1}}}
+\newcommand{\mnn}[1]{{\mvv n{#1}}}
+\newcommand{\mnd}[1]{{\mvd n{#1}}}
+\newcommand{\mnnd}[1]{{\mvvd n{#1}}}
+
+\newcommand{\mne}{{\mv n\qe}}
+\newcommand{\mnne}{{\mvv n\qe}}
+\newcommand{\mned}{{\mvd n\qe}}
+\newcommand{\mnned}{{\mvvd n\qe}}
+
+\newcommand{\mnes}{{\mv n\qes}}
+\newcommand{\mnnes}{{\mvv n\qes}}
+\newcommand{\mnesd}{{\mvd n\qes}}
+\newcommand{\mnnesd}{{\mvvd n\qes}}
+
+\newcommand{\mns}{{\mv ns}}
+\newcommand{\mnns}{{\mvv ns}}
+\newcommand{\mnsd}{{\mvd ns}}
+\newcommand{\mnnsd}{{\mvvd ns}}
+
+\newcommand{\mnw}{{\mv nw}}
+\newcommand{\mnwd}{{\mvd nw}}
+\newcommand{\mnnw}{{\mvv nw}}
+\newcommand{\mnnwd}{{\mvvd nw}}
+
+\newcommand{\mm}{{\mv m\qi}}
+\newcommand{\mmm}{{\mvv m\qi}}
+\newcommand{\mmd}{{\mvd m\qi}}
+\newcommand{\mmmd}{{\mvvd m\qi}}
+
+\newcommand{\ml}{{\mv l\qc}}
+\newcommand{\mll}{{\mvv l\qc}}
+\newcommand{\mld}{{\mvd l\qc}}
+\newcommand{\mlld}{{\mvvd l\qc}}
+
+\newcommand{\me}{{\mv e\qc}}
+\newcommand{\med}{{\mvd e\qc}}
+
+\fi
+\ifnum\thetcatLoad>0
+
+
+\newcommand{\iemi}[3]{{\underset{{#2}\rightarrow{#3}}{#1}}}
+\newcommand{\ieiM}[2]{\iemi M{#1}{#2}}
+\newcommand{\ieiT}[2]{\iemi {\vec T}{#1}{#2}}
+\newcommand{\ieiQ}[2]{\iemi Q{#1}{#2}}
+\newcommand{\ieiP}[2]{\iemi\Phi{#1}{#2}}
+\newcommand{\ieiG}[2]{\iemi G{#1}{#2}}
+\newcommand{\ieiX}[2]{\iemi X{#1}{#2}}
+
+
+\newcommand{\iema}[3]{{\overset{{#2}\rightarrow{#3}}{#1}}}
+\newcommand{\iemaq}[4]{{\overset{{#3}\rightarrow{#4}}{{#1}_{#2}}}}
+\newcommand{\ieM}[2]{\iema M{#1}{#2}}
+\newcommand{\ieMe}[2]{\iemaq M\eta{#1}{#2}}
+\newcommand{\ieME}[2]{\iemaq ME{#1}{#2}}
+\newcommand{\ieMv}[2]{\iemaq {\vec M}v{#1}{#2}}
+\newcommand{\ieT}[2]{\iema {\vec T}{#1}{#2}}
+\newcommand{\ieTz}[2]{\iema {\vec T_0}{#1}{#2}}
+\newcommand{\ieTs}[2]{\iema {\vec T^*}{#1}{#2}}
+\newcommand{\ieTv}[2]{\iemaq Tv{#1}{#2}}
+\newcommand{\ieQ}[2]{\iema Q{#1}{#2}}
+\newcommand{\ieQz}[2]{\iema {Q_0}{#1}{#2}}
+\newcommand{\ieQo}[2]{\iema {Q_1}{#1}{#2}}
+\newcommand{\ieQzs}[2]{\iema {Q_0^*}{#1}{#2}}
+\newcommand{\ieP}[2]{\iema\Phi{#1}{#2}}
+\newcommand{\iePz}[2]{\iema {\Phi_0}{#1}{#2}}
+\newcommand{\ieG}[2]{\iema G{#1}{#2}}
+\newcommand{\ieGz}[2]{\iema {G_0}{#1}{#2}}
+\newcommand{\ieX}[2]{\iema X{#1}{#2}}
+
+
+\newcommand{\ieMei}[2]{\iemaq M{\eta_i}{#1}{#2}}
+\newcommand{\ieMEi}[2]{\iemaq M{E_i}{#1}{#2}}
+\newcommand{\ieMvi}[2]{\iemaq {\vec M}{v_i}{#1}{#2}}
+\newcommand{\ieTvi}[2]{\iemaq T{v_i}{#1}{#2}}
+
+\newcommand{\ieiz}[3]{{\iemi{z_{#1}}{#2}{#3}}}
+\newcommand{\ieizQ}[2]{{\ieiz Q{#1}{#2}}}
+\newcommand{\ieizT}[2]{{\ieiz T{#1}{#2}}}
+\newcommand{\ieizP}[2]{{\ieiz \Phi{#1}{#2}}}
+
+
+\newcommand{\kd}[3]{\lrp{\gkd_{#1,#2}-\gkd_{#1,#3}}}
+\newcommand{\kdeesws}{{\kd\qe\qes\ws}}
+\newcommand{\kdaiws}{{\kd\gka\gki\ws}}
+
+\fi
+\ifnum\thetcatLoad>0
+
+
+\newcommand{\eqFont}[1]{{\mathcal #1}}
+\newcommand{\vecEqFont}[1]{{\boldsymbol {\mathcal #1}}}
+
+\newcommand{\gEq}[1]{\eqFont{#1}}
+\newcommand{\gEqmi}[2]{\gEq{#1}_{#2}}
+\newcommand{\gEqma}[2]{\gEq{#1}^{\dol{#2}}}
+\newcommand{\gEqsma}[3]{\gEq{#1}_{#2}^{\dol{#3}}}
+
+\newcommand{\gvEq}[1]{\vecEqFont{#1}}
+\newcommand{\gvEqmi}[2]{\gvEq{#1}_{#2}}
+\newcommand{\gvEqma}[2]{\gvEq{#1}^{\dol{#2}}}
+\newcommand{\gvEqsma}[3]{\gvEq{#1}_{#2}^{\dol{#3}}}
+
+\newcommand{\gF}{\gEq F}
+\newcommand{\gFmi}[1]{\gEqmi F{#1}}
+\newcommand{\gFma}[1]{\gEqma F{#1}}
+\newcommand{\gFsma}[2]{\gEqsma F{#1}{#2}}
+
+\newcommand{\gG}{\gEq G}
+\newcommand{\gGmi}[1]{\gEqmi G{#1}}
+\newcommand{\gGma}[1]{\gEqma G{#1}}
+\newcommand{\gGsma}[2]{\gEqsma G{#1}{#2}}
+
+\newcommand{\gM}{\gEq M}
+\newcommand{\gMmi}[1]{\gEqmi M{#1}}
+\newcommand{\gMma}[1]{\gEqma M{#1}}
+\newcommand{\gMsma}[2]{\gEqsma M{#1}{#2}}
+
+\newcommand{\gP}{\gvEq P}
+\newcommand{\gPmi}[1]{\gvEqmi P{#1}}
+\newcommand{\gPma}[1]{\gvEqma P{#1}}
+\newcommand{\gPsma}[2]{\gvEqsma P{#1}{#2}}
+
+\newcommand{\gE}{\gEq E}
+\newcommand{\gEmi}[1]{\gEqmi E{#1}}
+\newcommand{\gEma}[1]{\gEqma E{#1}}
+\newcommand{\gEsma}[2]{\gEqsma E{#1}{#2}}
+
+\newcommand{\gS}{\gEq S}
+\newcommand{\gSmi}[1]{\gEqmi S{#1}}
+\newcommand{\gSma}[1]{\gEqma S{#1}}
+\newcommand{\gSsma}[2]{\gEqsma S{#1}{#2}}
+
+\newcommand{\gT}{\gEq T}
+\newcommand{\gTmi}[1]{\gEqmi T{#1}}
+\newcommand{\gTma}[1]{\gEqma T{#1}}
+\newcommand{\gTsma}[2]{\gEqsma T{#1}{#2}}
+
+\newcommand{\gU}{\gEq U}
+\newcommand{\gUmi}[1]{\gEqmi U{#1}}
+\newcommand{\gUma}[1]{\gEqma U{#1}}
+\newcommand{\gUsma}[2]{\gEqsma U{#1}{#2}}
+
+\fi
+\ifnum\thetcatLoad>0
+
+
+\newcommand{\fb}[1]{\mathbb{#1}}
+
+\newcommand{\xA}{\fb A}
+\newcommand{\xCP}{\fb C_P}
+\newcommand{\xCV}{\fb C_V}
+\newcommand{\xE}{\fb E}
+\newcommand{\xF}{\fb F}
+\newcommand{\xG}{\fb G}
+\newcommand{\xH}{\fb H}
+\newcommand{\xL}{\fb L}
+\newcommand{\xM}{\fb M}
+\newcommand{\xP}{\fb P}
+\newcommand{\xS}{\fb S}
+\newcommand{\xV}{\fb V}
+
+\fi
+\ifnum\thetcatLoad>0
+
+
+\newcommand{\Lm}[2]{{\gkl_{#1}^{#2}}}
+\newcommand{\Lmv}[2]{{\vec\gkl_{#1}^{#2}}}
+\newcommand{\Lmvg}{{\Lmv{}{}}}
+
+\newcommand{\Lmmi}[1]{\Lm{#1}{}}
+\newcommand{\Lmvmi}[1]{\Lmv{#1}{}}
+
+\newcommand{\LmM}[1]{{\Lm\gM{#1}}}
+\newcommand{\LmP}[1]{{\Lmv\gP{#1}}}
+\newcommand{\LmE}[1]{{\Lm\gE{#1}}}
+\newcommand{\LmG}[1]{{\Lm\gG{#1}}}
+\newcommand{\LmT}[1]{{\Lm\gT{#1}}}
+\newcommand{\LmTG}[1]{{\Lm{\gT\gG}{#1}}}
+
+\newcommand{\LmMi}[1]{{\Lmmi{\gM#1}}}
+\newcommand{\LmPi}[1]{{\Lmvmi{\gP#1}}}
+\newcommand{\LmEi}[1]{{\Lmmi{\gE#1}}}
+\newcommand{\LmGi}[1]{{\Lmmi{\gG#1}}}
+\newcommand{\LmTi}[1]{{\Lmmi{\gT#1}}}
+\newcommand{\LmTGi}[1]{{\Lmmi{\gT\gG#1}}}
+
+\newcommand{\LmMe}{{\Lm\gM\qe}}
+\newcommand{\LmPe}{{\Lmv\gP\qe}}
+\newcommand{\LmEe}{{\Lm\gE\qe}}
+\newcommand{\LmGe}{{\Lm\gG\qe}}
+\newcommand{\LmTe}{{\Lm\gT\qe}}
+\newcommand{\LmTGe}{{\Lm{\gT\gG}\qe}}
+
+\newcommand{\LmMie}{{\LmMi\qe}}
+\newcommand{\LmPie}{{\LmPi\qe}}
+\newcommand{\LmEie}{{\LmEi\qe}}
+\newcommand{\LmGie}{{\LmGi\qe}}
+\newcommand{\LmTie}{{\LmTi\qe}}
+\newcommand{\LmTGie}{{\LmTGi\qe}}
+
+\fi
+
+\ifnum\thetcatLoad>0
+
+
+\newcommand{\FeD}{{\sD}}
+\newcommand{\FeE}{{\E}}
+\newcommand{\FeEC}{{\EC}}
+\newcommand{\FeEc}[1]{{\Ec{#1}}}
+\newcommand{\FeEI}{{\EI}}
+\newcommand{\FeEP}{{\EP}}
+\newcommand{\FeEPt}{{\EPt}}
+\newcommand{\FeF}{{\sF}}
+\newcommand{\FeI}{{\I}}
+\newcommand{\FeIC}{{\IC}}
+\newcommand{\FeIc}[1]{{\Ic{#1}}}
+\newcommand{\FeIcp}[1]{{\Icp{#1}}}
+\newcommand{\FeIcm}[1]{{\Icm{#1}}}
+\newcommand{\FeIf}{{\If}}
+\newcommand{\FeII}{{\II}}
+\newcommand{\FeIP}{{\IP}}
+\newcommand{\FeIPt}{{\IPt}}
+\newcommand{\FeIs}{{\Is}}
+\newcommand{\FeIrxn}{{\Irxn}}
+\newcommand{\FeJ}{{\sJ}}
+\newcommand{\FeL}{{\sLm}}
+\newcommand{\FeM}{{\sM}}
+\newcommand{\FeMmi}[1]{{\sMmi{#1}}}
+\newcommand{\FeP}{{\sP}}
+\newcommand{\FeR}{{\sR}}
+\newcommand{\FeRmi}[1]{{\sRmi{#1}}}
+\newcommand{\FeV}{{\sV}}
+\newcommand{\FeX}{{\sX}}
+
+
+\newcommand{\snC}{{\nC}}
+\newcommand{\snI}{{\nI}}
+\newcommand{\snP}{{\nP}}
+\newcommand{\snPt}{{\nPt}}
+\newcommand{\sns}{{\nsp}}
+
+
+\newcommand{\FbA}{\Fb A}
+\newcommand{\FbC}{\Fb C}
+\newcommand{\FbE}{\Fb E}
+\newcommand{\FbF}{\Fb F}
+\newcommand{\FbG}{\Fb G}
+\newcommand{\FbH}{\Fb H}
+\newcommand{\FbL}{\Fb L}
+\newcommand{\FbM}{\Fb M}
+\newcommand{\FbP}{\Fb P}
+\newcommand{\FbS}{\Fb S}
+\newcommand{\FbV}{\Fb V}
+
+
+\newcommand{\FcE}{\Fc E}
+\newcommand{\FcEmi}[1]{\FcE_{#1}}
+\newcommand{\FcEma}[1]{\FcE^{\dol{#1}}}
+\newcommand{\FcEmima}[2]{\FcE_{#1}^{\dol{#2}}}
+\newcommand{\FcF}{\Fc F}
+\newcommand{\FcFmi}[1]{\FcF_{#1}}
+\newcommand{\FcFma}[1]{\FcF^{\dol{#1}}}
+\newcommand{\FcFmima}[2]{\FcF_{#1}^{\dol{#2}}}
+\newcommand{\FcbF}{\Fcb F}
+\newcommand{\FcbFmi}[1]{\FcbF_{#1}}
+\newcommand{\FcbFma}[1]{\FcbF^{\dol{#1}}}
+\newcommand{\FcbFmima}[2]{\FcbF_{#1}^{\dol{#2}}}
+\newcommand{\FcG}{\Fc G}
+\newcommand{\FcGmi}[1]{\FcG_{#1}}
+\newcommand{\FcGma}[1]{\FcG^{\dol{#1}}}
+\newcommand{\FcGmima}[2]{\FcG_{#1}^{\dol{#2}}}
+\newcommand{\FcM}{\Fc M}
+\newcommand{\FcMmi}[1]{\FcM_{#1}}
+\newcommand{\FcMma}[1]{\FcM^{\dol{#1}}}
+\newcommand{\FcMmima}[2]{\FcM_{#1}^{\dol{#2}}}
+\newcommand{\FcbP}{\Fcb P}
+\newcommand{\FcbPmi}[1]{\FcbP_{#1}}
+\newcommand{\FcbPma}[1]{\FcbP^{\dol{#1}}}
+\newcommand{\FcbPmima}[2]{\FcbP_{#1}^{\dol{#2}}}
+\newcommand{\FcS}{\Fc S}
+\newcommand{\FcSmi}[1]{\FcS_{#1}}
+\newcommand{\FcSma}[1]{\FcS^{\dol{#1}}}
+\newcommand{\FcSmima}[2]{\FcS_{#1}^{\dol{#2}}}
+\newcommand{\FcT}{\Fc T}
+\newcommand{\FcTmi}[1]{\FcT_{#1}}
+\newcommand{\FcTma}[1]{\FcT^{\dol{#1}}}
+\newcommand{\FcTmima}[2]{\FcT_{#1}^{\dol{#2}}}
+\newcommand{\FcTG}{\Fc T_{\FcG}}
+\newcommand{\FcTGmi}[1]{\FcT_{\FcG #1}}
+\newcommand{\FcTGma}[1]{\FcT_\FcG^{\dol{#1}}}
+\newcommand{\FcTGmima}[2]{\FcT_{\FcG #1}^{\dol{#2}}}
+\newcommand{\FcU}{\Fc U}
+\newcommand{\FcUmi}[1]{\FcU_{#1}}
+\newcommand{\FcUma}[1]{\FcU^{\dol{#1}}}
+\newcommand{\FcUmima}[2]{\FcU_{#1}^{\dol{#2}}}
+
+
+
+\newcommand{\sAmi}[1]{A_{#1}}
+\newcommand{\sAma}[1]{A^{#1}}
+
+
+\newcommand{\osAmi}[1]{\gosmi A{#1}}
+
+
+\newcommand{\htami}[1]{\hat{\ten a}_{#1}}
+\newcommand{\htama}[1]{\hat{\ten a}^{#1}}
+
+
+\newcommand{\cs}[1]{{\hat{#1}}}
+\newcommand{\ct}[1]{{\hat{\ten #1}}}
+
+
+\newcommand{\hsA}{{\cs A}}
+\newcommand{\hsa}{{\cs a}}
+\newcommand{\hta}{{\ct a}}
+\newcommand{\hsB}{{\cs B}}
+\newcommand{\hsc}{{\cs c}}
+\newcommand{\hsD}{{\cs D}}
+\newcommand{\htD}{{\ct D}}
+\newcommand{\hsE}{{\cs E}}
+\newcommand{\htK}{{\ct K}}
+\newcommand{\hsK}{{\cs K}}
+\newcommand{\hsk}{{\cs k}}
+\newcommand{\htk}{{\ct k}}
+\newcommand{\htR}{{\ct R}}
+\newcommand{\hsR}{{\cs R}}
+\newcommand{\hsS}{{\cs S}}
+\newcommand{\htZ}{{\ct Z}}
+
+\newcommand{\hsgka}{{\cs\gka}}
+\newcommand{\hsgkb}{{\cs\gkb}}
+\newcommand{\hsgkg}{{\cs\gkg}}
+\newcommand{\hsgkk}{{\cs\gkk}}
+\newcommand{\hsmu}{{\cs\mu}}
+\newcommand{\hsnu}{{\cs\nu}}
+
+
+\newcommand{\sbmi}[1]{{\gsmi b{#1}}}
+\newcommand{\sbma}[1]{{\gsma b{#1}}}
+
+
+\newcommand{\tC}{{\ten C}}
+\newcommand{\tCmi}[1]{{\gtmi C{#1}}}
+\newcommand{\tCma}[1]{{\gtma C{#1}}}
+\newcommand{\otC}{{\overline{\ten C}}}
+
+
+\newcommand{\tdmi}[1]{{\gtmi d{#1}}}
+\newcommand{\tdsmi}[1]{{\ten d_{#1}^{\prime}}}
+\newcommand{\tdcmi}[1]{{\ten d_{#1}^{\prime\prime}}}
+\newcommand{\tdma}[1]{{\dbt d{#1}}}
+
+
+\newcommand{\sEmi}[1]{{\gsmi E{#1}}}
+\newcommand{\sEma}[1]{{\dbs E{#1}}}
+
+
+\newcommand{\osE}{{\overline E}}
+\newcommand{\osEmi}[1]{{\osE_{#1}}}
+\newcommand{\osEma}[1]{{\osE^{\dol{#1}}}}
+\newcommand{\osEmima}[2]{{\osE_{#1}^{\dol{#2}}}}
+
+
+\newcommand{\tE}{\ten E}
+\newcommand{\tEmi}[1]{\tE_{#1}}
+\newcommand{\tEma}[1]{\tE^{#1}}
+
+
+\newcommand{\semi}[1]{{\gsmi e{#1}}}
+\newcommand{\sema}[1]{{\dbs e{#1}}}
+
+
+\newcommand{\sETmi}[1]{{\gsmi E{T#1}}}
+\newcommand{\sETma}[1]{{\gats E{}{\dol}{#1}{T}}}
+
+
+\newcommand{\sEmima}[2]{{\gats{E}{}{\dol}{#2}{#1}}}
+
+
+\newcommand{\semima}[2]{e_{#1}^{\dol{#2}}}
+
+
+\newcommand{\temi}[1]{{\gtmi e{#1}}}
+\newcommand{\tema}[1]{{\gtma e{#1}}}
+
+
+\newcommand{\vF}{\vec F}
+\newcommand{\tF}{\ten F}
+\newcommand{\vf}{\vec f}
+\newcommand{\tf}{\ten f}
+
+\newcommand{\sFma}[1]{{\dbs F{#1}}}
+\newcommand{\sfma}[1]{{\dbs f{#1}}}
+\newcommand{\vfma}[1]{{\dbv f{#1}}}
+
+
+\newcommand{\sGmi}[1]{G_{#1}}
+
+
+\newcommand{\tGmi}[1]{{\gtmi G{#1}}}
+\newcommand{\tGma}[1]{{\gtma G{#1}}}
+
+
+\newcommand{\vgmi}[1]{{\gvmi g{#1}}}
+\newcommand{\vgma}[1]{{\sbv g{#1}}}
+
+
+\newcommand{\shmi}[1]{{\gsmi h{#1}}}
+\newcommand{\shma}[1]{{\dbs h{#1}}}
+\newcommand{\shmima}[2]{{\sdats h{#2}{#1}}}
+
+
+\newcommand{\sHmi}[1]{{H_{#1}}}
+\newcommand{\sHma}[1]{{\dbs H{#1}}}
+\newcommand{\osH}{{\sol H}}
+\newcommand{\osHmi}[1]{{\osH_{#1}}}
+\newcommand{\osHma}[1]{{\dbs \osH{#1}}}
+
+
+\newcommand{\vJ}{{\vec J}}
+\newcommand{\tJ}{{\ten J}}
+
+
+\newcommand{\sJmima}[2]{{\gats J{}{}{#2}{#1}}}
+
+
+\newcommand{\sKEmi}[1]{{\gats{K}{}{}{}{E#1}}}
+\newcommand{\sKEma}[1]{{\gats{K}{}{\dol}{#1}{E}}}
+\newcommand{\sKEmima}[2]{{\gats{K}{}{\dol}{#2}{E#1}}}
+
+
+\newcommand{\osL}{{\sol L}}
+
+
+\newcommand{\vlmi}[1]{{\gvmi l{#1}}}
+\newcommand{\vmmi}[1]{{\gvmi m{#1}}}
+\newcommand{\vnmi}[1]{{\gvmi n{#1}}}
+\newcommand{\vnma}[1]{{\gvma n{#1}}}
+
+
+\newcommand{\spmi}[1]{{\gsmi p{#1}}}
+\newcommand{\spma}[1]{{\gsma p{#1}}}
+\newcommand{\spmima}[2]{{\gats p{#2}{}{}{#1}}}
+
+
+\newcommand{\vpmi}[1]{{\gvmi p{#1}}}
+\newcommand{\vpma}[1]{{\dbv p{#1}}}
+
+
+\newcommand{\vqmi}[1]{{\gvmi q{#1}}}
+\newcommand{\vqpmi}[1]{{\gats {\vec q}{\prime}{}{}{#1}}}
+\newcommand{\vqppmi}[1]{{\gats {\vec q}{\prime\prime}{}{}{#1}}}
+\newcommand{\vqma}[1]{{\dbv q{#1}}}
+\newcommand{\vqmima}[2]{{\sdats {\vec q}{#2}{#1}}}
+
+
+\newcommand{\srmi}[1]{{\gsmi r{#1}}}
+\newcommand{\srma}[1]{{\gsma r{#1}}}
+
+
+\newcommand{\vr}{{\vec r}}
+
+
+\newcommand{\osS}{{\sol S}}
+
+
+\newcommand{\FeS}{{\Sg{}}}
+
+
+\newcommand{\ssma}[1]{{s^{\dol{#1}}}}
+
+
+\newcommand{\ttmi}[1]{{\gtmi{t}{#1}}}
+\newcommand{\ttpmi}[1]{{\gats {\ten t}{\prime}{}{}{#1}}}
+\newcommand{\ttppmi}[1]{{\gats {\ten t}{\prime\prime}{}{}{#1}}}
+
+
+\newcommand{\ttma}[1]{{\dbt t{#1}}}
+
+
+\newcommand{\vumi}[1]{{\gvmi u{#1}}}
+\newcommand{\vuma}[1]{{\dbv u{#1}}}
+\newcommand{\vumima}[2]{{\sdats{\vec u}{#2}{#1}}}
+
+
+\newcommand{\osV}{{\sol V}}
+
+
+\newcommand{\vvmi}[1]{{\gvmi{v}{#1}}}
+\newcommand{\vvpmi}[1]{{\gats {\vec v}{\prime}{}{}{#1}}}
+\newcommand{\vvppmi}[1]{{\gats {\vec v}{\prime\prime}{}{}{#1}}}
+
+
+\newcommand{\vvma}[1]{{\sbv v{#1}}}
+
+
+\newcommand{\vvrma}[2]{{\gvma v{\sol{#1},\sol{#2}}}}
+
+
+\newcommand{\vvmima}[2]{{\gats{\vec v}{}{\dol}{#2}{#1}}}
+
+
+\newcommand{\vwmi}[1]{{\vec w_{#1}}}
+
+
+\newcommand{\sXmi}[1]{{\gsmi X{#1}}}
+\newcommand{\sXma}[1]{{\dbs X{#1}}}
+\newcommand{\tXmi}[1]{{\gtmi X{#1}}}
+\newcommand{\tXma}[1]{{\dbt X{#1}}}
+
+
+\newcommand{\sxmi}[1]{{\gsmi x{#1}}}
+\newcommand{\sxma}[1]{{\dbs x{#1}}}
+
+
+\newcommand{\vx}{{\vec x}}
+
+
+\newcommand{\sgkgmi}[1]{{\gsmi\gkg{#1}}}
+\newcommand{\sgkgma}[1]{{\gsma\gkg{#1}}}
+\newcommand{\sgkgmima}[2]{{\gats\gkg{#2}{}{}{#1}}}
+
+
+\newcommand{\sgkd}{{\ensuremath{\gkd}}}
+\newcommand{\sgkdp}{{\ensuremath{\sgkd^{\;\prime}}}}
+\newcommand{\sgkdpp}{{\ensuremath{\sgkd^{\;\prime\prime}}}}
+\newcommand{\sgkdsol}{{\ensuremath{\sol{\sgkd}}}}
+\newcommand{\sgkdsolp}{{\ensuremath{\sgkdsol^{\;\prime}}}}
+\newcommand{\sgkdsolpp}{{\ensuremath{\sgkdsol^{\;\prime\prime}}}}
+\newcommand{\sgkddol}{{\ensuremath{\dol{\sgkd}}}}
+\newcommand{\sgkddolp}{{\ensuremath{\sgkddol^{\;\prime}}}}
+\newcommand{\sgkddolpp}{{\ensuremath{\sgkddol^{\;\prime\prime}}}}
+
+
+\newcommand{\sgkema}[1]{{\gsma\gke{\dol{#1}}}}
+
+
+\newcommand{\setami}[1]{{\gsmi \eta{#1}}}
+\newcommand{\setama}[1]{{\dbs \eta{#1}}}
+
+
+\newcommand{\setamima}[2]{{\gats{\eta}{}{\dol}{#2}{#1}}}
+
+
+\newcommand{\oseta}{{\sol\eta}}
+\newcommand{\osetama}[1]{{\dbs\oseta{\;#1}}}
+\newcommand{\osetamima}[2]{{\sodats\eta{#2}{#1}}}
+
+
+\newcommand{\sgktmi}[1]{{\gsmi\gkt{#1}}}
+\newcommand{\sgktma}[1]{{\dbs\gkt{#1}}}
+\newcommand{\sgktmima}[2]{{\gats{\gkt}{}{\dol}{#2}{#1}}}
+
+
+\newcommand{\sgkkGmi}[1]{{\gsmi\gkk{G#1}}}
+\newcommand{\sgkkGma}[1]{{\gats\gkk{}\dol{#1}G}}
+\newcommand{\sgkkNmi}[1]{{\gsmi\gkk{N#1}}}
+\newcommand{\sgkkNma}[1]{{\gats\gkk{}\dol{#1}N}}
+
+
+\newcommand{\sgkLmi}[1]{{\gsmi\gkL{#1}}}
+\newcommand{\sgkLma}[1]{{\dbs\gkL{#1}}}
+
+
+\newcommand{\sgklma}[2]{{\gkl_{#1}^{#2}}}
+\newcommand{\vgklma}[2]{{\vec\gkl_{#1}^{#2}}}
+
+
+\newcommand{\smumi}[1]{{\gsmi\mu{#1}}}
+\newcommand{\smuma}[1]{{\sbs\mu{#1}}}
+
+
+\newcommand{\smuOma}[1]{{\gats\mu{}\sol{#1}0}}
+
+
+\newcommand{\vxi}{{\gvmi \xi{}}}
+
+
+\newcommand{\srhomi}[1]{{\gsmi\rho{#1}}}
+\newcommand{\srhoma}[1]{{\gsma\rho{#1}}}
+\newcommand{\srhomima}[2]{{\gats{\rho}{}{}{#2}{#1}}}
+
+
+\newcommand{\tgksmi}[1]{{\gtmi \gks{#1}}}
+\newcommand{\tgksma}[1]{{\dbt \gks{#1}}}
+
+
+\newcommand{\sgkvsmi}[1]{{\gsmi \gkvs{#1}}}
+\newcommand{\sgkvsma}[1]{{\sbs \gkvs{#1}}}
+
+
+\newcommand{\ttauma}[1]{{\dbt \tau{#1}}}
+
+
+\newcommand{\sgkUmi}[1]{{\gkU_{#1}}}
+
+
+\newcommand{\vgkvpmi}[1]{{\gvmi\gkvp{#1}}}
+\newcommand{\vgkvppmi}[1]{{\gats{\vec\gkvp}{\prime}{}{}{#1}}}
+\newcommand{\vgkvpppmi}[1]{{\gats{\vec\gkvp}{\prime\prime}{}{}{#1}}}
+\newcommand{\vgkvpma}[1]{{\dbv\gkvp{#1}}}
+
+
+\newcommand{\sgkvpmi}[1]{{\gsmi\gkvp{#1}}}
+\newcommand{\sgkvpma}[1]{{\dbs\gkvp{#1}}}
+
+
+\newcommand{\schimima}[2]{{\gats\chi{}{}{\dol{#2}}{#1}}}
+
+
+\newcommand{\sPsimi}[1]{{\gsmi\Psi{#1}}}
+\newcommand{\sPsima}[1]{{\sbs\Psi{#1}}}
+
+\newcommand{\spsimi}[1]{{\gsmi\psi{#1}}}
+\newcommand{\spsima}[1]{{\sbs\psi{#1}}}
+\newcommand{\spsimima}[2]{{\gats{\psi}{}{\dol}{#2}{#1}}}
+
+
+\newcommand{\sgkomi}[2]{{\gsmi{\gko}{#1#2}}}
+\newcommand{\sgkoma}[2]{{\ga\gko{#1}{\sol}{#2}{}}}
+\newcommand{\sgkomima}[2]{{\gko_{#1}^{\dol{#2}}}}
+
+\fi
+\ifnum\thetcatLoad>0
+
+
+\newcommand{\esmi}[1]{{b_{#1}}}
+\newcommand{\esmis}[1]{{\esmi{\qs#1}}}
+
+\newcommand{\esip}{{\esmi\qp}}
+\newcommand{\esii}{{\esmi\qi}}
+\newcommand{\esic}{{\esmi\qc}}
+\newcommand{\esipt}{{\esmi\qpt}}
+\newcommand{\esie}{{\esmi\qe}}
+\newcommand{\esies}{{\esmi\qes}}
+\newcommand{\esis}{{\esmi s}}
+\newcommand{\esiw}{{\esmi w}}
+\newcommand{\esin}{{\esmi n}}
+\newcommand{\esiwn}{{\esmi\wn}}
+\newcommand{\esiws}{{\esmi\ws}}
+\newcommand{\esins}{{\esmi\ns}}
+\newcommand{\esiwns}{{\esmi\wns}}
+
+\newcommand{\esisp}{{\esmis\qp}}
+\newcommand{\esisi}{{\esmis\qi}}
+\newcommand{\esisc}{{\esmis\qc}}
+\newcommand{\esispt}{{\esmis\qpt}}
+\newcommand{\esise}{{\esmis\qe}}
+\newcommand{\esises}{{\esmis\qes}}
+\newcommand{\esiss}{{\esmis s}}
+\newcommand{\esisw}{{\esmis w}}
+\newcommand{\esisn}{{\esmis n}}
+\newcommand{\esiswn}{{\esmis\wn}}
+\newcommand{\esisws}{{\esmis\ws}}
+\newcommand{\esisns}{{\esmis\ns}}
+\newcommand{\esiswns}{{\esmis\wns}}
+
+
+\newcommand{\esma}[1]{{b^{#1}}}
+\newcommand{\esmas}[1]{{\esma{\qs#1}}}
+
+\newcommand{\esap}{{\esma\qp}}
+\newcommand{\esai}{{\esma\qi}}
+\newcommand{\esac}{{\esma\qc}}
+\newcommand{\esapt}{{\esma\qpt}}
+\newcommand{\esae}{{\esma\qe}}
+\newcommand{\esaes}{{\esma\qes}}
+\newcommand{\esas}{{\esma s}}
+\newcommand{\esaw}{{\esma w}}
+\newcommand{\esan}{{\esma n}}
+\newcommand{\esawn}{{\esma\wn}}
+\newcommand{\esaws}{{\esma\ws}}
+\newcommand{\esans}{{\esma\ns}}
+\newcommand{\esawns}{{\esma\wns}}
+
+\newcommand{\esasp}{{\esmas\qp}}
+\newcommand{\esasi}{{\esmas\qi}}
+\newcommand{\esasc}{{\esmas\qc}}
+\newcommand{\esaspt}{{\esmas\qpt}}
+\newcommand{\esase}{{\esmas\qe}}
+\newcommand{\esases}{{\esmas\qes}}
+\newcommand{\esass}{{\esmas s}}
+\newcommand{\esasw}{{\esmas w}}
+\newcommand{\esasn}{{\esmas n}}
+\newcommand{\esaswn}{{\esmas\wn}}
+\newcommand{\esasws}{{\esmas\ws}}
+\newcommand{\esasns}{{\esmas\ns}}
+\newcommand{\esaswns}{{\esmas\wns}}
+
+
+\newcommand{\Ci}{{\gtmi C{s}}}
+\newcommand{\Ca}{{\gtma C{s}}}
+
+
+\newcommand{\dmi}[1]{{\ten d_{#1}}}
+\newcommand{\dmis}[1]{{\dmi{\qs#1}}}
+
+\newcommand{\dip}{{\dmi\qp}}
+\newcommand{\dii}{{\dmi\qi}}
+\newcommand{\dic}{{\dmi\qc}}
+\newcommand{\dipt}{{\dmi\qpt}}
+\newcommand{\die}{{\dmi\qe}}
+\newcommand{\dies}{{\dmi\qes}}
+\newcommand{\dis}{{\dmi s}}
+\newcommand{\diw}{{\dmi w}}
+\newcommand{\din}{{\dmi n}}
+\newcommand{\diwn}{{\dmi\wn}}
+\newcommand{\diws}{{\dmi\ws}}
+\newcommand{\dins}{{\dmi\ns}}
+\newcommand{\diwns}{{\dmi\wns}}
+
+\newcommand{\disp}{{\dmis\qp}}
+\newcommand{\disi}{{\dmis\qi}}
+\newcommand{\disc}{{\dmis\qc}}
+\newcommand{\dispt}{{\dmis\qpt}}
+\newcommand{\dise}{{\dmis\qe}}
+\newcommand{\dises}{{\dmis\qes}}
+\newcommand{\diss}{{\dmis s}}
+\newcommand{\disw}{{\dmis w}}
+\newcommand{\disn}{{\dmis n}}
+\newcommand{\diswn}{{\dmis\wn}}
+\newcommand{\disws}{{\dmis\ws}}
+\newcommand{\disns}{{\dmis\ns}}
+\newcommand{\diswns}{{\dmis\wns}}
+
+
+\newcommand{\dma}[1]{{\dbt{d}{#1}}}
+\newcommand{\dmas}[1]{{\dma{\qs#1}}}
+
+\newcommand{\dap}{{\dma\qp}}
+\newcommand{\dai}{{\dma\qi}}
+\newcommand{\dac}{{\dma\qc}}
+\newcommand{\dapt}{{\dma\qpt}}
+\newcommand{\dae}{{\dma\qe}}
+\newcommand{\daes}{{\dma\qes}}
+\newcommand{\das}{{\dma s}}
+\newcommand{\daw}{{\dma w}}
+\newcommand{\dan}{{\dma n}}
+\newcommand{\dawn}{{\dma\wn}}
+\newcommand{\daws}{{\dma\ws}}
+\newcommand{\dans}{{\dma\ns}}
+\newcommand{\dawns}{{\dma\wns}}
+
+\newcommand{\dasp}{{\dmas\qp}}
+\newcommand{\dasi}{{\dmas\qi}}
+\newcommand{\dasc}{{\dmas\qc}}
+\newcommand{\daspt}{{\dmas\qpt}}
+\newcommand{\dase}{{\dmas\qe}}
+\newcommand{\dases}{{\dmas\qes}}
+\newcommand{\dass}{{\dmas s}}
+\newcommand{\dasw}{{\dmas w}}
+\newcommand{\dasn}{{\dmas n}}
+\newcommand{\daswn}{{\dmas\wn}}
+\newcommand{\dasws}{{\dmas\ws}}
+\newcommand{\dasns}{{\dmas\ns}}
+\newcommand{\daswns}{{\dmas\wns}}
+
+
+\newcommand{\Emi}[1]{{E_{#1}}}
+\newcommand{\Emiqs}[1]{{\Emi{\qs#1}}}
+
+\newcommand{\Eip}{{\Emi\qp}}
+\newcommand{\Eii}{{\Emi\qi}}
+\newcommand{\Eic}{{\Emi\qc}}
+\newcommand{\Eipt}{{\Emi\qpt}}
+\newcommand{\Eie}{{\Emi\qe}}
+\newcommand{\Eies}{{\Emi\qes}}
+\newcommand{\Eis}{{\Emi s}}
+\newcommand{\Eiw}{{\Emi w}}
+\newcommand{\Ein}{{\Emi n}}
+\newcommand{\Eiwn}{{\Emi\wn}}
+\newcommand{\Eiws}{{\Emi\ws}}
+\newcommand{\Eins}{{\Emi\ns}}
+\newcommand{\Eiwns}{{\Emi\wns}}
+
+\newcommand{\Eisp}{{\Emiqs\qp}}
+\newcommand{\Eisi}{{\Emiqs\qi}}
+\newcommand{\Eisc}{{\Emiqs\qc}}
+\newcommand{\Eispt}{{\Emiqs\qpt}}
+\newcommand{\Eise}{{\Emiqs\qe}}
+\newcommand{\Eises}{{\Emiqs\qes}}
+\newcommand{\Eiss}{{\Emiqs s}}
+\newcommand{\Eisw}{{\Emiqs w}}
+\newcommand{\Eisn}{{\Emiqs n}}
+\newcommand{\Eiswn}{{\Emiqs\wn}}
+\newcommand{\Eisws}{{\Emiqs\ws}}
+\newcommand{\Eisns}{{\Emiqs\ns}}
+\newcommand{\Eiswns}{{\Emiqs\wns}}
+
+
+\newcommand{\Ema}[1]{{\dbs{E}{#1}}}
+\newcommand{\Emaqs}[1]{{\Ema{\qs#1}}}
+
+\newcommand{\Eap}{{\Ema\qp}}
+\newcommand{\Eai}{{\Ema\qi}}
+\newcommand{\Eac}{{\Ema\qc}}
+\newcommand{\Eapt}{{\Ema\qpt}}
+\newcommand{\Eae}{{\Ema\qe}}
+\newcommand{\Eaes}{{\Ema\qes}}
+\newcommand{\Eas}{{\Ema s}}
+\newcommand{\Eaw}{{\Ema w}}
+\newcommand{\Ean}{{\Ema n}}
+\newcommand{\Eawn}{{\Ema\wn}}
+\newcommand{\Eaws}{{\Ema\ws}}
+\newcommand{\Eans}{{\Ema\ns}}
+\newcommand{\Eawns}{{\Ema\wns}}
+
+\newcommand{\Easp}{{\Emaqs\qp}}
+\newcommand{\Easi}{{\Emaqs\qi}}
+\newcommand{\Easc}{{\Emaqs\qc}}
+\newcommand{\Easpt}{{\Emaqs\qpt}}
+\newcommand{\Ease}{{\Emaqs\qe}}
+\newcommand{\Eases}{{\Emaqs\qes}}
+\newcommand{\Eass}{{\Emaqs s}}
+\newcommand{\Easw}{{\Emaqs w}}
+\newcommand{\Easn}{{\Emaqs n}}
+\newcommand{\Easwn}{{\Emaqs\wn}}
+\newcommand{\Easws}{{\Emaqs\ws}}
+\newcommand{\Easns}{{\Emaqs\ns}}
+\newcommand{\Easwns}{{\Emaqs\wns}}
+
+
+\newcommand{\Etmi}[1]{{E_{T#1}}}
+\newcommand{\Etmis}[1]{{\Etmi{\qs#1}}}
+
+\newcommand{\Etip}{{\Etmi\qp}}
+\newcommand{\Etii}{{\Etmi\qi}}
+\newcommand{\Etic}{{\Etmi\qc}}
+\newcommand{\Etipt}{{\Etmi\qpt}}
+\newcommand{\Etie}{{\Etmi\qe}}
+\newcommand{\Eties}{{\Etmi\qes}}
+\newcommand{\Etis}{{\Etmi s}}
+\newcommand{\Etiw}{{\Etmi w}}
+\newcommand{\Etin}{{\Etmi n}}
+\newcommand{\Etiwn}{{\Etmi\wn}}
+\newcommand{\Etiws}{{\Etmi\ws}}
+\newcommand{\Etins}{{\Etmi\ns}}
+\newcommand{\Etiwns}{{\Etmi\wns}}
+
+\newcommand{\Etisp}{{\Etmis\qp}}
+\newcommand{\Etisi}{{\Etmis\qi}}
+\newcommand{\Etisc}{{\Etmis\qc}}
+\newcommand{\Etispt}{{\Etmis\qpt}}
+\newcommand{\Etise}{{\Etmis\qe}}
+\newcommand{\Etises}{{\Etmis\qes}}
+\newcommand{\Etiss}{{\Etmis s}}
+\newcommand{\Etisw}{{\Etmis w}}
+\newcommand{\Etisn}{{\Etmis n}}
+\newcommand{\Etiswn}{{\Etmis\wn}}
+\newcommand{\Etisws}{{\Etmis\ws}}
+\newcommand{\Etisns}{{\Etmis\ns}}
+\newcommand{\Etiswns}{{\Etmis\wns}}
+
+\newcommand{\Etma}[1]{{E^{\dol{#1}}_T}}
+\newcommand{\Etmas}[1]{{\Etma{\qs#1}}}
+
+\newcommand{\Etap}{{\Etma\qp}}
+\newcommand{\Etai}{{\Etma\qi}}
+\newcommand{\Etac}{{\Etma\qc}}
+\newcommand{\Etapt}{{\Etma\qpt}}
+\newcommand{\Etae}{{\Etma\qe}}
+\newcommand{\Etaes}{{\Etma\qes}}
+\newcommand{\Etas}{{\Etma s}}
+\newcommand{\Etaw}{{\Etma w}}
+\newcommand{\Etan}{{\Etma n}}
+\newcommand{\Etawn}{{\Etma\wn}}
+\newcommand{\Etaws}{{\Etma\ws}}
+\newcommand{\Etans}{{\Etma\ns}}
+\newcommand{\Etawns}{{\Etma\wns}}
+
+\newcommand{\Etasp}{{\Etmas\qp}}
+\newcommand{\Etasi}{{\Etmas\qi}}
+\newcommand{\Etasc}{{\Etmas\qc}}
+\newcommand{\Etaspt}{{\Etmas\qpt}}
+\newcommand{\Etase}{{\Etmas\qe}}
+\newcommand{\Etases}{{\Etmas\qes}}
+\newcommand{\Etass}{{\Etmas s}}
+\newcommand{\Etasw}{{\Etmas w}}
+\newcommand{\Etasn}{{\Etmas n}}
+\newcommand{\Etaswn}{{\Etmas\wn}}
+\newcommand{\Etasws}{{\Etmas\ws}}
+\newcommand{\Etasns}{{\Etmas\ns}}
+\newcommand{\Etaswns}{{\Etmas\wns}}
+
+
+\newcommand{\tei}{{\gtmi es}}
+\newcommand{\tea}{{\gtma es}}
+
+
+\newcommand{\Emmi}[1]{{e_{#1}}}
+\newcommand{\Emmiqs}[1]{{\Emmi{\qs#1}}}
+
+\newcommand{\Emip}{{\Emmi\qp}}
+\newcommand{\Emii}{{\Emmi\qi}}
+\newcommand{\Emic}{{\Emmi\qc}}
+\newcommand{\Emipt}{{\Emmi\qpt}}
+\newcommand{\Emie}{{\Emmi\qe}}
+\newcommand{\Emies}{{\Emmi\qes}}
+\newcommand{\Emis}{{\Emmi s}}
+\newcommand{\Emiw}{{\Emmi w}}
+\newcommand{\Emin}{{\Emmi n}}
+\newcommand{\Emiwn}{{\Emmi\wn}}
+\newcommand{\Emiws}{{\Emmi\ws}}
+\newcommand{\Emins}{{\Emmi\ns}}
+\newcommand{\Emiwns}{{\Emmi\wns}}
+
+\newcommand{\Emisp}{{\Emmiqs\qp}}
+\newcommand{\Emisi}{{\Emmiqs\qi}}
+\newcommand{\Emisc}{{\Emmiqs\qc}}
+\newcommand{\Emispt}{{\Emmiqs\qpt}}
+\newcommand{\Emise}{{\Emmiqs\qe}}
+\newcommand{\Emises}{{\Emmiqs\qes}}
+\newcommand{\Emiss}{{\Emmiqs s}}
+\newcommand{\Emisw}{{\Emmiqs w}}
+\newcommand{\Emisn}{{\Emmiqs n}}
+\newcommand{\Emiswn}{{\Emmiqs\wn}}
+\newcommand{\Emisws}{{\Emmiqs\ws}}
+\newcommand{\Emisns}{{\Emmiqs\ns}}
+\newcommand{\Emiswns}{{\Emmiqs\wns}}
+
+
+\newcommand{\Emma}[1]{{\sbs{e}{#1}}}
+\newcommand{\Emmaqs}[1]{{\Emma{\qs#1}}}
+
+\newcommand{\Emap}{{\Emma\qp}}
+\newcommand{\Emai}{{\Emma\qi}}
+\newcommand{\Emac}{{\Emma\qc}}
+\newcommand{\Emapt}{{\Emma\qpt}}
+\newcommand{\Emae}{{\Emma\qe}}
+\newcommand{\Emaes}{{\Emma\qes}}
+\newcommand{\Emas}{{\Emma s}}
+\newcommand{\Emaw}{{\Emma w}}
+\newcommand{\Eman}{{\Emma n}}
+\newcommand{\Emawn}{{\Emma\wn}}
+\newcommand{\Emaws}{{\Emma\ws}}
+\newcommand{\Emans}{{\Emma\ns}}
+\newcommand{\Emawns}{{\Emma\wns}}
+
+\newcommand{\Emasp}{{\Emmaqs\qp}}
+\newcommand{\Emasi}{{\Emmaqs\qi}}
+\newcommand{\Emasc}{{\Emmaqs\qc}}
+\newcommand{\Emaspt}{{\Emmaqs\qpt}}
+\newcommand{\Emase}{{\Emmaqs\qe}}
+\newcommand{\Emases}{{\Emmaqs\qes}}
+\newcommand{\Emass}{{\Emmaqs s}}
+\newcommand{\Emasw}{{\Emmaqs w}}
+\newcommand{\Emasn}{{\Emmaqs n}}
+\newcommand{\Emaswn}{{\Emmaqs\wn}}
+\newcommand{\Emasws}{{\Emmaqs\ws}}
+\newcommand{\Emasns}{{\Emmaqs\ns}}
+\newcommand{\Emaswns}{{\Emmaqs\wns}}
+
+
+\newcommand{\Gmi}[1]{{\ten G_{#1}}}
+\newcommand{\Giws}{\Gmi\ws}
+
+\newcommand{\Gma}[1]{{\ten G^{#1}}}
+\newcommand{\Gaws}{\Gma\ws}
+
+
+\newcommand{\gmi}[1]{{\vec g_{#1}}}
+\newcommand{\gmis}[1]{{\gmi{\qs#1}}}
+
+\newcommand{\gip}{{\gmi\qp}}
+\newcommand{\gii}{{\gmi\qi}}
+\newcommand{\gic}{{\gmi\qc}}
+\newcommand{\gipt}{{\gmi\qpt}}
+\newcommand{\gie}{{\gmi\qe}}
+\newcommand{\gies}{{\gmi\qes}}
+\newcommand{\gis}{{\gmi s}}
+\newcommand{\giw}{{\gmi w}}
+\newcommand{\gin}{{\gmi n}}
+\newcommand{\giwn}{{\gmi\wn}}
+\newcommand{\giws}{{\gmi\ws}}
+\newcommand{\gins}{{\gmi\ns}}
+\newcommand{\giwns}{{\gmi\wns}}
+
+\newcommand{\gisp}{{\gmis\qp}}
+\newcommand{\gisi}{{\gmis\qi}}
+\newcommand{\gisc}{{\gmis\qc}}
+\newcommand{\gispt}{{\gmis\qpt}}
+\newcommand{\gise}{{\gmis\qe}}
+\newcommand{\gises}{{\gmis\qes}}
+\newcommand{\giss}{{\gmis s}}
+\newcommand{\gisw}{{\gmis w}}
+\newcommand{\gisn}{{\gmis n}}
+\newcommand{\giswn}{{\gmis\wn}}
+\newcommand{\gisws}{{\gmis\ws}}
+\newcommand{\gisns}{{\gmis\ns}}
+\newcommand{\giswns}{{\gmis\wns}}
+
+
+\newcommand{\gma}[1]{{\sbv g{#1}}}
+\newcommand{\gmas}[1]{{\gma{\qs#1}}}
+
+\newcommand{\gap}{{\gma\qp}}
+\newcommand{\gai}{{\gma\qi}}
+\newcommand{\gac}{{\gma\qc}}
+\newcommand{\gapt}{{\gma\qpt}}
+\newcommand{\gae}{{\gma\qe}}
+\newcommand{\gaes}{{\gma\qes}}
+\newcommand{\gas}{{\gma s}}
+\newcommand{\gaw}{{\gma w}}
+\newcommand{\gan}{{\gma n}}
+\newcommand{\gawn}{{\gma\wn}}
+\newcommand{\gaws}{{\gma\ws}}
+\newcommand{\gans}{{\gma\ns}}
+\newcommand{\gawns}{{\gma\wns}}
+
+\newcommand{\gasp}{{\gmas\qp}}
+\newcommand{\gasi}{{\gmas\qi}}
+\newcommand{\gasc}{{\gmas\qc}}
+\newcommand{\gaspt}{{\gmas\qpt}}
+\newcommand{\gase}{{\gmas\qe}}
+\newcommand{\gases}{{\gmas\qes}}
+\newcommand{\gass}{{\gmas s}}
+\newcommand{\gasw}{{\gmas w}}
+\newcommand{\gasn}{{\gmas n}}
+\newcommand{\gaswn}{{\gmas\wn}}
+\newcommand{\gasws}{{\gmas\ws}}
+\newcommand{\gasns}{{\gmas\ns}}
+\newcommand{\gaswns}{{\gmas\wns}}
+
+
+\newcommand{\hmi}[1]{{\shmi{#1}}}
+\newcommand{\hmis}[1]{{\hmi{\qs#1}}}
+
+\newcommand{\hip}{{\hmi\qp}}
+\newcommand{\hii}{{\hmi\qi}}
+\newcommand{\hic}{{\hmi\qc}}
+\newcommand{\hipt}{{\hmi\qpt}}
+\newcommand{\hie}{{\hmi\qe}}
+\newcommand{\hies}{{\hmi\qes}}
+\newcommand{\his}{{\hmi s}}
+\newcommand{\hiw}{{\hmi w}}
+\newcommand{\hin}{{\hmi n}}
+\newcommand{\hiwn}{{\hmi\wn}}
+\newcommand{\hiws}{{\hmi\ws}}
+\newcommand{\hins}{{\hmi\ns}}
+\newcommand{\hiwns}{{\hmi\wns}}
+
+\newcommand{\hisp}{{\hmis\qp}}
+\newcommand{\hisi}{{\hmis\qi}}
+\newcommand{\hisc}{{\hmis\qc}}
+\newcommand{\hispt}{{\hmis\qpt}}
+\newcommand{\hise}{{\hmis\qe}}
+\newcommand{\hises}{{\hmis\qes}}
+\newcommand{\hiss}{{\hmis s}}
+\newcommand{\hisw}{{\hmis w}}
+\newcommand{\hisn}{{\hmis n}}
+\newcommand{\hiswn}{{\hmis\wn}}
+\newcommand{\hisws}{{\hmis\ws}}
+\newcommand{\hisns}{{\hmis\ns}}
+\newcommand{\hiswns}{{\hmis\wns}}
+
+
+\newcommand{\hma}[1]{{\shma{#1}}}
+\newcommand{\hmas}[1]{{\hma{\qs#1}}}
+
+\newcommand{\hap}{{\hma\qp}}
+\newcommand{\hai}{{\hma\qi}}
+\newcommand{\hac}{{\hma\qc}}
+\newcommand{\hapt}{{\hma\qpt}}
+\newcommand{\hae}{{\hma\qe}}
+\newcommand{\haes}{{\hma\qes}}
+\newcommand{\has}{{\hma s}}
+\newcommand{\haw}{{\hma w}}
+\newcommand{\han}{{\hma n}}
+\newcommand{\hawn}{{\hma\wn}}
+\newcommand{\haws}{{\hma\ws}}
+\newcommand{\hans}{{\hma\ns}}
+\newcommand{\hawns}{{\hma\wns}}
+
+\newcommand{\hasp}{{\hmas\qp}}
+\newcommand{\hasi}{{\hmas\qi}}
+\newcommand{\hasc}{{\hmas\qc}}
+\newcommand{\haspt}{{\hmas\qpt}}
+\newcommand{\hase}{{\hmas\qe}}
+\newcommand{\hases}{{\hmas\qes}}
+\newcommand{\hass}{{\hmas s}}
+\newcommand{\hasw}{{\hmas w}}
+\newcommand{\hasn}{{\hmas n}}
+\newcommand{\haswn}{{\hmas\wn}}
+\newcommand{\hasws}{{\hmas\ws}}
+\newcommand{\hasns}{{\hmas\ns}}
+\newcommand{\haswns}{{\hmas\wns}}
+
+
+\newcommand{\Jma}[2]{{\gats J{}{}{#2}{#1}}}
+
+
+\newcommand{\Kema}[1]{{\dbs{K}{#1}_E}}
+\newcommand{\Kemas}[1]{{\Kema{\qs#1}}}
+
+\newcommand{\Keap}{{\Kema\qp}}
+\newcommand{\Keai}{{\Kema\qi}}
+\newcommand{\Keac}{{\Kema\qc}}
+\newcommand{\Keapt}{{\Kema\qpt}}
+\newcommand{\Keae}{{\Kema\qe}}
+\newcommand{\Keaes}{{\Kema\qes}}
+\newcommand{\Keas}{{\Kema s}}
+\newcommand{\Keaw}{{\Kema w}}
+\newcommand{\Kean}{{\Kema n}}
+\newcommand{\Keawn}{{\Kema\wn}}
+\newcommand{\Keaws}{{\Kema\ws}}
+\newcommand{\Keans}{{\Kema\ns}}
+\newcommand{\Keawns}{{\Kema\wns}}
+
+\newcommand{\Keasp}{{\Kemas\qp}}
+\newcommand{\Keasi}{{\Kemas\qi}}
+\newcommand{\Keasc}{{\Kemas\qc}}
+\newcommand{\Keaspt}{{\Kemas\qpt}}
+\newcommand{\Kease}{{\Kemas\qe}}
+\newcommand{\Keases}{{\Kemas\qes}}
+\newcommand{\Keass}{{\Kemas s}}
+\newcommand{\Keasw}{{\Kemas w}}
+\newcommand{\Keasn}{{\Kemas n}}
+\newcommand{\Keaswn}{{\Kemas\wn}}
+\newcommand{\Keasws}{{\Kemas\ws}}
+\newcommand{\Keasns}{{\Kemas\ns}}
+\newcommand{\Keaswns}{{\Kemas\wns}}
+
+
+\newcommand{\pmi}[1]{{p_{#1}}}
+
+\newcommand{\pip}{{\pmi\qp}}
+\newcommand{\pii}{{\pmi\qi}}
+\newcommand{\pic}{{\pmi\qc}}
+\newcommand{\pipt}{{\pmi\qpt}}
+\newcommand{\pie}{{\pmi\qe}}
+\newcommand{\pies}{{\pmi\qes}}
+\newcommand{\pis}{{\pmi s}}
+\newcommand{\piw}{{\pmi w}}
+\newcommand{\pin}{{\pmi n}}
+\newcommand{\piwn}{{\pmi\wn}}
+\newcommand{\piws}{{\pmi\ws}}
+\newcommand{\pins}{{\pmi\ns}}
+\newcommand{\piwns}{{\pmi\wns}}
+
+
+\newcommand{\pmag}[2]{{p_{#1}^{#2}}}
+\newcommand{\pma}[1]{{\pmag{}{#1}}}
+
+\newcommand{\pap}{{\pma\qp}}
+\newcommand{\pai}{{\pma\qi}}
+\newcommand{\pac}{{\pma\qc}}
+\newcommand{\papt}{{\pma\qpt}}
+\newcommand{\pae}{{\pma\qe}}
+\newcommand{\paes}{{\pma\qes}}
+\newcommand{\pas}{{\pma s}}
+\newcommand{\paw}{{\pma w}}
+\newcommand{\pan}{{\pma n}}
+\newcommand{\pawn}{{\pma\wn}}
+\newcommand{\paws}{{\pma\ws}}
+\newcommand{\pans}{{\pma\ns}}
+\newcommand{\pawns}{{\pma\wns}}
+
+
+\newcommand{\qmi}[1]{{\vec q_{#1}}}
+\newcommand{\qmis}[1]{{\qmi{\qs#1}}}
+
+\newcommand{\qip}{{\qmi\qp}}
+\newcommand{\qii}{{\qmi\qi}}
+\newcommand{\qic}{{\qmi\qc}}
+\newcommand{\qipt}{{\qmi\qpt}}
+\newcommand{\qie}{{\qmi\qe}}
+\newcommand{\qies}{{\qmi\qes}}
+\newcommand{\qis}{{\qmi s}}
+\newcommand{\qiw}{{\qmi w}}
+\newcommand{\qin}{{\qmi n}}
+\newcommand{\qiwn}{{\qmi\wn}}
+\newcommand{\qiws}{{\qmi\ws}}
+\newcommand{\qins}{{\qmi\ns}}
+\newcommand{\qiwns}{{\qmi\wns}}
+
+\newcommand{\qisp}{{\qmis\qp}}
+\newcommand{\qisi}{{\qmis\qi}}
+\newcommand{\qisc}{{\qmis\qc}}
+\newcommand{\qispt}{{\qmis\qpt}}
+\newcommand{\qise}{{\qmis\qe}}
+\newcommand{\qises}{{\qmis\qes}}
+\newcommand{\qiss}{{\qmis s}}
+\newcommand{\qisw}{{\qmis w}}
+\newcommand{\qisn}{{\qmis n}}
+\newcommand{\qiswn}{{\qmis\wn}}
+\newcommand{\qisws}{{\qmis\ws}}
+\newcommand{\qisns}{{\qmis\ns}}
+\newcommand{\qiswns}{{\qmis\wns}}
+
+
+\newcommand{\qma}[1]{{\dbv q{#1}}}
+\newcommand{\qmas}[1]{{\qma {\qs#1}}}
+
+\newcommand{\qap}{{\qma\qp}}
+\newcommand{\qai}{{\qma\qi}}
+\newcommand{\qac}{{\qma\qc}}
+\newcommand{\qapt}{{\qma\qpt}}
+\newcommand{\qae}{{\qma\qe}}
+\newcommand{\qaes}{{\qma\qes}}
+\newcommand{\qas}{{\qma s}}
+\newcommand{\qaw}{{\qma w}}
+\newcommand{\qan}{{\qma n}}
+\newcommand{\qawn}{{\qma\wn}}
+\newcommand{\qaws}{{\qma\ws}}
+\newcommand{\qans}{{\qma\ns}}
+\newcommand{\qawns}{{\qma\wns}}
+
+\newcommand{\qasp}{{\qmas\qp}}
+\newcommand{\qasi}{{\qmas\qi}}
+\newcommand{\qasc}{{\qmas\qc}}
+\newcommand{\qaspt}{{\qmas\qpt}}
+\newcommand{\qase}{{\qmas\qe}}
+\newcommand{\qases}{{\qmas\qes}}
+\newcommand{\qass}{{\qmas s}}
+\newcommand{\qasw}{{\qmas w}}
+\newcommand{\qasn}{{\qmas n}}
+\newcommand{\qaswn}{{\qmas\wn}}
+\newcommand{\qasws}{{\qmas\ws}}
+\newcommand{\qasns}{{\qmas\ns}}
+\newcommand{\qaswns}{{\qmas\wns}}
+
+
+\newcommand{\tmi}[1]{{\ten t_{#1}}}
+\newcommand{\tmis}[1]{{\tmi{\qs#1}}}
+
+\newcommand{\tip}{{\tmi\qp}}
+\newcommand{\tii}{{\tmi\qi}}
+\newcommand{\tic}{{\tmi\qc}}
+\newcommand{\tipt}{{\tmi\qpt}}
+\newcommand{\tie}{{\tmi\qe}}
+\newcommand{\ties}{{\tmi\qes}}
+\newcommand{\tis}{{\tmi s}}
+\newcommand{\tiw}{{\tmi w}}
+\newcommand{\tin}{{\tmi n}}
+\newcommand{\tiwn}{{\tmi\wn}}
+\newcommand{\tiws}{{\tmi\ws}}
+\newcommand{\tins}{{\tmi\ns}}
+\newcommand{\tiwns}{{\tmi\wns}}
+
+\newcommand{\tisp}{{\tmis\qp}}
+\newcommand{\tisi}{{\tmis\qi}}
+\newcommand{\tisc}{{\tmis\qc}}
+\newcommand{\tispt}{{\tmis\qpt}}
+\newcommand{\tise}{{\tmis\qe}}
+\newcommand{\tises}{{\tmis\qes}}
+\newcommand{\tiss}{{\tmis s}}
+\newcommand{\tisw}{{\tmis w}}
+\newcommand{\tisn}{{\tmis n}}
+\newcommand{\tiswn}{{\tmis\wn}}
+\newcommand{\tisws}{{\tmis\ws}}
+\newcommand{\tisns}{{\tmis\ns}}
+\newcommand{\tiswns}{{\tmis\wns}}
+
+
+\newcommand{\tma}[1]{{\dbt{t}{#1}}}
+\newcommand{\tmas}[1]{{\tma{\qs#1}}}
+
+\newcommand{\tap}{{\tma\qp}}
+\newcommand{\tai}{{\tma\qi}}
+\newcommand{\tac}{{\tma\qc}}
+\newcommand{\tapt}{{\tma\qpt}}
+\newcommand{\tae}{{\tma\qe}}
+\newcommand{\taes}{{\tma\qes}}
+\newcommand{\tas}{{\tma s}}
+\newcommand{\taw}{{\tma w}}
+\newcommand{\tawn}{{\tma\wn}}
+\newcommand{\taws}{{\tma\ws}}
+\newcommand{\tans}{{\tma\ns}}
+\newcommand{\tawns}{{\tma\wns}}
+
+\newcommand{\tasp}{{\tmas\qp}}
+\newcommand{\tasi}{{\tmas\qi}}
+\newcommand{\tasc}{{\tmas\qc}}
+\newcommand{\taspt}{{\tmas\qpt}}
+\newcommand{\tase}{{\tmas\qe}}
+\newcommand{\tases}{{\tmas\qes}}
+\newcommand{\tass}{{\tmas s}}
+\newcommand{\tasw}{{\tmas w}}
+\newcommand{\tasn}{{\tmas n}}
+\newcommand{\taswn}{{\tmas\wn}}
+\newcommand{\tasws}{{\tmas\ws}}
+\newcommand{\tasns}{{\tmas\ns}}
+\newcommand{\taswns}{{\tmas\wns}}
+
+
+\newcommand{\umi}[1]{{\gvmi u{#1}}}
+
+
+\newcommand{\uma}[1]{{\dbv{u}{#1}}}
+\newcommand{\uap}{{\uma{\qs\qp}}}
+\newcommand{\uai}{{\uma{\qs\qi}}}
+\newcommand{\uac}{{\uma{\qs\qc}}}
+\newcommand{\uapt}{{\uma{\qs\qpt}}}
+\newcommand{\uae}{{\uma{\qs\qe}}}
+\newcommand{\uaes}{{\uma{\qs\qes}}}
+\newcommand{\uas}{{\uma{\qs s}}}
+\newcommand{\uaw}{{\uma{\qs w}}}
+\newcommand{\uan}{{\uma{\qs n}}}
+\newcommand{\uawn}{{\uma{\qs \wn}}}
+\newcommand{\uaws}{{\uma{\qs \ws}}}
+\newcommand{\uans}{{\uma{\qs \ns}}}
+\newcommand{\uawns}{{\uma{\qs \wns}}}
+
+
+\newcommand{\vmi}[1]{{\vec v_{#1}}}
+
+\newcommand{\vip}{{\vmi\qp}}
+\newcommand{\vii}{{\vmi\qi}}
+\newcommand{\vic}{{\vmi\qc}}
+\newcommand{\vipt}{{\vmi\qpt}}
+\newcommand{\vie}{{\vmi\qe}}
+\newcommand{\vies}{{\vmi\qes}}
+\newcommand{\vis}{{\vmi s}}
+\newcommand{\viw}{{\vmi w}}
+\newcommand{\vin}{{\vmi n}}
+\newcommand{\viws}{{\vmi\ws}}
+\newcommand{\viwn}{{\vmi\wn}}
+\newcommand{\vins}{{\vmi\ns}}
+\newcommand{\viwns}{{\vmi\wns}}
+
+\newcommand{\visp}{{\vmi{\qs\qp}}}
+\newcommand{\visi}{{\vmi{\qs\qi}}}
+\newcommand{\visc}{{\vmi{\qs\qc}}}
+\newcommand{\vispt}{{\vmi{\qs\qpt}}}
+\newcommand{\vise}{{\vmi{\qs\qe}}}
+\newcommand{\vises}{{\vmi{\qs\qes}}}
+\newcommand{\viss}{{\vmi{\qs s}}}
+\newcommand{\visw}{{\vmi{\qs w}}}
+\newcommand{\visn}{{\vmi{\qs n}}}
+\newcommand{\viswn}{{\vmi{\qs \wn}}}
+\newcommand{\visws}{{\vmi{\qs \ws}}}
+\newcommand{\visns}{{\vmi{\qs \ns}}}
+\newcommand{\viswns}{{\vmi{\qs \wns}}}
+
+\newcommand{\rvmi}[1]{{\rmi{#1}\vmi{#1}}}
+\newcommand{\rvvmi}[1]{{\rvmi{#1}\vmi{#1}}}
+
+
+\newcommand{\vma}[1]{{\sbv{v}{#1}}}
+
+\newcommand{\vap}{{\vma\qp}}
+\newcommand{\vai}{{\vma\qi}}
+\newcommand{\vac}{{\vma\qc}}
+\newcommand{\vapt}{{\vma\qpt}}
+\newcommand{\vae}{{\vma\qe}}
+\newcommand{\vaes}{{\vma\qes}}
+\newcommand{\vas}{{\vma s}}
+\newcommand{\vaw}{{\vma w}}
+\newcommand{\van}{{\vma n}}
+\newcommand{\vawn}{{\vma \wn}}
+\newcommand{\vaws}{{\vma \ws}}
+\newcommand{\vans}{{\vma \ns}}
+\newcommand{\vawns}{{\vma \wns}}
+
+\newcommand{\vasp}{{\vma{\qs\qp}}}
+\newcommand{\vasi}{{\vma{\qs\qi}}}
+\newcommand{\vasc}{{\vma{\qs\qc}}}
+\newcommand{\vaspt}{{\vma{\qs\qpt}}}
+\newcommand{\vase}{{\vma{\qs\qe}}}
+\newcommand{\vases}{{\vma{\qs\qes}}}
+\newcommand{\vass}{{\vma{\qs s}}}
+\newcommand{\vasw}{{\vma{\qs w}}}
+\newcommand{\vasn}{{\vma{\qs n}}}
+\newcommand{\vaswn}{{\vma{\qs \wn}}}
+\newcommand{\vasws}{{\vma{\qs \ws}}}
+\newcommand{\vasns}{{\vma{\qs \ns}}}
+\newcommand{\vaswns}{{\vma{\qs \wns}}}
+
+
+\newcommand{\vrma}[2]{{\vec v^{\sol{#1},\sol{#2}}}}
+\newcommand{\vrmae}[1]{{\vrma{#1}s}}
+\newcommand{\vrmas}[1]{{\vrma{\qs#1}s}}
+
+\newcommand{\vrap}{{\vrmae\qp}}
+\newcommand{\vrai}{{\vrmae\qi}}
+\newcommand{\vrac}{{\vrmae\qc}}
+\newcommand{\vrapt}{{\vrmae\qpt}}
+\newcommand{\vrae}{{\vrmae\qe}}
+\newcommand{\vraes}{{\vrmae\qes}}
+\newcommand{\vras}{{\vrmae s}}
+\newcommand{\vraw}{{\vrmae w}}
+\newcommand{\vran}{{\vrmae n}}
+\newcommand{\vrawn}{{\vrmae \wn}}
+\newcommand{\vraws}{{\vrmae \ws}}
+\newcommand{\vrans}{{\vrmae \ns}}
+\newcommand{\vrawns}{{\vrmae \wns}}
+
+\newcommand{\vrasp}{{\vrmas\qp}}
+\newcommand{\vrasi}{{\vrmas\qi}}
+\newcommand{\vrasc}{{\vrmas\qc}}
+\newcommand{\vraspt}{{\vrmas\qpt}}
+\newcommand{\vrase}{{\vrmas\qe}}
+\newcommand{\vrases}{{\vrmas\qes}}
+\newcommand{\vrass}{{\vrmas s}}
+\newcommand{\vrasw}{{\vrmas w}}
+\newcommand{\vrasn}{{\vrmas n}}
+\newcommand{\vraswn}{{\vrmas \wn}}
+\newcommand{\vrasws}{{\vrmas \ws}}
+\newcommand{\vrasns}{{\vrmas \ns}}
+\newcommand{\vraswns}{{\vrmas \wns}}
+
+
+\newcommand{\iftmi}[1]{{\gkg_{#1}}}
+
+\newcommand{\iftip}{{\iftmi\qp}}
+\newcommand{\iftii}{{\iftmi\qi}}
+\newcommand{\iftic}{{\iftmi\qc}}
+\newcommand{\iftipt}{{\iftmi\qpt}}
+\newcommand{\iftie}{{\iftmi\qe}}
+\newcommand{\ifties}{{\iftmi\qes}}
+\newcommand{\iftis}{{\iftmi s}}
+\newcommand{\iftiw}{{\iftmi w}}
+\newcommand{\iftin}{{\iftmi n}}
+\newcommand{\iftiwn}{{\iftmi\wn}}
+\newcommand{\iftiws}{{\iftmi\ws}}
+\newcommand{\iftins}{{\iftmi\ns}}
+\newcommand{\iftiwns}{{\iftmi\wns}}
+
+
+\newcommand{\iftma}[1]{{\gkg^{#1}}}
+
+\newcommand{\iftap}{{\iftma\qp}}
+\newcommand{\iftai}{{\iftma\qi}}
+\newcommand{\iftac}{{\iftma\qc}}
+\newcommand{\iftapt}{{\iftma\qpt}}
+\newcommand{\iftae}{{\iftma\qe}}
+\newcommand{\iftaes}{{\iftma\qes}}
+\newcommand{\iftas}{{\iftma s}}
+\newcommand{\iftaw}{{\iftma w}}
+\newcommand{\iftan}{{\iftma n}}
+\newcommand{\iftawn}{{\iftma\wn}}
+\newcommand{\iftaws}{{\iftma\ws}}
+\newcommand{\iftans}{{\iftma\ns}}
+\newcommand{\iftawns}{{\iftma\wns}}
+
+
+\newcommand{\ema}[1]{{\gke^{\dol{#1}}}}
+
+\newcommand{\ep}{{\ema\qp}}
+\newcommand{\ei}{{\ema\qi}}
+\newcommand{\ec}{{\ema\qc}}
+\newcommand{\ept}{{\ema\qpt}}
+\newcommand{\ee}{{\ema\qe}}
+\newcommand{\ees}{{\ema\qes}}
+\newcommand{\es}{{\ema s}}
+\newcommand{\en}{{\ema n}}
+\newcommand{\ew}{{\ema w}}
+\newcommand{\ews}{{\ema\ws}}
+\newcommand{\ewn}{{\ema\wn}}
+\newcommand{\ens}{{\ema\ns}}
+\newcommand{\ewns}{{\ema\wns}}
+
+
+\newcommand{\evmi}[1]{{\eta_{#1}}}
+\newcommand{\evmis}[1]{{\evmi{\qs#1}}}
+
+\newcommand{\evip}{{\evmi\qp}}
+\newcommand{\evii}{{\evmi\qi}}
+\newcommand{\evic}{{\evmi\qc}}
+\newcommand{\evipt}{{\evmi\qpt}}
+\newcommand{\evie}{{\evmi\qe}}
+\newcommand{\evies}{{\evmi\qes}}
+\newcommand{\evis}{{\evmi s}}
+\newcommand{\eviw}{{\evmi w}}
+\newcommand{\evin}{{\evmi n}}
+\newcommand{\eviwn}{{\evmi\wn}}
+\newcommand{\eviws}{{\evmi\ws}}
+\newcommand{\evins}{{\evmi\ns}}
+\newcommand{\eviwns}{{\evmi\wns}}
+
+\newcommand{\evisp}{{\evmis\qp}}
+\newcommand{\evisi}{{\evmis\qi}}
+\newcommand{\evisc}{{\evmis\qc}}
+\newcommand{\evispt}{{\evmis\qpt}}
+\newcommand{\evise}{{\evmis\qe}}
+\newcommand{\evises}{{\evmis\qes}}
+\newcommand{\eviss}{{\evmis s}}
+\newcommand{\evisw}{{\evmis w}}
+\newcommand{\evisn}{{\evmis n}}
+\newcommand{\eviswn}{{\evmis\wn}}
+\newcommand{\evisws}{{\evmis\ws}}
+\newcommand{\evisns}{{\evmis\ns}}
+\newcommand{\eviswns}{{\evmis\wns}}
+
+
+\newcommand{\evma}[1]{{\dbs\eta{#1}}}
+\newcommand{\evmas}[1]{{\evma{\qs#1}}}
+
+\newcommand{\evap}{{\evma\qp}}
+\newcommand{\evai}{{\evma\qi}}
+\newcommand{\evac}{{\evma\qc}}
+\newcommand{\evapt}{{\evma\qpt}}
+\newcommand{\evae}{{\evma\qe}}
+\newcommand{\evaes}{{\evma\qes}}
+\newcommand{\evas}{{\evma s}}
+\newcommand{\evaw}{{\evma w}}
+\newcommand{\evan}{{\evma n}}
+\newcommand{\evawn}{{\evma\wn}}
+\newcommand{\evaws}{{\evma\ws}}
+\newcommand{\evans}{{\evma\ns}}
+\newcommand{\evawns}{{\evma\wns}}
+
+\newcommand{\evasp}{{\evmas\qp}}
+\newcommand{\evasi}{{\evmas\qi}}
+\newcommand{\evasc}{{\evmas\qc}}
+\newcommand{\evaspt}{{\evmas\qpt}}
+\newcommand{\evase}{{\evmas\qe}}
+\newcommand{\evases}{{\evmas\qes}}
+\newcommand{\evass}{{\evmas s}}
+\newcommand{\evasw}{{\evmas w}}
+\newcommand{\evasn}{{\evmas n}}
+\newcommand{\evaswn}{{\evmas\wn}}
+\newcommand{\evasws}{{\evmas\ws}}
+\newcommand{\evasns}{{\evmas\ns}}
+\newcommand{\evaswns}{{\evmas\wns}}
+
+
+\newcommand{\Tmi}[1]{{\gkt_{#1}}}
+
+\newcommand{\Tip}{{\Tmi\qp}}
+\newcommand{\Tii}{{\Tmi\qi}}
+\newcommand{\Tic}{{\Tmi\qc}}
+\newcommand{\Tipt}{{\Tmi\qpt}}
+\newcommand{\Tie}{{\Tmi\qe}}
+\newcommand{\Ties}{{\Tmi\qes}}
+\newcommand{\Tis}{{\Tmi s}}
+\newcommand{\Tiw}{{\Tmi w}}
+\newcommand{\Tin}{{\Tmi n}}
+\newcommand{\Tiwn}{{\Tmi\wn}}
+\newcommand{\Tiws}{{\Tmi\ws}}
+\newcommand{\Tins}{{\Tmi\ns}}
+\newcommand{\Tiwns}{{\Tmi\wns}}
+
+
+\newcommand{\Tma}[1]{{\dbs\gkt{#1}}}
+
+\newcommand{\Tap}{{\Tma\qp}}
+\newcommand{\Tai}{{\Tma\qi}}
+\newcommand{\Tac}{{\Tma\qc}}
+\newcommand{\Tapt}{{\Tma\qpt}}
+\newcommand{\Tae}{{\Tma\qe}}
+\newcommand{\Taes}{{\Tma\qes}}
+\newcommand{\Tas}{{\Tma s}}
+\newcommand{\Taw}{{\Tma w}}
+\newcommand{\Tan}{{\Tma n}}
+\newcommand{\Tawn}{{\Tma\wn}}
+\newcommand{\Taws}{{\Tma\ws}}
+\newcommand{\Tans}{{\Tma\ns}}
+\newcommand{\Tawns}{{\Tma\wns}}
+
+
+\newcommand{\knmi}[1]{{\gsmi \gkk{N#1}}}
+\newcommand{\knma}[1]{{\gats\gkk{}\dol{#1}N}}
+\newcommand{\kgmi}[1]{{\gsmi \gkk{G#1}}}
+\newcommand{\kgma}[1]{{\gats\gkk{}\dol{#1}G}}
+
+
+\newcommand{\epmi}[1]{{\gkL_{#1}}}
+\newcommand{\epmis}[1]{{\epmi{\qs#1}}}
+
+\newcommand{\epip}{{\epmi\qp}}
+\newcommand{\epii}{{\epmi\qi}}
+\newcommand{\epic}{{\epmi\qc}}
+\newcommand{\epipt}{{\epmi\qpt}}
+\newcommand{\epie}{{\epmi\qe}}
+\newcommand{\epies}{{\epmi\qes}}
+\newcommand{\epis}{{\epmi s}}
+\newcommand{\epiw}{{\epmi w}}
+\newcommand{\epin}{{\epmi n}}
+\newcommand{\epiwn}{{\epmi\wn}}
+\newcommand{\epiws}{{\epmi\ws}}
+\newcommand{\epins}{{\epmi\ns}}
+\newcommand{\epiwns}{{\epmi\wns}}
+
+\newcommand{\episp}{{\epmis\qp}}
+\newcommand{\episi}{{\epmis\qi}}
+\newcommand{\episc}{{\epmis\qc}}
+\newcommand{\epispt}{{\epmis\qpt}}
+\newcommand{\epise}{{\epmis\qe}}
+\newcommand{\epises}{{\epmis\qes}}
+\newcommand{\episs}{{\epmis s}}
+\newcommand{\episw}{{\epmis w}}
+\newcommand{\episn}{{\epmis n}}
+\newcommand{\episwn}{{\epmis\wn}}
+\newcommand{\episws}{{\epmis\ws}}
+\newcommand{\episns}{{\epmis\ns}}
+\newcommand{\episwns}{{\epmis\wns}}
+
+
+\newcommand{\epma}[1]{{\dbs\gkL{#1}}}
+\newcommand{\epmas}[1]{{\epma{\qs#1}}}
+
+\newcommand{\epap}{{\epma\qp}}
+\newcommand{\epai}{{\epma\qi}}
+\newcommand{\epac}{{\epma\qc}}
+\newcommand{\epapt}{{\epma\qpt}}
+\newcommand{\epae}{{\epma\qe}}
+\newcommand{\epaes}{{\epma\qes}}
+\newcommand{\epas}{{\epma s}}
+\newcommand{\epaw}{{\epma w}}
+\newcommand{\epan}{{\epma n}}
+\newcommand{\epawn}{{\epma\wn}}
+\newcommand{\epaws}{{\epma\ws}}
+\newcommand{\epans}{{\epma\ns}}
+\newcommand{\epawns}{{\epma\wns}}
+
+\newcommand{\epasp}{{\epmas\qp}}
+\newcommand{\epasi}{{\epmas\qi}}
+\newcommand{\epasc}{{\epmas\qc}}
+\newcommand{\epaspt}{{\epmas\qpt}}
+\newcommand{\epase}{{\epmas\qe}}
+\newcommand{\epases}{{\epmas\qes}}
+\newcommand{\epass}{{\epmas s}}
+\newcommand{\epasw}{{\epmas w}}
+\newcommand{\epasn}{{\epmas n}}
+\newcommand{\epaswn}{{\epmas\wn}}
+\newcommand{\epasws}{{\epmas\ws}}
+\newcommand{\epasns}{{\epmas\ns}}
+\newcommand{\epaswns}{{\epmas\wns}}
+
+
+\newcommand{\eps}{{\gkL}}
+
+
+\newcommand{\cpmi}[1]{{\mu_{#1}}}
+\newcommand{\cpmis}[1]{{\cpmi{\qs#1}}}
+
+\newcommand{\cpip}{{\cpmi\qp}}
+\newcommand{\cpii}{{\cpmi\qi}}
+\newcommand{\cpic}{{\cpmi\qc}}
+\newcommand{\cpipt}{{\cpmi\qpt}}
+\newcommand{\cpie}{{\cpmi\qe}}
+\newcommand{\cpies}{{\cpmi\qes}}
+\newcommand{\cpis}{{\cpmi s}}
+\newcommand{\cpiw}{{\cpmi w}}
+\newcommand{\cpin}{{\cpmi n}}
+\newcommand{\cpiwn}{{\cpmi\wn}}
+\newcommand{\cpiws}{{\cpmi\ws}}
+\newcommand{\cpins}{{\cpmi\ns}}
+\newcommand{\cpiwns}{{\cpmi\wns}}
+
+\newcommand{\cpisp}{{\cpmis\qp}}
+\newcommand{\cpisi}{{\cpmis\qi}}
+\newcommand{\cpisc}{{\cpmis\qc}}
+\newcommand{\cpispt}{{\cpmis\qpt}}
+\newcommand{\cpise}{{\cpmis\qe}}
+\newcommand{\cpises}{{\cpmis\qes}}
+\newcommand{\cpiss}{{\cpmis s}}
+\newcommand{\cpisw}{{\cpmis w}}
+\newcommand{\cpisn}{{\cpmis n}}
+\newcommand{\cpiswn}{{\cpmis\wn}}
+\newcommand{\cpisws}{{\cpmis\ws}}
+\newcommand{\cpisns}{{\cpmis\ns}}
+\newcommand{\cpiswns}{{\cpmis\wns}}
+
+
+\newcommand{\cpma}[1]{{\sbs\mu{#1}}}
+\newcommand{\cpmas}[1]{{\cpma{\qs#1}}}
+
+\newcommand{\cpap}{{\cpma\qp}}
+\newcommand{\cpai}{{\cpma\qi}}
+\newcommand{\cpac}{{\cpma\qc}}
+\newcommand{\cpapt}{{\cpma\qpt}}
+\newcommand{\cpae}{{\cpma\qe}}
+\newcommand{\cpaes}{{\cpma\qes}}
+\newcommand{\cpas}{{\cpma s}}
+\newcommand{\cpaw}{{\cpma w}}
+\newcommand{\cpan}{{\cpma n}}
+\newcommand{\cpawn}{{\cpma\wn}}
+\newcommand{\cpaws}{{\cpma\ws}}
+\newcommand{\cpans}{{\cpma\ns}}
+\newcommand{\cpawns}{{\cpma\wns}}
+
+\newcommand{\cpasp}{{\cpmas\qp}}
+\newcommand{\cpasi}{{\cpmas\qi}}
+\newcommand{\cpasc}{{\cpmas\qc}}
+\newcommand{\cpaspt}{{\cpmas\qpt}}
+\newcommand{\cpase}{{\cpmas\qe}}
+\newcommand{\cpases}{{\cpmas\qes}}
+\newcommand{\cpass}{{\cpmas s}}
+\newcommand{\cpasw}{{\cpmas w}}
+\newcommand{\cpasn}{{\cpmas n}}
+\newcommand{\cpaswn}{{\cpmas\wn}}
+\newcommand{\cpasws}{{\cpmas\ws}}
+\newcommand{\cpasns}{{\cpmas\ns}}
+\newcommand{\cpaswns}{{\cpmas\wns}}
+
+
+\newcommand{\rmi}[1]{{\rho_{#1}}}
+
+\newcommand{\rip}{{\rmi\qp}}
+\newcommand{\rii}{{\rmi\qi}}
+\newcommand{\ric}{{\rmi\qc}}
+\newcommand{\ript}{{\rmi\qpt}}
+\newcommand{\rie}{{\rmi\qe}}
+\newcommand{\ries}{{\rmi\qes}}
+\newcommand{\ris}{{\rmi s}}
+\newcommand{\riw}{{\rmi w}}
+\newcommand{\rin}{{\rmi n}}
+\newcommand{\riws}{{\rmi\ws}}
+\newcommand{\riwn}{{\rmi\wn}}
+\newcommand{\rins}{{\rmi\ns}}
+\newcommand{\riwns}{{\rmi\wns}}
+
+
+\newcommand{\rma}[1]{{\rho^{#1}}}
+
+\newcommand{\rap}{{\rma\qp}}
+\newcommand{\rai}{{\rma\qi}}
+\newcommand{\rac}{{\rma\qc}}
+\newcommand{\rapt}{{\rma\qpt}}
+\newcommand{\rae}{{\rma\qe}}
+\newcommand{\raes}{{\rma\qes}}
+\newcommand{\ras}{{\rma s}}
+\newcommand{\raw}{{\rma w}}
+\newcommand{\ran}{{\rma n}}
+\newcommand{\raws}{{\rma\ws}}
+\newcommand{\rawn}{{\rma\wn}}
+\newcommand{\rans}{{\rma\ns}}
+\newcommand{\rawns}{{\rma\wns}}
+
+
+\newcommand{\gksi}{{\gtmi \gks s}}
+\newcommand{\gksa}{{\gtma \gks s}}
+
+
+\newcommand{\emmi}[1]{{\gkvs_{#1}}}
+\newcommand{\emma}[1]{{\sbs{\gkvs}{#1}}}
+
+
+\newcommand{\efmi}[1]{{\vec\varphi_{#1}}}
+\newcommand{\efmis}[1]{{\efmi{\qs#1}}}
+
+\newcommand{\efip}{{\efmi\qp}}
+\newcommand{\efii}{{\efmi\qi}}
+\newcommand{\efic}{{\efmi\qc}}
+\newcommand{\efipt}{{\efmi\qpt}}
+\newcommand{\efie}{{\efmi\qe}}
+\newcommand{\efies}{{\efmi\qes}}
+\newcommand{\efis}{{\efmi s}}
+\newcommand{\efiw}{{\efmi w}}
+\newcommand{\efin}{{\efmi n}}
+\newcommand{\efiwn}{{\efmi\wn}}
+\newcommand{\efiws}{{\efmi\ws}}
+\newcommand{\efins}{{\efmi\ns}}
+\newcommand{\efiwns}{{\efmi\wns}}
+
+\newcommand{\efisp}{{\efmis\qp}}
+\newcommand{\efisi}{{\efmis\qi}}
+\newcommand{\efisc}{{\efmis\qc}}
+\newcommand{\efispt}{{\efmis\qpt}}
+\newcommand{\efise}{{\efmis\qe}}
+\newcommand{\efises}{{\efmis\qes}}
+\newcommand{\efiss}{{\efmis s}}
+\newcommand{\efisw}{{\efmis w}}
+\newcommand{\efisn}{{\efmis n}}
+\newcommand{\efiswn}{{\efmis\wn}}
+\newcommand{\efisws}{{\efmis\ws}}
+\newcommand{\efisns}{{\efmis\ns}}
+\newcommand{\efiswns}{{\efmis\wns}}
+
+
+\newcommand{\efma}[1]{{\dbv\varphi{#1}}}
+\newcommand{\efmas}[1]{{\efma{\qs#1}}}
+
+\newcommand{\efap}{{\efma\qp}}
+\newcommand{\efai}{{\efma\qi}}
+\newcommand{\efac}{{\efma\qc}}
+\newcommand{\efapt}{{\efma\qpt}}
+\newcommand{\efae}{{\efma\qe}}
+\newcommand{\efaes}{{\efma\qes}}
+\newcommand{\efas}{{\efma s}}
+\newcommand{\efaw}{{\efma w}}
+\newcommand{\efan}{{\efma n}}
+\newcommand{\efawn}{{\efma\wn}}
+\newcommand{\efaws}{{\efma\ws}}
+\newcommand{\efans}{{\efma\ns}}
+\newcommand{\efawns}{{\efma\wns}}
+
+\newcommand{\efasp}{{\efmas\qp}}
+\newcommand{\efasi}{{\efmas\qi}}
+\newcommand{\efasc}{{\efmas\qc}}
+\newcommand{\efaspt}{{\efmas\qpt}}
+\newcommand{\efase}{{\efmas\qe}}
+\newcommand{\efases}{{\efmas\qes}}
+\newcommand{\efass}{{\efmas s}}
+\newcommand{\efasw}{{\efmas w}}
+\newcommand{\efasn}{{\efmas n}}
+\newcommand{\efaswn}{{\efmas\wn}}
+\newcommand{\efasws}{{\efmas\ws}}
+\newcommand{\efasns}{{\efmas\ns}}
+\newcommand{\efaswns}{{\efmas\wns}}
+
+
+\newcommand{\gvpmi}[1]{{\gsmi\gkvp{#1}}}
+\newcommand{\gvpma}[1]{{\dbs \gkvp{#1}}}
+
+
+\newcommand{\gpmi}[1]{{\psi_{#1}}}
+\newcommand{\gpmis}[1]{{\gpmi{\qs#1}}}
+
+\newcommand{\gpip}{{\gpmi\qp}}
+\newcommand{\gpii}{{\gpmi\qi}}
+\newcommand{\gpic}{{\gpmi\qc}}
+\newcommand{\gpipt}{{\gpmi\qpt}}
+\newcommand{\gpie}{{\gpmi\qe}}
+\newcommand{\gpies}{{\gpmi\qes}}
+\newcommand{\gpis}{{\gpmi s}}
+\newcommand{\gpiw}{{\gpmi w}}
+\newcommand{\gpin}{{\gpmi n}}
+\newcommand{\gpiwn}{{\gpmi\wn}}
+\newcommand{\gpiws}{{\gpmi\ws}}
+\newcommand{\gpins}{{\gpmi\ns}}
+\newcommand{\gpiwns}{{\gpmi\wns}}
+
+\newcommand{\gpisp}{{\gpmis\qp}}
+\newcommand{\gpisi}{{\gpmis\qi}}
+\newcommand{\gpisc}{{\gpmis\qc}}
+\newcommand{\gpispt}{{\gpmis\qpt}}
+\newcommand{\gpise}{{\gpmis\qe}}
+\newcommand{\gpises}{{\gpmis\qes}}
+\newcommand{\gpiss}{{\gpmis s}}
+\newcommand{\gpisw}{{\gpmis w}}
+\newcommand{\gpisn}{{\gpmis n}}
+\newcommand{\gpiswn}{{\gpmis\wn}}
+\newcommand{\gpisws}{{\gpmis\ws}}
+\newcommand{\gpisns}{{\gpmis\ns}}
+\newcommand{\gpiswns}{{\gpmis\wns}}
+
+
+\newcommand{\gpma}[1]{{\sbs\psi{#1}}}
+\newcommand{\gpmas}[1]{{\gpma{\qs#1}}}
+
+\newcommand{\gpap}{{\gpma\qp}}
+\newcommand{\gpai}{{\gpma\qi}}
+\newcommand{\gpac}{{\gpma\qc}}
+\newcommand{\gpapt}{{\gpma\qpt}}
+\newcommand{\gpae}{{\gpma\qe}}
+\newcommand{\gpaes}{{\gpma\qes}}
+\newcommand{\gpas}{{\gpma s}}
+\newcommand{\gpaw}{{\gpma w}}
+\newcommand{\gpan}{{\gpma n}}
+\newcommand{\gpawn}{{\gpma\wn}}
+\newcommand{\gpaws}{{\gpma\ws}}
+\newcommand{\gpans}{{\gpma\ns}}
+\newcommand{\gpawns}{{\gpma\wns}}
+
+\newcommand{\gpasp}{{\gpmas\qp}}
+\newcommand{\gpasi}{{\gpmas\qi}}
+\newcommand{\gpasc}{{\gpmas\qc}}
+\newcommand{\gpaspt}{{\gpmas\qpt}}
+\newcommand{\gpase}{{\gpmas\qe}}
+\newcommand{\gpases}{{\gpmas\qes}}
+\newcommand{\gpass}{{\gpmas s}}
+\newcommand{\gpasw}{{\gpmas w}}
+\newcommand{\gpasn}{{\gpmas n}}
+\newcommand{\gpaswn}{{\gpmas\wn}}
+\newcommand{\gpasws}{{\gpmas\ws}}
+\newcommand{\gpasns}{{\gpmas\ns}}
+\newcommand{\gpaswns}{{\gpmas\wns}}
+
+
+\newcommand{\mmi}[2]{{\gko_{{#1}{#2}}}}
+
+\newcommand{\mip}{\mmi\qs\qp}
+\newcommand{\mii}{\mmi\qs\qi}
+\newcommand{\mic}{\mmi\qs\qc}
+\newcommand{\mipt}{\mmi\qs\qpt}
+\newcommand{\mie}{\mmi\qs\qe}
+\newcommand{\mies}{\mmi\qs\qes}
+\newcommand{\mis}{\mmi\qs s}
+\newcommand{\miw}{\mmi\qs w}
+\newcommand{\miwn}{\mmi\qs\wn}
+\newcommand{\miws}{\mmi\qs\ws}
+\newcommand{\mins}{\mmi\qs\ns}
+\newcommand{\miwns}{\mmi\qs\wns}
+
+\newcommand{\mma}[2]{{\gko^{{#1\,}\sol{#2}}}}
+
+\newcommand{\map}{\mma\qs\qp}
+\newcommand{\mai}{\mma\qs\qi}
+\newcommand{\mac}{\mma\qs\qc}
+\newcommand{\mapt}{\mma\qs\qpt}
+\newcommand{\mae}{\mma\qs\qe}
+\newcommand{\maes}{\mma\qs\qes}
+\newcommand{\mas}{\mma\qs s}
+\newcommand{\man}{\mma\qs n}
+\newcommand{\maw}{\mma\qs w}
+\newcommand{\mawn}{\mma\qs\wn}
+\newcommand{\maws}{\mma\qs\ws}
+\newcommand{\mans}{\mma\qs\ns}
+\newcommand{\mawns}{\mma\qs\wns}
+
+\fi
+\ifnum\thetcatLoad>0
+
+
+\newcommand{\erma}[1][\qe]{{\ema{#1}\rma{#1}}}
+\newcommand{\apMma}[1][\qe]{{\pdt{\lrp{\erma[#1]}}}}
+\newcommand{\aDMgma}[2]{{\Da{#1}{\lrp{\erma[#2]}}}}
+\newcommand{\aDMoma}[1][\qe]{{\Dao{\lrp{\erma[#1]}}}}
+\newcommand{\aDMma}[1][\qe]{{\aDMgma{#1}{#1}}}
+\newcommand{\ervma}[1][\qe]{{\erma[#1]\vma{#1}}}
+\newcommand{\Idma}[1][\qe]{{\tI\dd\dma{#1}}}
+\newcommand{\erIdma}[1][\qe]{{\erma[#1]\Idma[#1]}}
+\newcommand{\xMma}[2]{{\sumset{#2}{\Ic{#1}}\ieM{#2}{#1}}}
+
+
+\newcommand{\cMpgma}[2]{{\apMma[#1]=-\deld\lrp{\ervma[#1]}
+  +\xMma{#1}{#2}}}
+\newcommand{\cMpma}[1][\qe]{{\cMpgma{#1}{\qes}}}
+\newcommand{\cMDgma}[2]{{\aDMma[#1]+\erIdma[#1]-\xMma{#1}{#2}=0}}
+\newcommand{\cMDma}[1][\qe]{{\cMDgma{#1}{\qes}}}
+
+
+\newcommand{\apPma}[1][\qe]{{\pdt{\lrp{\ervma[#1]}}}}
+\newcommand{\aDPgma}[2]{{\Da{#1}{\lrp{\ervma[#2]}}}}
+\newcommand{\aDPoma}[1][\qe]{{\Dao{\lrp{\ervma[#1]}}}}
+\newcommand{\aDPma}[1][\qe]{{\aDPgma{#1}{#1}}}
+\newcommand{\ervvma}[1][\qe]{{\ervma[#1]\vma{#1}}}
+\newcommand{\ervIdma}[1][\qe]{{\ervma[#1]\Idma[#1]}}
+\newcommand{\etma}[1][\qe]{{\ema{#1}\tma{#1}}}
+\newcommand{\ergma}[1][\qe]{{\erma[#1]\gma{#1}}}
+\newcommand{\xMvTma}[2]{{\sumset{#2}{\Ic{#1}}\lrp{\ieMv{#2}{#1}
+  +\ieT{#2}{#1}}}}
+
+
+\newcommand{\cPpgma}[2]{{\apPma[#1]=-\deld\lrp{\ervvma[#1]}
+  +\deld\lrp{\etma[#1]}+\ergma[#1]+\xMvTma{#1}{#2}}}
+\newcommand{\cPpma}[1][\qe]{{\cPpgma{#1}{\qes}}}
+\newcommand{\cPDgma}[2]{{\aDPma[#1]+\ervIdma[#1]
+  -\deld\lrp{\etma[#1]}-\ergma[#1]-\xMvTma{#1}{#2}=0}}
+\newcommand{\cPDma}[1][\qe]{{\cPDgma{#1}{\qes}}}
+
+
+\newcommand{\hvvma}[1][\qe]{{\frac{\vma{#1}\vdot\vma{#1}}2}}
+\newcommand{\ervvKpma}[1][\qe]{{\erma[#1]\lrp{\hvvma[#1]+
+  \Kema{#1}+\gpma{#1}}}}
+\newcommand{\Etxma}[1][\qe]{{\Ema{#1}+\ervvKpma[#1]}}
+\newcommand{\apEtma}[1][\qe]{{\pdt{\Etma{#1}}}}
+\newcommand{\aDEtgma}[2]{{\Da{#1}{\Etma{#2}}}}
+\newcommand{\aDEtoma}[1][\qe]{{\Dao{\Etma{#1}}}}
+\newcommand{\aDEtma}[1][\qe]{{\aDEtgma{#1}{#1}}}
+\newcommand{\apEtxma}[1][\qe]{{\pdt{\lrb{\Etxma[#1]}}}}
+\newcommand{\aDEtxgma}[2]{{\Da{#1}{\lrb{\Etxma[#2]}}}}
+\newcommand{\aDEtxoma}[1][\qe]{{\Dao{\lrb{\Etxma[#1]}}}}
+\newcommand{\aDEtxma}[1][\qe]{{\aDEtxgma{#1}{#1}}}
+\newcommand{\EtxIdma}[1][\qe]{{\Etxma[#1]\Idma[#1]}}
+\newcommand{\EtIdma}[1][\qe]{{\Etma{#1}\Idma[#1]}}
+\newcommand{\etvma}[1][\qe]{{\ema{#1}\tma{#1}\vdot\vma{#1}}}
+\newcommand{\eqma}[1][\qe]{{\ema{#1}\qma{#1}}}
+\newcommand{\ehma}[1][\qe]{{\ema{#1}\hma{#1}}}
+\newcommand{\xMETvQma}[2]{{\sumset{#2}{\Ic{#1}}\lrp{\ieME{#2}{#1}
+  +\ieTv{#2}{#1}+\ieQ{#2}{#1}}}}
+
+
+\newcommand{\apSma}[1][\qe]{{\pdt{\evma{#1}}}}
+\newcommand{\aDSgma}[2]{{\Da{#1}{\evma{#2}}}}
+\newcommand{\aDSoma}[1][\qe]{{\Dao{\evma{#1}}}}
+\newcommand{\aDSma}[1][\qe]{{\aDSgma{#1}{#1}}}
+\newcommand{\evvma}[1][\qe]{{\evma{#1}\vma{#1}}}
+\newcommand{\evIdma}[1][\qe]{{\evma{#1}\Idma[#1]}}
+\newcommand{\eefma}[1][\qe]{{\ema{#1}\efma{#1}}}
+\newcommand{\eesma}[1][\qe]{{\ema{#1}\esma{#1}}}
+\newcommand{\xMePma}[2]{{\sumset{#2}{\Ic{#1}}\lrp{\ieMe{#2}{#1}
+  +\ieP{#2}{#1}}}}
+
+
+\newcommand{\bSpgma}[2]{{\apMma[#1]=-\deld\lrp{\evvma[#1]}
+  +\deld\lrp{\eefma[#1]}+\eesma[#1]+\xMePma{#1}{#2}+\epma{#1}}}
+\newcommand{\bSpma}[1][\qe]{{\bSpgma{#1}{\qes}}}
+\newcommand{\bSDgma}[2]{{\aDSma[#1]+\evIdma[#1]-\deld\lrp{\efma{#1}}
+  -\esma{#1}-\xMePma{#1}{#2}=\epma{#1}}}
+\newcommand{\bSDma}[1][\qe]{{\bSDgma{#1}{\qes}}}
+
+\fi
+\ifnum\theobsoleteLoad>0
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\newcommand {\ievar}[3]{\ensuremath{{#1}^{\dol{{#2},{#3}}}}}
+\newcommand {\ievari}[4]{\ensuremath{{#1}_{#2}^{\dol{{#3},{#4}}}}}
+\newcommand{\ievaro}[3]{\ensuremath{{\overline{#1}}^{\dol{{#2},{#3}}}}}
+
+
+\newcommand{\pmmi}[2]{{\sol{#1}}_{#2}}
+\newcommand{\pmma}[2]{{\sol{#1}}^{\sol{#2}}}
+\newcommand{\pmdma}[2]{{\sol{#1}}^{\dol{#2}}}
+\newcommand{\pmmima}[3]{{\sol{#1}}_{#2}^{\sol{#3}}}
+\newcommand{\pmdmima}[3]{{\sol{#1}}_{#2}^{\dol{#3}}}
+
+
+\newcommand{\Am}{\fb A}
+\newcommand{\Em}{\fb E}
+\newcommand{\Mm}{\fb M}
+\newcommand{\Sm}{\fb S}
+\newcommand{\Vm}{\fb V}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\newcommand{\tdd}{\ensuremath{\boldsymbol{\mathsf{:}}}}
+\newcommand{\tddh}{\ensuremath{\boldsymbol{\mathsf{\cdot\cdot}}}}
+
+\newcommand{\vik}{{\vmi\gkk}}
+\newcommand{\vmip}[2]{{\vec v_{#1}^{#2}}}
+\newcommand{\viip}{{\vmip\qi\prime}}
+\newcommand{\vicp}{{\vmip\qc{\prime\prime}}}
+
+
+\newcommand{\eI}{{\inset\qe\I}}
+\newcommand{\aI}{{\inset\gka\I}}
+\newcommand{\iIP}{{\inset\gki\IP}}
+\newcommand{\feI}{{\for\qe\I}}
+\newcommand{\fesIP}{{\for\qes\IP}}
+\newcommand{\faI}{{\for\gka\I}}
+\newcommand{\fiIP}{{\for\gki\IP}}
+\newcommand{\fkIP}{{\for\gkk\IP}}
+
+
+\newcommand{\tpa}[1]{{\ten t^{#1}}}
+\newcommand{\etpa}[1]{{\ema{#1}\tpa{#1}}}
+
+\newcommand{\qmip}[2]{{\vec q_{#1}^{#2}}}
+
+
+\newcommand{\rab}{{\rma{\mathrm{b}}}}
+
+
+\newcommand{\pas}{{\dbs ps}}
+\newcommand{\paT}{{\dbs p{\mathrm{T}}}}
+
+
+\newcommand{\taT}{{\tma{\mathrm{T}}}}
+
+
+\newcommand{\smE}{{\crs E{}{}}}
+\newcommand{\smEnu}{{\crs E\nu{}}}
+\newcommand{\smnu}{{\crs \nu{}{}}}
+\newcommand{\smKT}{{\crs KT{}}}
+\newcommand{\smKS}{{\crs KS{}}}
+\newcommand{\smgka}{{\crs\gka{}{}}}
+\newcommand{\smezz}{{e_{zz}^s}}
+\newcommand{\smstress}{{\frac 2 {j_s}\ten\gks_s\dd(\delXx\delXx)}}
+
+
+\newcommand{\smgksti}{{\vec \gks_s}}
+\newcommand{\smeti}{{\ten e_s}}
+\newcommand{\smCti}{{\ten C_s}}
+
+\newcommand{\smgksta}{{\vec \gks^s}}
+\newcommand{\smeta}{{\ten e^s}}
+\newcommand{\smCta}{{\ten C^s}}
+
+
+
+\newcommand{\fmima}[2]{{\lrp{#1-#2}}}
+\newcommand{\femima}[2]{{\lrb{{#2}+\fmima{#1}{#2}}}}
+
+\newcommand{\dmiI}[1]{{\dmi{#1}\dd\ten I}}
+
+
+\newcommand{\rgmi}[1]{{\rmi{#1}\gmi{#1}}}
+
+
+\newcommand{\kemi}[1]{{\frac 12 \rmi{#1}v_{#1}^2}}
+
+
+\newcommand{\erKema}[1]{{\erma{#1}\Kema{#1}}}
+
+\newcommand{\rgpmi}[1]{{\rmi{#1}\gpmi{#1}}}
+\newcommand{\ergpma}[1]{{\erma{#1}\gpma{#1}}}
+
+
+\newcommand{\tvmi}[1]{{\tmi{#1}\vdot\vmi{#1}}}
+\newcommand{\tvip}{{\tvmi\qp}}
+\newcommand{\tvii}{{\tvmi\qi}}
+\newcommand{\tvic}{{\tvmi\qc}}
+\newcommand{\tvipt}{{\tvmi\qpt}}
+
+
+\newcommand{\rgvmi}[1]{{\rgmi{#1}\vdot\vmi{#1}}}
+
+\newcommand{\eGma}[1]{{\ema{#1}\ten G^{#1}}}
+\newcommand{\eGws}{\eGma\ws}
+
+
+\newcommand{\psk}{$p$-$S$-$k$}
+\newcommand{\ps}{$p$-$S$}
+\newcommand{\sk}{$S$-$k$}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\newcommand{\ij}{{\ensuremath{\iota j}}}
+\newcommand{\ia}{{\ensuremath{\iota\alpha}}}
+\newcommand{\ig}{{\ensuremath{\iota\gamma}}}
+\newcommand{\ik}{{\ensuremath{\iota\kappa}}}
+\newcommand{\is}{{\ensuremath{\iota s}}}
+\newcommand{\iab}{{\ensuremath{\iota\alpha\beta}}}
+\newcommand{\iag}{{\ensuremath{\iota\alpha\gamma}}}
+\newcommand{\ibg}{{\ensuremath{\iota\beta\gamma}}}
+\newcommand{\iabg}{{\ensuremath{\iota\alpha\beta\gamma}}}
+\newcommand{\iwns}{{\ensuremath{\iota wns}}}
+\newcommand{\iabge}{{\ensuremath{\iota\alpha\beta\gamma\epsilon}}}
+
+
+\newcommand{\Ps}{\set P}
+\newcommand{\Pis}{\sset Pi}
+\newcommand{\Pims}{\set P^i}
+\newcommand{\PIpi}{\siset PI{pi}}
+
+\newcommand{\V}{{\set V}}
+
+
+\newcommand{\Ia}{\sset Ia}
+\newcommand{\Id}{\sset Id}
+\newcommand{\In}{\sset In}
+\newcommand{\Ip}{\sset Ip}
+\newcommand{\Iw}{\sset Iw}
+
+
+\newcommand{\iIp}{{\inset\gki\Ip}}
+\newcommand{\fsIp}{{\for\qes\Ip}}
+\newcommand{\fiIp}{{\for\gki\Ip}}
+\newcommand{\fkIp}{{\for\gkk\Ip}}
+
+
+\newcommand{\sumIp}[1]{{\sumset{#1}\Ip}}
+\newcommand{\sumeIp}{{\sumIp\qe}}
+\newcommand{\sumesIp}{{\sumIp\qes}}
+\newcommand{\sumiIp}{{\sumIp\gki}}
+
+
+\newcommand{\sumIP}[1]{{\sumset{#1}\IP}}
+
+\newcommand{\sumaI}{{\sumI\gka}}
+
+\newcommand{\sumeIP}{{\sumIP\qe}}
+\newcommand{\sumesIP}{{\sumIP\qes}}
+\newcommand{\sumiIP}{{\sumIP\gki}}
+
+\newcommand{\sumi}{{\sL{\gkg\ne\gka,\gkb\ }}}
+\newcommand{\sumc}{{\sL{\gkd\ne\gka,\gkb,\gkg\ }}}
+\newcommand{\sumkab}{\sL{\gkk=\gka,\gkb}}
+
+\newcommand{\sumbna}{{\sumanb\gkb\gka}}
+\newcommand{\sumgnab}{{\sumanb\gkg{\gka, \gkb}}}
+
+
+\newcommand{\gin}[2]{{\int\limits_{\Dm{#1}}{#2}\dr}}
+\newcommand{\gain}[3]{{\frac 1{#1}\gin{#2}{#3}}}
+
+
+\newcommand{\iv}[2]{{\gain{V}{#1}{#2}}}
+\newcommand{\ivw}[3]{{\gain{{#1}V}{#2}{#3}}}
+\newcommand{\im}[2]{{\gain{M^{#1}}{#1}{#2}}}
+\newcommand{\iaa}[2]{{\gain{A^{#1}}{#1}{#2}}}
+
+
+\newcommand{\Dsi}[2]{\Dgi{\prime}{}{#1}{#2}t}
+\newcommand{\Dci}[2]{\Dgi{\prime\prime}{}{#1}{#2}t}
+
+\newcommand{\Ds}[2]{\Dg{\prime}{}{#1}{#2}t}
+\newcommand{\Dc}[2]{\Dg{}{\prime\prime}{#1}{#2}t}
+
+\newcommand{\Dpd}[1]{{\D{\sol\gki}{#1}}}
+\newcommand{\Did}[1]{{\Ds{\sol\gki}{#1}}}
+\newcommand{\Dcd}[1]{{\Dc{\sol\gki}{#1}}}
+
+
+\newcommand{\fdb}[1]{{\dbs f{#1}}}
+\newcommand{\fdbp}{{\fdb\qp}}
+\newcommand{\fdbi}{{\fdb\qi}}
+\newcommand{\fdbc}{{\fdb\qc}}
+
+
+\newcommand{\vp}{{\vec v_\gka}}
+\newcommand{\vi}{{\vec v_\ab}}
+\newcommand{\vc}{{\vec v_\abg}}
+\newcommand{\vpt}{{\vec v_\abgd}}
+
+
+\newcommand{\vsb}[1]{{\sbv{v}{#1}}}
+\newcommand{\vsbi}{{\vsb\gki}}
+
+\newcommand{\ddb}[1]{{\dbt{d}{#1}}}
+\newcommand{\ddbi}{{\ddb\gki}}
+
+
+\newcommand{\sump}{{\sum_{\gkb\ne\gka\ }}}
+
+
+\newcommand{\fdba}{{\dbs f\gka}}
+
+
+\newcommand{\oma}[1]{{\sbs\gko{#1}}}
+
+
+\newcommand{\vmar}[2]{{\vec v^{\sol{#1},\sol{#2}}}}
+\newcommand{\vre}{{\vmar\qe s}}
+\newcommand{\vrk}{{\vmar\gkk s}}
+\newcommand{\vrw}{{\vmar ws}}
+\newcommand{\vrws}{{\vmar\ws s}}
+
+\newcommand{\vrie}{{\vmar{i\qe}s}}
+\newcommand{\vriw}{{\vmar{iw}s}}
+\newcommand{\vrkw}{{\vmar{kw}s}}
+
+
+
+\newcommand{\sst}{{\vec \gks}}
+\newcommand{\est}{{\ten e}}
+\newcommand{\gdt}{{\ten C}}
+
+\newcommand{\ssti}{{\sst_s}}
+\newcommand{\esti}{{\est_s}}
+\newcommand{\gdti}{{\gdt_s}}
+
+\newcommand{\ssta}{{\sst^s}}
+\newcommand{\esta}{{\est^s}}
+\newcommand{\gdta}{{\gdt^s}}
+
+
+\newcommand{\estazz}{{e_{zz}^s}}
+
+
+\newcommand{\stress}{{\frac 2 {j_s}\ten\gks_s\dd(\delXx\delXx)}}
+
+\newcommand{\tT}{{\tma{\mathrm{T}}}}
+\newcommand{\pT}{{\dbs p{\mathrm{T}}}}
+\newcommand{\teff}{{\dbv \tau s}}
+
+
+\newcommand{\biot}{{\crs\gka{}{}}}
+
+
+\newcommand{\young}{{\crs E{}{}}}
+
+
+\newcommand{\pratio}{{\crs \nu{}{}}}
+
+
+\newcommand{\Enu}{{\crs E\nu{}}}
+
+
+\newcommand{\blkmod}{{\crs K T{}}}
+\newcommand{\blkmods}{{\crs K S{}}}
+
+\fi
+
+\endinput
+%%
+%% End of file `ctmmath.sty'.

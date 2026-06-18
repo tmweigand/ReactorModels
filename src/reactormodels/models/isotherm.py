@@ -1,6 +1,7 @@
 """isotherm.py"""
 
 import numpy as np
+from scipy.optimize import curve_fit
 
 
 class Isotherm:
@@ -76,3 +77,51 @@ class LinearIsotherm(Isotherm):
     def d2q_dC2(self, C: float | np.ndarray) -> np.ndarray:
         """Calculate the second derivative."""
         return np.zeros_like(np.asarray(C, dtype=float))
+
+
+def fit_isotherm(
+    isotherm_class: type[Isotherm],
+    C: float | np.ndarray,
+    q: float | np.ndarray,
+    initial_guess: tuple[float, ...],
+) -> Isotherm:
+    """Fit an isotherm to equilibrium concentration data.
+
+    Parameters
+    ----------
+    isotherm_class : type[Isotherm]
+        Isotherm class to fit.
+    C : float | np.ndarray
+        Equilibrium fluid concentrations.
+    q : float | np.ndarray
+        Equilibrium sorbed concentrations.
+    initial_guess : tuple[float, ...]
+        Initial guess for the isotherm parameters.
+
+    Isotherm
+        Fitted isotherm instance.
+
+    """
+    C = np.asarray(C, dtype=float)
+    q = np.asarray(q, dtype=float)
+
+    if C.shape != q.shape:
+        raise ValueError("C and q must have the same shape.")
+    if np.any(C < 0) or np.any(q < 0):
+        raise ValueError("C and q values must be nonnegative.")
+
+    def model(C, *parameters):
+        isotherm = isotherm_class(*parameters)
+        return isotherm.q(C)
+
+    bounds = (np.full(len(initial_guess), 1e-30), np.full(len(initial_guess), np.inf))
+
+    popt, _ = curve_fit(
+        model,
+        C,
+        q,
+        p0=initial_guess,
+        bounds=bounds,
+    )
+
+    return isotherm_class(*popt)

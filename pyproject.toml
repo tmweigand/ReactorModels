@@ -5,11 +5,18 @@ description = "Collection of models for simulating transport in fixed bed reacto
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
+<<<<<<< HEAD
     "numpy<2.0",
     "scipy>=1.13",
     "scikits.odes",
     "matplotlib",
     "openpyxl",
+=======
+  "numpy<2.0",
+  "scipy>=1.13",
+  "scikits.odes",
+  "matplotlib>=3.0",
+>>>>>>> origin/main
 ]
 
 
@@ -69,3 +76,7 @@ ignore_missing_imports = true
 
 [tool.cibuildwheel]
 build-verbosity = 1
+
+
+
+

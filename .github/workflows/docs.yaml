@@ -14,16 +14,38 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    env:
+      SUNDIALS_INST: /opt/homebrew
+    strategy:
+      matrix:
+        os: [macos-latest]
+        python-version: ["3.11"]
+
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
+      - name: Install LaTeX
+        run: |
+            brew install --cask mactex-no-gui
+            echo "/Library/TeX/texbin" >> $GITHUB_PATH
+
+      - name: Install SUNDIALS and Fortran Compiler (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install gcc sundials librsvg
+          echo "/opt/homebrew/bin" >> $GITHUB_PATH
+
+          GFORTRAN_BIN="$(find "$(brew --prefix gcc)/bin" -name 'gfortran-*' | head -n 1)"
+          ln -sf "$GFORTRAN_BIN" /opt/homebrew/bin/gfortran
+
+          which gfortran
+          gfortran --version
 
       - name: Install dependencies
         run: |
