@@ -1,4 +1,4 @@
-"""__init.py"""
+"""__init.py__"""
 
 from . import models
 from . import numerics

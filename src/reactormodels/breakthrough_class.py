@@ -157,6 +157,108 @@ class breakthrough_data:
 
         return point
 
+    def breakthrough_removal_efficiency(  # noqa: D417
+        self,
+        x_axis: str = "bed_volume",
+        efficiency_step: float = 10,
+        clip_efficiency: bool = False,
+    ) -> dict[str, object]:
+        """Return removal efficiency information over bed volume or time.
+        The function also returns the bed volume or time corresponding to
+        every efficiency_step percentage, such as every 10%.
+
+        Parameters
+        ----------
+        x_axis:
+            Use bed_volume or time.
+
+        efficiency_step:
+            Percent step size for reporting x-axis locations.
+            Default is 10.
+        """  # noqa: D205
+        if x_axis == "bed_volume":
+            if self.bed_volumes is None:
+                raise ValueError("bed_volumes were not provided.")
+
+            x_values = self.bed_volumes
+            x_label = "bed_volume"
+
+        elif x_axis == "time":
+            if self.times is None:
+                raise ValueError("times were not provided.")
+
+            x_values = self.times
+            x_label = "time"
+
+        else:
+            raise ValueError("x_axis must be 'bed_volume' or 'time'.")
+
+        if efficiency_step <= 0:
+            raise ValueError("efficiency_step must be greater than zero.")
+
+        normalized_concentrations = self.normalized_concentrations
+        removal_efficiencies = (1 - normalized_concentrations) * 100
+
+        if clip_efficiency:
+            removal_efficiencies = np.clip(removal_efficiencies, 0, 100)
+
+        max_efficiency_index = int(np.argmax(removal_efficiencies))
+        max_removal_efficiency = float(removal_efficiencies[max_efficiency_index])
+        x_at_max_efficiency = float(x_values[max_efficiency_index])
+
+        # Sort by x-axis value before interpolation.
+        sort_indices = np.argsort(x_values)
+        sorted_x_values = x_values[sort_indices]
+        sorted_removal_efficiencies = removal_efficiencies[sort_indices]
+
+        # Keep only the range from the minimum x-value to the point of max efficiency.
+        selected_mask = sorted_x_values <= x_at_max_efficiency
+        selected_x_values = sorted_x_values[selected_mask]
+        selected_removal_efficiencies = sorted_removal_efficiencies[selected_mask]
+
+        # For interpolation, removal efficiency should be increasing.
+        # If repeated efficiency values exist, keep the first occurrence.
+        unique_efficiencies, unique_indices = np.unique(
+            selected_removal_efficiencies,
+            return_index=True,
+        )
+
+        unique_x_values = selected_x_values[unique_indices]
+
+        efficiency_targets = np.arange(
+            0,
+            max_removal_efficiency + efficiency_step,
+            efficiency_step,
+        )
+
+        efficiency_targets = efficiency_targets[
+            efficiency_targets <= max_removal_efficiency
+        ]
+
+        efficiency_step_locations = {
+            float(efficiency): float(
+                np.interp(
+                    efficiency,
+                    unique_efficiencies,
+                    unique_x_values,
+                )
+            )
+            for efficiency in efficiency_targets
+        }
+
+        result: dict[str, object] = {
+            "chemical_name": self.chemical_name,
+            "x_axis": x_label,
+            "x_values": x_values,
+            "removal_efficiencies": removal_efficiencies,
+            "max_removal_efficiency": max_removal_efficiency,
+            f"{x_label}_at_max_removal_efficiency": x_at_max_efficiency,
+            "efficiency_step": efficiency_step,
+            f"{x_label}_at_each_efficiency_step": efficiency_step_locations,
+        }
+
+        return result
+
     def summary_line(self, breakthrough_fraction: float = 0.05) -> str:
         """Return a one-line summary for the chemical."""
         point = self.breakthrough_point(breakthrough_fraction)
