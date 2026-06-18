@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
       - name: Checkout code
@@ -28,8 +28,7 @@ jobs:
       - name: Install SUNDIALS and Fortran Compiler (macOS)
         if: runner.os == 'macOS'
         run: |
-          brew install gcc sundials
-          brew install librsvg
+          brew install gcc sundials librsvg
           echo "/opt/homebrew/bin" >> $GITHUB_PATH
 
           GFORTRAN_BIN="$(find "$(brew --prefix gcc)/bin" -name 'gfortran-*' | head -n 1)"
