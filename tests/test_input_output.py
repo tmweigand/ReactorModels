@@ -1,5 +1,5 @@
 import numpy as np
-from reactormodels import load_input_output_file
+from reactormodels.IO import load_input_output_file
 
 
 def test_load_csv_file(tmp_path):
