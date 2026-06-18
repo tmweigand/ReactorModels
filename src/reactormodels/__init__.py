@@ -5,7 +5,6 @@ from . import numerics
 from . import postprocess
 from .column_data import Column
 from .breakthrough_class import breakthrough_data
-from .Input_output import load_input_output_file
 
 __all__ = [
     "models",
@@ -13,5 +12,4 @@ __all__ = [
     "postprocess",
     "Column",
     "breakthrough_data",
-    "load_input_output_file",
 ]
