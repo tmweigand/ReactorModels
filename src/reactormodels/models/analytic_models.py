@@ -7,82 +7,154 @@ from scipy.special import i0
 
 
 class AnalyticModels:
-    """Analytical solutions to fixed bed adsorption models."""
+    """Base class for analytical solutions to fixed bed adsorption models."""
 
-    @staticmethod
-    def ogata_banks(
-        x: np.ndarray,
-        time: float,
-        velocity: float,
+    def concentration_profile(
+        self, x: float | np.ndarray, time: float | np.ndarray
+    ) -> np.ndarray:
+        """Return breakthrough profile with respect to time fixed bed length."""
+        raise NotImplementedError
+
+
+class OgataBanks(AnalyticModels):
+    """Ogata Banks solution for 1D advection-diffusion with step input.
+
+    x: column length
+    D: diffusion
+    v: interstital velocity
+    """
+
+    def __init__(
+        self,
+        x: np.ndarray | float,
+        time: np.ndarray | float,
+        interstitial_velocity: float,
         diffusion: float,
-        inlet_concentration: float = 1.0,
+        inlet_concentration: float,
     ):
-        """Ogata Banks solution for 1D advection-diffusion with step input."""
-        Pe_local = velocity * x / diffusion
-        arg1 = (x - velocity * time) / (2 * np.sqrt(diffusion * time))
-        arg2 = (x + velocity * time) / (2 * np.sqrt(diffusion * time))
+        self.x = x
+        self.time = time
+        self.interstitial_velocity = interstitial_velocity
+        self.diffusion = diffusion
+        self.inlet_concentration = inlet_concentration
+
+    def concentration_profile(self):
+        """Equation:
+        C/Co =  1/2 * {erfc[(x - v*t)/(2*sqrt(D*t))]
+                + exp(v*x/D)*erfc[(x + v*t)/(2*sqrt(D*t))]}
+        """
+        Pe_local = self.interstitial_velocity * self.x / self.diffusion
+        arg1 = (self.x - self.interstitial_velocity * self.time) / (
+            2 * np.sqrt(self.diffusion * self.time)
+        )
+        arg2 = (self.x + self.interstitial_velocity * self.time) / (
+            2 * np.sqrt(self.diffusion * self.time)
+        )
         exponent = Pe_local - arg2**2
         term2 = np.where(
             exponent > 500,
             0.0,
             erfcx(arg2) * np.exp(exponent),
         )
-        return inlet_concentration * 0.5 * (erfc(arg1) + term2)
+        return self.inlet_concentration * 0.5 * (erfc(arg1) + term2)
 
-    @staticmethod
-    def yoon_nelson(time: np.ndarray, tau: float, k_YN: float):
-        """Yoon-Nelson Model for fixed bed adsorption.
 
-        tau: time to 50% breakthrough
-        k_YN: curve shaping coefficient
+class YoonNelson(AnalyticModels):
+    """Yoon-Nelson Model for fixed bed adsorption.
 
-        Equation:
-            C/Co = 1 / (1 + exp[k_YN*(tau - t)])
+    t_50: time to 50% breakthrough
+    k_YN: curve shaping coefficient
+    """
 
+    def __init__(self, k_YN: float, t_50: float, time: np.ndarray):
+        self.k_YN = k_YN
+        self.t_50 = t_50
+        self.time = time
+
+    def concentration_profile(self):
+        """Equation:
+        C/Co = 1 / (1 + exp[k_YN*(t_50 - t)])
         """
-        return 1 / (1 + np.exp(k_YN * (tau - time)))
 
-    @staticmethod
-    def clark(time: np.ndarray, r: float, A: float, n: float):
-        """Clark Model.
+        return 1 / (1 + np.exp(self.k_YN * (self.t_50 - self.time)))
 
-        A: capacity-like model coefficient
-        r: kintic-like model coefficient
-        n: curve asymmetry coefficient
 
-        Equation:
-            C/Co = 1 / [1 + A*exp(-r*t)]^(1 / (n -1))
+class Clark(AnalyticModels):
+    """Clark Model.
 
+    A: capacity-like model coefficient
+    r: kinetic-like model coefficient
+    n: curve asymmetry coefficient
+    """
+
+    def __init__(self, r: float, A: float, n: float, time: np.ndarray):
+        self.r = r
+        self.A = A
+        self.n = n
+        self.time = time
+
+    def concentration_profile(self):
+        """Equation:
+        C/Co = 1 / [1 + A*exp(-r*t)]^(1 / (n - 1))
         """
-        return 1 / (1 + A * np.exp(-r * time)) ** (1 / (n - 1))
 
-    @staticmethod
-    def bohart_adams(
+        return 1 / (1 + self.A * np.exp(-self.r * self.time)) ** (1 / (self.n - 1))
+
+
+class BohartAdams(AnalyticModels):
+    """Bohart-Adams Model.
+
+    sorbent_loading (m_o): dry mass of sorbent per volume bed
+    k_BA: Bohart-Adams lumped rate constant
+    sorbent_capacity: removal capacity per mass sorbent
+    velocity: superficial velocity
+    """
+
+    def __init__(
+        self,
         sorbent_loading: float,
         k_BA: float,
         sorbent_capacity: float,
-        bed_length: float,
+        x: float,
         velocity: float,
         time: float,
         inlet_concentration: float,
     ):
-        """Bohart-Adams Model.
+        self.sorbent_loading = sorbent_loading
+        self.k_BA = k_BA
+        self.sorbent_capacity = sorbent_capacity
+        self.x = x
+        self.velocity = velocity
+        self.time = time
+        self.inlet_concentration = inlet_concentration
 
-        sorbent_loading: dry mass of sorbent in bed
-        k_BA: Bohart-Adams lumped rate constant
-        sorbent_capacity: removal capacity per mass sorbent
-        velocity: superficial velocity
+    def concentration_profile(self):
+        """Equation:
 
-        Equation:
-            C/Co = 1 / [1 + exp(m_o*k_BA*q_m*L/u - k_BA*Co*t)]
-
+        C/Co = 1 / [1 + exp(m_o*k_BA*q_m*L/u - k_BA*Co*t)]
         """
-        arg1 = sorbent_loading * k_BA * sorbent_capacity * bed_length / velocity
-        arg2 = k_BA * inlet_concentration * time
+
+        arg1 = (
+            self.sorbent_loading
+            * self.k_BA
+            * self.sorbent_capacity
+            * self.x
+            / self.velocity
+        )
+        arg2 = self.k_BA * self.inlet_concentration * self.time
         return 1 / (1 + np.exp(arg1 - arg2))
 
-    @staticmethod
-    def thomas_rectangular(
+
+class ThomasRectangular(AnalyticModels):
+    """Thomas Model with rectangular isotherm.
+
+    k_Th: Thomas Model rate constant
+    sorbent_capacity: removal capacity per mass sorbent
+    BV: bed volumes treated
+    """
+
+    def __init__(
+        self,
         sorbent_mass: float,
         k_Th: float,
         sorbent_capacity: float,
@@ -90,66 +162,86 @@ class AnalyticModels:
         bed_volumes_treated: float,
         inlet_concentration: float,
     ):
-        """Thomas Model with rectangular isotherm.
+        self.sorbent_mass = sorbent_mass
+        self.k_Th = k_Th
+        self.sorbent_capacity = sorbent_capacity
+        self.bed_volume = bed_volume
+        self.bed_volumes_treated = bed_volumes_treated
+        self.inlet_concentration = inlet_concentration
 
-        k_Th: Thomas Model rate constant
-        sorbent_capacity: removal capacity per mass sorbent
-
-        Equation:
-            C/Co = 1 / [1 + exp(k_Th*q_e*x/Q - k_Th*Co*t)]
-
+    def concentration_profile(self):
+        """Equation:
+        C/Co = 1 / [1 + exp(k_Th*q_e*x/Q - k_Th*Co*BV)]
         """
-        arg1 = k_Th * sorbent_capacity * sorbent_mass / bed_volume
-        arg2 = k_Th * inlet_concentration * bed_volumes_treated
+
+        arg1 = self.k_Th * self.sorbent_capacity * self.sorbent_mass / self.bed_volume
+        arg2 = self.k_Th * self.inlet_concentration * self.bed_volumes_treated
         return 1 / (1 + np.exp(arg1 - arg2))
 
-    @staticmethod
-    def _J_function(x, y):
-        """Used to solve Thomas with Langmuir."""
 
-        def integrand(tau):
-            return np.exp(-(y + tau)) * i0(2 * np.sqrt(y * tau))
+class ThomasLangmuir(AnalyticModels):
+    """Thomas Model with Langmuir isotherm."""
 
-        integral, _ = quad(integrand, 0, x)
-        return 1.0 - integral
-
-    @staticmethod
-    def thomas_langmuir(
+    def __init__(
+        self,
         langmuir_constant: float,
         apparent_density: float,
         inlet_concentration: float,
         sorbent_capacity: float,
         k_Th: float,
-        bed_length: float,
+        x: float,
         bed_void_fraction: float,
         interstitial_velocity: float,
         time: float,
     ):
-        """Thomas Model with Langmuir isotherm.
+        self.langmuir_constant = langmuir_constant
+        self.apparent_density = apparent_density
+        self.inlet_concentration = inlet_concentration
+        self.sorbent_capacity = sorbent_capacity
+        self.k_Th = k_Th
+        self.x = x
+        self.bed_void_fraction = bed_void_fraction
+        self.interstitial_velocity = interstitial_velocity
+        self.time = time
 
-        Equation:
-            C/Co = J((n/r), nT) / [J((n/r), nT) + [1 - J(n, (nT/r))]exp[(1 - (1/r))(n - nT)]]
-
-            J(x, y) = 1 - int(exp(-y - tau)*I_0*(2*sqrt(y*tau)) dtau) from 0 to x
-
+    def _J_function(a: float, b: np.ndarray) -> float:
+        """Equation:
+        J(x, y) = 1 - int(exp(-y - tau)*I_0*(2*sqrt(y*tau)) dtau) from 0 to x
         """
+
+        def integrand(tau):
+            return np.exp(-(b + tau)) * i0(2 * np.sqrt(b * tau))
+
+        integral, _ = quad(integrand, 0, a)
+        return 1.0 - integral
+
+    def concentration_profile(self):
+        """Equation:
+        C/Co = J((n/r), nT) /
+            [J((n/r), nT) + [1 - J(n, (nT/r))]exp[(1 - (1/r))(n - nT)]]
+        """
+
         n_arg1 = (
-            apparent_density
-            * sorbent_capacity
-            * k_Th
-            * bed_length
-            * (1 - bed_void_fraction)
+            self.apparent_density
+            * self.sorbent_capacity
+            * self.k_Th
+            * self.x
+            * (1 - self.bed_void_fraction)
         )
-        n_arg2 = bed_void_fraction * interstitial_velocity
+        n_arg2 = self.bed_void_fraction * self.interstitial_velocity
         n = n_arg1 / n_arg2
-        r = 1 + langmuir_constant * inlet_concentration
-        T_arg1 = bed_void_fraction * ((1 / langmuir_constant) + inlet_concentration)
-        T_arg2 = interstitial_velocity * time / bed_length - 1
-        T_arg3 = apparent_density * sorbent_capacity * (1 - bed_void_fraction)
+        r = 1 + self.langmuir_constant * self.inlet_concentration
+        T_arg1 = self.bed_void_fraction * (
+            (1 / self.langmuir_constant) + self.inlet_concentration
+        )
+        T_arg2 = self.interstitial_velocity * self.time / self.x - 1
+        T_arg3 = (
+            self.apparent_density * self.sorbent_capacity * (1 - self.bed_void_fraction)
+        )
         T = T_arg1 * T_arg2 / T_arg3
-        print(f"time={time:.2f}, " f"n={n:.3e}, " f"T={T:.3e}, " f"nT={n*T:.3e}")
-        J_arg1 = AnalyticModels._J_function(n / r, n * T)
-        J_arg2 = AnalyticModels._J_function(n, n * T / r)
+        print(f"time={self.time:.2f}, " f"n={n:.3e}, " f"T={T:.3e}, " f"nT={n*T:.3e}")
+        J_arg1 = ThomasLangmuir._J_function(n / r, n * T)
+        J_arg2 = ThomasLangmuir._J_function(n, n * T / r)
 
         exp_arg = (1 - (1 / r)) * (n - n * T)
         print(exp_arg)

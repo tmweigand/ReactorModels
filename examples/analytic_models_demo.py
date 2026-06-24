@@ -1,4 +1,4 @@
-from reactormodels.models import AnalyticModels
+import reactormodels
 
 from pathlib import Path
 import matplotlib.pyplot as plt
@@ -12,56 +12,61 @@ def run_demo(
     time = np.linspace(0, 200, 200)
     bed_volumes_treated = np.linspace(0, 200, 200)
 
-    yoon_nelson = AnalyticModels.yoon_nelson(
-        time=time,
-        tau=100,
-        k_YN=0.06,
-    )
+    ogata_banks = reactormodels.models.OgataBanks(
+        time=time, x=1, interstitial_velocity=0.1, diffusion=0.01, inlet_concentration=1
+    ).concentration_profile()
 
-    clark = AnalyticModels.clark(
+    yoon_nelson = reactormodels.models.YoonNelson(
+        time=time,
+        t_50=100,
+        k_YN=0.06,
+    ).concentration_profile()
+
+    clark = reactormodels.models.Clark(
         time=time,
         r=0.05,
         A=500,
         n=2.5,
-    )
+    ).concentration_profile()
 
-    bohart_adams = AnalyticModels.bohart_adams(
+    bohart_adams = reactormodels.models.BohartAdams(
         sorbent_loading=1.0,
         k_BA=0.002,
         sorbent_capacity=1000,
-        bed_length=1.0,
+        x=1.0,
         velocity=0.1,
         time=time,
         inlet_concentration=100,
-    )
+    ).concentration_profile()
 
-    thomas_rectangular = AnalyticModels.thomas_rectangular(
+    thomas_rectangular = reactormodels.models.ThomasRectangular(
         sorbent_mass=1.0,
         k_Th=0.002,
         sorbent_capacity=5000,
         bed_volume=1.0,
         bed_volumes_treated=bed_volumes_treated,
         inlet_concentration=100,
-    )
+    ).concentration_profile()
 
     thomas_langmuir = np.array(
         [
-            AnalyticModels.thomas_langmuir(
+            reactormodels.models.ThomasLangmuir(
                 langmuir_constant=0.05,
                 apparent_density=0.6,
                 inlet_concentration=100,
                 sorbent_capacity=1000,
                 k_Th=0.002,
-                bed_length=1.0,
+                x=1.0,
                 bed_void_fraction=0.40,
                 interstitial_velocity=0.10,
                 time=t,
-            )
+            ).concentration_profile()
             for t in time
         ]
     )
 
     plt.figure(figsize=(8, 5))
+    plt.plot(time, ogata_banks, label="Ogata-Banks")
     plt.plot(time, yoon_nelson, label="Yoon-Nelson")
     plt.plot(time, clark, label="Clark")
     plt.plot(time, bohart_adams, label="Bohart-Adams")
@@ -70,7 +75,7 @@ def run_demo(
 
     plt.xlabel("Time")
     plt.ylabel("C/C₀")
-    plt.title("Adsorption Breakthrough Models")
+    plt.title("Breakthrough Models")
     plt.ylim(0, 1.05)
     plt.grid(True)
     plt.legend()
