@@ -40,6 +40,7 @@ class OgataBanks(AnalyticModels):
 
     def concentration_profile(self):
         """Equation:
+
         C/Co =  1/2 * {erfc[(x - v*t)/(2*sqrt(D*t))]
                 + exp(v*x/D)*erfc[(x + v*t)/(2*sqrt(D*t))]}
         """
@@ -73,9 +74,9 @@ class YoonNelson(AnalyticModels):
 
     def concentration_profile(self):
         """Equation:
+
         C/Co = 1 / (1 + exp[k_YN*(t_50 - t)])
         """
-
         return 1 / (1 + np.exp(self.k_YN * (self.t_50 - self.time)))
 
 
@@ -95,9 +96,9 @@ class Clark(AnalyticModels):
 
     def concentration_profile(self):
         """Equation:
+
         C/Co = 1 / [1 + A*exp(-r*t)]^(1 / (n - 1))
         """
-
         return 1 / (1 + self.A * np.exp(-self.r * self.time)) ** (1 / (self.n - 1))
 
 
@@ -133,7 +134,6 @@ class BohartAdams(AnalyticModels):
 
         C/Co = 1 / [1 + exp(m_o*k_BA*q_m*L/u - k_BA*Co*t)]
         """
-
         arg1 = (
             self.sorbent_loading
             * self.k_BA
@@ -171,9 +171,9 @@ class ThomasRectangular(AnalyticModels):
 
     def concentration_profile(self):
         """Equation:
+
         C/Co = 1 / [1 + exp(k_Th*q_e*x/Q - k_Th*Co*BV)]
         """
-
         arg1 = self.k_Th * self.sorbent_capacity * self.sorbent_mass / self.bed_volume
         arg2 = self.k_Th * self.inlet_concentration * self.bed_volumes_treated
         return 1 / (1 + np.exp(arg1 - arg2))
@@ -204,8 +204,9 @@ class ThomasLangmuir(AnalyticModels):
         self.interstitial_velocity = interstitial_velocity
         self.time = time
 
-    def _J_function(a: float, b: np.ndarray) -> float:
+    def _J_function(self, a: float, b: np.ndarray) -> float:
         """Equation:
+
         J(x, y) = 1 - int(exp(-y - tau)*I_0*(2*sqrt(y*tau)) dtau) from 0 to x
         """
 
@@ -217,10 +218,10 @@ class ThomasLangmuir(AnalyticModels):
 
     def concentration_profile(self):
         """Equation:
+
         C/Co = J((n/r), nT) /
             [J((n/r), nT) + [1 - J(n, (nT/r))]exp[(1 - (1/r))(n - nT)]]
         """
-
         n_arg1 = (
             self.apparent_density
             * self.sorbent_capacity
