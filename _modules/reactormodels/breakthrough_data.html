@@ -1,0 +1,261 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>reactormodels.breakthrough_data &mdash; ReactorModels 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            ReactorModels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../model_development/index.html">Model Development</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">reactormodels</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ReactorModels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">reactormodels.breakthrough_data</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for reactormodels.breakthrough_data</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;breakthrough_data.py&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+
+<div class="viewcode-block" id="Breakthrough">
+<a class="viewcode-back" href="../../api/reactormodels.html#reactormodels.Breakthrough">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Breakthrough</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Collect information from experimental breakthrough data.</span>
+
+<span class="sd">    water_matrix: label for water that tested.</span>
+<span class="sd">    feed_concentrations: feed concentrations taken over duration of experiment.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">compound</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">feed_concentrations</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">effluent_concentrations</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">flow_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">bed_volumes</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">time</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">water_matrix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">bed_volumes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Either time or bed_volumes must be provided.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">bed_volumes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">bed_volumes</span><span class="p">)),</span> <span class="s2">&quot;Bed volume data contains NaN&quot;</span>
+
+        <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">time</span><span class="p">)),</span> <span class="s2">&quot;Time data contains NaN&quot;</span>
+
+        <span class="k">if</span> <span class="n">feed_concentrations</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">feed_concentrations</span><span class="p">)</span>
+            <span class="p">),</span> <span class="s2">&quot;Feed concentration data contains NaN&quot;</span>
+
+        <span class="k">if</span> <span class="n">effluent_concentrations</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">effluent_concentrations</span><span class="p">)</span>
+            <span class="p">),</span> <span class="s2">&quot;Effluent concentration data contains NaN&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">compound</span> <span class="o">=</span> <span class="n">compound</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">water_matrix</span> <span class="o">=</span> <span class="n">water_matrix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feed_concentrations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">feed_concentrations</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bed_volumes</span> <span class="o">=</span> <span class="n">bed_volumes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">effluent_concentrations</span> <span class="o">=</span> <span class="n">effluent_concentrations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flow_rate</span> <span class="o">=</span> <span class="n">flow_rate</span>
+
+<div class="viewcode-block" id="Breakthrough.mean_feed_concentration">
+<a class="viewcode-back" href="../../api/reactormodels.html#reactormodels.Breakthrough.mean_feed_concentration">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mean_feed_concentration</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine mean feed concentration&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feed_concentrations</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Breakthrough.normalize_concentration">
+<a class="viewcode-back" href="../../api/reactormodels.html#reactormodels.Breakthrough.normalize_concentration">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">normalize_concentration</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Normalize effluent concentration by mean feed concentration.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">effluent_concentrations</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean_feed_concentration</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Breakthrough.empty_bed_contact_time">
+<a class="viewcode-back" href="../../api/reactormodels.html#reactormodels.Breakthrough.empty_bed_contact_time">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">empty_bed_contact_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate empty bed contact time.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">column_volume</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">flow_rate</span></div>
+
+
+<div class="viewcode-block" id="Breakthrough.time_to_bed_volumes">
+<a class="viewcode-back" href="../../api/reactormodels.html#reactormodels.Breakthrough.time_to_bed_volumes">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">time_to_bed_volumes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert time to bed volumes.&quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;time is not provided&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bed_volumes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty_bed_contact_time</span><span class="p">(</span><span class="n">column_volume</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Breakthrough.bed_volumes_to_time">
+<a class="viewcode-back" href="../../api/reactormodels.html#reactormodels.Breakthrough.bed_volumes_to_time">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bed_volumes_to_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert bed volumes to time.&quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_volumes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;bed_volumes is not provided&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_volumes</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty_bed_contact_time</span><span class="p">(</span><span class="n">column_volume</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Breakthrough.has_breakthrough">
+<a class="viewcode-back" href="../../api/reactormodels.html#reactormodels.Breakthrough.has_breakthrough">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_breakthrough</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">breakthrough_fraction</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if C/C0 reaches the breakthrough fraction.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normalize_concentration</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">breakthrough_fraction</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Breakthrough.breakthrough_threshold">
+<a class="viewcode-back" href="../../api/reactormodels.html#reactormodels.Breakthrough.breakthrough_threshold">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">breakthrough_threshold</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">column_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">return_index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate bed volumes to specific breakthrough threshold.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_volumes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">time_to_bed_volumes</span><span class="p">(</span><span class="n">column_volume</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_volumes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+        <span class="n">concentrations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_concentration</span><span class="p">()</span>
+
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">concentrations</span> <span class="o">&gt;=</span> <span class="n">threshold</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Threshold </span><span class="si">{</span><span class="n">threshold</span><span class="si">}</span><span class="s2"> is never reached by the breakthrough curve.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">above_idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">mask</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">above_idx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_volumes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">bv_above</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_volumes</span><span class="p">[</span><span class="n">above_idx</span><span class="p">]</span>
+        <span class="n">c_above</span> <span class="o">=</span> <span class="n">concentrations</span><span class="p">[</span><span class="n">above_idx</span><span class="p">]</span>
+
+        <span class="n">bv_below</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_volumes</span><span class="p">[</span><span class="n">above_idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">c_below</span> <span class="o">=</span> <span class="n">concentrations</span><span class="p">[</span><span class="n">above_idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">breakthrough_bv</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span>
+            <span class="n">bv_below</span>
+            <span class="o">+</span> <span class="p">(</span><span class="n">threshold</span> <span class="o">-</span> <span class="n">c_below</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">bv_above</span> <span class="o">-</span> <span class="n">bv_below</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">c_above</span> <span class="o">-</span> <span class="n">c_below</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">return_index</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">breakthrough_bv</span><span class="p">,</span> <span class="n">above_idx</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">breakthrough_bv</span></div>
+
+
+<div class="viewcode-block" id="Breakthrough.summary">
+<a class="viewcode-back" href="../../api/reactormodels.html#reactormodels.Breakthrough.summary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Summarize breakthrough data.&quot;&quot;&quot;</span>
+        <span class="n">n_c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_concentration</span><span class="p">()</span>
+        <span class="n">ebct</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty_bed_contact_time</span><span class="p">(</span><span class="n">column_volume</span><span class="p">)</span>
+        <span class="n">bv_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough_threshold</span><span class="p">(</span><span class="n">column_volume</span><span class="p">,</span> <span class="n">threshold</span><span class="p">)</span>
+        <span class="n">summary</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Compound: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">compound</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Water matrix: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">water_matrix</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Mean feed concentration: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mean_feed_concentration</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Normalized concentrations: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">array2string</span><span class="p">(</span><span class="n">n_c</span><span class="p">,</span><span class="w"> </span><span class="n">precision</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Flow rate: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">flow_rate</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Bed volumes: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bed_volumes</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Time: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Empty bed contact time: </span><span class="si">{</span><span class="n">ebct</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Bed volumes to </span><span class="si">{</span><span class="mi">100</span><span class="o">*</span><span class="n">threshold</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">% breakthrough: </span><span class="si">{</span><span class="n">bv_value</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">summary</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Timothy M. Weigand.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

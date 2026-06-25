@@ -19,6 +19,14 @@ Subpackages
 Submodules
 ----------
 
+reactormodels.breakthrough\_data module
+---------------------------------------
+
+.. automodule:: reactormodels.breakthrough_data
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 reactormodels.column\_data module
 ---------------------------------
 

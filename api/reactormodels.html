@@ -59,6 +59,17 @@
 <li class="toctree-l4"><a class="reference internal" href="#reactormodels.Column.peclet"><code class="docutils literal notranslate"><span class="pre">Column.peclet()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#reactormodels.Breakthrough"><code class="docutils literal notranslate"><span class="pre">Breakthrough</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#reactormodels.Breakthrough.mean_feed_concentration"><code class="docutils literal notranslate"><span class="pre">Breakthrough.mean_feed_concentration()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#reactormodels.Breakthrough.normalize_concentration"><code class="docutils literal notranslate"><span class="pre">Breakthrough.normalize_concentration()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#reactormodels.Breakthrough.empty_bed_contact_time"><code class="docutils literal notranslate"><span class="pre">Breakthrough.empty_bed_contact_time()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#reactormodels.Breakthrough.time_to_bed_volumes"><code class="docutils literal notranslate"><span class="pre">Breakthrough.time_to_bed_volumes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#reactormodels.Breakthrough.bed_volumes_to_time"><code class="docutils literal notranslate"><span class="pre">Breakthrough.bed_volumes_to_time()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#reactormodels.Breakthrough.has_breakthrough"><code class="docutils literal notranslate"><span class="pre">Breakthrough.has_breakthrough()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#reactormodels.Breakthrough.breakthrough_threshold"><code class="docutils literal notranslate"><span class="pre">Breakthrough.breakthrough_threshold()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#reactormodels.Breakthrough.summary"><code class="docutils literal notranslate"><span class="pre">Breakthrough.summary()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html">reactormodels.models package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html">reactormodels.numerics package</a></li>
@@ -66,6 +77,10 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-reactormodels.breakthrough_data">reactormodels.breakthrough_data module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#reactormodels.breakthrough_data.Breakthrough"><code class="docutils literal notranslate"><span class="pre">Breakthrough</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#module-reactormodels.column_data">reactormodels.column_data module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#reactormodels.column_data.Column"><code class="docutils literal notranslate"><span class="pre">Column</span></code></a></li>
 </ul>
@@ -151,6 +166,63 @@
 <dd><p>Axial Peclet number Pe = v * L / (porosity * diffusion).</p>
 <p>Pe &gt;&gt; 1: advection dominated.
 Pe &lt;&lt; 1: diffusion dominated.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.Breakthrough">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.</span></span><span class="sig-name descname"><span class="pre">Breakthrough</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feed_concentrations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">effluent_concentrations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bed_volumes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">water_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/breakthrough_data.html#Breakthrough"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.Breakthrough" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Collect information from experimental breakthrough data.</p>
+<p>water_matrix: label for water that tested.
+feed_concentrations: feed concentrations taken over duration of experiment.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.Breakthrough.mean_feed_concentration">
+<span class="sig-name descname"><span class="pre">mean_feed_concentration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/breakthrough_data.html#Breakthrough.mean_feed_concentration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.Breakthrough.mean_feed_concentration" title="Link to this definition"></a></dt>
+<dd><p>Determine mean feed concentration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.Breakthrough.normalize_concentration">
+<span class="sig-name descname"><span class="pre">normalize_concentration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/breakthrough_data.html#Breakthrough.normalize_concentration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.Breakthrough.normalize_concentration" title="Link to this definition"></a></dt>
+<dd><p>Normalize effluent concentration by mean feed concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.Breakthrough.empty_bed_contact_time">
+<span class="sig-name descname"><span class="pre">empty_bed_contact_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/breakthrough_data.html#Breakthrough.empty_bed_contact_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.Breakthrough.empty_bed_contact_time" title="Link to this definition"></a></dt>
+<dd><p>Calculate empty bed contact time.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.Breakthrough.time_to_bed_volumes">
+<span class="sig-name descname"><span class="pre">time_to_bed_volumes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/reactormodels/breakthrough_data.html#Breakthrough.time_to_bed_volumes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.Breakthrough.time_to_bed_volumes" title="Link to this definition"></a></dt>
+<dd><p>Convert time to bed volumes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.Breakthrough.bed_volumes_to_time">
+<span class="sig-name descname"><span class="pre">bed_volumes_to_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/reactormodels/breakthrough_data.html#Breakthrough.bed_volumes_to_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.Breakthrough.bed_volumes_to_time" title="Link to this definition"></a></dt>
+<dd><p>Convert bed volumes to time.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.Breakthrough.has_breakthrough">
+<span class="sig-name descname"><span class="pre">has_breakthrough</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">breakthrough_fraction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/reactormodels/breakthrough_data.html#Breakthrough.has_breakthrough"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.Breakthrough.has_breakthrough" title="Link to this definition"></a></dt>
+<dd><p>Return True if C/C0 reaches the breakthrough fraction.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.Breakthrough.breakthrough_threshold">
+<span class="sig-name descname"><span class="pre">breakthrough_threshold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/reactormodels/breakthrough_data.html#Breakthrough.breakthrough_threshold"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.Breakthrough.breakthrough_threshold" title="Link to this definition"></a></dt>
+<dd><p>Calculate bed volumes to specific breakthrough threshold.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.Breakthrough.summary">
+<span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/reactormodels/breakthrough_data.html#Breakthrough.summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.Breakthrough.summary" title="Link to this definition"></a></dt>
+<dd><p>Summarize breakthrough data.</p>
 </dd></dl>
 
 </dd></dl>
@@ -375,6 +447,67 @@ Pe &lt;&lt; 1: diffusion dominated.</p>
 </section>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-reactormodels.breakthrough_data">
+<span id="reactormodels-breakthrough-data-module"></span><h2>reactormodels.breakthrough_data module<a class="headerlink" href="#module-reactormodels.breakthrough_data" title="Link to this heading"></a></h2>
+<p>breakthrough_data.py</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.breakthrough_data.Breakthrough">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.breakthrough_data.</span></span><span class="sig-name descname"><span class="pre">Breakthrough</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feed_concentrations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">effluent_concentrations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bed_volumes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">water_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/breakthrough_data.html#Breakthrough"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.breakthrough_data.Breakthrough" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Collect information from experimental breakthrough data.</p>
+<p>water_matrix: label for water that tested.
+feed_concentrations: feed concentrations taken over duration of experiment.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.breakthrough_data.Breakthrough.mean_feed_concentration">
+<span class="sig-name descname"><span class="pre">mean_feed_concentration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/breakthrough_data.html#Breakthrough.mean_feed_concentration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.breakthrough_data.Breakthrough.mean_feed_concentration" title="Link to this definition"></a></dt>
+<dd><p>Determine mean feed concentration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.breakthrough_data.Breakthrough.normalize_concentration">
+<span class="sig-name descname"><span class="pre">normalize_concentration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/breakthrough_data.html#Breakthrough.normalize_concentration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.breakthrough_data.Breakthrough.normalize_concentration" title="Link to this definition"></a></dt>
+<dd><p>Normalize effluent concentration by mean feed concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.breakthrough_data.Breakthrough.empty_bed_contact_time">
+<span class="sig-name descname"><span class="pre">empty_bed_contact_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/breakthrough_data.html#Breakthrough.empty_bed_contact_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.breakthrough_data.Breakthrough.empty_bed_contact_time" title="Link to this definition"></a></dt>
+<dd><p>Calculate empty bed contact time.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.breakthrough_data.Breakthrough.time_to_bed_volumes">
+<span class="sig-name descname"><span class="pre">time_to_bed_volumes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/reactormodels/breakthrough_data.html#Breakthrough.time_to_bed_volumes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.breakthrough_data.Breakthrough.time_to_bed_volumes" title="Link to this definition"></a></dt>
+<dd><p>Convert time to bed volumes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.breakthrough_data.Breakthrough.bed_volumes_to_time">
+<span class="sig-name descname"><span class="pre">bed_volumes_to_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/reactormodels/breakthrough_data.html#Breakthrough.bed_volumes_to_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.breakthrough_data.Breakthrough.bed_volumes_to_time" title="Link to this definition"></a></dt>
+<dd><p>Convert bed volumes to time.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.breakthrough_data.Breakthrough.has_breakthrough">
+<span class="sig-name descname"><span class="pre">has_breakthrough</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">breakthrough_fraction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/reactormodels/breakthrough_data.html#Breakthrough.has_breakthrough"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.breakthrough_data.Breakthrough.has_breakthrough" title="Link to this definition"></a></dt>
+<dd><p>Return True if C/C0 reaches the breakthrough fraction.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.breakthrough_data.Breakthrough.breakthrough_threshold">
+<span class="sig-name descname"><span class="pre">breakthrough_threshold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/reactormodels/breakthrough_data.html#Breakthrough.breakthrough_threshold"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.breakthrough_data.Breakthrough.breakthrough_threshold" title="Link to this definition"></a></dt>
+<dd><p>Calculate bed volumes to specific breakthrough threshold.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.breakthrough_data.Breakthrough.summary">
+<span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/reactormodels/breakthrough_data.html#Breakthrough.summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.breakthrough_data.Breakthrough.summary" title="Link to this definition"></a></dt>
+<dd><p>Summarize breakthrough data.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="module-reactormodels.column_data">
 <span id="reactormodels-column-data-module"></span><h2>reactormodels.column_data module<a class="headerlink" href="#module-reactormodels.column_data" title="Link to this heading"></a></h2>
