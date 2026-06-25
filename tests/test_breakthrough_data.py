@@ -8,9 +8,9 @@ def test_breakthrough_class():
     feed_concentrations = [101, 99]
     compound = "PFOA"
     water_matrix = "Surface_Water"
-    bed_volumes = [0, 100, 200, 250, 350, 400, 500, 600]
+    bed_volumes = np.array([0, 100, 200, 250, 350, 400, 500, 600])
     time = np.array(bed_volumes) * np.pi / 8
-    effluent_concentrations = [0, 0, 10, 15, 25, 80, 100, 100]
+    effluent_concentrations = np.array([0, 0, 10, 15, 25, 80, 100, 100])
     flow_rate = 2.5
     length = 5
     diameter = 0.5
@@ -31,28 +31,24 @@ def test_breakthrough_class():
         flow_rate=flow_rate,
     )
 
-    assert breakthrough.mean_feed_concentration() == pytest.approx(
-        100, abs=1e-5
-    ), f"Failed: error = {np.abs(breakthrough.breakthrough_threshold(column_volume, threshold) - 100):.2e}"
+    assert breakthrough.mean_feed_concentration() == pytest.approx(100, abs=1e-5)
 
-    assert breakthrough.normalize_concentration() == pytest.approx(
-        [0, 0, 0.1, 0.15, 0.25, 0.8, 1, 1], abs=1e-5
-    ), f"Failed: max error = {np.abs(breakthrough.normalize_concentration() - [0, 0, 0.1, 0.15, 0.25, 0.8, 1, 1]).max():.2e}"
+    expected = [0, 0, 0.1, 0.15, 0.25, 0.8, 1, 1]
+    assert breakthrough.normalize_concentration() == pytest.approx(expected, abs=1e-5)
 
-    assert breakthrough.empty_bed_contact_time(column_volume) == pytest.approx(
-        np.pi / 8, abs=1e-5
-    ), f"Failed: error = {np.abs(breakthrough.empty_bed_contact_time(column_volume) - np.pi/8):.2e}"
+    expected = np.pi / 8
+    assert breakthrough.empty_bed_contact_time(column_volume) == expected
 
-    assert breakthrough.bed_volumes == pytest.approx(
-        breakthrough.time_to_bed_volumes(column_volume), abs=0.05
-    ), f"Failed: max error = {np.abs(breakthrough.bed_volumes - breakthrough.time_to_bed_volumes(column_volume)).max():.2e}"
+    breakthrough.time_to_bed_volumes(column_volume)
+    assert breakthrough.bed_volumes == pytest.approx(bed_volumes, abs=0.05)
 
-    assert breakthrough.time == pytest.approx(
-        breakthrough.bed_volumes_to_time(column_volume), abs=0.05
-    ), f"Failed: max error = {np.abs(breakthrough.time - breakthrough.bed_volumes_to_time(column_volume)).max():.2e}"
+    breakthrough.bed_volumes_to_time(column_volume)
+    assert breakthrough.time == pytest.approx(time, abs=0.05)
 
-    assert breakthrough.breakthrough_threshold(
-        column_volume, threshold
-    ) == pytest.approx(
-        300, abs=1e-5
-    ), f"Failed: error = {np.abs(breakthrough.breakthrough_threshold(column_volume, threshold) - 300):.2e}"
+    threshold, index = breakthrough.breakthrough_threshold(
+        column_volume, threshold, return_index=True
+    )
+    assert threshold == pytest.approx(300, abs=1e-5)
+    assert index == 4
+
+    assert breakthrough.has_breakthrough(0.01)
