@@ -59,11 +59,10 @@ def test_local_equilibrium_vs_ogata_banks():
 
     x, C, q = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
 
+    OgataBanks = reactormodels.models.OgataBanks(v_eff, D_eff, inlet_concentration=1.0)
     for i, t in enumerate(t_eval):
         mask = x < 0.8 * column_length
-        C_analytical = reactormodels.models.OgataBanks(
-            x[mask], t, v_eff, D_eff, inlet_concentration=1.0
-        ).concentration_profile()
+        C_analytical = OgataBanks.spatial_profile(x[mask], t)
         assert C[i, mask] == pytest.approx(C_analytical, abs=1e-2)
 
 
