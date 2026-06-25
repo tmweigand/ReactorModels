@@ -32,13 +32,16 @@ def test_ogata_banks(diffusion):
         numerics=numerics,
     )
     x, C = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
-
+    OgataBanks = reactormodels.models.OgataBanks(
+        velocity, diffusion, inlet_concentration
+    )
     for i, t in enumerate(t_eval):
         # Only compare interior of domain, away from outlet BC influence
         mask = x < 0.8 * column_length
-        C_analytical = reactormodels.models.OgataBanks(
-            x[mask], t, velocity, diffusion, inlet_concentration
-        ).concentration_profile()
+        C_analytical = OgataBanks.spatial_profile(
+            x[mask],
+            t,
+        )
         C_numerical = C[i, mask]
 
         assert C_numerical == pytest.approx(
@@ -74,11 +77,12 @@ def test_multi_element_ogata_banks():
     )
     x, C = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
 
+    OgataBanks = reactormodels.models.OgataBanks(
+        velocity, diffusion, inlet_concentration
+    )
     for i, t in enumerate(t_eval):
         mask = x < 0.8 * column_length
         assert C[i, mask] == pytest.approx(
-            reactormodels.models.OgataBanks(
-                x[mask], t, velocity, diffusion, inlet_concentration
-            ).concentration_profile(),
+            OgataBanks.spatial_profile(x[mask], t),
             abs=1e-2,
         )

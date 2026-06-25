@@ -32,24 +32,26 @@ def test_clark_becomes_yoon_nelson(time=np.linspace(0, 200, 200)):
     t_50 = np.log(A) / r
 
     yoon_nelson = reactormodels.models.YoonNelson(
-        time=time,
         t_50=t_50,
         k_YN=k_YN,
-    ).concentration_profile()
+    )
+    yn_solution = yoon_nelson.breakthrough_profile(time=time)
 
     clark = reactormodels.models.Clark(
-        time=time,
         r=r,
         A=A,
         n=n,
-    ).concentration_profile()
+    )
 
-    assert yoon_nelson == pytest.approx(
-        clark, abs=1e-3
+    clark_solution = clark.breakthrough_profile(time=time)
+
+    assert yn_solution == pytest.approx(
+        clark_solution, abs=1e-3
     ), f"Failed at t={time}: max error = {np.abs(yoon_nelson - clark).max():.3e}"
 
 
-def bohart_adams_equals_thomas(time=np.linspace(0, 200, 200)):
+@pytest.mark.skip
+def test_bohart_adams_equals_thomas(time=np.linspace(0, 200, 200)):
     """The rectangular Thomas model is equivalent to the Bohart-Adams model through unit conversion.
 
     Bohart-Adams:
@@ -96,11 +98,11 @@ def bohart_adams_equals_thomas(time=np.linspace(0, 200, 200)):
         sorbent_loading=sorbent_loading,
         k_BA=k_BA,
         sorbent_capacity=sorbent_capacity,
-        x=x,
         velocity=velocity,
-        time=time,
         inlet_concentration=inlet_concentration,
-    ).concentration_profile()
+    )
+
+    bh_solution = bohart_adams.breakthrough_profile(time=time, x=x)
 
     thomas_rectangular = reactormodels.models.ThomasRectangular(
         sorbent_mass=sorbent_mass,
@@ -109,10 +111,12 @@ def bohart_adams_equals_thomas(time=np.linspace(0, 200, 200)):
         bed_volume=bed_volume,
         bed_volumes_treated=bed_volumes_treated,
         inlet_concentration=inlet_concentration,
-    ).concentration_profile()
+    )
 
-    assert bohart_adams == pytest.approx(
-        thomas_rectangular, abs=1e-3
+    t_solution = thomas_rectangular.breakthrough_profile(time=time, x=x)
+
+    assert bh_solution == pytest.approx(
+        t_solution, abs=1e-3
     ), f"Failed at t={time}: max error = {np.abs(bohart_adams - thomas_rectangular).max():.3e}"
 
 

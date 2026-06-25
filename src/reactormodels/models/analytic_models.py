@@ -1,5 +1,6 @@
 """analytic_models.py"""
 
+import warnings
 import numpy as np
 from scipy.special import erfc, erfcx
 from scipy.integrate import quad
@@ -9,47 +10,52 @@ from scipy.special import i0
 class AnalyticModels:
     """Base class for analytical solutions to fixed bed adsorption models."""
 
-    def concentration_profile(
-        self, x: float | np.ndarray, time: float | np.ndarray
-    ) -> np.ndarray:
-        """Return breakthrough profile with respect to time fixed bed length."""
+    def model(self, x: float | np.ndarray, time: float | np.ndarray):
+        """Analytic model that return C/C_0"""
         raise NotImplementedError
+
+    def spatial_profile(self, x: np.ndarray, time: float) -> np.ndarray:
+        """Return concentration profile with respect to fixed time."""
+        return self.model(x, time)
+
+    def breakthrough_profile(self, time: np.ndarray, x: float) -> np.ndarray:
+        """Return breakthrough profile with respect to time fixed bed length."""
+        return self.model(x, time)
 
 
 class OgataBanks(AnalyticModels):
     """Ogata Banks solution for 1D advection-diffusion with step input.
 
-    x: column length
     D: diffusion
     v: interstital velocity
     """
 
     def __init__(
         self,
-        x: np.ndarray | float,
-        time: np.ndarray | float,
         interstitial_velocity: float,
         diffusion: float,
         inlet_concentration: float,
     ):
-        self.x = x
-        self.time = time
         self.interstitial_velocity = interstitial_velocity
         self.diffusion = diffusion
         self.inlet_concentration = inlet_concentration
 
-    def concentration_profile(self):
+    def model(
+        self,
+        x: np.ndarray | float,
+        time: np.ndarray | float,
+    ):
         """Equation:
 
         C/Co =  1/2 * {erfc[(x - v*t)/(2*sqrt(D*t))]
                 + exp(v*x/D)*erfc[(x + v*t)/(2*sqrt(D*t))]}
         """
-        Pe_local = self.interstitial_velocity * self.x / self.diffusion
-        arg1 = (self.x - self.interstitial_velocity * self.time) / (
-            2 * np.sqrt(self.diffusion * self.time)
+        Pe_local = self.interstitial_velocity * x / self.diffusion
+        arg1 = (x - self.interstitial_velocity * time) / (
+            2 * np.sqrt(self.diffusion * time)
         )
-        arg2 = (self.x + self.interstitial_velocity * self.time) / (
-            2 * np.sqrt(self.diffusion * self.time)
+        arg2 = (x + self.interstitial_velocity * time) / (
+            2 * np.sqrt(self.diffusion * time)
         )
         exponent = Pe_local - arg2**2
         term2 = np.where(
@@ -67,17 +73,32 @@ class YoonNelson(AnalyticModels):
     k_YN: curve shaping coefficient
     """
 
-    def __init__(self, k_YN: float, t_50: float, time: np.ndarray):
+    def __init__(self, k_YN: float, t_50: float):
         self.k_YN = k_YN
         self.t_50 = t_50
-        self.time = time
 
-    def concentration_profile(self):
+    def model(
+        self,
+        x: np.ndarray | float,
+        time: np.ndarray | float,
+    ):
         """Equation:
 
         C/Co = 1 / (1 + exp[k_YN*(t_50 - t)])
         """
-        return 1 / (1 + np.exp(self.k_YN * (self.t_50 - self.time)))
+        return 1 / (1 + np.exp(self.k_YN * (self.t_50 - time)))
+
+    def breakthrough_profile(self, time: np.ndarray, x: float = 0) -> np.ndarray:
+        """Yoon-Nelson has no spatial dependence; x is ignored."""
+        if x != 0:
+            warnings.warn("Yoon-Nelson has no spatial term; x argument is ignored.")
+        return super().breakthrough_profile(time, 0)
+
+    def spatial_profile(self, x: np.ndarray, time: float):
+        """Not defined: Yoon-Nelson has no spatial dependence."""
+        raise NotImplementedError(
+            "Yoon-Nelson has no spatial term; use breakthrough_profile instead."
+        )
 
 
 class Clark(AnalyticModels):
@@ -88,18 +109,38 @@ class Clark(AnalyticModels):
     n: curve asymmetry coefficient
     """
 
-    def __init__(self, r: float, A: float, n: float, time: np.ndarray):
+    def __init__(
+        self,
+        r: float,
+        A: float,
+        n: float,
+    ):
         self.r = r
         self.A = A
         self.n = n
-        self.time = time
 
-    def concentration_profile(self):
+    def model(
+        self,
+        x: np.ndarray | float,
+        time: np.ndarray | float,
+    ):
         """Equation:
 
         C/Co = 1 / [1 + A*exp(-r*t)]^(1 / (n - 1))
         """
-        return 1 / (1 + self.A * np.exp(-self.r * self.time)) ** (1 / (self.n - 1))
+        return 1 / (1 + self.A * np.exp(-self.r * time)) ** (1 / (self.n - 1))
+
+    def breakthrough_profile(self, time: np.ndarray, x: float = 0) -> np.ndarray:
+        """Clark has no spatial dependence; x is ignored."""
+        if x != 0:
+            warnings.warn("Yoon-Nelson has no spatial term; x argument is ignored.")
+        return super().breakthrough_profile(time, 0)
+
+    def spatial_profile(self, x: np.ndarray, time: float):
+        """Not defined: Clark has no spatial dependence."""
+        raise NotImplementedError(
+            "Clark has no spatial term; use breakthrough_profile instead."
+        )
 
 
 class BohartAdams(AnalyticModels):
@@ -116,32 +157,28 @@ class BohartAdams(AnalyticModels):
         sorbent_loading: float,
         k_BA: float,
         sorbent_capacity: float,
-        x: float,
         velocity: float,
-        time: float,
         inlet_concentration: float,
     ):
         self.sorbent_loading = sorbent_loading
         self.k_BA = k_BA
         self.sorbent_capacity = sorbent_capacity
-        self.x = x
         self.velocity = velocity
-        self.time = time
         self.inlet_concentration = inlet_concentration
 
-    def concentration_profile(self):
+    def model(
+        self,
+        x: np.ndarray | float,
+        time: np.ndarray | float,
+    ):
         """Equation:
 
         C/Co = 1 / [1 + exp(m_o*k_BA*q_m*L/u - k_BA*Co*t)]
         """
         arg1 = (
-            self.sorbent_loading
-            * self.k_BA
-            * self.sorbent_capacity
-            * self.x
-            / self.velocity
+            self.sorbent_loading * self.k_BA * self.sorbent_capacity * x / self.velocity
         )
-        arg2 = self.k_BA * self.inlet_concentration * self.time
+        arg2 = self.k_BA * self.inlet_concentration * time
         return 1 / (1 + np.exp(arg1 - arg2))
 
 
@@ -169,7 +206,7 @@ class ThomasRectangular(AnalyticModels):
         self.bed_volumes_treated = bed_volumes_treated
         self.inlet_concentration = inlet_concentration
 
-    def concentration_profile(self):
+    def model(self):
         """Equation:
 
         C/Co = 1 / [1 + exp(k_Th*q_e*x/Q - k_Th*Co*BV)]
@@ -189,22 +226,18 @@ class ThomasLangmuir(AnalyticModels):
         inlet_concentration: float,
         sorbent_capacity: float,
         k_Th: float,
-        x: float,
         bed_void_fraction: float,
         interstitial_velocity: float,
-        time: float,
     ):
         self.langmuir_constant = langmuir_constant
         self.apparent_density = apparent_density
         self.inlet_concentration = inlet_concentration
         self.sorbent_capacity = sorbent_capacity
         self.k_Th = k_Th
-        self.x = x
         self.bed_void_fraction = bed_void_fraction
         self.interstitial_velocity = interstitial_velocity
-        self.time = time
 
-    def _J_function(self, a: float, b: np.ndarray) -> float:
+    def _J_function(self, a: float, b: float) -> float:
         """Equation:
 
         J(x, y) = 1 - int(exp(-y - tau)*I_0*(2*sqrt(y*tau)) dtau) from 0 to x
@@ -216,7 +249,7 @@ class ThomasLangmuir(AnalyticModels):
         integral, _ = quad(integrand, 0, a)
         return 1.0 - integral
 
-    def concentration_profile(self):
+    def model(self, x: float | np.ndarray, time: float | np.ndarray):
         """Equation:
 
         C/Co = J((n/r), nT) /
@@ -226,7 +259,7 @@ class ThomasLangmuir(AnalyticModels):
             self.apparent_density
             * self.sorbent_capacity
             * self.k_Th
-            * self.x
+            * x
             * (1 - self.bed_void_fraction)
         )
         n_arg2 = self.bed_void_fraction * self.interstitial_velocity
@@ -235,15 +268,13 @@ class ThomasLangmuir(AnalyticModels):
         T_arg1 = self.bed_void_fraction * (
             (1 / self.langmuir_constant) + self.inlet_concentration
         )
-        T_arg2 = self.interstitial_velocity * self.time / self.x - 1
+        T_arg2 = self.interstitial_velocity * time / x - 1
         T_arg3 = (
             self.apparent_density * self.sorbent_capacity * (1 - self.bed_void_fraction)
         )
         T = T_arg1 * T_arg2 / T_arg3
-        print(f"time={self.time:.2f}, " f"n={n:.3e}, " f"T={T:.3e}, " f"nT={n*T:.3e}")
-        J_arg1 = ThomasLangmuir._J_function(n / r, n * T)
-        J_arg2 = ThomasLangmuir._J_function(n, n * T / r)
+        J = np.vectorize(self._J_function)  # wraps scalar quad calls to handle arrays
+        J_arg1 = J(n / r, n * T)
+        J_arg2 = J(n, n * T / r)
 
-        exp_arg = (1 - (1 / r)) * (n - n * T)
-        print(exp_arg)
         return J_arg1 / (J_arg1 + (1 - J_arg2) * np.exp((1 - (1 / r)) * (n - n * T)))
