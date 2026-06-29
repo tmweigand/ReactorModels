@@ -19,7 +19,7 @@ class AdvectionDiffusionAdsorption:
     The governing equations are:
 
         Fluid phase: eps*dC/dt + eps * v * dC/dx - eps* D * d2C/dx2 - rho_b * dq/dt = 0
-        Solid phase: dq/dt = k_l *(q* - C) where q* is provided isotherm.
+        Solid phase: dq/dt = k_l *(q*(C) - q) where q* is provided isotherm.
 
     If local_equilibirium is assumed, the solid phase equation is ignored and:
 
