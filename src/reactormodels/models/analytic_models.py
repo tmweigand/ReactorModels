@@ -5,10 +5,30 @@ import numpy as np
 from scipy.special import erfc, erfcx
 from scipy.integrate import quad
 from scipy.special import i0
+import reactormodels
 
 
 class AnalyticModels:
     """Base class for analytical solutions to fixed bed adsorption models."""
+
+    def __init__(
+        self,
+        length: float | None = None,
+        porosity: float | None = None,
+        bulk_density: float | None = None,
+        particle_density: float | None = None,
+        diameter: float | None = None,
+        feed_concentrations: float | np.ndarray | None = None,
+        flow_rate: float | None = None,
+    ):
+        """Column and breakthrough inputs."""
+        self.length = length
+        self.porosity = porosity
+        self.bulk_density = bulk_density
+        self.particle_density = particle_density
+        self.diameter = diameter
+        self.feed_concentrations = feed_concentrations
+        self.flow_rate = flow_rate
 
     def model(self, x: float | np.ndarray, time: float | np.ndarray):
         """Analytic model that return C/C_0"""
@@ -32,13 +52,13 @@ class OgataBanks(AnalyticModels):
 
     def __init__(
         self,
-        interstitial_velocity: float,
         diffusion: float,
-        inlet_concentration: float,
     ):
-        self.interstitial_velocity = interstitial_velocity
+        self.interstitial_velocity = reactormodels.Column.interstitial_velocity(
+            flow_rate=self.flow_rate
+        )
         self.diffusion = diffusion
-        self.inlet_concentration = inlet_concentration
+        self.inlet_concentration = reactormodels.Breakthrough.mean_feed_concentration()
 
     def model(
         self,
@@ -154,17 +174,16 @@ class BohartAdams(AnalyticModels):
 
     def __init__(
         self,
-        sorbent_loading: float,
         k_BA: float,
         sorbent_capacity: float,
-        velocity: float,
-        inlet_concentration: float,
     ):
-        self.sorbent_loading = sorbent_loading
+        self.bed_density = reactormodels.Column.get_bulk_density()
         self.k_BA = k_BA
         self.sorbent_capacity = sorbent_capacity
-        self.velocity = velocity
-        self.inlet_concentration = inlet_concentration
+        self.velocity = reactormodels.Column.superficial_velocity(
+            flow_rate=self.flow_rate
+        )
+        self.inlet_concentration = reactormodels.Breakthrough.mean_feed_concentration()
 
     def model(
         self,
@@ -173,11 +192,9 @@ class BohartAdams(AnalyticModels):
     ):
         """Equation:
 
-        C/Co = 1 / [1 + exp(m_o*k_BA*q_m*L/u - k_BA*Co*t)]
+        C/Co = 1 / [1 + exp(rho_b*k_BA*q_m*L/u - k_BA*Co*t)]
         """
-        arg1 = (
-            self.sorbent_loading * self.k_BA * self.sorbent_capacity * x / self.velocity
-        )
+        arg1 = self.bed_density * self.k_BA * self.sorbent_capacity * x / self.velocity
         arg2 = self.k_BA * self.inlet_concentration * time
         return 1 / (1 + np.exp(arg1 - arg2))
 
@@ -192,19 +209,20 @@ class ThomasRectangular(AnalyticModels):
 
     def __init__(
         self,
-        sorbent_mass: float,
         k_Th: float,
         sorbent_capacity: float,
-        bed_volume: float,
-        bed_volumes_treated: float,
-        inlet_concentration: float,
     ):
-        self.sorbent_mass = sorbent_mass
+        self.sorbent_mass = (
+            reactormodels.Column.column_volume()
+            * reactormodels.Column.get_bulk_density()
+        )
         self.k_Th = k_Th
         self.sorbent_capacity = sorbent_capacity
-        self.bed_volume = bed_volume
-        self.bed_volumes_treated = bed_volumes_treated
-        self.inlet_concentration = inlet_concentration
+        self.bed_volume = reactormodels.Column.column_volume()
+        self.bed_volumes_treated = reactormodels.Breakthrough.time_to_bed_volumes(
+            column_volume=self.bed_volume
+        )
+        self.inlet_concentration = reactormodels.Breakthrough.mean_feed_concentration()
 
     def model(self):
         """Equation:
@@ -222,20 +240,18 @@ class ThomasLangmuir(AnalyticModels):
     def __init__(
         self,
         langmuir_constant: float,
-        apparent_density: float,
-        inlet_concentration: float,
         sorbent_capacity: float,
         k_Th: float,
-        bed_void_fraction: float,
-        interstitial_velocity: float,
     ):
         self.langmuir_constant = langmuir_constant
-        self.apparent_density = apparent_density
-        self.inlet_concentration = inlet_concentration
+        self.particle_density = self.particle_density
+        self.inlet_concentration = reactormodels.Breakthrough.mean_feed_concentration()
         self.sorbent_capacity = sorbent_capacity
         self.k_Th = k_Th
-        self.bed_void_fraction = bed_void_fraction
-        self.interstitial_velocity = interstitial_velocity
+        self.bed_void_fraction = self.porosity
+        self.interstitial_velocity = reactormodels.Column.interstitial_velocity(
+            flow_rate=self.flow_rate
+        )
 
     def _J_function(self, a: float, b: float) -> float:
         """Equation:
@@ -256,7 +272,7 @@ class ThomasLangmuir(AnalyticModels):
             [J((n/r), nT) + [1 - J(n, (nT/r))]exp[(1 - (1/r))(n - nT)]]
         """
         n_arg1 = (
-            self.apparent_density
+            self.particle_density
             * self.sorbent_capacity
             * self.k_Th
             * x
@@ -270,7 +286,7 @@ class ThomasLangmuir(AnalyticModels):
         )
         T_arg2 = self.interstitial_velocity * time / x - 1
         T_arg3 = (
-            self.apparent_density * self.sorbent_capacity * (1 - self.bed_void_fraction)
+            self.particle_density * self.sorbent_capacity * (1 - self.bed_void_fraction)
         )
         T = T_arg1 * T_arg2 / T_arg3
         J = np.vectorize(self._J_function)  # wraps scalar quad calls to handle arrays
