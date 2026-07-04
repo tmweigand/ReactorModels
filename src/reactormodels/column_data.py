@@ -9,23 +9,26 @@ class Column:
     def __init__(
         self,
         length: float,
-        porosity: float,
+        diameter: float,
+        porosity: float | None = None,
         bulk_density: float | None = None,
         particle_porosity: float | None = None,
         particle_density: float | None = None,
-        diameter: float | None = None,
+        sorbent_mass: float | None = None,
     ):
         assert length > 0, f"length must be positive, got {length}"
-        assert 0 < porosity < 1, f"porosity must be in (0, 1), got {porosity}"
+        if porosity is not None:
+            assert 0 < porosity < 1, f"porosity must be in (0, 1), got {porosity}"
         if particle_porosity is not None:
             assert 0 < particle_porosity < 1
 
         self.length = length
+        self.diameter = diameter
         self.porosity = porosity
         self.particle_porosity = particle_porosity
         self.particle_density = particle_density
         self.bulk_density = bulk_density
-        self.diameter = diameter
+        self.sorbent_mass = sorbent_mass
 
     def cross_section_area(self) -> float:
         """Cross-sectional area of the column."""
@@ -36,17 +39,9 @@ class Column:
         """Total column volume."""
         return self.cross_section_area() * self.length
 
-    def superficial_velocity(self, flow_rate: float) -> float:
-        """Superficial velocity v = Q / A."""
-        return flow_rate / self.cross_section_area()
-
-    def interstitial_velocity(self, flow_rate: float) -> float:
-        """Interstitial velocity u = Q / (A * porosity)."""
-        return flow_rate / (self.cross_section_area() * self.porosity)
-
     def get_bulk_density(self) -> float:
         """Bulk density rho_b = (1 - porosity) * particle_density."""
-        if self.particle_density is not None:
+        if self.particle_density is not None and self.porosity is not None:
             derived = (1 - self.porosity) * self.particle_density
             if self.bulk_density is not None:
                 assert np.isclose(derived, self.bulk_density), (
@@ -59,17 +54,40 @@ class Column:
         else:
             raise ValueError("Must supply either particle_density or bulk_density.")
 
+    def get_particle_density(self) -> float:
+        """Bulk density particle_density = rho_b / (1 - porosity)."""
+        if self.porosity is not None:
+            derived = self.get_bulk_density() / (1 - self.porosity)
+            if self.particle_density is not None:
+                assert np.isclose(derived, self.particle_density), (
+                    f"Supplied particle_density {self.particle_density} inconsistent "
+                    f"with rho_b / (1 - porosity) = {derived:.4f}"
+                )
+            return derived
+        elif self.particle_density is not None:
+            return self.particle_density
+        else:
+            raise ValueError("Must supply either bulk_density or particle_density.")
+
+    def get_sorbent_mass(self) -> float:
+        """Mass of sorbent in the bed bulk_density * column_volume."""
+        if self.bulk_density is not None:
+            derived = self.get_bulk_density() * self.column_volume()
+            if self.sorbent_mass is not None:
+                assert np.isclose(derived, self.sorbent_mass), (
+                    f"Supplied sorbent_mass {self.sorbent_mass} inconsistent "
+                    f"with bulk_density * column_volume = {derived:.4f}"
+                )
+            return derived
+        elif self.sorbent_mass is not None:
+            return self.sorbent_mass
+        else:
+            raise ValueError("Must supply either sorbent_mass or bulk_density.")
+
     def total_porosity(self) -> float:
         """Total porosity = porosity + (1 - porosity) * particle_porosity."""
-        if self.particle_porosity is None:
-            raise ValueError("particle_porosity required to compute total_porosity.")
+        if self.particle_porosity is None or self.porosity is None:
+            raise ValueError(
+                "particle_porosity and porosity required to compute total_porosity."
+            )
         return self.porosity + (1 - self.porosity) * self.particle_porosity
-
-    def peclet(self, flow_rate: float, diffusion: float) -> float:
-        """Axial Peclet number Pe = v * L / (porosity * diffusion).
-
-        Pe >> 1: advection dominated.
-        Pe << 1: diffusion dominated.
-        """
-        v = self.superficial_velocity(flow_rate)
-        return v * self.length / (self.porosity * diffusion)

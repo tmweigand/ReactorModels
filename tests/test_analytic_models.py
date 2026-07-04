@@ -50,8 +50,7 @@ def test_clark_becomes_yoon_nelson(time=np.linspace(0, 200, 200)):
     ), f"Failed at t={time}: max error = {np.abs(yoon_nelson - clark).max():.3e}"
 
 
-@pytest.mark.skip
-def test_bohart_adams_equals_thomas(time=np.linspace(0, 200, 200)):
+def test_bohart_adams_equals_thomas():
     """The rectangular Thomas model is equivalent to the Bohart-Adams model through unit conversion.
 
     Bohart-Adams:
@@ -79,48 +78,49 @@ def test_bohart_adams_equals_thomas(time=np.linspace(0, 200, 200)):
     diameter = 0.5
     length = 1
     flow_rate = 0.02
+    bulk_density = 1
+    porosity = 0.38
+    time = np.linspace(0, 200, 200)
 
-    column = reactormodels.Column(length=length, diameter=diameter, flow_rate=flow_rate)
+    column = reactormodels.Column(
+        length=length, porosity=porosity, diameter=diameter, bulk_density=bulk_density
+    )
 
-    sorbent_loading = 1
+    feed_concentrations = [99, 101]
+
+    breakthrough = reactormodels.Breakthrough(
+        column=column,
+        feed_concentrations=feed_concentrations,
+        flow_rate=flow_rate,
+        time=time,
+    )
+
     k_BA = 0.002
     sorbent_capacity = 1000
-    x = length
-    velocity = column.superficial_velocity()
-    inlet_concentration = 100
-    bed_volume = column.column_volume()
-    sorbent_mass = sorbent_loading * bed_volume
-    k_Th = k_BA * x / velocity
-    EBCT = bed_volume / flow_rate  # use breakthrough class when added
-    bed_volumes_treated = time / EBCT
+    k_Th = k_BA * length / breakthrough.get_superficial_velocity()
 
     bohart_adams = reactormodels.models.BohartAdams(
-        sorbent_loading=sorbent_loading,
+        breakthrough=breakthrough,
         k_BA=k_BA,
         sorbent_capacity=sorbent_capacity,
-        velocity=velocity,
-        inlet_concentration=inlet_concentration,
     )
 
-    bh_solution = bohart_adams.breakthrough_profile(time=time, x=x)
+    bh_solution = bohart_adams.breakthrough_profile(time=time, x=length)
 
     thomas_rectangular = reactormodels.models.ThomasRectangular(
-        sorbent_mass=sorbent_mass,
+        breakthrough=breakthrough,
         k_Th=k_Th,
         sorbent_capacity=sorbent_capacity,
-        bed_volume=bed_volume,
-        bed_volumes_treated=bed_volumes_treated,
-        inlet_concentration=inlet_concentration,
     )
 
-    t_solution = thomas_rectangular.breakthrough_profile(time=time, x=x)
+    t_solution = thomas_rectangular.breakthrough_profile(time=time, x=length)
 
     assert bh_solution == pytest.approx(
         t_solution, abs=1e-3
     ), f"Failed at t={time}: max error = {np.abs(bohart_adams - thomas_rectangular).max():.3e}"
 
 
-def thomas_limiting_form(time=np.linspace(0, 200, 200)):
+def thomas_limiting_form():
     """Thomas Model with Langmuir isotherm becomes rectangular as reverse rate constant approaches zero.
 
     q = q_m*K*C / (1 + K*C)
@@ -147,49 +147,48 @@ def thomas_limiting_form(time=np.linspace(0, 200, 200)):
     diameter = 0.5
     length = 1
     flow_rate = 0.02
+    particle_density = 1
+    porosity = 0.38
+    time = np.linspace(0, 200, 200)
 
-    column = reactormodels.Column(length=length, diameter=diameter, flow_rate=flow_rate)
-
-    apparent_density = 1
-    sorbent_capacity = 1000
-    x = length
-    velocity = column.superficial_velocity()
-    inlet_concentration = 100
-    bed_volume = column.column_volume()
-    sorbent_mass = apparent_density * bed_volume
-    k_Th = 0.02
-    EBCT = bed_volume / flow_rate  # use breakthrough class when added
-    bed_volumes_treated = time / EBCT
-    langmuir_constant = 1e10
-    bed_void_fraction = 0.38
-    interstitial_velocity = velocity / bed_void_fraction
-
-    thomas_rectangular = reactormodels.models.ThomasRectangular(
-        sorbent_mass=sorbent_mass,
-        k_Th=k_Th,
-        sorbent_capacity=sorbent_capacity,
-        bed_volume=bed_volume,
-        bed_volumes_treated=bed_volumes_treated,
-        inlet_concentration=inlet_concentration,
-    ).concentration_profile()
-
-    thomas_langmuir = np.array(
-        [
-            reactormodels.models.ThomasLangmuir(
-                langmuir_constant=langmuir_constant,
-                apparent_density=apparent_density,
-                inlet_concentration=inlet_concentration,
-                sorbent_capacity=sorbent_capacity,
-                k_Th=k_Th,
-                x=x,
-                bed_void_fraction=bed_void_fraction,
-                interstitial_velocity=interstitial_velocity,
-                time=t,
-            ).concentration_profile()
-            for t in time
-        ]
+    column = reactormodels.Column(
+        length=length,
+        diameter=diameter,
+        flow_rate=flow_rate,
+        particle_density=particle_density,
+        porosity=porosity,
     )
 
-    assert thomas_langmuir == pytest.approx(
-        thomas_rectangular, abs=1e-3
-    ), f"Failed at t={time}: max error = {np.abs(thomas_langmuir - thomas_rectangular).max():.3e}"
+    feed_concentrations = [99, 101]
+
+    breakthrough = reactormodels.Breakthrough(
+        column=column,
+        feed_concentrations=feed_concentrations,
+        flow_rate=flow_rate,
+        time=time,
+    )
+
+    k_Th = 0.02
+    sorbent_capacity = 1000
+    langmuir_constant = 1e10
+
+    thomas_rectangular = reactormodels.models.ThomasRectangular(
+        breakthrough=breakthrough,
+        k_Th=k_Th,
+        sorbent_capacity=sorbent_capacity,
+    )
+
+    tr_solution = thomas_rectangular.breakthrough_profile(time=time, x=length)
+
+    thomas_langmuir = reactormodels.models.ThomasLangmuir(
+        breakthrough=breakthrough,
+        langmuir_constant=langmuir_constant,
+        sorbent_capacity=sorbent_capacity,
+        k_Th=k_Th,
+    )
+
+    tl_solution = thomas_langmuir.breakthrough_profile(time=time, x=length)
+
+    assert tl_solution == pytest.approx(
+        tr_solution, abs=1e-3
+    ), f"Failed at t={time}: max error = {np.abs(tl_solution - tr_solution).max():.3e}"

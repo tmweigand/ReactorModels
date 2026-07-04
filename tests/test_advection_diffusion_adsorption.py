@@ -6,25 +6,39 @@ import pytest
 
 def _base_model(mode, k_ldf=0.1, n_col=30):
     """Shared setup for all adsorption tests."""
-    velocity = 1.0
+    velocity = 0.5
     diffusion = 0.1
     column_length = 5.0
     inlet_concentration = 1.0
     initial_concentration = 0.0
-    porosity = 0.4
+    porosity = 0.5
     bulk_density = 500.0
     K = 0.5
+    diameter = 1
+    time = [0, 1, 2]
 
     column = reactormodels.Column(
-        length=column_length, porosity=porosity, bulk_density=bulk_density
+        length=column_length,
+        porosity=porosity,
+        bulk_density=bulk_density,
+        diameter=diameter,
+    )
+
+    breakthrough = reactormodels.Breakthrough(
+        column=column,
+        superficial_velocity=velocity * porosity,
+        feed_concentrations=inlet_concentration,
+        time=time,
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
         column=column, n_interior_points=n_col, add_inlet=True
     )
+
     return (
         reactormodels.models.AdvectionDiffusionAdsorption(
             column=column,
+            breakthrough=breakthrough,
             inlet_concentration=inlet_concentration,
             initial_concentration=initial_concentration,
             velocity=velocity,
@@ -54,12 +68,25 @@ def test_local_equilibrium_vs_ogata_banks():
     v_eff = v / R
     D_eff = D / R
 
+    d = 1
+
     t_mid = 0.5 * column_length / v_eff
     t_eval = np.array([0.25 * t_mid, t_mid, 2.0 * t_mid])
 
     x, C, q = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
 
-    OgataBanks = reactormodels.models.OgataBanks(v_eff, D_eff, inlet_concentration=1.0)
+    column = reactormodels.Column(
+        length=column_length, diameter=d, porosity=eps, bulk_density=rho_b
+    )
+
+    breakthrough = reactormodels.Breakthrough(
+        column=column,
+        feed_concentrations=1,
+        superficial_velocity=v_eff * eps,
+        time=t_eval,
+    )
+
+    OgataBanks = reactormodels.models.OgataBanks(breakthrough, D_eff)
     for i, t in enumerate(t_eval):
         mask = x < 0.8 * column_length
         C_analytical = OgataBanks.spatial_profile(x[mask], t)

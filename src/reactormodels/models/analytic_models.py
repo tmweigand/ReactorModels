@@ -5,7 +5,7 @@ import numpy as np
 from scipy.special import erfc, erfcx
 from scipy.integrate import quad
 from scipy.special import i0
-import reactormodels
+from ..breakthrough_data import Breakthrough
 
 
 class AnalyticModels:
@@ -13,22 +13,11 @@ class AnalyticModels:
 
     def __init__(
         self,
-        length: float | None = None,
-        porosity: float | None = None,
-        bulk_density: float | None = None,
-        particle_density: float | None = None,
-        diameter: float | None = None,
-        feed_concentrations: float | np.ndarray | None = None,
-        flow_rate: float | None = None,
+        breakthrough: Breakthrough,
     ):
-        """Column and breakthrough inputs."""
-        self.length = length
-        self.porosity = porosity
-        self.bulk_density = bulk_density
-        self.particle_density = particle_density
-        self.diameter = diameter
-        self.feed_concentrations = feed_concentrations
-        self.flow_rate = flow_rate
+        """Import Column and Breakthrough functions."""
+        self.breakthrough = breakthrough
+        self.column = breakthrough.column
 
     def model(self, x: float | np.ndarray, time: float | np.ndarray):
         """Analytic model that return C/C_0"""
@@ -52,13 +41,13 @@ class OgataBanks(AnalyticModels):
 
     def __init__(
         self,
+        breakthrough: Breakthrough,
         diffusion: float,
     ):
-        self.interstitial_velocity = reactormodels.Column.interstitial_velocity(
-            flow_rate=self.flow_rate
-        )
+        super().__init__(breakthrough)
         self.diffusion = diffusion
-        self.inlet_concentration = reactormodels.Breakthrough.mean_feed_concentration()
+        self.interstitial_velocity = breakthrough.interstitial_velocity()
+        self.inlet_concentration = breakthrough.mean_feed_concentration()
 
     def model(
         self,
@@ -174,16 +163,16 @@ class BohartAdams(AnalyticModels):
 
     def __init__(
         self,
+        breakthrough: Breakthrough,
         k_BA: float,
         sorbent_capacity: float,
     ):
-        self.bed_density = reactormodels.Column.get_bulk_density()
+        super().__init__(breakthrough)
+        self.bed_density = self.column.get_bulk_density()
         self.k_BA = k_BA
         self.sorbent_capacity = sorbent_capacity
-        self.velocity = reactormodels.Column.superficial_velocity(
-            flow_rate=self.flow_rate
-        )
-        self.inlet_concentration = reactormodels.Breakthrough.mean_feed_concentration()
+        self.velocity = breakthrough.get_superficial_velocity()
+        self.inlet_concentration = breakthrough.mean_feed_concentration()
 
     def model(
         self,
@@ -209,22 +198,19 @@ class ThomasRectangular(AnalyticModels):
 
     def __init__(
         self,
+        breakthrough: Breakthrough,
         k_Th: float,
         sorbent_capacity: float,
     ):
-        self.sorbent_mass = (
-            reactormodels.Column.column_volume()
-            * reactormodels.Column.get_bulk_density()
-        )
+        super().__init__(breakthrough)
         self.k_Th = k_Th
         self.sorbent_capacity = sorbent_capacity
-        self.bed_volume = reactormodels.Column.column_volume()
-        self.bed_volumes_treated = reactormodels.Breakthrough.time_to_bed_volumes(
-            column_volume=self.bed_volume
-        )
-        self.inlet_concentration = reactormodels.Breakthrough.mean_feed_concentration()
+        self.sorbent_mass = self.column.get_sorbent_mass()
+        self.bed_volume = self.column.column_volume()
+        self.bed_volumes_treated = breakthrough.time_to_bed_volumes()
+        self.inlet_concentration = breakthrough.mean_feed_concentration()
 
-    def model(self):
+    def model(self, x: np.ndarray | float, time: float | np.ndarray):
         """Equation:
 
         C/Co = 1 / [1 + exp(k_Th*q_e*x/Q - k_Th*Co*BV)]
@@ -233,25 +219,56 @@ class ThomasRectangular(AnalyticModels):
         arg2 = self.k_Th * self.inlet_concentration * self.bed_volumes_treated
         return 1 / (1 + np.exp(arg1 - arg2))
 
+    def spatial_profile(self, x: np.ndarray, time: float) -> np.ndarray:
+        """Return concentration profile with respect to fixed time."""
+        if time is None:
+            time = self.breakthrough.bed_volumes_to_time()
+        elif time is not None:
+            warnings.warn(
+                "Thomas rectangular expresses time in bed volumes; converting."
+            )
+        return self.model(x, time)
+
+    def breakthrough_profile(self, time: np.ndarray, x: float) -> np.ndarray:
+        """Return breakthrough profile with respect to time fixed bed length."""
+        if time is None:
+            time = self.breakthrough.bed_volumes_to_time()
+        elif time is not None:
+            warnings.warn(
+                "Thomas rectangular expresses time in bed volumes; converting."
+            )
+        return self.model(x, time)
+
 
 class ThomasLangmuir(AnalyticModels):
     """Thomas Model with Langmuir isotherm."""
 
     def __init__(
         self,
+        breakthrough: Breakthrough,
         langmuir_constant: float,
         sorbent_capacity: float,
         k_Th: float,
     ):
+        super().__init__(breakthrough)
         self.langmuir_constant = langmuir_constant
-        self.particle_density = self.particle_density
-        self.inlet_concentration = reactormodels.Breakthrough.mean_feed_concentration()
         self.sorbent_capacity = sorbent_capacity
         self.k_Th = k_Th
-        self.bed_void_fraction = self.porosity
-        self.interstitial_velocity = reactormodels.Column.interstitial_velocity(
-            flow_rate=self.flow_rate
-        )
+        self.particle_density = self.column.get_particle_density()
+        self.inlet_concentration = breakthrough.mean_feed_concentration()
+        self.interstitial_velocity = breakthrough.interstitial_velocity()
+
+        if self.column.porosity is not None and self.particle_density is not None:
+            self.rho_arg = self.particle_density * (1 - self.column.porosity)
+        elif self.particle_density is None and self.column.porosity is not None:
+            self.rho_arg = self.column.get_bulk_density()
+        else:
+            raise ValueError("Porosity is needed to use the Thomas Langmuir model.")
+
+        if self.column.porosity is not None:
+            self.bed_void_fraction = self.column.porosity
+        else:
+            raise ValueError("Porosity is needed to use the Thomas Langmuir model.")
 
     def _J_function(self, a: float, b: float) -> float:
         """Equation:
@@ -271,13 +288,9 @@ class ThomasLangmuir(AnalyticModels):
         C/Co = J((n/r), nT) /
             [J((n/r), nT) + [1 - J(n, (nT/r))]exp[(1 - (1/r))(n - nT)]]
         """
-        n_arg1 = (
-            self.particle_density
-            * self.sorbent_capacity
-            * self.k_Th
-            * x
-            * (1 - self.bed_void_fraction)
-        )
+        x = np.asarray(x, dtype=float)
+        time = np.asarray(time, dtype=float)
+        n_arg1 = self.sorbent_capacity * self.k_Th * x * self.rho_arg
         n_arg2 = self.bed_void_fraction * self.interstitial_velocity
         n = n_arg1 / n_arg2
         r = 1 + self.langmuir_constant * self.inlet_concentration
@@ -285,12 +298,21 @@ class ThomasLangmuir(AnalyticModels):
             (1 / self.langmuir_constant) + self.inlet_concentration
         )
         T_arg2 = self.interstitial_velocity * time / x - 1
-        T_arg3 = (
-            self.particle_density * self.sorbent_capacity * (1 - self.bed_void_fraction)
-        )
+        T_arg3 = self.rho_arg * self.sorbent_capacity
         T = T_arg1 * T_arg2 / T_arg3
-        J = np.vectorize(self._J_function)  # wraps scalar quad calls to handle arrays
-        J_arg1 = J(n / r, n * T)
-        J_arg2 = J(n, n * T / r)
 
-        return J_arg1 / (J_arg1 + (1 - J_arg2) * np.exp((1 - (1 / r)) * (n - n * T)))
+        result = np.zeros_like(T, dtype=float)
+
+        mask = T >= 0  # C/Co = 0 for T < 0
+
+        if np.any(mask):
+            J = np.vectorize(self._J_function)
+
+            J_arg1 = J(n / r, n * T[mask])
+            J_arg2 = J(n, n * T[mask] / r)
+
+            result[mask] = J_arg1 / (
+                J_arg1 + (1 - J_arg2) * np.exp((1 - (1 / r)) * (n - n * T[mask]))
+            )
+
+        return result

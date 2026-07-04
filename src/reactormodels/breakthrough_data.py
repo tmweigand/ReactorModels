@@ -1,6 +1,7 @@
 """breakthrough_data.py"""
 
 import numpy as np
+from .column_data import Column
 
 
 class Breakthrough:
@@ -12,14 +13,25 @@ class Breakthrough:
 
     def __init__(
         self,
-        compound: str,
+        column: Column,
         feed_concentrations: float | np.ndarray,
-        effluent_concentrations: np.ndarray,
-        flow_rate: float,
+        flow_rate: float | None = None,
+        effluent_concentrations: np.ndarray | None = None,
+        compound: str | None = None,
         bed_volumes: np.ndarray | None = None,
         time: np.ndarray | None = None,
         water_matrix: str | None = None,
+        superficial_velocity: float | None = None,
     ):
+        self.column = column
+        self.compound = compound
+        self.water_matrix = water_matrix
+        self.feed_concentrations = np.array(feed_concentrations)
+        self.bed_volumes = bed_volumes
+        self.time = time
+        self.effluent_concentrations = effluent_concentrations
+        self.flow_rate = flow_rate
+        self.superficial_velocity = superficial_velocity
 
         if time is None and bed_volumes is None:
             raise ValueError("Either time or bed_volumes must be provided.")
@@ -40,46 +52,106 @@ class Breakthrough:
                 np.isfinite(effluent_concentrations)
             ), "Effluent concentration data contains NaN"
 
-        self.compound = compound
-        self.water_matrix = water_matrix
-        self.feed_concentrations = np.array(feed_concentrations)
-        self.bed_volumes = bed_volumes
-        self.time = time
-        self.effluent_concentrations = effluent_concentrations
-        self.flow_rate = flow_rate
-
     def mean_feed_concentration(self) -> float:
         """Determine mean feed concentration"""
         return np.mean(self.feed_concentrations)
 
     def normalize_concentration(self) -> np.ndarray:
         """Normalize effluent concentration by mean feed concentration."""
-        return self.effluent_concentrations / self.mean_feed_concentration()
+        if self.effluent_concentrations is not None:
+            return self.effluent_concentrations / self.mean_feed_concentration()
+        else:
+            raise ValueError("Must supply effluent concentration data.")
 
-    def empty_bed_contact_time(self, column_volume: float) -> float:
+    def get_superficial_velocity(self) -> float:
+        """Superficial velocity v = Q / A."""
+        if self.flow_rate is not None:
+            derived = self.flow_rate / self.column.cross_section_area()
+            if self.superficial_velocity is not None:
+                assert np.isclose(derived, self.superficial_velocity), (
+                    f"Supplied superficial_velocity {self.superficial_velocity} "
+                    f"inconsistent with flow_rate / cross_section_area = {derived:.4f}"
+                )
+            return derived
+        elif self.superficial_velocity is not None:
+            return self.superficial_velocity
+        else:
+            raise ValueError("Must supply either superficial_velocity or flow_rate.")
+
+    def interstitial_velocity(self) -> float:
+        """Interstitial velocity u = v / porosity."""
+        if self.column.porosity is not None:
+            return self.get_superficial_velocity() / self.column.porosity
+        else:
+            raise ValueError("Must supply porosity.")
+
+    def peclet(self, diffusion: float) -> float:
+        """Axial Peclet number Pe = v * L / (porosity * diffusion).
+
+        Pe >> 1: advection dominated.
+        Pe << 1: diffusion dominated.
+        """
+        if self.column.porosity is not None:
+            v = self.get_superficial_velocity()
+            return v * self.column.length / (self.column.porosity * diffusion)
+        else:
+            raise ValueError("Must supply porosity.")
+
+    def empty_bed_contact_time(self) -> float:
         """Calculate empty bed contact time."""
-        return column_volume / self.flow_rate
+        if self.flow_rate is not None:
+            flow_derived = self.column.column_volume() / self.flow_rate
+            velocity_derived = self.column.length / self.get_superficial_velocity()
+            assert np.isclose(flow_derived, velocity_derived), (
+                f"Flow-derived EBCT {flow_derived:.4f} inconsistent"
+                f"with velocity-derived EBCT = {velocity_derived:.4f}"
+            )
+            return flow_derived
+        else:
+            raise ValueError(
+                "Flow_rate or superficial_velocity needed to calculate EBCT."
+            )
 
-    def time_to_bed_volumes(self, column_volume: float) -> None:
+    def time_to_bed_volumes(self) -> np.ndarray:
         """Convert time to bed volumes."""
-        assert self.time is not None, "time is not provided"
-        self.bed_volumes = self.time / self.empty_bed_contact_time(column_volume)
+        if self.time is not None:
+            derived = self.time / self.empty_bed_contact_time()
+            if self.bed_volumes is not None:
+                assert np.allclose(derived, self.bed_volumes), (
+                    f"Supplied bed_volumes {self.bed_volumes} inconsistent "
+                    f"with time / empty_bed_contact_time = {derived:.4f}"
+                )
+            return derived
+        elif self.bed_volumes is not None:
+            return self.bed_volumes
+        else:
+            raise ValueError("Must supply either bed_volumes or time.")
 
-    def bed_volumes_to_time(self, column_volume: float) -> None:
+    def bed_volumes_to_time(self) -> np.ndarray:
         """Convert bed volumes to time."""
-        assert self.bed_volumes is not None, "bed_volumes is not provided"
-        self.time = self.bed_volumes * self.empty_bed_contact_time(column_volume)
+        if self.bed_volumes is not None:
+            derived = self.bed_volumes * self.empty_bed_contact_time()
+            if self.time is not None:
+                assert np.allclose(derived, self.time), (
+                    f"Supplied time {self.time} inconsistent "
+                    f"with bed_volumes * empty_bed_contact_time = {derived:.4f}"
+                )
+            return derived
+        elif self.time is not None:
+            return self.time
+        else:
+            raise ValueError("Must supply either time or bed_volumes.")
 
     def has_breakthrough(self, breakthrough_fraction: float = 0.01) -> bool:
         """Return True if C/C0 reaches the breakthrough fraction."""
         return bool(np.any(self.normalize_concentration() >= breakthrough_fraction))
 
     def breakthrough_threshold(
-        self, column_volume: float, threshold: float, return_index: bool = False
+        self, threshold: float, return_index: bool = False
     ) -> float | tuple[float, int]:
         """Calculate bed volumes to specific breakthrough threshold."""
         if self.bed_volumes is None:
-            self.time_to_bed_volumes(column_volume)
+            self.time_to_bed_volumes()
         assert self.bed_volumes is not None
 
         concentrations = self.normalize_concentration()
@@ -111,11 +183,11 @@ class Breakthrough:
 
         return breakthrough_bv
 
-    def summary(self, column_volume: float, threshold: float) -> str:
+    def summary(self, threshold: float) -> str:
         """Summarize breakthrough data."""
         n_c = self.normalize_concentration()
-        ebct = self.empty_bed_contact_time(column_volume)
-        bv_value = self.breakthrough_threshold(column_volume, threshold)
+        ebct = self.empty_bed_contact_time()
+        bv_value = self.breakthrough_threshold(threshold)
         summary = (
             f"Compound: {self.compound}\n"
             f"Water matrix: {self.water_matrix}\n"

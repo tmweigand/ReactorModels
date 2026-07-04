@@ -11,3 +11,5 @@ docs/api/*
 *.pyc
 __pycache__/.idea/
 .idea/
+.venv/
+.coverage

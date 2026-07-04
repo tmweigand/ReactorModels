@@ -12,9 +12,21 @@ def test_mass_balance_class():
     column_length = 5.0
     inlet_concentration = 1.0
     initial_concentration = 0.0
+    diameter = 1
+    time = [1, 2, 3]
 
     column = reactormodels.Column(
-        length=column_length, porosity=porosity, bulk_density=bulk_density
+        length=column_length,
+        porosity=porosity,
+        bulk_density=bulk_density,
+        diameter=diameter,
+    )
+
+    breakthrough = reactormodels.Breakthrough(
+        column=column,
+        feed_concentrations=inlet_concentration,
+        superficial_velocity=velocity,
+        time=time,
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
@@ -23,6 +35,7 @@ def test_mass_balance_class():
 
     model = reactormodels.models.AdvectionDiffusionAdsorption(
         column=column,
+        breakthrough=breakthrough,
         inlet_concentration=inlet_concentration,
         initial_concentration=initial_concentration,
         velocity=velocity,

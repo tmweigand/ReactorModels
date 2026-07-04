@@ -9,71 +9,85 @@ def run_demo(
     show: bool = True, save_path: str | Path = "data_out/analytic_models_demo.png"
 ):
     """Plot breakthrough curves from analytical solutions."""
-    time = np.linspace(0, 200, 200)
-    bed_volumes_treated = np.linspace(0, 200, 200)
+    time = np.linspace(1e-10, 10, 200)
+    length = 1 / np.pi
+    diameter = 2
+    porosity = 0.4
+    bulk_density = 0.36
+    particle_density = 0.6
+    diffusion = 0.1
+    feed_concentrations = 1
+    flow_rate = 1
 
-    ogata_banks = reactormodels.models.OgataBanks(
-        time=time, x=1, interstitial_velocity=0.1, diffusion=0.01, inlet_concentration=1
-    ).concentration_profile()
-
-    yoon_nelson = reactormodels.models.YoonNelson(
-        time=time,
-        t_50=100,
-        k_YN=0.06,
-    ).concentration_profile()
-
-    clark = reactormodels.models.Clark(
-        time=time,
-        r=0.05,
-        A=500,
-        n=2.5,
-    ).concentration_profile()
-
-    bohart_adams = reactormodels.models.BohartAdams(
-        sorbent_loading=1.0,
-        k_BA=0.002,
-        sorbent_capacity=1000,
-        x=1.0,
-        velocity=0.1,
-        time=time,
-        inlet_concentration=100,
-    ).concentration_profile()
-
-    thomas_rectangular = reactormodels.models.ThomasRectangular(
-        sorbent_mass=1.0,
-        k_Th=0.002,
-        sorbent_capacity=5000,
-        bed_volume=1.0,
-        bed_volumes_treated=bed_volumes_treated,
-        inlet_concentration=100,
-    ).concentration_profile()
-
-    thomas_langmuir = np.array(
-        [
-            reactormodels.models.ThomasLangmuir(
-                langmuir_constant=0.05,
-                apparent_density=0.6,
-                inlet_concentration=100,
-                sorbent_capacity=1000,
-                k_Th=0.002,
-                x=1.0,
-                bed_void_fraction=0.40,
-                interstitial_velocity=0.10,
-                time=t,
-            ).concentration_profile()
-            for t in time
-        ]
+    column = reactormodels.Column(
+        length=length,
+        diameter=diameter,
+        porosity=porosity,
+        bulk_density=bulk_density,
+        particle_density=particle_density,
     )
 
-    plt.figure(figsize=(8, 5))
-    plt.plot(time, ogata_banks, label="Ogata-Banks")
-    plt.plot(time, yoon_nelson, label="Yoon-Nelson")
-    plt.plot(time, clark, label="Clark")
-    plt.plot(time, bohart_adams, label="Bohart-Adams")
-    plt.plot(bed_volumes_treated, thomas_rectangular, label="Thomas (Rectangular)")
-    plt.plot(time, thomas_langmuir, label="Thomas (Langmuir)")
+    breakthrough = reactormodels.Breakthrough(
+        column=column,
+        flow_rate=flow_rate,
+        feed_concentrations=feed_concentrations,
+        time=time,
+    )
 
-    plt.xlabel("Time")
+    ogata_banks = reactormodels.models.OgataBanks(
+        breakthrough=breakthrough, diffusion=diffusion
+    )
+
+    yoon_nelson = reactormodels.models.YoonNelson(
+        t_50=5,
+        k_YN=5,
+    )
+
+    clark = reactormodels.models.Clark(
+        r=5,
+        A=10000,
+        n=2.5,
+    )
+
+    bohart_adams = reactormodels.models.BohartAdams(
+        breakthrough=breakthrough,
+        k_BA=3,
+        sorbent_capacity=17,
+    )
+
+    thomas_rectangular = reactormodels.models.ThomasRectangular(
+        breakthrough=breakthrough,
+        k_Th=5,
+        sorbent_capacity=10,
+    )
+
+    thomas_langmuir = reactormodels.models.ThomasLangmuir(
+        breakthrough=breakthrough,
+        langmuir_constant=0.5,
+        sorbent_capacity=20,
+        k_Th=3,
+    )
+
+    ob_breakthrough = ogata_banks.breakthrough_profile(time=time, x=length)
+    yn_breakthrough = yoon_nelson.breakthrough_profile(time=time)
+    c_breakthrough = clark.breakthrough_profile(time=time)
+    ba_breakthrough = bohart_adams.breakthrough_profile(time=time, x=length)
+    tr_breakthrough = thomas_rectangular.breakthrough_profile(x=length)
+    tl_breakthrough = thomas_langmuir.breakthrough_profile(time=time, x=length)
+
+    plt.figure(figsize=(8, 5))
+    plt.plot(time, ob_breakthrough, label="Ogata-Banks")
+    plt.plot(time, yn_breakthrough, label="Yoon-Nelson")
+    plt.plot(time, c_breakthrough, label="Clark")
+    plt.plot(time, ba_breakthrough, label="Bohart-Adams")
+    plt.plot(
+        breakthrough.time_to_bed_volumes(),
+        tr_breakthrough,
+        label="Thomas (Rectangular)",
+    )
+    plt.plot(time, tl_breakthrough, label="Thomas (Langmuir)")
+
+    plt.xlabel("Time or Bed Volumes")
     plt.ylabel("C/C₀")
     plt.title("Breakthrough Models")
     plt.ylim(0, 1.05)

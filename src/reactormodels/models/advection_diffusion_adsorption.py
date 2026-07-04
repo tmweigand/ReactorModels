@@ -5,6 +5,7 @@ from typing import Type
 import numpy as np
 
 from ..column_data import Column
+from ..breakthrough_data import Breakthrough
 from ..numerics.config import NumericsConfig
 from .isotherm import Isotherm
 from .adsorption_kinetics import AdsorptionKinetics
@@ -30,6 +31,7 @@ class AdvectionDiffusionAdsorption:
     def __init__(
         self,
         column: Column,
+        breakthrough: Breakthrough,
         velocity: float,
         diffusion: float,
         inlet_concentration: float,
@@ -41,6 +43,7 @@ class AdvectionDiffusionAdsorption:
         inlet_bc: Type[InletBC] = DanckwertsBC,
     ):
         self.column = column
+        self.breakthrough = breakthrough
         self.velocity = velocity
         self.DL = diffusion
         self.inlet_concentration = inlet_concentration
