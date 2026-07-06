@@ -26,6 +26,13 @@ class TimeIntegrator:
 
         See scikit_odes_sundioals/idas.pyx for more details.
         """
+        # Check time inputs
+        if t_eval[0] <= 0:
+            raise ValueError(
+                f"The first evaluation time must be strictly >0 because the initial"
+                f"condition is defined at t=0. Received t_eval[0]={t_eval[0]}."
+            )
+
         if jacobian is None:
             solver = dae(
                 "ida",
