@@ -104,6 +104,13 @@
 
 <span class="sd">        See scikit_odes_sundioals/idas.pyx for more details.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check time inputs</span>
+        <span class="k">if</span> <span class="n">t_eval</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;The first evaluation time must be strictly &gt;0 because the initial&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;condition is defined at t=0. Received t_eval[0]=</span><span class="si">{</span><span class="n">t_eval</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
         <span class="k">if</span> <span class="n">jacobian</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">solver</span> <span class="o">=</span> <span class="n">dae</span><span class="p">(</span>
                 <span class="s2">&quot;ida&quot;</span><span class="p">,</span>
