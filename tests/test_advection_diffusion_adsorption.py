@@ -6,7 +6,7 @@ import pytest
 
 def _base_model(mode, k_ldf=0.1, n_col=30):
     """Shared setup for all adsorption tests."""
-    velocity = 0.5
+    superficial_velocity = 0.5
     diffusion = 0.1
     column_length = 5.0
     inlet_concentration = 1.0
@@ -26,7 +26,7 @@ def _base_model(mode, k_ldf=0.1, n_col=30):
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
-        superficial_velocity=velocity * porosity,
+        superficial_velocity=superficial_velocity,
         feed_concentrations=inlet_concentration,
         time=time,
     )
@@ -39,9 +39,7 @@ def _base_model(mode, k_ldf=0.1, n_col=30):
         reactormodels.models.AdvectionDiffusionAdsorption(
             column=column,
             breakthrough=breakthrough,
-            inlet_concentration=inlet_concentration,
             initial_concentration=initial_concentration,
-            velocity=velocity,
             diffusion=diffusion,
             isotherm=reactormodels.models.LinearIsotherm(K=K),
             numerics=numerics,
@@ -49,7 +47,6 @@ def _base_model(mode, k_ldf=0.1, n_col=30):
             k_ldf=k_ldf,
             inlet_bc=reactormodels.models.DirichletBC,
         ),
-        velocity,
         diffusion,
         column_length,
         porosity,
@@ -60,36 +57,24 @@ def _base_model(mode, k_ldf=0.1, n_col=30):
 
 def test_local_equilibrium_vs_ogata_banks():
     """Linear isotherm + local equilibrium = retarded Ogata-Banks."""
-    model, v, D, column_length, eps, rho_b, K = _base_model(
+    model, D, column_length, eps, rho_b, K = _base_model(
         reactormodels.models.adsorption_kinetics.AdsorptionKinetics.LOCAL_EQUILIBRIUM
     )
 
     R = 1.0 + (rho_b * K) / eps
-    v_eff = v / R
-    D_eff = D / R
 
-    d = 1
-
-    t_mid = 0.5 * column_length / v_eff
+    t_mid = 0.5 * column_length / (model.breakthrough.interstitial_velocity() / R)
     t_eval = np.array([0.25 * t_mid, t_mid, 2.0 * t_mid])
 
     x, C, q = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
 
-    column = reactormodels.Column(
-        length=column_length, diameter=d, porosity=eps, bulk_density=rho_b
+    ogata_banks = reactormodels.models.OgataBanks(
+        breakthrough=model.breakthrough, diffusion=D, retardation=R
     )
 
-    breakthrough = reactormodels.Breakthrough(
-        column=column,
-        feed_concentrations=1,
-        superficial_velocity=v_eff * eps,
-        time=t_eval,
-    )
-
-    OgataBanks = reactormodels.models.OgataBanks(breakthrough, D_eff)
     for i, t in enumerate(t_eval):
         mask = x < 0.8 * column_length
-        C_analytical = OgataBanks.spatial_profile(x[mask], t)
+        C_analytical = ogata_banks.spatial_profile(x[mask], t)
         assert C[i, mask] == pytest.approx(C_analytical, abs=1e-2)
 
 
@@ -102,9 +87,9 @@ def test_ldf_converges_to_equilibrium_at_high_kldf():
         reactormodels.models.AdsorptionKinetics.LINEAR_DRIVING_FORCE, k_ldf=1000.0
     )
 
-    v, D, L, eps, rho_b, K = params
+    D, L, eps, rho_b, K = params
     R = 1.0 + (rho_b * K) / eps
-    v_eff = v / (eps * R)
+    v_eff = eq_model.breakthrough.interstitial_velocity() / (eps * R)
     t_eval = np.array([0.5 * L / v_eff, L / v_eff])
 
     x, C_eq, q_eq = eq_model.solve((0, t_eval[-1]), t_eval)
@@ -116,11 +101,11 @@ def test_ldf_converges_to_equilibrium_at_high_kldf():
 
 def test_ldf_q_tracks_equilibrium():
     """q should approach q*(C) over time."""
-    model, v, D, L, eps, rho_b, K = _base_model(
+    model, D, L, eps, rho_b, K = _base_model(
         reactormodels.models.AdsorptionKinetics.LINEAR_DRIVING_FORCE, k_ldf=0.5
     )
     R = 1.0 + (rho_b * K) / eps
-    v_eff = v / (eps * R)
+    v_eff = model.breakthrough.interstitial_velocity() / (eps * R)
     t_long = 5.0 * L / v_eff  # run long enough for q to equilibrate
 
     x, C, q = model.solve(t_span=(0, t_long), t_eval=np.array([t_long]))

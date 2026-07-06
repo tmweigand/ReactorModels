@@ -20,6 +20,40 @@ class Isotherm:
         raise NotImplementedError
 
 
+class LangmuirIsotherm(Isotherm):
+    """Langmuir isotherm: q* = q_m * K * C / (1 + K * C)
+
+    Parameters
+    ----------
+    K: float
+        Langmuir dissociation constant
+    q_m: float
+        Maximum sorbent capacity.
+
+    """
+
+    def __init__(self, K: float, q_m: float):
+        self.K = K
+        self.q_m = q_m
+
+    def q(self, C: float | np.ndarray) -> np.ndarray:
+        """Return sorbed mass concentration"""
+        C = np.asarray(C, dtype=float)
+        return (
+            self.q_m * self.K * np.maximum(C, 0.0) / (1 + self.K * np.maximum(C, 0.0))
+        )
+
+    def dq_dC(self, C: float | np.ndarray) -> np.ndarray:
+        """Calculate the derivative of sorbed mass concentration by concentration."""
+        C = np.asarray(C, dtype=float)
+        return self.q_m * self.K / (1 + self.K * np.maximum(C, 0.0)) ** 2
+
+    def d2q_dC2(self, C: float | np.ndarray) -> np.ndarray:
+        """Calculate the second derivative."""
+        C = np.asarray(C, dtype=float)
+        return -2 * self.q_m * self.K**2 / (1 + self.K * np.maximum(C, 0.0)) ** 3
+
+
 class FreundlichIsotherm(Isotherm):
     """Freundlich isotherm: q* = K * C^(1/n)
 

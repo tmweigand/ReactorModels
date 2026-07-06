@@ -9,33 +9,47 @@ def run_demo(
     show: bool = True, save_path: str | Path = "data_out/advection_diffusion_demo.png"
 ):
     """Plot the numerical collocation solution against the Ogata-Banks solution."""
-    velocity = 1.0  # m/s
-    diffusion = 0.5  # m^2/s
+    superficial_velocity = 1.0  # m/s
+    diffusion = 0.01  # m^2/s
     domain_length = 5.0  # m
     porosity = 0.5
     C_in = 1.0
-    t_eval = np.array([1.0, 2.0, 3.0])
+    t_eval = np.array([0.1, 0.5, 1.0])
+    diameter = 0.1
+    initial_concentration = 0
+
+    column = reactormodels.Column(
+        diameter=diameter, length=domain_length, porosity=porosity
+    )
+
+    breakthrough = reactormodels.Breakthrough(
+        column=column,
+        feed_concentrations=C_in,
+        superficial_velocity=superficial_velocity,
+        time=t_eval,
+    )
 
     numerics = reactormodels.numerics.NumericsConfig(
-        n_interior_points=10, n_elements=3, add_inlet=True
+        column=column, n_interior_points=5, n_elements=20, add_inlet=True
     )
-    column = reactormodels.Column(length=domain_length, porosity=porosity)
 
     model = reactormodels.models.AdvectionDiffusion(
         column=column,
-        inlet_concentration=C_in,
-        velocity=velocity,
+        breakthrough=breakthrough,
         diffusion=diffusion,
         numerics=numerics,
+        initial_concentration=initial_concentration,
     )
-    x, C = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval, C_in=C_in)
+    x, C = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
+
+    ogata_banks = reactormodels.models.OgataBanks(
+        breakthrough=breakthrough, diffusion=diffusion
+    )
 
     fig, ax = plt.subplots(figsize=(8, 5))
     for i, t in enumerate(t_eval):
         mask = x < 0.8 * domain_length
-        C_analytical = reactormodels.models.ogata_banks(
-            x[mask], t, velocity, diffusion, C_in
-        )
+        C_analytical = ogata_banks.spatial_profile(x=x[mask], time=t)
         C_numerical = C[i, mask]
         max_error = np.abs(C_numerical - C_analytical).max()
 

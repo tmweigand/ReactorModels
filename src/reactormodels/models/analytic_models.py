@@ -43,10 +43,18 @@ class OgataBanks(AnalyticModels):
         self,
         breakthrough: Breakthrough,
         diffusion: float,
+        retardation: float | None = None,
     ):
         super().__init__(breakthrough)
-        self.diffusion = diffusion
-        self.interstitial_velocity = breakthrough.interstitial_velocity()
+        self.R = retardation
+
+        if self.R is not None:
+            self.diffusion = diffusion / self.R
+            self.interstitial_velocity = breakthrough.interstitial_velocity() / self.R
+        else:
+            self.diffusion = diffusion
+            self.interstitial_velocity = breakthrough.interstitial_velocity()
+
         self.inlet_concentration = breakthrough.mean_feed_concentration()
 
     def model(
@@ -58,6 +66,8 @@ class OgataBanks(AnalyticModels):
 
         C/Co =  1/2 * {erfc[(x - v*t)/(2*sqrt(D*t))]
                 + exp(v*x/D)*erfc[(x + v*t)/(2*sqrt(D*t))]}
+
+        Divide v and D by R for retardation.
         """
         Pe_local = self.interstitial_velocity * x / self.diffusion
         arg1 = (x - self.interstitial_velocity * time) / (
