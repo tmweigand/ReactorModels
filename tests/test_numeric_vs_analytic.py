@@ -6,18 +6,18 @@ import pytest
 
 def _base_model(mode, n_col=30):
     """Shared setup for all adsorption tests."""
-    superficial_velocity = 0.5
-    diffusion = 1e-10
+    superficial_velocity = 1
+    diffusion = 0.01
     column_length = 5.0
     inlet_concentration = 1.0
     initial_concentration = 0.0
-    porosity = 0.5
+    porosity = 0.4
     bulk_density = 500.0
-    K = 1e10
+    K = 0.5
     q_m = 1000
     k_ldf = 0.1
     diameter = 1
-    time = np.linspace(0, 5, 6)
+    t_eval = np.array([100.0, 200.0, 500.0, 1000.0])
 
     column = reactormodels.Column(
         length=column_length,
@@ -30,7 +30,7 @@ def _base_model(mode, n_col=30):
         column=column,
         superficial_velocity=superficial_velocity,
         feed_concentrations=inlet_concentration,
-        time=time,
+        time=t_eval,
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
@@ -69,7 +69,7 @@ def test_bohart_adams():
         1 + K * model.breakthrough.mean_feed_concentration()
     )
     v_eff = model.breakthrough.interstitial_velocity() / (eps * R)
-    t_eval = np.linspace(0, 200, 10)
+    t_eval = np.array([100.0, 200.0, 500.0, 1000.0])
     # np.array([0.5 * L / v_eff, L / v_eff])
 
     x, C, q = model.solve((0, t_eval[-1]), t_eval)

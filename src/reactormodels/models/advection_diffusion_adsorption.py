@@ -37,7 +37,7 @@ class AdvectionDiffusionAdsorption:
         isotherm: Isotherm,
         numerics: NumericsConfig,
         mode: AdsorptionKinetics = AdsorptionKinetics.LOCAL_EQUILIBRIUM,
-        k_ldf: float = 0.0,
+        k_ldf: float = 0,
         inlet_bc: Type[InletBC] = DanckwertsBC,
     ):
         self.column = column
@@ -54,11 +54,16 @@ class AdvectionDiffusionAdsorption:
         self.N = len(self.numerics.collocation.nodes)
 
         if (
-            mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE
-            or mode == AdsorptionKinetics.SECOND_ORDER
+            mode
+            in (
+                AdsorptionKinetics.LINEAR_DRIVING_FORCE,
+                AdsorptionKinetics.SECOND_ORDER,
+            )
             and k_ldf <= 0
         ):
-            raise ValueError("k_ldf must be > 0 for LINEAR_DRIVING_FORCE mode")
+            raise ValueError(
+                "k_ldf must be > 0 for LINEAR_DRIVING_FORCE or SECOND_ORDER mode"
+            )
 
     def _n_vars(self) -> int:
         """Total length of the IDA state vector."""
@@ -101,10 +106,7 @@ class AdvectionDiffusionAdsorption:
             * self.DL
             * self.numerics.evaluate_second_derivative(c)[1:]
         )
-        if (
-            self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM
-            or self.mode == AdsorptionKinetics.SECOND_ORDER
-        ):
+        if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
             result[1 : self.N] = (
                 transport + self.column.bulk_density * (self.iso.dq_dC(c) * dcdt)[1:]
             )
