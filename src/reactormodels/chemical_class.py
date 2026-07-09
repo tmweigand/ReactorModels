@@ -8,19 +8,16 @@ class Chemical:
 
     def __init__(
         self,
-        name: str,
-        molecular_weight: float,
+        compound: str,
         molar_volume: float,
+        molecular_weight: float | None = None,
         density: float | None = None,
         solubility: float | None = None,
         vapor_pressure: float | None = None,
         boiling_point: float | None = None,
         diffusion_parameter: float | None = None,
     ):
-        assert (
-            molecular_weight > 0
-        ), f"molecular_weight must be positive, got {molecular_weight}"
-        assert molar_volume > 0, f"molar_volume must be positive, got {molar_volume}"
+        assert 0 < molar_volume, f"molar_volume must be positive, got {molar_volume}"
 
         if density is not None:
             assert density > 0, f"density must be positive, got {density}"
@@ -38,7 +35,7 @@ class Chemical:
                 diffusion_parameter > 0
             ), f"diffusion_parameter must be positive, got {diffusion_parameter}"
 
-        self.name = name
+        self.compound = compound
         self.molecular_weight = molecular_weight
         self.molar_volume = molar_volume
         self.density = density
@@ -56,6 +53,9 @@ class Chemical:
         1. liquid diffusivity (cm2/s)
         2. molar volume of the chemical at the normal boiling point (cm3/mol)
         3. water viscosity (centipoise)
+
+        equation found in AdDesign manual - Appendix F, (F-7).
+        ----------
 
         """  # noqa: D205
         assert viscosity > 0, f"viscosity must be positive, got {viscosity}"

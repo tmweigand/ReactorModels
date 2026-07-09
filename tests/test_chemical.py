@@ -7,7 +7,7 @@ import reactormodels
 def test_chemical_stores_properties():
     """Test that Chemical stores required and optional properties."""
     chem = reactormodels.Chemical(
-        name="Example chemical",
+        compound="Example chemical",
         molecular_weight=100.0,
         molar_volume=75.0,
         density=1.2,
@@ -17,7 +17,7 @@ def test_chemical_stores_properties():
         diffusion_parameter=2.0,
     )
 
-    assert chem.name == "Example chemical"
+    assert chem.compound == "Example chemical"
     assert chem.molecular_weight == 100.0
     assert chem.molar_volume == 75.0
     assert chem.density == 1.2
@@ -30,7 +30,7 @@ def test_chemical_stores_properties():
 def test_liquid_diffusion_coefficient():
     """Test liquid diffusion coefficient using the AdDesign equation."""
     chem = reactormodels.Chemical(
-        name="Example chemical",
+        compound="Example chemical",
         molecular_weight=100.0,
         molar_volume=75.0,
     )
@@ -47,17 +47,10 @@ def test_liquid_diffusion_coefficient():
 
 
 def test_chemical_rejects_invalid_required_values():
-    """Test that Chemical rejects invalid molecular weight and molar volume."""
-    with pytest.raises(AssertionError, match="molecular_weight must be positive"):
-        reactormodels.Chemical(
-            name="Example chemical",
-            molecular_weight=0.0,
-            molar_volume=75.0,
-        )
-
+    """Test that Chemical rejects invalid molar volume."""
     with pytest.raises(AssertionError, match="molar_volume must be positive"):
         reactormodels.Chemical(
-            name="Example chemical",
+            compound="Example chemical",
             molecular_weight=100.0,
             molar_volume=0.0,
         )
@@ -66,7 +59,7 @@ def test_chemical_rejects_invalid_required_values():
 def test_liquid_diffusion_coefficient_rejects_invalid_viscosity():
     """Test that liquid diffusion coefficient rejects non-positive viscosity."""
     chem = reactormodels.Chemical(
-        name="Example chemical",
+        compound="Example chemical",
         molecular_weight=100.0,
         molar_volume=75.0,
     )

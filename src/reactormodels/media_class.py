@@ -30,7 +30,7 @@ class Media:
         self.bed_density = bed_density
 
     def get_bed_density(self, bed_porosity: float) -> float:
-        """Bed density rho_b = (1 - bed_porosity) * particle_density."""
+        """Bed density (rho_b) = (1 - bed_porosity) * particle_density."""
         assert (
             0 < bed_porosity < 1
         ), f"bed_porosity must be in (0, 1), got {bed_porosity}"
@@ -52,29 +52,3 @@ class Media:
         ), f"bed_porosity must be in (0, 1), got {bed_porosity}"
 
         return bed_porosity + (1 - bed_porosity) * self.particle_porosity
-
-    def as_array(self) -> np.ndarray:
-        """Return media properties as a NumPy array."""
-        values = [
-            self.particle_porosity,
-            self.particle_density,
-            self.mean_diameter,
-        ]
-
-        if self.bed_density is not None:
-            values.append(self.bed_density)
-
-        return np.array(values, dtype=float)
-
-    def as_dict(self) -> dict[str, float]:
-        """Return media properties as a dictionary."""
-        media_data = {
-            "particle_porosity": self.particle_porosity,
-            "particle_density": self.particle_density,
-            "mean_diameter": self.mean_diameter,
-        }
-
-        if self.bed_density is not None:
-            media_data["bed_density"] = self.bed_density
-
-        return media_data
