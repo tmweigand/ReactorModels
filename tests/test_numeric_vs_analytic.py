@@ -4,79 +4,60 @@ import numpy as np
 import pytest
 
 
-def _base_model(mode, n_col=30):
-    """Shared setup for all adsorption tests."""
-    superficial_velocity = 1
-    diffusion = 0.01
-    column_length = 5.0
-    inlet_concentration = 1.0
-    initial_concentration = 0.0
+def test_thomas():
+    """Numerical solution matches analytical solution."""
+    t_eval = np.linspace(1e-10, 10, 200)
+    length = 1 / np.pi
+    diameter = 2
     porosity = 0.4
-    bulk_density = 500.0
-    K = 0.5
-    q_m = 1000
-    k_ldf = 0.1
-    diameter = 1
-    t_eval = np.array([100.0, 200.0, 500.0, 1000.0])
+    bulk_density = 0.36
+    particle_density = 0.6
+    feed_concentrations = 1
+    flow_rate = 1
+    q_m = 20
+    k = 1
+    K = 5000
+    initial_concentration = 0
+    diffusion = 1e-20
+
+    isotherm = reactormodels.models.LangmuirIsotherm(K=K, q_m=q_m)
 
     column = reactormodels.Column(
-        length=column_length,
+        length=length,
         porosity=porosity,
         bulk_density=bulk_density,
         diameter=diameter,
+        particle_density=particle_density,
     )
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
-        superficial_velocity=superficial_velocity,
-        feed_concentrations=inlet_concentration,
+        feed_concentrations=feed_concentrations,
+        flow_rate=flow_rate,
         time=t_eval,
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
-        column=column, n_interior_points=n_col, add_inlet=True
+        column=column, n_interior_points=5, n_elements=20, add_inlet=True
     )
 
-    return (
-        reactormodels.models.AdvectionDiffusionAdsorption(
-            column=column,
-            breakthrough=breakthrough,
-            initial_concentration=initial_concentration,
-            diffusion=diffusion,
-            isotherm=reactormodels.models.LangmuirIsotherm(K=K, q_m=q_m),
-            numerics=numerics,
-            mode=mode,
-            k_ldf=k_ldf,
-            inlet_bc=reactormodels.models.DirichletBC,
-        ),
-        diffusion,
-        column_length,
-        porosity,
-        bulk_density,
-        K,
-        q_m,
+    model = reactormodels.models.AdvectionDiffusionAdsorption(
+        column=column,
+        breakthrough=breakthrough,
+        diffusion=diffusion,
+        initial_concentration=initial_concentration,
+        isotherm=isotherm,
+        numerics=numerics,
+        mode=reactormodels.models.AdsorptionKinetics.SECOND_ORDER,
+        k_ldf=k,
+    )
+    x, C, q = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
+
+    thomas = reactormodels.models.ThomasLangmuir(
+        breakthrough=breakthrough, langmuir_constant=K, sorbent_capacity=q_m, k_Th=k
     )
 
-
-def test_bohart_adams():
-    """Numerical solution matches analytical solution."""
-    model, *params = _base_model(
-        reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM
-    )
-
-    D, L, eps, rho_b, K, q_m = params
-    R = 1.0 + (rho_b / eps) * K * q_m / (
-        1 + K * model.breakthrough.mean_feed_concentration()
-    )
-    v_eff = model.breakthrough.interstitial_velocity() / (eps * R)
-    t_eval = np.array([100.0, 200.0, 500.0, 1000.0])
-    # np.array([0.5 * L / v_eff, L / v_eff])
-
-    x, C, q = model.solve((0, t_eval[-1]), t_eval)
-
-    bohart_adams = reactormodels.models.BohartAdams(model.breakthrough, 0.1, q_m)
-
-    for i, t in enumerate(t_eval):
-        x = L
-        C_analytical = bohart_adams.breakthrough_profile(time=t_eval, x=x)
-        assert C[i] == pytest.approx(C_analytical, abs=1e-2)
+    C_thomas = thomas.breakthrough_profile(time=t_eval, x=length)
+    outlet_idx = np.argmin(np.abs(x - length))
+    C_numerical = C[:, outlet_idx]
+    assert C_numerical == pytest.approx(C_thomas, abs=1e-2)

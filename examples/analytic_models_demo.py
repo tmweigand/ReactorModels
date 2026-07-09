@@ -65,14 +65,14 @@ def run_demo(
         breakthrough=breakthrough,
         langmuir_constant=0.5,
         sorbent_capacity=20,
-        k_Th=3,
+        k_Th=1,
     )
 
     ob_breakthrough = ogata_banks.breakthrough_profile(time=time, x=length)
     yn_breakthrough = yoon_nelson.breakthrough_profile(time=time)
     c_breakthrough = clark.breakthrough_profile(time=time)
     ba_breakthrough = bohart_adams.breakthrough_profile(time=time, x=length)
-    tr_breakthrough = thomas_rectangular.breakthrough_profile(x=length)
+    tr_breakthrough = thomas_rectangular.breakthrough_profile(x=length, time=time)
     tl_breakthrough = thomas_langmuir.breakthrough_profile(time=time, x=length)
 
     plt.figure(figsize=(8, 5))
