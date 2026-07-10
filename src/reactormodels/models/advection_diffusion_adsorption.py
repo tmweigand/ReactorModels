@@ -133,7 +133,7 @@ class AdvectionDiffusionAdsorption:
             self.numerics.collocation.first_derivative[0, :]
         )
 
-        # derivative of transport
+        # derivative of transport dF/dc
         d_transport = (
             -self.column.porosity
             * self.velocity
@@ -148,13 +148,10 @@ class AdvectionDiffusionAdsorption:
             for i in range(1, self.N):
                 J[i, i] += cj * (
                     self.column.porosity
-                    + self.column.bulk_density * self.iso.dq_dC(C[i])
+                    + self.column.get_bulk_density() * self.iso.dq_dC(C[i])
                 )
 
-        elif (
-            self.mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE
-            or self.mode == AdsorptionKinetics.SECOND_ORDER
-        ):
+        elif self.mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE:
             for i in range(1, self.N):
                 J[i, i] += cj * self.column.porosity
                 J[i, self.N + i] += cj * self.column.get_bulk_density()
@@ -163,7 +160,20 @@ class AdvectionDiffusionAdsorption:
                 J[self.N + i, i] = -self.k_ldf * self.iso.dq_dC(C[i])
                 J[self.N + i, self.N + i] = self.k_ldf + cj
 
+        else:
+            for i in range(1, self.N):
+                J[i, i] += cj * self.column.porosity
+                J[i, self.N + i] += cj * self.column.get_bulk_density()
+
+            for i in range(self.N):
+                J[self.N + i, i] = (
+                    -self.k_ldf * (self.iso.q(C[i]) + C[i] * self.iso.dq_dC(C[i]))
+                    + self.k_ldf * q[i]
+                )
+                J[self.N + i, self.N + i] = self.k_ldf * C[i] + cj
+
         jac[:, :] = J
+
         return 0
 
     def _algebraic_vars_idx(self):
@@ -198,7 +208,7 @@ class AdvectionDiffusionAdsorption:
 
         result = self.numerics.integrate(
             residual=self._residual,
-            # jacobian=self._jacobian,
+            jacobian=self._jacobian,
             y0=y0,
             yp0=ydot0,
             t_span=t_span,

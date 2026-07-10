@@ -165,10 +165,11 @@ class Clark(AnalyticModels):
 class BohartAdams(AnalyticModels):
     """Bohart-Adams Model.
 
-    sorbent_loading (m_o): dry mass of sorbent per volume bed
+    bulk_density: dry mass of sorbent per volume bed
     k_BA: Bohart-Adams lumped rate constant
     sorbent_capacity: removal capacity per mass sorbent
-    velocity: superficial velocity
+    v: interstitial velocity
+    Z: bed length
     """
 
     def __init__(
@@ -178,11 +179,23 @@ class BohartAdams(AnalyticModels):
         sorbent_capacity: float,
     ):
         super().__init__(breakthrough)
-        self.bed_density = self.column.get_bulk_density()
         self.k_BA = k_BA
         self.sorbent_capacity = sorbent_capacity
-        self.velocity = breakthrough.get_superficial_velocity()
+        self.velocity = breakthrough.interstitial_velocity()
+        self.particle_density = self.column.get_particle_density()
         self.inlet_concentration = breakthrough.mean_feed_concentration()
+
+        if self.column.porosity is not None and self.particle_density is not None:
+            self.rho_arg = self.particle_density * (1 - self.column.porosity)
+        elif self.particle_density is None and self.column.porosity is not None:
+            self.rho_arg = self.column.get_bulk_density()
+        else:
+            raise ValueError("Porosity is needed to use the Bohart-Adams model.")
+
+        if self.column.porosity is not None:
+            self.bed_void_fraction = self.column.porosity
+        else:
+            raise ValueError("Porosity is needed to use the Bohart-Adams model.")
 
     def model(
         self,
@@ -191,11 +204,19 @@ class BohartAdams(AnalyticModels):
     ):
         """Equation:
 
-        C/Co = 1 / [1 + exp(rho_b*k_BA*q_m*L/u - k_BA*Co*t)]
+        a = k*Co*(t - Z/v)
+        b = (k*rho_p*q*Z  / v)*((1-eps) / eps)
+        C/Co = exp(a) / (exp(a) + exp(b) - 1)
         """
-        arg1 = self.bed_density * self.k_BA * self.sorbent_capacity * x / self.velocity
-        arg2 = self.k_BA * self.inlet_concentration * time
-        return 1 / (1 + np.exp(arg1 - arg2))
+        arg1 = self.k_BA * self.inlet_concentration * (time - x / self.velocity)
+        arg2 = (
+            self.k_BA
+            * self.rho_arg
+            * self.sorbent_capacity
+            * x
+            / (self.velocity * self.bed_void_fraction)
+        )
+        return np.exp(arg1) / (np.exp(arg1) + np.exp(arg2) - 1)
 
 
 class ThomasRectangular(AnalyticModels):
@@ -220,14 +241,25 @@ class ThomasRectangular(AnalyticModels):
         self.bed_volumes_treated = breakthrough.time_to_bed_volumes()
         self.inlet_concentration = breakthrough.mean_feed_concentration()
 
+        if self.column.porosity is not None:
+            self.bed_void_fraction = self.column.porosity
+        else:
+            raise ValueError("Porosity is needed to use the Thomas model.")
+
     def model(self, x: np.ndarray | float, time: float | np.ndarray):
         """Equation:
 
-        C/Co = 1 / [1 + exp(k_Th*q_e*x/Q - k_Th*Co*BV)]
+        a = k_Th*Co*(BVT - eps)
+        b = k_Th*q_e*x/Q
+        C/Co = exp(a) / (exp(a) + exp(b) - 1)
         """
-        arg1 = self.k_Th * self.sorbent_capacity * self.sorbent_mass / self.bed_volume
-        arg2 = self.k_Th * self.inlet_concentration * self.bed_volumes_treated
-        return 1 / (1 + np.exp(arg1 - arg2))
+        arg1 = (
+            self.k_Th
+            * self.inlet_concentration
+            * (self.bed_volumes_treated - self.column.porosity)
+        )
+        arg2 = self.k_Th * self.sorbent_capacity * self.sorbent_mass / self.bed_volume
+        return np.exp(arg1) / (np.exp(arg1) + np.exp(arg2) - 1)
 
     def spatial_profile(self, x: np.ndarray, time: float) -> np.ndarray:
         """Return concentration profile with respect to fixed time."""
@@ -273,12 +305,12 @@ class ThomasLangmuir(AnalyticModels):
         elif self.particle_density is None and self.column.porosity is not None:
             self.rho_arg = self.column.get_bulk_density()
         else:
-            raise ValueError("Porosity is needed to use the Thomas Langmuir model.")
+            raise ValueError("Porosity is needed to use the Thomas model.")
 
         if self.column.porosity is not None:
             self.bed_void_fraction = self.column.porosity
         else:
-            raise ValueError("Porosity is needed to use the Thomas Langmuir model.")
+            raise ValueError("Porosity is needed to use the Thomas model.")
 
     def _J_function(self, a: float, b: float) -> float:
         """Equation:

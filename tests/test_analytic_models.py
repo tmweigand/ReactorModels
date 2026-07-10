@@ -50,7 +50,6 @@ def test_clark_becomes_yoon_nelson(time=np.linspace(0, 200, 200)):
     ), f"Failed at t={time}: max error = {np.abs(yoon_nelson - clark).max():.3e}"
 
 
-@pytest.mark.skip
 def test_thomas_limiting_form(time=np.linspace(0, 10, 100)):
     """Thomas Model with Langmuir isotherm becomes rectangular as reverse rate constant approaches zero.
 
@@ -75,12 +74,17 @@ def test_thomas_limiting_form(time=np.linspace(0, 10, 100)):
     q -> q_m*k_a*C / (k_a*C) -> q_m
     """
 
-    diameter = 2
+    time = np.linspace(1e-10, 10, 200)
     length = 1 / np.pi
-    flow_rate = 1
-    particle_density = 0.6
-    bulk_density = 0.36
+    diameter = 2
     porosity = 0.4
+    bulk_density = 0.36
+    particle_density = 0.6
+    feed_concentrations = 1
+    flow_rate = 1
+    sorbent_capacity = 10
+    rate_constant = 10
+    K = 500000
 
     column = reactormodels.Column(
         length=length,
@@ -90,8 +94,6 @@ def test_thomas_limiting_form(time=np.linspace(0, 10, 100)):
         bulk_density=bulk_density,
     )
 
-    feed_concentrations = [0.99, 1.01]
-
     breakthrough = reactormodels.Breakthrough(
         column=column,
         feed_concentrations=feed_concentrations,
@@ -99,33 +101,28 @@ def test_thomas_limiting_form(time=np.linspace(0, 10, 100)):
         time=time,
     )
 
-    k_Th = 1
-    sorbent_capacity = 20
-    langmuir_constant = 1e20
-
-    thomas_rectangular = reactormodels.models.ThomasRectangular(
+    bohart_adams = reactormodels.models.BohartAdams(
         breakthrough=breakthrough,
-        k_Th=k_Th,
+        k_BA=rate_constant,
         sorbent_capacity=sorbent_capacity,
     )
 
-    tr_solution = thomas_rectangular.breakthrough_profile(time=time, x=length)
+    ba_solution = bohart_adams.breakthrough_profile(time=time, x=length)
 
     thomas_langmuir = reactormodels.models.ThomasLangmuir(
         breakthrough=breakthrough,
-        langmuir_constant=langmuir_constant,
+        langmuir_constant=K,
         sorbent_capacity=sorbent_capacity,
-        k_Th=k_Th,
+        k_Th=rate_constant,
     )
 
     tl_solution = thomas_langmuir.breakthrough_profile(time=time, x=length)
 
     assert tl_solution == pytest.approx(
-        tr_solution, abs=1e-3
-    ), f"Failed at t={time}: max error = {np.abs(tl_solution - tr_solution).max():.3e}"
+        ba_solution, abs=1e-3
+    ), f"Failed at t={time}: max error = {np.abs(tl_solution - ba_solution).max():.3e}"
 
 
-@pytest.mark.skip
 def test_bohart_adams_equals_thomas():
     """The rectangular Thomas model is equivalent to the Bohart-Adams model through unit conversion.
 
@@ -193,4 +190,4 @@ def test_bohart_adams_equals_thomas():
 
     assert bh_solution == pytest.approx(
         t_solution, abs=1e-3
-    ), f"Failed at t={time}: max error = {np.abs(bohart_adams - thomas_rectangular).max():.3e}"
+    ), f"Failed at t={time}: max error = {np.abs(bh_solution - t_solution).max():.3e}"

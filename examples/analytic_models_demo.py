@@ -49,16 +49,18 @@ def run_demo(
         n=2.5,
     )
 
+    k_BA = 3
+    sorbent_capacity = 20
     bohart_adams = reactormodels.models.BohartAdams(
         breakthrough=breakthrough,
-        k_BA=3,
-        sorbent_capacity=17,
+        k_BA=k_BA,
+        sorbent_capacity=sorbent_capacity,
     )
 
     thomas_rectangular = reactormodels.models.ThomasRectangular(
         breakthrough=breakthrough,
-        k_Th=5,
-        sorbent_capacity=10,
+        k_Th=k_BA * length / breakthrough.get_superficial_velocity(),
+        sorbent_capacity=15,
     )
 
     thomas_langmuir = reactormodels.models.ThomasLangmuir(

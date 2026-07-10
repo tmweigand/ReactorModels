@@ -10,7 +10,7 @@ class Column:
         self,
         length: float,
         diameter: float,
-        porosity: float | None = None,
+        porosity: float,
         bulk_density: float | None = None,
         particle_porosity: float | None = None,
         particle_density: float | None = None,

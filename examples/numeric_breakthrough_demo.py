@@ -22,7 +22,7 @@ def run_demo(
     flow_rate = 1
     q_m = 10
     k = 10
-    K = 50
+    K = 5000
     initial_concentration = 0
     diffusion = 1e-20
 

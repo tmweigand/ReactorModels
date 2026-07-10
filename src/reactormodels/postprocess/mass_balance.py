@@ -1,6 +1,7 @@
 """mass_balance.py"""
 
 from dataclasses import dataclass
+from ..breakthrough_data import Breakthrough
 import numpy as np
 import scipy
 
@@ -29,21 +30,24 @@ class MassBalance:
     @property
     def mass_in(self) -> float:
         """Mass entered: v * eps * C_in * t."""
-        return self.velocity * self.porosity * self.C_in * self.t
+        if self.porosity is not None:
+            return self.velocity * self.porosity * self.C_in * self.t
 
     @property
     def mass_out(self) -> float:
         """Mass exited via outlet: v * eps * integral C(L, t') dt'."""
-        return (
-            self.velocity
-            * self.porosity
-            * scipy.integrate.trapezoid(self.C_outlet_history, self.t_history)
-        )
+        if self.porosity is not None:
+            return (
+                self.velocity
+                * self.porosity
+                * scipy.integrate.trapezoid(self.C_outlet_history, self.t_history)
+            )
 
     @property
     def mass_fluid(self) -> float:
         """Mass in the fluid phase"""
-        return self.porosity * scipy.integrate.trapezoid(self.C, self.x)
+        if self.porosity is not None:
+            return self.porosity * scipy.integrate.trapezoid(self.C, self.x)
 
     @property
     def mass_adsorbed(self) -> float:
@@ -90,14 +94,11 @@ class MassBalance:
     @classmethod
     def from_solution(
         cls,
+        breakthrough: Breakthrough,
         x: np.ndarray,
+        t_eval: np.ndarray,
         C_history: np.ndarray,  # (n_times, N)
         q_history: np.ndarray,  # (n_times, N)
-        t_eval: np.ndarray,  # (n_times,)
-        velocity: float,
-        porosity: float,
-        bulk_density: float,
-        C_in: float,
     ) -> list["MassBalance"]:
         """Build a MassBalance for every time in t_eval.
 
@@ -111,10 +112,10 @@ class MassBalance:
                 C=C_history[i],
                 q=q_history[i],
                 t=t_eval[i],
-                velocity=velocity,
-                porosity=porosity,
-                bulk_density=bulk_density,
-                C_in=C_in,
+                velocity=breakthrough.interstitial_velocity(),
+                porosity=breakthrough.column.porosity,
+                bulk_density=breakthrough.column.get_bulk_density(),
+                C_in=breakthrough.mean_feed_concentration(),
                 t_history=t_eval[: i + 1],  # times up to current
                 C_outlet_history=C_outlet_history[: i + 1],  # outlet up to current
             )
