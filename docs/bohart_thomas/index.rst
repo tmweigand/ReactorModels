@@ -144,9 +144,11 @@ units of parameters in Eqn :eq:`BA_model`
     \frac C{C_o} = \frac 1{1 + \exp\lrp{\frac {k_{Th}q_ex}Q -k_{Th}C_ot_V}}
 
 where :math:`t_V` is time in bed volumes treated, :math:`k_{Th}` is the Thomas model rate constant,
-:math:`x` is the mass of solid phase in the bed, and :math:`Q` is the bed volume. The Thomas model relaxes the 
-rectangular isotherm assumption by assuming a Langmuir sink kinetic relation. The Langmuir dissociation constant 
-:math:`b` is defined as :math:`k_a/k_d`, allowing Eqn :eq:`langmuir_isotherm` to be simplified to
+:math:`x` is the mass of solid phase in the bed, and :math:`Q` is the bed volume. 
+
+The Thomas model relaxes the rectangular isotherm assumption by assuming a Langmuir sink kinetic relation. 
+The Langmuir dissociation constant :math:`b` is defined as :math:`k_a/k_d`, allowing 
+Eqn :eq:`langmuir_isotherm` to be simplified to
 
 .. math::
     :label: 

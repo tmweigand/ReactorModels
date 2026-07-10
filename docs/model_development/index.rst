@@ -2,19 +2,21 @@ Model Development
 ========================
 
 The domain of a fixed bed system contains fluid phase and solid phase. The fluid phase enters and leaves the domain through its 
-boundaries (i.e. the top and bottom of a column) while the solid phase remains stationary within the domain. Fixed bed models are 
-built upon the conservation of mass for a species in a phase over a differential column slice, consisting of terms for accumulation 
-(first term) of species in a phase in the domain and advective transport (second term) of species in a phase through the domain
+boundaries (i.e. the top and bottom of a column) while the solid phase remains stationary within the domain. Fixed bed models for 
+species transport are built upon the conservation of mass in a phase over a differential column slice, consisting of terms for accumulation 
+(first term) of species in a phase in the domain, advective transport (second term) of species in a phase through the domain, and 
+interphase mass exchange of species (third term)
 
 .. math::
     :label: conservation_of_mass
 
     \pd{\lrp{\gke^{\gka}\rho^{\gka}\mma i\gka}}t +
-    \del \vdot \lrp{\gke^{\gka}\rho^{\gka}\mma i\gka \vec v^\sol{i\gka}} = 0
+    \del \vdot \lrp{\gke^{\gka}\rho^{\gka}\mma i\gka \vec v^\sol{i\gka}} - \iema M{i\qes}{i\gka} = 0
 
 where :math:`\gke^{\gka}` is the volume fraction of phase :math:`\gka`, :math:`\rho^{\gka}` is the density of phase :math:`\gka`, 
-:math:`\mma i\gka`  is the mass fraction of species :math:`i` in phase :math:`\gka`, and :math:`\vec v^\sol{i\gka}` 
-is the velocity vector of species :math:`i` in phase :math:`\gka`.
+:math:`\mma i\gka`  is the mass fraction of species :math:`i` in phase :math:`\gka`, :math:`\vec v^\sol{i\gka}` 
+is the velocity vector of species :math:`i` in phase :math:`\gka`, and :math:`\iema M{i\qes}{i\gka}` is the rate of transfer of 
+species between phases.
 
 Transport of species in a phase can occur through both advection and random (Brownian) motion of the species within the phase 
 (i.e. molecular diffusion). Therefore, the species velocity is split into the bulk velocity and the deviation from the bulk 
@@ -24,7 +26,7 @@ velocity due to molecular diffusion
     :label: species_in_phase
 
     \pd {\lrp{\gke^{\gka}\rho^{\gka}\mma i\gka}}t + \del \vdot \lrp{\gke^{\gka}\rho^{\gka}\mma i\gka \vec v^\sol{\gka}}
-    + \del \vdot \lrp{\gke^{\gka}\rho^{\gka}\mma i\gka \vec u^\dol{i\gka}} = 0
+    + \del \vdot \lrp{\gke^{\gka}\rho^{\gka}\mma i\gka \vec u^\dol{i\gka}} - \iema M{i\qes}{i\gka} = 0
 
 where :math:`\vec v^\sol{\gka}` is the velocity vector of phase :math:`\gka` and :math:`\vec u^\dol{i\gka}` is the velocity of 
 species :math:`i` in phase :math:`\gka` due to molecular diffusion. The velocity of species :math:`i` in phase :math:`\gka` 
@@ -39,21 +41,12 @@ where :math:`D^{i\gka}` is the diffusion coefficient of species :math:`i` in pha
 can now be written as 
 
 .. math::
-    :label: nonadsorptive_transport
-
-    \pd {\lrp{\gke^{\gka}\rho^{\gka}\mma i\gka}}t + \del \vdot \lrp{\gke^{\gka}\rho^{\gka}\mma i\gka \vec v^\sol{\gka}}
-    - \del \vdot \lrp{\gke^{\gka}\rho^{\gka}D^{i\gka}\del\mma i\gka} = 0
-
-When mass exchange (adsorption) occurs between the phases, another term is added to Eqn :eq:`nonadsorptive_transport` 
-
-.. math::
     :label: two_phase
 
     \pd {\lrp{\gke^{\gka}\rho^{\gka}\mma i\gka}}t + \del \vdot \lrp{\gke^{\gka}\rho^{\gka}\mma i\gka \vec v^\sol{\gka}}
     - \del \vdot \lrp{\gke^{\gka}\rho^{\gka}D^{i\gka}\del\mma i\gka} - \iema M{i\qes}{i\gka} = 0
 
-where :math:`\iema M{i\qes}{i\gka}` is the rate of transfer of species between phases. Eqn :eq:`two_phase` is the governing 
-conservation of mass equation from which all transport equations are derived.
+Eqn :eq:`two_phase` is the governing conservation of mass equation from which all transport equations are derived.
 
 ***************
 Models

@@ -1,5 +1,5 @@
-Numeric Models
-================
+Pore and/or Surface Diffusion
+===============================
 
 The pore and/or surface diffusion models :cite:`Friedman1984` couple the conservation of mass equations between 
 the bulk fluid domain and the particle domain where species may be present in the solid phase as well as the pore 
