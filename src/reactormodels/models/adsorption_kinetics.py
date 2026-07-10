@@ -8,3 +8,4 @@ class AdsorptionKinetics(Enum):
 
     LOCAL_EQUILIBRIUM = auto()
     LINEAR_DRIVING_FORCE = auto()
+    SECOND_ORDER = auto()

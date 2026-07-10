@@ -4,6 +4,7 @@ from typing import Type
 import numpy as np
 
 from ..column_data import Column
+from ..breakthrough_data import Breakthrough
 from ..numerics.config import NumericsConfig
 from .boundary_conditions import InletBC, DirichletBC
 
@@ -19,17 +20,16 @@ class AdvectionDiffusion:
     def __init__(
         self,
         column: Column,
-        inlet_concentration: float,
+        breakthrough: Breakthrough,
         initial_concentration: float,
-        velocity: float,
         diffusion: float,
         numerics: NumericsConfig,
         inlet_bc: Type[InletBC] = DirichletBC,
     ):
         self.column = column
-        self.velocity = velocity
+        self.velocity = breakthrough.interstitial_velocity()
         self.diffusion = diffusion
-        self.inlet_concentration = inlet_concentration
+        self.inlet_concentration = breakthrough.mean_feed_concentration()
         self.initial_concentration = initial_concentration
         self.numerics = numerics
         self.inlet_bc = inlet_bc(

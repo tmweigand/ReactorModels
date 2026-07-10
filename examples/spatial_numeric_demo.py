@@ -1,30 +1,42 @@
 import reactormodels
 
 from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
 
 
 def run_demo(
-    show: bool = True, save_path: str | Path = "data_out/advection_diffusion_demo.png"
+    show: bool = True,
+    save_path: str | Path = "data_out/spatial_numeric_demo.png",
 ):
-    """Plot the numerical collocation solution against the Ogata-Banks solution."""
-    superficial_velocity = 1.0  # m/s
-    diffusion = 0.01  # m^2/s
-    domain_length = 5.0  # m
-    porosity = 0.5
-    C_in = 1.0
-    t_eval = np.array([0.1, 0.5, 1.0])
-    diameter = 0.1
+    """Plot the numerical collocation solution against the Bohart-Adams solution."""
+
+    k_ldf = 0.002
+    diffusion = 0.01
+    K = 0.5
     initial_concentration = 0
+    q_m = 5
+    t_eval = np.array([5000.0])
+    length = 6
+    diameter = 2
+    porosity = 0.4
+    bulk_density = 500
+    feed_concentrations = 1
+    superficial_velocity = 1
+
+    isotherm = reactormodels.models.LangmuirIsotherm(K=K, q_m=q_m)
 
     column = reactormodels.Column(
-        diameter=diameter, length=domain_length, porosity=porosity
+        length=length,
+        porosity=porosity,
+        bulk_density=bulk_density,
+        diameter=diameter,
     )
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
-        feed_concentrations=C_in,
+        feed_concentrations=feed_concentrations,
         superficial_velocity=superficial_velocity,
         time=t_eval,
     )
@@ -33,23 +45,26 @@ def run_demo(
         column=column, n_interior_points=5, n_elements=20, add_inlet=True
     )
 
-    model = reactormodels.models.AdvectionDiffusion(
+    model = reactormodels.models.AdvectionDiffusionAdsorption(
         column=column,
         breakthrough=breakthrough,
         diffusion=diffusion,
-        numerics=numerics,
         initial_concentration=initial_concentration,
+        isotherm=isotherm,
+        numerics=numerics,
+        mode=reactormodels.models.AdsorptionKinetics.SECOND_ORDER,
+        k_ldf=k_ldf,
     )
-    x, C = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
+    x, C, q = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
 
-    ogata_banks = reactormodels.models.OgataBanks(
-        breakthrough=breakthrough, diffusion=diffusion
+    bohart_adams = reactormodels.models.BohartAdams(
+        breakthrough=breakthrough, k_BA=k_ldf, sorbent_capacity=q_m
     )
 
     fig, ax = plt.subplots(figsize=(8, 5))
     for i, t in enumerate(t_eval):
-        mask = x < 0.8 * domain_length
-        C_analytical = ogata_banks.spatial_profile(x=x[mask], time=t)
+        mask = x < 0.99 * length
+        C_analytical = bohart_adams.spatial_profile(time=t, x=x[mask])
         C_numerical = C[i, mask]
         max_error = np.abs(C_numerical - C_analytical).max()
 
@@ -60,11 +75,11 @@ def run_demo(
         )
         ax.plot(x[mask], C_analytical, linestyle="--", label=f"analytical t={t:g}")
 
-    ax.set_title("Advection-Diffusion: Numerical vs Analytical Solutions")
-    ax.set_xlabel("x [m]")
+    ax.set_title("Bohart-Adams: Numerical vs Analytical Solutions")
+    ax.set_xlabel("x")
     ax.set_ylabel("C / C_in")
     ax.grid(True, alpha=0.3)
-    ax.legend(fontsize=8, ncols=2)
+    ax.legend(fontsize=8, ncols=1)
     fig.tight_layout()
 
     save_path = Path(save_path)

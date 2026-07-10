@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from reactormodels.models import FreundlichIsotherm, LinearIsotherm
+from reactormodels.models import FreundlichIsotherm, LinearIsotherm, LangmuirIsotherm
 from reactormodels.models.isotherm import fit_isotherm
 
 
@@ -11,6 +11,15 @@ def test_linear_isotherm():
 
     np.testing.assert_allclose(iso.q(C), 5.0 * C)
     np.testing.assert_allclose(iso.dq_dC(C), 5.0 * np.ones_like(C))
+
+
+def test_langmuir_isotherm():
+    K, q_m = 10.0, 2.0
+    iso = LangmuirIsotherm(K=K, q_m=q_m)
+    C = np.array([1.0, 4.0, 9.0])
+    expected = q_m * K * C / (1 + K * C)
+
+    np.testing.assert_allclose(iso.q(C), expected)
 
 
 def test_freundlich_isotherm():

@@ -1,0 +1,11 @@
+div.math p {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+div.math .eqno {
+    position: absolute;
+    right: 0;
+}

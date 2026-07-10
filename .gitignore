@@ -6,8 +6,9 @@ data_out/
 docs/_build/
 docs/.doctrees/
 docs/_static/*.js
-docs/_static/*.css
 docs/api/*
 *.pyc
 __pycache__/.idea/
 .idea/
+.venv/
+.coverage
