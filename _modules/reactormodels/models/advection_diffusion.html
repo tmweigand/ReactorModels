@@ -8,6 +8,7 @@
   <title>reactormodels.models.advection_diffusion &mdash; ReactorModels 0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=ccde76bc" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
@@ -78,6 +79,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..column_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">Column</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..breakthrough_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">Breakthrough</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..numerics.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumericsConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.boundary_conditions</span><span class="w"> </span><span class="kn">import</span> <span class="n">InletBC</span><span class="p">,</span> <span class="n">DirichletBC</span>
 
@@ -95,17 +97,16 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">column</span><span class="p">:</span> <span class="n">Column</span><span class="p">,</span>
-        <span class="n">inlet_concentration</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">breakthrough</span><span class="p">:</span> <span class="n">Breakthrough</span><span class="p">,</span>
         <span class="n">initial_concentration</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-        <span class="n">velocity</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">diffusion</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">numerics</span><span class="p">:</span> <span class="n">NumericsConfig</span><span class="p">,</span>
         <span class="n">inlet_bc</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">InletBC</span><span class="p">]</span> <span class="o">=</span> <span class="n">DirichletBC</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="o">=</span> <span class="n">column</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="n">velocity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">interstitial_velocity</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">diffusion</span> <span class="o">=</span> <span class="n">diffusion</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">inlet_concentration</span> <span class="o">=</span> <span class="n">inlet_concentration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inlet_concentration</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">mean_feed_concentration</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initial_concentration</span> <span class="o">=</span> <span class="n">initial_concentration</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span> <span class="o">=</span> <span class="n">numerics</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inlet_bc</span> <span class="o">=</span> <span class="n">inlet_bc</span><span class="p">(</span>

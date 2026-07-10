@@ -1,0 +1,219 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bohart-Adams and Thomas &mdash; ReactorModels 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=ccde76bc" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Numeric Models" href="../numeric_models/index.html" />
+    <link rel="prev" title="Ogata-Banks" href="../ogata_banks/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            ReactorModels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../model_development/index.html">Model Development</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../model_development/index.html#models">Models</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../ogata_banks/index.html">Ogata-Banks</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Bohart-Adams and Thomas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../numeric_models/index.html">Numeric Models</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../model_development/index.html#nomenclature">Nomenclature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_development/index.html#references">References</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">reactormodels</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ReactorModels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../model_development/index.html">Model Development</a></li>
+      <li class="breadcrumb-item active">Bohart-Adams and Thomas</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/bohart_thomas/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="bohart-adams-and-thomas">
+<h1>Bohart-Adams and Thomas<a class="headerlink" href="#bohart-adams-and-thomas" title="Link to this heading"></a></h1>
+<p>Models including adsorption assume species <img class="math" src="../_images/math/364f234f74e428c6cf01f3c4135636b8778de06e.svg" alt="i"/> to be present in either the fluid phase or solid phase.
+Thus, Eqn <a class="reference internal" href="../model_development/index.html#equation-two-phase">(5)</a> is written in terms of fluid phase <img class="math" src="../_images/math/b4d1ff21cf028d369de7df87eb59dd46175b1af7.svg" alt="f"/> and solid phase <img class="math" src="../_images/math/21ee6e589012bd8651dedbc9f8f8d1e531a4fa00.svg" alt="s"/></p>
+<div class="math" id="equation-ba-conservation-eqn">
+<p><img src="../_images/math/a62eaecbf81fcf8d11cc0c9780cc4ab7e0b19b85.svg" alt="\pd {\lrp{\gke^{f}\rho^{f}\mma if}}t + \del \vdot \lrp{\gke^{f}\rho^{f}\mma if \vec v^\sol{f}}
+- \del \vdot \lrp{\gke^{f}\rho^{f}D^{if}\del\mma if} -\iema M{is}{if} = 0"/><span class="eqno">(11)<a class="headerlink" href="#equation-ba-conservation-eqn" title="Link to this equation"></a></span></p>
+</div><p>Without resolving the particle domain, the interphase mass transfer term may be written as the accumulation
+of species in the solid phase</p>
+<div class="math" id="equation-bohart-thomas-index-0">
+<p><img src="../_images/math/a192bcbd12a350c5b32b130acfebfd2f13729a2f.svg" alt="-\iema M{is}{if} = \pd {\lrp{\gke^s\rho^s\mma is}}t"/><span class="eqno">(12)<a class="headerlink" href="#equation-bohart-thomas-index-0" title="Link to this equation"></a></span></p>
+</div><p>which can be substituted into Eqn <a class="reference internal" href="#equation-ba-conservation-eqn">(11)</a></p>
+<div class="math" id="equation-vector-mass-balance">
+<p><img src="../_images/math/37e63518f0a9b7e166ee2785f1a98a5025fad18b.svg" alt="\pd {\lrp{\gke^{f}\rho^{f}\mma if}}t + \del \vdot \lrp{\gke^{f}\rho^{f}\mma if \vec v^\sol{f}}
+- \del \vdot \lrp{\gke^{f}\rho^{f}D^{if}\del\mma if} + \pd {\lrp{\gke^s\rho^s\mma is}}t = 0"/><span class="eqno">(13)<a class="headerlink" href="#equation-vector-mass-balance" title="Link to this equation"></a></span></p>
+</div><p>Considering a cylindrical column where concentration only varies in the axial direction, Eqn <a class="reference internal" href="#equation-vector-mass-balance">(13)</a>
+simplifies to</p>
+<div class="math" id="equation-adsorptive-mass-balance">
+<p><img src="../_images/math/f735898680f607a23914ba4c45fbefb056b3ce04.svg" alt="\gke \pd Ct + \gke v \pd Cz - \gke D_L \pdn 2Cz + \lrp{1 - \gke} \rho_p \pd qt= 0"/><span class="eqno">(14)<a class="headerlink" href="#equation-adsorptive-mass-balance" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/28c1bead31932661d6269732ea594042911c3286.svg" alt="q"/> is the species concentration in the solid phase, and <img class="math" src="../_images/math/b65d2254223ab0fbe3a4594582feeae2fe2b86d7.svg" alt="\rho_p"/> is the apparent density of the
+solid phase. When operating in the Darcy Flow Regime (Re <img class="math" src="../_images/math/328140dcbcab5e60afef624788580f8d39e48cdb.svg" alt="&lt;"/> 10), axial diffusion is considered to be
+negligible if the product of the Reynolds and Schmidt number (Re x Sc) is greater than 200. Thus, Eqn
+<a class="reference internal" href="#equation-adsorptive-mass-balance">(14)</a> may be written as</p>
+<div class="math" id="equation-no-dispersion-mass-balance">
+<p><img src="../_images/math/9d015084eab3c8cea40d3c9d0ee3a1bf0e315764.svg" alt="\gke \pd Ct + \gke v \pd Cz + \lrp{1 - \gke} \rho_p \pd qt= 0"/><span class="eqno">(15)<a class="headerlink" href="#equation-no-dispersion-mass-balance" title="Link to this equation"></a></span></p>
+</div><p>Eqn <a class="reference internal" href="#equation-no-dispersion-mass-balance">(15)</a> serves as the governing conservation of mass equation for the Bohart-Adams
+<span class="bibtex-citation" id="id1">[<a class="reference internal" href="../model_development/index.html#id119" title="G. S. Bohart and E. Q. Adams. Some aspects of the behavior of charcoal with respect to chlorine.1. Journal of the American Chemical Society, 42(3):523-544, 1920. doi:10.1021/ja01448a018.">1</a>]</span> and Thomas <span class="bibtex-citation" id="id2">[<a class="reference internal" href="../model_development/index.html#id7" title="Henry C Thomas. Heterogeneous ion exchange in a flowing system. Journal of the American Chemical Society, 66:1664-1666, 10 1944. URL: https://pubs.acs.org/doi/abs/10.1021/ja01238a017, doi:10.1021/ja01238a017.">5</a>]</span> models. In order to obtain the Bohart-Adams and Thomas model
+analytical solutions, the time derivative term is ignored due to the slow time-scale of adsorption relative
+to fluid flow. Thus, Eqn <a class="reference internal" href="#equation-no-dispersion-mass-balance">(15)</a> simplifies to the following equation after dividing
+through by <img class="math" src="../_images/math/d2fa7381e9e8bedb3751e337b2f20f7fbe900593.svg" alt="\gke"/></p>
+<div class="math" id="equation-no-disperion-or-time-derivative">
+<p><img src="../_images/math/94cc6c5a349f14b7bc1b2bd67808fb9e78bda015.svg" alt="v \pd Cz = - \frac {\lrp{1-\gke}}{\gke}\rho_p\pd qt"/><span class="eqno">(16)<a class="headerlink" href="#equation-no-disperion-or-time-derivative" title="Link to this equation"></a></span></p>
+</div><p>Eqn <a class="reference internal" href="#equation-no-disperion-or-time-derivative">(16)</a> can be simplified further to</p>
+<div class="math" id="equation-ba-mass-balance">
+<p><img src="../_images/math/8c60f350e86d968da426ce61b7c6ef630bf99a68.svg" alt="u \pd Cz = - \rho_b\pd qt"/><span class="eqno">(17)<a class="headerlink" href="#equation-ba-mass-balance" title="Link to this equation"></a></span></p>
+</div><p>where the superficial velocity <img class="math" src="../_images/math/400894e86ea13c90075bd9969dcbb3b26dd0a114.svg" alt="u"/> is equal to <img class="math" src="../_images/math/73e3b8aa3bcd3bb0e772c28b1130ff0320d04e8c.svg" alt="v\gke"/>, and the bulk density <img class="math" src="../_images/math/2282e02db4c74f2d0115fecf50c6a8244fa4a391.svg" alt="\rho_b"/> is
+equal to <img class="math" src="../_images/math/67b4beed42909d60ab2eeb6e668076e41cef4505.svg" alt="(1-\gke)\rho_p"/>. Second order reaction kinetics are assumed where the partial time derivative
+of sorbent phase concentration may be expressed as a function of <img class="math" src="../_images/math/e0a22cec6134f65633b4e56d4e22768c337d7bc8.svg" alt="C"/> and <img class="math" src="../_images/math/28c1bead31932661d6269732ea594042911c3286.svg" alt="q"/></p>
+<div class="math" id="equation-bohart-thomas-index-1">
+<p><img src="../_images/math/e65a6452eae0651ae4eb890a64e704e649daf4db.svg" alt="\pd qt = f(C,q)"/><span class="eqno">(18)<a class="headerlink" href="#equation-bohart-thomas-index-1" title="Link to this equation"></a></span></p>
+</div><p>The Langmuir sink kinetic relation is written as</p>
+<div class="math" id="equation-langmuir-sink">
+<p><img src="../_images/math/0af22b3aa9892bdd01118b243f974e7d1a6d4ac8.svg" alt="\pd qt = k_a C \lrp{q_m - q} - k_dq"/><span class="eqno">(19)<a class="headerlink" href="#equation-langmuir-sink" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/3f76b3e4fe7c6a413070738ddf0bce70c2bda4f1.svg" alt="q_m"/> is the maximum mass that may be adsorbed, and <img class="math" src="../_images/math/b91f97ca6022cb775ba9e3e08dce94d2cad795cf.svg" alt="k_a"/> is the forward reaction rate constant,
+and <img class="math" src="../_images/math/639064760c51057ee76c5800f429da1de277edab.svg" alt="k_d"/> is the reverse reaction rate constant for the following sorption equation</p>
+<div class="math" id="equation-bohart-thomas-index-2">
+<p><img src="../_images/math/9aa43055a225b0401727adcd928be476bff7e7d2.svg" alt="\ce{C + S &lt;=&gt;[$k_a$][$k_d$] C\text{-}S}"/><span class="eqno">(20)<a class="headerlink" href="#equation-bohart-thomas-index-2" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/3acdf3b544b0a7cfd2c931f226aa721a9ddcabd4.svg" alt="\ce{C}"/> is the adsorbate species, <img class="math" src="../_images/math/60d8b296f100b03f7a0c7d3fd9148d2f06d044a0.svg" alt="\ce{S}"/> is an available sorption site, and <img class="math" src="../_images/math/0306ee9071c2291f561ac52e150dab96b72664b3.svg" alt="\ce{C-S}"/>
+is the product of the adsorption reaction. The system is at equilibrium when the partial derivative of <img class="math" src="../_images/math/28c1bead31932661d6269732ea594042911c3286.svg" alt="q"/> with
+respect to time is equal to 0. Adding subscript <img class="math" src="../_images/math/449e1ddb0d24fedd136cf784ddd8d87c52897c45.svg" alt="e"/> to <img class="math" src="../_images/math/e0a22cec6134f65633b4e56d4e22768c337d7bc8.svg" alt="C"/> and <img class="math" src="../_images/math/28c1bead31932661d6269732ea594042911c3286.svg" alt="q"/> to indicate equilibrium concentrations,
+the Langmuir adsorption isotherm equation is obtained from Eqn <a class="reference internal" href="#equation-langmuir-sink">(19)</a></p>
+<div class="math" id="equation-langmuir-kinetics">
+<p><img src="../_images/math/36ff3767fe86045722e8b03e33c7a6f87048192f.svg" alt="0 = k_a C_e \lrp{q_m - q_e} - k_dq_e"/><span class="eqno">(21)<a class="headerlink" href="#equation-langmuir-kinetics" title="Link to this equation"></a></span></p>
+</div><p>Eqn <a class="reference internal" href="#equation-langmuir-kinetics">(21)</a> can be rearranged to</p>
+<div class="math" id="equation-langmuir-isotherm">
+<p><img src="../_images/math/0b08dc3d811e81cd26c003324ce04a98bf2dad18.svg" alt="q_e = \frac {k_aq_mC_e}{k_d + k_aC_e}"/><span class="eqno">(22)<a class="headerlink" href="#equation-langmuir-isotherm" title="Link to this equation"></a></span></p>
+</div><p>The Bohart-Adams model assumes a rectangular adsorption isotherm. The rectangular isotherm equation
+is obtained from Eqn <a class="reference internal" href="#equation-langmuir-isotherm">(22)</a> by taking the limit of <img class="math" src="../_images/math/33b4fe58cecfd44be01df685fc93ddeef7c21184.svg" alt="q_e"/> as <img class="math" src="../_images/math/6d592c695df68dca7c9a6053ab08a7722b3d036b.svg" alt="k_d \to 0"/>
+(i.e. the forward reaction occurs until the sorbent capacity is reached)</p>
+<div class="math" id="equation-bohart-thomas-index-3">
+<p><img src="../_images/math/69afe474556fc154b826b7dd045495cb9e201f5b.svg" alt="q_e = q_m"/><span class="eqno">(23)<a class="headerlink" href="#equation-bohart-thomas-index-3" title="Link to this equation"></a></span></p>
+</div><p>Eqn <a class="reference internal" href="#equation-langmuir-sink">(19)</a> for a rectangular adsorption isotherm simplifies to</p>
+<div class="math" id="equation-ba-kinetics1">
+<p><img src="../_images/math/8a7cc929698f0b8ce934469c37fe789fef5367d2.svg" alt="\pd qt = k C \lrp{q_m-q}"/><span class="eqno">(24)<a class="headerlink" href="#equation-ba-kinetics1" title="Link to this equation"></a></span></p>
+</div><p>Substituting Eqn <a class="reference internal" href="#equation-ba-kinetics1">(24)</a> into Eqn <a class="reference internal" href="#equation-ba-mass-balance">(17)</a></p>
+<div class="math" id="equation-ba-kinetics2">
+<p><img src="../_images/math/94c01cb22b4f4275128767b9d9803683d2093150.svg" alt="\pd Cz = -\rho_b \frac ku C\lrp{q_m-q}"/><span class="eqno">(25)<a class="headerlink" href="#equation-ba-kinetics2" title="Link to this equation"></a></span></p>
+</div><p>Through a series of manipulations and applications of the boundary condition <img class="math" src="../_images/math/cc7dc74463c0d4f7604a6287b4ad1a6b0dcc4083.svg" alt="C_o = C(0,t)"/>
+and the initial condition <img class="math" src="../_images/math/69bf9f645d5be4b0224a3192c2e1446c10c3f210.svg" alt="q(z,0) = 0"/>. Eqn <a class="reference internal" href="#equation-ba-kinetics1">(24)</a> and Eqn <a class="reference internal" href="#equation-ba-kinetics2">(25)</a>
+are used to derive the Bohart-Adams analytical solution</p>
+<div class="math" id="equation-ba-model">
+<p><img src="../_images/math/56a44595f25f259416934ed41def498f6a551d6c.svg" alt="\frac C{C_o} = \frac 1{1 + \exp\lrp{\frac {\rho_bkq_mL}u -kC_ot}}"/><span class="eqno">(26)<a class="headerlink" href="#equation-ba-model" title="Link to this equation"></a></span></p>
+</div><p>Though mathematically equivalent <span class="bibtex-citation" id="id3">[<a class="reference internal" href="../model_development/index.html#id117" title="Khim Hoong Chu. Fixed bed sorption: setting the record straight on the bohart-adams and thomas models. Journal of Hazardous Materials, 177:1006-1012, 5 2010. doi:10.1016/j.jhazmat.2010.01.019.">2</a>]</span>, the so-called Thomas model is obtained by converting
+units of parameters in Eqn <a class="reference internal" href="#equation-ba-model">(26)</a></p>
+<div class="math" id="equation-bohart-thomas-index-4">
+<p><img src="../_images/math/b06e07fa7d458fcfd5d6eb6fc3e9fbdc529adcdb.svg" alt="\frac C{C_o} = \frac 1{1 + \exp\lrp{\frac {k_{Th}q_ex}Q -k_{Th}C_ot_V}}"/><span class="eqno">(27)<a class="headerlink" href="#equation-bohart-thomas-index-4" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/8a7707785e4bd52b530818056d2291e5b44156cd.svg" alt="t_V"/> is time in bed volumes treated, <img class="math" src="../_images/math/f6e071f0f7964ef804fad5f4cfbba642d8958c95.svg" alt="k_{Th}"/> is the Thomas model rate constant,
+<img class="math" src="../_images/math/fbbe2b5b674fd338effd25205a63fe6ad13a1cdf.svg" alt="x"/> is the mass of solid phase in the bed, and <img class="math" src="../_images/math/6eab9926734060c5c6ba71f3894dbab210f27381.svg" alt="Q"/> is the bed volume. The Thomas model relaxes the
+rectangular isotherm assumption by assuming a Langmuir sink kinetic relation. The Langmuir dissociation constant
+<img class="math" src="../_images/math/9fdd732840f1f5e53405d981fecb17343d538c54.svg" alt="b"/> is defined as <img class="math" src="../_images/math/b11299152372ae973a90c92f9b32b4a6ea0e89f2.svg" alt="k_a/k_d"/>, allowing Eqn <a class="reference internal" href="#equation-langmuir-isotherm">(22)</a> to be simplified to</p>
+<div class="math" id="equation-bohart-thomas-index-5">
+<p><img src="../_images/math/e3773b5662dc8db549d58947868f621fcf5b5928.svg" alt="q_e = \frac {q_mbC_e}{1 + bC_e}"/><span class="eqno">(28)<a class="headerlink" href="#equation-bohart-thomas-index-5" title="Link to this equation"></a></span></p>
+</div><p>Eqn <a class="reference internal" href="#equation-langmuir-sink">(19)</a> can now be written as</p>
+<div class="math" id="equation-thomas-kinetics">
+<p><img src="../_images/math/54936cf8d4c1f2a378d6ef173d5f9fcdefe1eca5.svg" alt="\pd qt = k \lrb{C \lrp{q_m - q} - \frac qb}"/><span class="eqno">(29)<a class="headerlink" href="#equation-thomas-kinetics" title="Link to this equation"></a></span></p>
+</div><p>Through application of the same initial and boundary conditions as in the Bohart-Adams model derivation,
+the Thomas model analytical solution is obtained</p>
+<div class="math" id="equation-bohart-thomas-index-6">
+<p><img src="../_images/math/b67e5df0111b9093ce6e559867f34df9d236a567.svg" alt="\frac C {C_o} = \frac {J((n/r), nT)}{J((n/r), nT) + \lrb{1 - J(n, (nT/r))}\exp\lrb{(1 - (1/r))(n - nT)}}"/><span class="eqno">(30)<a class="headerlink" href="#equation-bohart-thomas-index-6" title="Link to this equation"></a></span></p>
+</div><p>with the following variables</p>
+<div class="math">
+<p><img src="../_images/math/7a9d5ea6f99031c3cc3fbbbd5de6ddbeed948440.svg" alt="r = 1 + bC_o; \quad n = \frac {\rho_pq_mkL\lrp{1 - \gke}}{\gke v}; \quad
+T = \frac {\gke\lrp{(1/b) + C_o}}{\rho_pq_m(1-\gke)} \lrp{\frac {vt}L - 1}"/></p>
+</div><p>and function <img class="math" src="../_images/math/1985cf61d84f5358973a2669657b8286b1e63192.svg" alt="J"/> given by</p>
+<div class="math">
+<p><img src="../_images/math/852c3d8ef41be29035e3d8d9d48304b7ba2ac27f.svg" alt="J(x, y) = 1 - \ilims 0x \exp(-y - \tau)I_0(2\sqrt{y\tau})\operatorname{d}\tau"/></p>
+</div><p>where <img class="math" src="../_images/math/bf830608ad0c148a5809305372105b02d70459b9.svg" alt="I_0"/> is the zero-order Bessel function of the first kind.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../ogata_banks/index.html" class="btn btn-neutral float-left" title="Ogata-Banks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../numeric_models/index.html" class="btn btn-neutral float-right" title="Numeric Models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Timothy M. Weigand.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

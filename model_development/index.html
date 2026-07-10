@@ -9,6 +9,7 @@
   <title>Model Development &mdash; ReactorModels 0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=ccde76bc" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -19,7 +20,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="reactormodels" href="../api/modules.html" />
+    <link rel="next" title="Ogata-Banks" href="../ogata_banks/index.html" />
     <link rel="prev" title="ReactorModels documentation" href="../index.html" /> 
 </head>
 
@@ -43,7 +44,17 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Model Development</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Model Development</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#models">Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ogata_banks/index.html">Ogata-Banks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../bohart_thomas/index.html">Bohart-Adams and Thomas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../numeric_models/index.html">Numeric Models</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#nomenclature">Nomenclature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
@@ -76,16 +87,147 @@
              
   <section id="model-development">
 <h1>Model Development<a class="headerlink" href="#model-development" title="Link to this heading"></a></h1>
-<div class="math">
-<p><img src="../_images/math/5566f42dfaaa9c8077a76a69e7a55b84c64dfee6.svg" alt="\pd{\lrp{\gke^{\gka}\rho^{\gka}\mma i\gka}}t"/></p>
-</div></section>
+<p>The domain of a fixed bed system contains fluid phase and solid phase. The fluid phase enters and leaves the domain through its
+boundaries (i.e. the top and bottom of a column) while the solid phase remains stationary within the domain. Fixed bed models are
+built upon the conservation of mass for a species in a phase over a differential column slice, consisting of terms for accumulation
+(first term) of species in a phase in the domain and advective transport (second term) of species in a phase through the domain</p>
+<div class="math" id="equation-conservation-of-mass">
+<p><img src="../_images/math/23c041431aa524a3dc2971c6dc9030486a214c3c.svg" alt="\pd{\lrp{\gke^{\gka}\rho^{\gka}\mma i\gka}}t +
+\del \vdot \lrp{\gke^{\gka}\rho^{\gka}\mma i\gka \vec v^\sol{i\gka}} = 0"/><span class="eqno">(1)<a class="headerlink" href="#equation-conservation-of-mass" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/483b055b51c227176cb7d92002e72f1e0b8b9fd5.svg" alt="\gke^{\gka}"/> is the volume fraction of phase <img class="math" src="../_images/math/0c56b51260688fd7c6f1f39b6e19b93b8910334e.svg" alt="\gka"/>, <img class="math" src="../_images/math/493cc0c69672869b3fbd79aa2b0504e59ad9144f.svg" alt="\rho^{\gka}"/> is the density of phase <img class="math" src="../_images/math/0c56b51260688fd7c6f1f39b6e19b93b8910334e.svg" alt="\gka"/>,
+<img class="math" src="../_images/math/bb7146425ff5de599a74c5548796f09456c81ece.svg" alt="\mma i\gka"/>  is the mass fraction of species <img class="math" src="../_images/math/364f234f74e428c6cf01f3c4135636b8778de06e.svg" alt="i"/> in phase <img class="math" src="../_images/math/0c56b51260688fd7c6f1f39b6e19b93b8910334e.svg" alt="\gka"/>, and <img class="math" src="../_images/math/bf04695a46865206a26b717d11519ef45e1bd80f.svg" alt="\vec v^\sol{i\gka}"/>
+is the velocity vector of species <img class="math" src="../_images/math/364f234f74e428c6cf01f3c4135636b8778de06e.svg" alt="i"/> in phase <img class="math" src="../_images/math/0c56b51260688fd7c6f1f39b6e19b93b8910334e.svg" alt="\gka"/>.</p>
+<p>Transport of species in a phase can occur through both advection and random (Brownian) motion of the species within the phase
+(i.e. molecular diffusion). Therefore, the species velocity is split into the bulk velocity and the deviation from the bulk
+velocity due to molecular diffusion</p>
+<div class="math" id="equation-species-in-phase">
+<p><img src="../_images/math/7915608a2702709d0e481a239bb670880477037d.svg" alt="\pd {\lrp{\gke^{\gka}\rho^{\gka}\mma i\gka}}t + \del \vdot \lrp{\gke^{\gka}\rho^{\gka}\mma i\gka \vec v^\sol{\gka}}
++ \del \vdot \lrp{\gke^{\gka}\rho^{\gka}\mma i\gka \vec u^\dol{i\gka}} = 0"/><span class="eqno">(2)<a class="headerlink" href="#equation-species-in-phase" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/e4e80e650f861bf26ab816b4be6a1090e05c489e.svg" alt="\vec v^\sol{\gka}"/> is the velocity vector of phase <img class="math" src="../_images/math/0c56b51260688fd7c6f1f39b6e19b93b8910334e.svg" alt="\gka"/> and <img class="math" src="../_images/math/967a5fbae16122656fae84deb8c894a6fc004d30.svg" alt="\vec u^\dol{i\gka}"/> is the velocity of
+species <img class="math" src="../_images/math/364f234f74e428c6cf01f3c4135636b8778de06e.svg" alt="i"/> in phase <img class="math" src="../_images/math/0c56b51260688fd7c6f1f39b6e19b93b8910334e.svg" alt="\gka"/> due to molecular diffusion. The velocity of species <img class="math" src="../_images/math/364f234f74e428c6cf01f3c4135636b8778de06e.svg" alt="i"/> in phase <img class="math" src="../_images/math/0c56b51260688fd7c6f1f39b6e19b93b8910334e.svg" alt="\gka"/>
+due to molecular diffusion can be approximated using Fick’s First Law</p>
+<div class="math" id="equation-model-development-index-0">
+<p><img src="../_images/math/399e581798858dd459575e106ee009eaf86ff6dc.svg" alt="\gke^{\gka}\rho^{\gka}\mma i\gka \vec v^\sol{\gka} \approx -\gke^{\gka}\rho^{\gka}D^{i\gka}\del\mma i\gka"/><span class="eqno">(3)<a class="headerlink" href="#equation-model-development-index-0" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/98260bd24654574c6206c87d5dd74e59c0b37c13.svg" alt="D^{i\gka}"/> is the diffusion coefficient of species <img class="math" src="../_images/math/364f234f74e428c6cf01f3c4135636b8778de06e.svg" alt="i"/> in phase <img class="math" src="../_images/math/0c56b51260688fd7c6f1f39b6e19b93b8910334e.svg" alt="\gka"/>. Eqn <a class="reference internal" href="#equation-species-in-phase">(2)</a>
+can now be written as</p>
+<div class="math" id="equation-nonadsorptive-transport">
+<p><img src="../_images/math/50e3769e2b89511c8ad031ea9907322502f045b3.svg" alt="\pd {\lrp{\gke^{\gka}\rho^{\gka}\mma i\gka}}t + \del \vdot \lrp{\gke^{\gka}\rho^{\gka}\mma i\gka \vec v^\sol{\gka}}
+- \del \vdot \lrp{\gke^{\gka}\rho^{\gka}D^{i\gka}\del\mma i\gka} = 0"/><span class="eqno">(4)<a class="headerlink" href="#equation-nonadsorptive-transport" title="Link to this equation"></a></span></p>
+</div><p>When mass exchange (adsorption) occurs between the phases, another term is added to Eqn <a class="reference internal" href="#equation-nonadsorptive-transport">(4)</a></p>
+<div class="math" id="equation-two-phase">
+<p><img src="../_images/math/62d526e09483e87331d2c8b14624d5a4fbdce31f.svg" alt="\pd {\lrp{\gke^{\gka}\rho^{\gka}\mma i\gka}}t + \del \vdot \lrp{\gke^{\gka}\rho^{\gka}\mma i\gka \vec v^\sol{\gka}}
+- \del \vdot \lrp{\gke^{\gka}\rho^{\gka}D^{i\gka}\del\mma i\gka} - \iema M{i\qes}{i\gka} = 0"/><span class="eqno">(5)<a class="headerlink" href="#equation-two-phase" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/2211e126c5490002561c4766c8b5e8553da5a2ba.svg" alt="\iema M{i\qes}{i\gka}"/> is the rate of transfer of species between phases. Eqn <a class="reference internal" href="#equation-two-phase">(5)</a> is the governing
+conservation of mass equation from which all transport equations are derived.</p>
+<section id="models">
+<h2>Models<a class="headerlink" href="#models" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../ogata_banks/index.html">Ogata-Banks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bohart_thomas/index.html">Bohart-Adams and Thomas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../numeric_models/index.html">Numeric Models</a></li>
+</ul>
+</div>
+</section>
+<section id="nomenclature">
+<h2>Nomenclature<a class="headerlink" href="#nomenclature" title="Link to this heading"></a></h2>
+<div class="line-block">
+<div class="line"><img class="math" src="../_images/math/bf04695a46865206a26b717d11519ef45e1bd80f.svg" alt="\vec v^\sol{i\gka}"/>: velocity vector of species <img class="math" src="../_images/math/364f234f74e428c6cf01f3c4135636b8778de06e.svg" alt="i"/> in phase <img class="math" src="../_images/math/0c56b51260688fd7c6f1f39b6e19b93b8910334e.svg" alt="\gka"/></div>
+<div class="line"><img class="math" src="../_images/math/e4e80e650f861bf26ab816b4be6a1090e05c489e.svg" alt="\vec v^\sol{\gka}"/>: velocity vector of phase <img class="math" src="../_images/math/0c56b51260688fd7c6f1f39b6e19b93b8910334e.svg" alt="\gka"/></div>
+<div class="line"><img class="math" src="../_images/math/967a5fbae16122656fae84deb8c894a6fc004d30.svg" alt="\vec u^\dol{i\gka}"/>: velocity of species <img class="math" src="../_images/math/364f234f74e428c6cf01f3c4135636b8778de06e.svg" alt="i"/> in phase <img class="math" src="../_images/math/0c56b51260688fd7c6f1f39b6e19b93b8910334e.svg" alt="\gka"/> due to molecular diffusion</div>
+<div class="line"><img class="math" src="../_images/math/98260bd24654574c6206c87d5dd74e59c0b37c13.svg" alt="D^{i\gka}"/>: diffusion coefficient of species <img class="math" src="../_images/math/364f234f74e428c6cf01f3c4135636b8778de06e.svg" alt="i"/> in phase <img class="math" src="../_images/math/0c56b51260688fd7c6f1f39b6e19b93b8910334e.svg" alt="\gka"/></div>
+<div class="line"><img class="math" src="../_images/math/d7b265cdb9d684d4bcdc56de67725da2e4be21bc.svg" alt="v"/>: interstitial velocity of the fluid phase</div>
+<div class="line"><img class="math" src="../_images/math/e0a22cec6134f65633b4e56d4e22768c337d7bc8.svg" alt="C"/>: species concentration in fluid phase</div>
+<div class="line"><img class="math" src="../_images/math/eea26762ef2c90c94f1da626de96c60fda9da7c8.svg" alt="D_L"/>: axial diffusion coefficient of the species in the fluid phase</div>
+<div class="line"><img class="math" src="../_images/math/5aecf7cd0ae414e228a2a692e940a4b1c554b890.svg" alt="C_o"/>: species concentration in the fluid phase entering the column</div>
+<div class="line"><img class="math" src="../_images/math/0d08835ac109acffb889b98701a00562a1ffc29c.svg" alt="\operatorname{erfc}"/>: error function</div>
+<div class="line"><img class="math" src="../_images/math/1a68794f2b93c680551c25938e9ad35d922b1f5a.svg" alt="\iema M{is}{if}"/>: rate of transfer of species between phases</div>
+<div class="line"><img class="math" src="../_images/math/28c1bead31932661d6269732ea594042911c3286.svg" alt="q"/>: species concentration in the solid phase</div>
+<div class="line"><img class="math" src="../_images/math/400894e86ea13c90075bd9969dcbb3b26dd0a114.svg" alt="u"/>: superficial velocity of the fluid phase (<img class="math" src="../_images/math/73e3b8aa3bcd3bb0e772c28b1130ff0320d04e8c.svg" alt="v\gke"/>)</div>
+<div class="line">Re: Reynolds number</div>
+<div class="line">Sc: Schmidt number</div>
+<div class="line"><img class="math" src="../_images/math/686914c9de4778bd1f8045250544e1a01fc3740f.svg" alt="D_e"/>: effective diffusion coefficient of species in the particle domain</div>
+<div class="line"><img class="math" src="../_images/math/799b4e94c028a416ae58bb5a5247a9c938220c2e.svg" alt="D_p"/>: diffusion coefficient of species in the pore liquid</div>
+<div class="line"><img class="math" src="../_images/math/6a136211ac0fa2d6a74115b2e75a5ad411c4e65e.svg" alt="D_s"/>: diffusion coefficient of species in the solid phase</div>
+<div class="line"><img class="math" src="../_images/math/3f76b3e4fe7c6a413070738ddf0bce70c2bda4f1.svg" alt="q_m"/>: maximum concentration of species in solid phase</div>
+<div class="line"><img class="math" src="../_images/math/b91f97ca6022cb775ba9e3e08dce94d2cad795cf.svg" alt="k_a"/>: forward reaction rate constant in Langmuir sink</div>
+<div class="line"><img class="math" src="../_images/math/639064760c51057ee76c5800f429da1de277edab.svg" alt="k_d"/>: reverse reaction rate constant in Langmuir sink</div>
+<div class="line"><img class="math" src="../_images/math/3acdf3b544b0a7cfd2c931f226aa721a9ddcabd4.svg" alt="\ce{C}"/>: adsorbate species</div>
+<div class="line"><img class="math" src="../_images/math/60d8b296f100b03f7a0c7d3fd9148d2f06d044a0.svg" alt="\ce{S}"/>: available sorption site</div>
+<div class="line"><img class="math" src="../_images/math/0306ee9071c2291f561ac52e150dab96b72664b3.svg" alt="\ce{C-S}"/>: product of the adsorption reaction</div>
+<div class="line"><img class="math" src="../_images/math/33b4fe58cecfd44be01df685fc93ddeef7c21184.svg" alt="q_e"/>: solid phase concentration at equilibrium</div>
+<div class="line"><img class="math" src="../_images/math/c942da820f7a38fc0478e1d6d588ded30152c3aa.svg" alt="C_e"/>: fluid phase concentration at equilibrium</div>
+<div class="line"><img class="math" src="../_images/math/5638718e225dfb4171aa010fde35f12ce30157a1.svg" alt="t"/>: time</div>
+<div class="line"><img class="math" src="../_images/math/8a7707785e4bd52b530818056d2291e5b44156cd.svg" alt="t_V"/>: time in bed volumes treated</div>
+<div class="line"><img class="math" src="../_images/math/f6e071f0f7964ef804fad5f4cfbba642d8958c95.svg" alt="k_{Th}"/>: Thomas model rate constant</div>
+<div class="line"><img class="math" src="../_images/math/fbbe2b5b674fd338effd25205a63fe6ad13a1cdf.svg" alt="x"/>: mass of solid phase in the bed</div>
+<div class="line"><img class="math" src="../_images/math/6eab9926734060c5c6ba71f3894dbab210f27381.svg" alt="Q"/>: bed volume</div>
+<div class="line"><img class="math" src="../_images/math/9fdd732840f1f5e53405d981fecb17343d538c54.svg" alt="b"/>: Langmuir dissociation constant (<img class="math" src="../_images/math/b11299152372ae973a90c92f9b32b4a6ea0e89f2.svg" alt="k_a/k_d"/>)</div>
+<div class="line"><img class="math" src="../_images/math/bf830608ad0c148a5809305372105b02d70459b9.svg" alt="I_0"/>: zero-order Bessel function of the first kind</div>
+<div class="line"><img class="math" src="../_images/math/6f4b4139cbe3cb01c35809e7ad14099788fc2f86.svg" alt="r"/>: parameter in the Thomas analytical solution</div>
+<div class="line"><img class="math" src="../_images/math/6819aeab6ad39fa8887d22e2b9e09f2f337dcb74.svg" alt="n"/>: parameter in the Thomas analytical solution</div>
+<div class="line"><img class="math" src="../_images/math/551586d62b9d35a9e4e64165b0ea624758ec79e2.svg" alt="T"/>: parameter in the Thomas analytical solution</div>
+<div class="line"><img class="math" src="../_images/math/1985cf61d84f5358973a2669657b8286b1e63192.svg" alt="J"/>: function in the Thomas analytical solution</div>
+<div class="line"><img class="math" src="../_images/math/48f0dd58fa766e5a6195ee64b7eff21d00c0122f.svg" alt="k_f"/>: film transfer coefficient</div>
+<div class="line"><img class="math" src="../_images/math/fa7a29b5cf33c70d8018b3954313a197aad5686c.svg" alt="A_p"/>: total surface area available for mass transfer</div>
+<div class="line"><img class="math" src="../_images/math/508ae2867c791c3897a042238ffe9df91379b179.svg" alt="N_p"/>: number of particles in the bed</div>
+<div class="line"><img class="math" src="../_images/math/133cdad2dbae591732873f0267750efffba17103.svg" alt="S_p"/>: surface area of a spherical particle</div>
+<div class="line"><img class="math" src="../_images/math/7b3a5d5ee9f8a36fa0113aa39106c5dfe93fa2c6.svg" alt="K"/>: Freundlich capacity constant</div>
+<div class="line"><img class="math" src="../_images/math/449196f0f0de30723b6774137b815ce9d3641c8a.svg" alt="1/n"/>: Freundlich intensity constant</div>
+<div class="line"><img class="math" src="../_images/math/9966f397484defbbeea74f95a2a80557f3946826.svg" alt="d_p"/>: particle diameter</div>
+<div class="line"><img class="math" src="../_images/math/fa0356495bf706c3150a9b5fb974beb98484ea21.svg" alt="D"/>: liquid diffusivity of the species in water</div>
+<div class="line"><img class="math" src="../_images/math/dec31951576cb1fa495d707503e7c653a1ed192e.svg" alt="V_b"/>: molar volume of the species at its boiling point</div>
+<div class="line">SPDFR: surface to pore diffusion flux ratio</div>
+</div>
+<div class="line-block">
+<div class="line"><em>Greek Letters</em></div>
+<div class="line"><img class="math" src="../_images/math/483b055b51c227176cb7d92002e72f1e0b8b9fd5.svg" alt="\gke^{\gka}"/>: volume fraction of phase <img class="math" src="../_images/math/0c56b51260688fd7c6f1f39b6e19b93b8910334e.svg" alt="\gka"/></div>
+<div class="line"><img class="math" src="../_images/math/493cc0c69672869b3fbd79aa2b0504e59ad9144f.svg" alt="\rho^{\gka}"/>: density of phase <img class="math" src="../_images/math/0c56b51260688fd7c6f1f39b6e19b93b8910334e.svg" alt="\gka"/></div>
+<div class="line"><img class="math" src="../_images/math/bb7146425ff5de599a74c5548796f09456c81ece.svg" alt="\mma i\gka"/>: mass fraction of species <img class="math" src="../_images/math/364f234f74e428c6cf01f3c4135636b8778de06e.svg" alt="i"/> in phase <img class="math" src="../_images/math/0c56b51260688fd7c6f1f39b6e19b93b8910334e.svg" alt="\gka"/></div>
+<div class="line"><img class="math" src="../_images/math/d2fa7381e9e8bedb3751e337b2f20f7fbe900593.svg" alt="\gke"/>: bed void fraction</div>
+<div class="line"><img class="math" src="../_images/math/b65d2254223ab0fbe3a4594582feeae2fe2b86d7.svg" alt="\rho_p"/>: apparent density of the solid phase</div>
+<div class="line"><img class="math" src="../_images/math/2282e02db4c74f2d0115fecf50c6a8244fa4a391.svg" alt="\rho_b"/>: bed density <img class="math" src="../_images/math/8a78f4aef57649e5638a3ec7490e2888ca35ae1b.svg" alt="\lrp{(1-\gke)\rho_p}"/></div>
+<div class="line"><img class="math" src="../_images/math/d1f3ea187628490f4836203db388d43423529651.svg" alt="\gke_p"/>: particle porosity</div>
+<div class="line"><img class="math" src="../_images/math/b4b31ea7e75904c71ff315bf62e33203c8b5e124.svg" alt="\rho"/>: density of water</div>
+<div class="line"><img class="math" src="../_images/math/88ad310fb1790f384664ab136b818fb23f693b6e.svg" alt="\mu"/>: dynamic viscosity of water</div>
+<div class="line"><img class="math" src="../_images/math/5eb4676f0c9a0ed49ef4867cb9254f46b91e70fd.svg" alt="\tau_p"/>: particle tortuosity</div>
+</div>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<div class="docutils container" id="id1">
+<div role="list" class="citation-list">
+<div class="citation" id="id119" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
+<p>G. S. Bohart and E. Q. Adams. Some aspects of the behavior of charcoal with respect to chlorine.1. <em>Journal of the American Chemical Society</em>, 42(3):523–544, 1920. <a class="reference external" href="https://doi.org/10.1021/ja01448a018">doi:10.1021/ja01448a018</a>.</p>
+</div>
+<div class="citation" id="id117" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
+<p>Khim Hoong Chu. Fixed bed sorption: setting the record straight on the bohart-adams and thomas models. <em>Journal of Hazardous Materials</em>, 177:1006–1012, 5 2010. <a class="reference external" href="https://doi.org/10.1016/j.jhazmat.2010.01.019">doi:10.1016/j.jhazmat.2010.01.019</a>.</p>
+</div>
+<div class="citation" id="id182" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></span>
+<p>Gary Friedman. Mathematical modeling of multicomponent adsorption in batch and fixed-bed reactors. Master's thesis, Michigan Technical University, 1984. URL: <a class="reference external" href="https://www.proquest.com/dissertations-theses/mathematical-modeling-multicomponent-adsorption/docview/220041433/se-2">https://www.proquest.com/dissertations-theses/mathematical-modeling-multicomponent-adsorption/docview/220041433/se-2</a>.</p>
+</div>
+<div class="citation" id="id181" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></span>
+<p>A. Ogata, R.B. Banks, United States. Department of the Interior, and Geological Survey (U.S.). <em>A Solution of the Differential Equation of Longitudinal Dispersion in Porous Media: Fluid Movement in Earth Materials</em>. Geological Survey professional paper. U.S. Government Printing Office, 1961. URL: <a class="reference external" href="https://books.google.com/books?id=mDVEtSpqTSUC">https://books.google.com/books?id=mDVEtSpqTSUC</a>.</p>
+</div>
+<div class="citation" id="id7" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></span>
+<p>Henry C Thomas. Heterogeneous ion exchange in a flowing system. <em>Journal of the American Chemical Society</em>, 66:1664–1666, 10 1944. URL: <a class="reference external" href="https://pubs.acs.org/doi/abs/10.1021/ja01238a017">https://pubs.acs.org/doi/abs/10.1021/ja01238a017</a>, <a class="reference external" href="https://doi.org/10.1021/ja01238a017">doi:10.1021/ja01238a017</a>.</p>
+</div>
+</div>
+</div>
+</section>
+</section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../index.html" class="btn btn-neutral float-left" title="ReactorModels documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../api/modules.html" class="btn btn-neutral float-right" title="reactormodels" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../ogata_banks/index.html" class="btn btn-neutral float-right" title="Ogata-Banks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -8,6 +8,7 @@
   <title>reactormodels.breakthrough_data &mdash; ReactorModels 0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=ccde76bc" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
@@ -75,6 +76,7 @@
 <span></span><span class="sd">&quot;&quot;&quot;breakthrough_data.py&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.column_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">Column</span>
 
 
 <div class="viewcode-block" id="Breakthrough">
@@ -88,14 +90,25 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">compound</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">column</span><span class="p">:</span> <span class="n">Column</span><span class="p">,</span>
         <span class="n">feed_concentrations</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-        <span class="n">effluent_concentrations</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-        <span class="n">flow_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">flow_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">effluent_concentrations</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">compound</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">bed_volumes</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">time</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">water_matrix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">superficial_velocity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="o">=</span> <span class="n">column</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compound</span> <span class="o">=</span> <span class="n">compound</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">water_matrix</span> <span class="o">=</span> <span class="n">water_matrix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feed_concentrations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">feed_concentrations</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bed_volumes</span> <span class="o">=</span> <span class="n">bed_volumes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">effluent_concentrations</span> <span class="o">=</span> <span class="n">effluent_concentrations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flow_rate</span> <span class="o">=</span> <span class="n">flow_rate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">superficial_velocity</span> <span class="o">=</span> <span class="n">superficial_velocity</span>
 
         <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">bed_volumes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Either time or bed_volumes must be provided.&quot;</span><span class="p">)</span>
@@ -116,14 +129,6 @@
                 <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">effluent_concentrations</span><span class="p">)</span>
             <span class="p">),</span> <span class="s2">&quot;Effluent concentration data contains NaN&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">compound</span> <span class="o">=</span> <span class="n">compound</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">water_matrix</span> <span class="o">=</span> <span class="n">water_matrix</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">feed_concentrations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">feed_concentrations</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bed_volumes</span> <span class="o">=</span> <span class="n">bed_volumes</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">effluent_concentrations</span> <span class="o">=</span> <span class="n">effluent_concentrations</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">flow_rate</span> <span class="o">=</span> <span class="n">flow_rate</span>
-
 <div class="viewcode-block" id="Breakthrough.mean_feed_concentration">
 <a class="viewcode-back" href="../../api/reactormodels.html#reactormodels.Breakthrough.mean_feed_concentration">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">mean_feed_concentration</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
@@ -135,30 +140,107 @@
 <a class="viewcode-back" href="../../api/reactormodels.html#reactormodels.Breakthrough.normalize_concentration">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">normalize_concentration</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Normalize effluent concentration by mean feed concentration.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">effluent_concentrations</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean_feed_concentration</span><span class="p">()</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">effluent_concentrations</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">effluent_concentrations</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean_feed_concentration</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must supply effluent concentration data.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Breakthrough.get_superficial_velocity">
+<a class="viewcode-back" href="../../api/reactormodels.html#reactormodels.Breakthrough.get_superficial_velocity">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_superficial_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Superficial velocity v = Q / A.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flow_rate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">derived</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flow_rate</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">cross_section_area</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">superficial_velocity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">derived</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">superficial_velocity</span><span class="p">),</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Supplied superficial_velocity </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">superficial_velocity</span><span class="si">}</span><span class="s2"> &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;inconsistent with flow_rate / cross_section_area = </span><span class="si">{</span><span class="n">derived</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="n">derived</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">superficial_velocity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">superficial_velocity</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must supply either superficial_velocity or flow_rate.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Breakthrough.interstitial_velocity">
+<a class="viewcode-back" href="../../api/reactormodels.html#reactormodels.Breakthrough.interstitial_velocity">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">interstitial_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Interstitial velocity u = v / porosity.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_superficial_velocity</span><span class="p">()</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must supply porosity.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Breakthrough.peclet">
+<a class="viewcode-back" href="../../api/reactormodels.html#reactormodels.Breakthrough.peclet">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">peclet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diffusion</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Axial Peclet number Pe = v * L / (porosity * diffusion).</span>
+
+<span class="sd">        Pe &gt;&gt; 1: advection dominated.</span>
+<span class="sd">        Pe &lt;&lt; 1: diffusion dominated.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_superficial_velocity</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">v</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">length</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span> <span class="o">*</span> <span class="n">diffusion</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must supply porosity.&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Breakthrough.empty_bed_contact_time">
 <a class="viewcode-back" href="../../api/reactormodels.html#reactormodels.Breakthrough.empty_bed_contact_time">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">empty_bed_contact_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">empty_bed_contact_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate empty bed contact time.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">column_volume</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">flow_rate</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flow_rate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">flow_derived</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">column_volume</span><span class="p">()</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">flow_rate</span>
+            <span class="n">velocity_derived</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">length</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_superficial_velocity</span><span class="p">()</span>
+            <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">flow_derived</span><span class="p">,</span> <span class="n">velocity_derived</span><span class="p">),</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Flow-derived EBCT </span><span class="si">{</span><span class="n">flow_derived</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> inconsistent&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;with velocity-derived EBCT = </span><span class="si">{</span><span class="n">velocity_derived</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">flow_derived</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Flow_rate or superficial_velocity needed to calculate EBCT.&quot;</span>
+            <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Breakthrough.time_to_bed_volumes">
 <a class="viewcode-back" href="../../api/reactormodels.html#reactormodels.Breakthrough.time_to_bed_volumes">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">time_to_bed_volumes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">time_to_bed_volumes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert time to bed volumes.&quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;time is not provided&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bed_volumes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty_bed_contact_time</span><span class="p">(</span><span class="n">column_volume</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">derived</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty_bed_contact_time</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_volumes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">derived</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_volumes</span><span class="p">),</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Supplied bed_volumes </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bed_volumes</span><span class="si">}</span><span class="s2"> inconsistent &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;with time / empty_bed_contact_time = </span><span class="si">{</span><span class="n">derived</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="n">derived</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_volumes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_volumes</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must supply either bed_volumes or time.&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Breakthrough.bed_volumes_to_time">
 <a class="viewcode-back" href="../../api/reactormodels.html#reactormodels.Breakthrough.bed_volumes_to_time">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">bed_volumes_to_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bed_volumes_to_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert bed volumes to time.&quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_volumes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;bed_volumes is not provided&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_volumes</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty_bed_contact_time</span><span class="p">(</span><span class="n">column_volume</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_volumes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">derived</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_volumes</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty_bed_contact_time</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">derived</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">),</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Supplied time </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2"> inconsistent &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;with bed_volumes * empty_bed_contact_time = </span><span class="si">{</span><span class="n">derived</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="n">derived</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must supply either time or bed_volumes.&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Breakthrough.has_breakthrough">
@@ -171,11 +253,11 @@
 <div class="viewcode-block" id="Breakthrough.breakthrough_threshold">
 <a class="viewcode-back" href="../../api/reactormodels.html#reactormodels.Breakthrough.breakthrough_threshold">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">breakthrough_threshold</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">column_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">return_index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">return_index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate bed volumes to specific breakthrough threshold.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_volumes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">time_to_bed_volumes</span><span class="p">(</span><span class="n">column_volume</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">time_to_bed_volumes</span><span class="p">()</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_volumes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
         <span class="n">concentrations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_concentration</span><span class="p">()</span>
@@ -210,11 +292,11 @@
 
 <div class="viewcode-block" id="Breakthrough.summary">
 <a class="viewcode-back" href="../../api/reactormodels.html#reactormodels.Breakthrough.summary">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Summarize breakthrough data.&quot;&quot;&quot;</span>
         <span class="n">n_c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_concentration</span><span class="p">()</span>
-        <span class="n">ebct</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty_bed_contact_time</span><span class="p">(</span><span class="n">column_volume</span><span class="p">)</span>
-        <span class="n">bv_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough_threshold</span><span class="p">(</span><span class="n">column_volume</span><span class="p">,</span> <span class="n">threshold</span><span class="p">)</span>
+        <span class="n">ebct</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty_bed_contact_time</span><span class="p">()</span>
+        <span class="n">bv_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough_threshold</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span>
         <span class="n">summary</span> <span class="o">=</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Compound: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">compound</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;Water matrix: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">water_matrix</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>

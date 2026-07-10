@@ -1,0 +1,148 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ogata-Banks &mdash; ReactorModels 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=ccde76bc" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Bohart-Adams and Thomas" href="../bohart_thomas/index.html" />
+    <link rel="prev" title="Model Development" href="../model_development/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            ReactorModels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../model_development/index.html">Model Development</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../model_development/index.html#models">Models</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Ogata-Banks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../bohart_thomas/index.html">Bohart-Adams and Thomas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../numeric_models/index.html">Numeric Models</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../model_development/index.html#nomenclature">Nomenclature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_development/index.html#references">References</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">reactormodels</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ReactorModels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../model_development/index.html">Model Development</a></li>
+      <li class="breadcrumb-item active">Ogata-Banks</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/ogata_banks/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ogata-banks">
+<h1>Ogata-Banks<a class="headerlink" href="#ogata-banks" title="Link to this heading"></a></h1>
+<p>In advective-dispersive transport, species <img class="math" src="../_images/math/364f234f74e428c6cf01f3c4135636b8778de06e.svg" alt="i"/> is assumed to be entirely in the fluid phase
+<img class="math" src="../_images/math/b4d1ff21cf028d369de7df87eb59dd46175b1af7.svg" alt="f"/> with no exchange of mass between phases. Thus, the final term in Eqn <a class="reference internal" href="../model_development/index.html#equation-two-phase">(5)</a> is
+dropped</p>
+<div class="math" id="equation-ogata-banks-index-0">
+<p><img src="../_images/math/f5bfb77727baeff195e2d44b7a15da4e05514dcf.svg" alt="\pd {\lrp{\gke^{f}\rho^{f}\mma if}}t + \del \vdot \lrp{\gke^{f}\rho^{f}\mma if \vec v^\sol{f}}
+- \del \vdot \lrp{\gke^{f}\rho^{f}D^{if}\del\mma if} = 0"/><span class="eqno">(6)<a class="headerlink" href="#equation-ogata-banks-index-0" title="Link to this equation"></a></span></p>
+</div><p>Writing in simplified terms</p>
+<div class="math" id="equation-vector-simple-form">
+<p><img src="../_images/math/c33b4997fb15551e7ab7a5e5156c981cd7979ff4.svg" alt="\gke \pd Ct + \gke \vec v^\sol{f} \del \vdot C - \gke D_L \del \vdot \del C = 0"/><span class="eqno">(7)<a class="headerlink" href="#equation-vector-simple-form" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/d2fa7381e9e8bedb3751e337b2f20f7fbe900593.svg" alt="\gke"/> is the bed void fraction, <img class="math" src="../_images/math/e0a22cec6134f65633b4e56d4e22768c337d7bc8.svg" alt="C"/> is the species concentration in fluid phase, and <img class="math" src="../_images/math/eea26762ef2c90c94f1da626de96c60fda9da7c8.svg" alt="D_L"/> is the
+axial diffusion coefficient of the species in the fluid phase. Considering a cylindrical column where concentration only
+varies in the axial direction, Eqn <a class="reference internal" href="#equation-vector-simple-form">(7)</a> can be further simplified to</p>
+<div class="math" id="equation-ogata-banks-index-1">
+<p><img src="../_images/math/bc8125acfc46677f26c198ff4a16e219b2858bad.svg" alt="\gke \pd Ct + \gke v \pd Cz - \gke D_L \pdn 2Cz = 0"/><span class="eqno">(8)<a class="headerlink" href="#equation-ogata-banks-index-1" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/d7b265cdb9d684d4bcdc56de67725da2e4be21bc.svg" alt="v"/> is the interstitial velocity of the fluid phase. Dividing through by <img class="math" src="../_images/math/d2fa7381e9e8bedb3751e337b2f20f7fbe900593.svg" alt="\gke"/> results in</p>
+<div class="math" id="equation-ogata-banks-index-2">
+<p><img src="../_images/math/6be2bd1132177fe853516d3fd4622a01fadc46b0.svg" alt="\pd Ct + v \pd Cz - D_L \pdn 2Cz = 0"/><span class="eqno">(9)<a class="headerlink" href="#equation-ogata-banks-index-2" title="Link to this equation"></a></span></p>
+</div><p>This is known as the advection-diffusion equation from which the Ogata-Banks analytical solution for 1-D transport was
+derived <span class="bibtex-citation" id="id1">[<a class="reference internal" href="../model_development/index.html#id181" title="A. Ogata, R.B. Banks, United States. Department of the Interior, and Geological Survey (U.S.). A Solution of the Differential Equation of Longitudinal Dispersion in Porous Media: Fluid Movement in Earth Materials. Geological Survey professional paper. U.S. Government Printing Office, 1961. URL: https://books.google.com/books?id=mDVEtSpqTSUC.">4</a>]</span></p>
+<div class="math" id="equation-ogata-banks">
+<p><img src="../_images/math/d003e8caa849ba3213df4deea0811ec7f9d00569.svg" alt="\frac C{C_o} = \frac 12 \lrb{\operatorname{erfc}\lrp{\frac {z - vt}{2\sqrt{D_Lt}}} +
+\exp\lrp{\frac {vz}{D_L}}\operatorname{erfc}\lrp{\frac {z + vt}{2\sqrt{D_Lt}}}}"/><span class="eqno">(10)<a class="headerlink" href="#equation-ogata-banks" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/5aecf7cd0ae414e228a2a692e940a4b1c554b890.svg" alt="C_o"/> is the species concentration in the fluid phase entering the column and <img class="math" src="../_images/math/0d08835ac109acffb889b98701a00562a1ffc29c.svg" alt="\operatorname{erfc}"/> is the
+error function.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../model_development/index.html" class="btn btn-neutral float-left" title="Model Development" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../bohart_thomas/index.html" class="btn btn-neutral float-right" title="Bohart-Adams and Thomas" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Timothy M. Weigand.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

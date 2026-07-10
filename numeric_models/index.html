@@ -1,0 +1,223 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Numeric Models &mdash; ReactorModels 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=ccde76bc" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="reactormodels" href="../api/modules.html" />
+    <link rel="prev" title="Bohart-Adams and Thomas" href="../bohart_thomas/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            ReactorModels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../model_development/index.html">Model Development</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../model_development/index.html#models">Models</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../ogata_banks/index.html">Ogata-Banks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../bohart_thomas/index.html">Bohart-Adams and Thomas</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Numeric Models</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../model_development/index.html#nomenclature">Nomenclature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_development/index.html#references">References</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">reactormodels</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ReactorModels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../model_development/index.html">Model Development</a></li>
+      <li class="breadcrumb-item active">Numeric Models</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/numeric_models/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="numeric-models">
+<h1>Numeric Models<a class="headerlink" href="#numeric-models" title="Link to this heading"></a></h1>
+<p>The pore and/or surface diffusion models <span class="bibtex-citation" id="id1">[<a class="reference internal" href="../model_development/index.html#id182" title="Gary Friedman. Mathematical modeling of multicomponent adsorption in batch and fixed-bed reactors. Master's thesis, Michigan Technical University, 1984. URL: https://www.proquest.com/dissertations-theses/mathematical-modeling-multicomponent-adsorption/docview/220041433/se-2.">3</a>]</span> couple the conservation of mass equations between
+the bulk fluid domain and the particle domain where species may be present in the solid phase as well as the pore
+liquid. Thus, Eqn <a class="reference internal" href="../model_development/index.html#equation-two-phase">(5)</a> is written in terms of fluid phase <img class="math" src="../_images/math/b4d1ff21cf028d369de7df87eb59dd46175b1af7.svg" alt="f"/> and particle phase <img class="math" src="../_images/math/9c43832f20f076f13310175a04670041e8dd575f.svg" alt="p"/></p>
+<div class="math" id="equation-psdm-mass-balance">
+<p><img src="../_images/math/764f7d8149fe9ab5c3296173409f3a43919c9806.svg" alt="\pd {\lrp{\gke^{f}\rho^{f}\mma if}}t + \del \vdot \lrp{\gke^{f}\rho^{f}\mma if \vec v^\sol{f}}
+- \del \vdot \lrp{\gke^{f}\rho^{f}D^{if}\del\mma if} -\iema M{ip}{if} = 0"/><span class="eqno">(31)<a class="headerlink" href="#equation-psdm-mass-balance" title="Link to this equation"></a></span></p>
+</div><p>Writing Eqn <a class="reference internal" href="#equation-psdm-mass-balance">(31)</a> in simplified terms</p>
+<div class="math" id="equation-overall-mass-balance">
+<p><img src="../_images/math/dbc7550ece51af1c7f6f6953d342411ef86e5909.svg" alt="\gke \pd Ct + \gke v \pd Cz - \gke D_L \pdn 2Cz - \iema M{ip}{if} = 0"/><span class="eqno">(32)<a class="headerlink" href="#equation-overall-mass-balance" title="Link to this equation"></a></span></p>
+</div><p>A conservation of mass equation must also be written for the particle domain. Accordingly, Eqn
+<a class="reference internal" href="../model_development/index.html#equation-two-phase">(5)</a> is written in terms of particle phase quantities</p>
+<div class="math" id="equation-particle-conservation">
+<p><img src="../_images/math/c9d72a349383f005d4f77cd2b2344f8aad24eba8.svg" alt="\pd {\lrp{\gke^{p}\rho^{p}\mma ip}}t + \del \vdot \lrp{\gke^{p}\rho^{p}\mma ip \vec v^\sol{p}} -
+\del \vdot \lrp{\gke^{p}\rho^{p}D^{ip}\del\mma ip} - \iema M{if}{ip} = 0"/><span class="eqno">(33)<a class="headerlink" href="#equation-particle-conservation" title="Link to this equation"></a></span></p>
+</div><p>Since there is no advective transport of species within particles, Eqn <a class="reference internal" href="#equation-particle-conservation">(33)</a> becomes</p>
+<div class="math" id="equation-particle-mass-balance">
+<p><img src="../_images/math/f04cf3b4d1b70af18719bb571b92d73ce46b4773.svg" alt="\pd {\lrp{\gke^{p}\rho^{p}\mma ip}}t - \del \vdot \lrp{\gke^{p}\rho^{p}D^{ip}\del\mma ip}
+- \iema M{if}{ip} = 0"/><span class="eqno">(34)<a class="headerlink" href="#equation-particle-mass-balance" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/d1f3ea187628490f4836203db388d43423529651.svg" alt="\gke_p"/> is the particle porosity. Allowing accumulation of species in the solid phase and pore liquid,
+Eqn <a class="reference internal" href="#equation-particle-mass-balance">(34)</a> can be written as</p>
+<div class="math" id="equation-effective-diffusion-balance">
+<p><img src="../_images/math/0b5fc2446bd78ef3cb11030e9f2a1f184e8d2c1b.svg" alt="\rho_p\pd qt + \gke_p\pd {C_p}t - D_e \del \vdot \lrb{\del \lrp{\rho_pq + \gke_pC_p}} - \iema M{f}{p} = 0"/><span class="eqno">(35)<a class="headerlink" href="#equation-effective-diffusion-balance" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/b65d2254223ab0fbe3a4594582feeae2fe2b86d7.svg" alt="\rho_p"/> is the apparent particle density and <img class="math" src="../_images/math/686914c9de4778bd1f8045250544e1a01fc3740f.svg" alt="D_e"/> is the effective diffusion coefficient
+of species in the particle phase. Assuming the species concentration only changes in the radial direction,
+Eqn <a class="reference internal" href="#equation-effective-diffusion-balance">(35)</a> may be written in spherical coordinates as</p>
+<div class="math" id="equation-effective-diffusion-model">
+<p><img src="../_images/math/206b4933482898916aed4e64537530481df714e5.svg" alt="\rho_p\pd qt + \gke_p\pd {C_p}t - \frac 1{r^2} \pd {}r \lrb{r^2D_e\lrp{\rho_p\pd {q}r + \gke_p\pd{C_p}r}}
+- \iema M{f}{p} = 0"/><span class="eqno">(36)<a class="headerlink" href="#equation-effective-diffusion-model" title="Link to this equation"></a></span></p>
+</div><p>For the pore diffusion model, intraparticle diffusion is assumed to occur primarily in the
+pore liquid. Thus, Eqn <a class="reference internal" href="#equation-effective-diffusion-model">(36)</a> becomes</p>
+<div class="math" id="equation-pore-diffusion-model">
+<p><img src="../_images/math/4bc61adc51bcad2d1628452a98f6d7a571595a80.svg" alt="\rho_p\pd qt + \gke_p\pd {C_p}t - \frac 1{r^2} \pd {}r \lrb{r^2D_p\gke_p\pd{C_p}r}
+- \iema M{f}{p} = 0"/><span class="eqno">(37)<a class="headerlink" href="#equation-pore-diffusion-model" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/799b4e94c028a416ae58bb5a5247a9c938220c2e.svg" alt="D_p"/> is the diffusion coefficient of species in the pore liquid. Alternatively, intraparticle diffusion
+may be assumed to occur primarily in the solid phase. Thus, Eqn <a class="reference internal" href="#equation-effective-diffusion-model">(36)</a> becomes</p>
+<div class="math" id="equation-homogenous-surface-diffusion">
+<p><img src="../_images/math/83612d6cf4ea2d336066ee389f9e091a749b9f91.svg" alt="\rho_p\pd qt + \gke_p\pd {C_p}t - \frac 1{r^2} \pd {}r \lrb{r^2D_s\rho_p\pd {q}r}
+- \iema M{f}{p} = 0"/><span class="eqno">(38)<a class="headerlink" href="#equation-homogenous-surface-diffusion" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/6a136211ac0fa2d6a74115b2e75a5ad411c4e65e.svg" alt="D_s"/> is the diffusion coefficient of species in the solid phase. Finally, intraparticle diffusion
+may be assumed to occur in both the pore liquid and solid phase. Thus, Eqn <a class="reference internal" href="#equation-effective-diffusion-model">(36)</a> becomes</p>
+<div class="math" id="equation-pore-and-surface-diffusion">
+<p><img src="../_images/math/6507eae89441db286eb2b25f1a6c8dbf56ed747d.svg" alt="\rho_p\pd qt + \gke_p\pd {C_p}t - \frac 1{r^2} \pd {}r \lrb{r^2\lrp{D_s\rho_p\pd {q}r + D_p\gke_p\pd{C_p}r}}
+- \iema M{f}{p} = 0"/><span class="eqno">(39)<a class="headerlink" href="#equation-pore-and-surface-diffusion" title="Link to this equation"></a></span></p>
+</div><p>which is solved simultaneously with Eqn <a class="reference internal" href="#equation-overall-mass-balance">(32)</a>. A kinetic expression for transfer of species from
+the bulk fluid domain to the particle domain is needed to solve Eqn <a class="reference internal" href="#equation-pore-and-surface-diffusion">(39)</a>
+and Eqn <a class="reference internal" href="#equation-overall-mass-balance">(32)</a>. The relation for film transfer with a linear driving force is given by</p>
+<div class="math" id="equation-film-transfer">
+<p><img src="../_images/math/7c6f25d66f86f93d23962265b966bf0b481baad0.svg" alt="- \iema M{f}{p} = \frac {A_pk_f}{Q}\lrb{C(z,t)-C_p(r=R,z,t)}"/><span class="eqno">(40)<a class="headerlink" href="#equation-film-transfer" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/48f0dd58fa766e5a6195ee64b7eff21d00c0122f.svg" alt="k_f"/> is the film transfer coefficient and <img class="math" src="../_images/math/fa7a29b5cf33c70d8018b3954313a197aad5686c.svg" alt="A_p"/> is the total surface area available for
+mass transfer. For spherical particles, <img class="math" src="../_images/math/fa7a29b5cf33c70d8018b3954313a197aad5686c.svg" alt="A_p"/> is given by</p>
+<div class="math" id="equation-numeric-models-index-0">
+<p><img src="../_images/math/478da7487f7ca34cc12bf56b1cd085be57653a7a.svg" alt="A_p = N_pS_p = \frac {3x}{4\pi R^3\rho_p}4\pi R^2 = \frac {3x}{R\rho_p}"/><span class="eqno">(41)<a class="headerlink" href="#equation-numeric-models-index-0" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/508ae2867c791c3897a042238ffe9df91379b179.svg" alt="N_p"/> is the number of particles and <img class="math" src="../_images/math/133cdad2dbae591732873f0267750efffba17103.svg" alt="S_p"/> is the surface area of a particle.
+Substituting</p>
+<div class="math" id="equation-numeric-models-index-1">
+<p><img src="../_images/math/782b304eb26ca933dccba4930a03a51ce14d2373.svg" alt="\frac xQ = (1-\gke)\rho_p"/><span class="eqno">(42)<a class="headerlink" href="#equation-numeric-models-index-1" title="Link to this equation"></a></span></p>
+</div><p>into Eqn <a class="reference internal" href="#equation-film-transfer">(40)</a></p>
+<div class="math" id="equation-film-transfer-final">
+<p><img src="../_images/math/49c344b47a5b0cb1e56ec9b5835d9e2c681d7221.svg" alt="- \iema M{f}{p} = \frac {3k_f(1-\gke)}{\gke R}\lrb{C(z,t)-C_p(r=R,z,t)}"/><span class="eqno">(43)<a class="headerlink" href="#equation-film-transfer-final" title="Link to this equation"></a></span></p>
+</div><p>gives the expression for the rate of transfer of species between the bulk fluid and particle domain. Eqn
+<a class="reference internal" href="#equation-film-transfer-final">(43)</a> is substituted into Eqn <a class="reference internal" href="#equation-overall-mass-balance">(32)</a> and Eqn <a class="reference internal" href="#equation-effective-diffusion-model">(36)</a>
+to obtain the final conservation of mass equations in the bulk fluid domain</p>
+<div class="math" id="equation-numeric-models-index-2">
+<p><img src="../_images/math/dc41be0380cd9ca771e2632b06a436226deb8003.svg" alt="\gke \pd Ct + \gke v \pd Cz - \gke D_L \pdn 2Cz + \frac {3k_f(1-\gke)}{R}\lrb{C(z,t)-C_p(r=R,z,t)} = 0"/><span class="eqno">(44)<a class="headerlink" href="#equation-numeric-models-index-2" title="Link to this equation"></a></span></p>
+</div><p>and particle domain</p>
+<div class="math" id="equation-numeric-models-index-3">
+<p><img src="../_images/math/203994fb761423fa4caf444c61fc6f648e280c30.svg" alt="\rho_p\pd qt + \gke_p\pd {C_p}t - \frac 1{r^2} \pd {}r \lrb{r^2D_e\lrp{\rho_p\pd {q}r + \gke_p\pd{C_p}r}} + k_f\lrb{C(z,t)-C_p(r=R,z,t)} = 0"/><span class="eqno">(45)<a class="headerlink" href="#equation-numeric-models-index-3" title="Link to this equation"></a></span></p>
+</div><p>Under the assumption of local equilibrium, <img class="math" src="../_images/math/28c1bead31932661d6269732ea594042911c3286.svg" alt="q"/> and <img class="math" src="../_images/math/62a08823aef7bbf18014930cf934d1f47fe60636.svg" alt="C_p"/> are related by the Freundlich
+isotherm equation for any given time and position</p>
+<div class="math" id="equation-freundlich-isotherm">
+<p><img src="../_images/math/f4fbfb0e4a31dfd6140c7f6b7abf5b3923d5918c.svg" alt="q = KC_p^{1/n}"/><span class="eqno">(46)<a class="headerlink" href="#equation-freundlich-isotherm" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/7b3a5d5ee9f8a36fa0113aa39106c5dfe93fa2c6.svg" alt="K"/> is the capacity constant and  <img class="math" src="../_images/math/449196f0f0de30723b6774137b815ce9d3641c8a.svg" alt="1/n"/> is the intensity constant. If the species is
+present at trace concentrations, a linear isotherm is often assumed (<img class="math" src="../_images/math/a7fa73e30f70462f8b9accda7fb47662757548fc.svg" alt="n=1"/>). Thus, Eqn
+<a class="reference internal" href="#equation-freundlich-isotherm">(46)</a> simplifies to</p>
+<div class="math" id="equation-numeric-models-index-4">
+<p><img src="../_images/math/081287e2be1d1726ed67db6661fab8c4ffe1f1bb.svg" alt="q = KC_p"/><span class="eqno">(47)<a class="headerlink" href="#equation-numeric-models-index-4" title="Link to this equation"></a></span></p>
+</div><p>The film transfer coefficient coefficient may be obtained using the Gnielinski correlation</p>
+<div class="math" id="equation-numeric-models-index-5">
+<p><img src="../_images/math/9fd398162eb01ccbe235274988a61229c1dfe51f.svg" alt="k_f = \frac {\lrb{1+1.5(1-\gke)}D}{d_p}\lrb{2+0.644\mathrm{Re}^{1/2}\mathrm{Sc}^{1/3}}"/><span class="eqno">(48)<a class="headerlink" href="#equation-numeric-models-index-5" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/9966f397484defbbeea74f95a2a80557f3946826.svg" alt="d_p"/> is the particle diameter, <img class="math" src="../_images/math/fa0356495bf706c3150a9b5fb974beb98484ea21.svg" alt="D"/> is the liquid diffusivity of the species in water.
+The particle Reynolds number has the following expression</p>
+<div class="math" id="equation-numeric-models-index-6">
+<p><img src="../_images/math/ed181acbc67186bfa8f3c633c273546a6eb0ac26.svg" alt="\mathrm{Re}=\frac {\rho d_p u}{\mu}"/><span class="eqno">(49)<a class="headerlink" href="#equation-numeric-models-index-6" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/b4b31ea7e75904c71ff315bf62e33203c8b5e124.svg" alt="\rho"/> is the density of water and <img class="math" src="../_images/math/88ad310fb1790f384664ab136b818fb23f693b6e.svg" alt="\mu"/> is the dynamic viscosity of water. The Schmidt
+number is given by</p>
+<div class="math" id="equation-numeric-models-index-7">
+<p><img src="../_images/math/33b41865d3830f20bdee72ccbbde004665356e69.svg" alt="\mathrm{Sc}=\frac {\mu}{\rho D}"/><span class="eqno">(50)<a class="headerlink" href="#equation-numeric-models-index-7" title="Link to this equation"></a></span></p>
+</div><p>For species where experimental values of <img class="math" src="../_images/math/fa0356495bf706c3150a9b5fb974beb98484ea21.svg" alt="D"/> are not available, it may be approximated
+with the Hayduk-Laudie equation</p>
+<div class="math" id="equation-numeric-models-index-8">
+<p><img src="../_images/math/082f59216a4e641666a955e055cc4474c37fe9cc.svg" alt="D = \frac {13.26\times10^{-5}}{\mu^{1.14} V_b^{0.589}}"/><span class="eqno">(51)<a class="headerlink" href="#equation-numeric-models-index-8" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/dec31951576cb1fa495d707503e7c653a1ed192e.svg" alt="V_b"/> is the molar volume of the species at its boiling point. The pore diffusion
+coefficient may be approximated as</p>
+<div class="math" id="equation-numeric-models-index-9">
+<p><img src="../_images/math/1e41f01d048b2ae183e643727b351095fb377425.svg" alt="D_p = \frac D{\tau_p}"/><span class="eqno">(52)<a class="headerlink" href="#equation-numeric-models-index-9" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/5eb4676f0c9a0ed49ef4867cb9254f46b91e70fd.svg" alt="\tau_p"/> is the particle tortuosity. The surface diffusion coefficient is given by</p>
+<div class="math" id="equation-numeric-models-index-10">
+<p><img src="../_images/math/67e5d8cf5613b1ecad4cdf8785c01f84cd4093b1.svg" alt="D_s = \frac {D\gke_pC_o^{\lrp{1 - 1/n}}}{\tau_p\rho_pK} \times \text{SPDFR}"/><span class="eqno">(53)<a class="headerlink" href="#equation-numeric-models-index-10" title="Link to this equation"></a></span></p>
+</div><p>where SPDFR is the surface to pore diffusion flux ratio.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../bohart_thomas/index.html" class="btn btn-neutral float-left" title="Bohart-Adams and Thomas" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../api/modules.html" class="btn btn-neutral float-right" title="reactormodels" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Timothy M. Weigand.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
