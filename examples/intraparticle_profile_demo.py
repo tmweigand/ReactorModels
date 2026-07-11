@@ -12,7 +12,7 @@ def run_demo(
 ):
     """Plot the intraparticle concentration profile."""
 
-    length = 6
+    length = 1
     diameter = 2
     porosity = 0.4
     bulk_density = 500
@@ -22,10 +22,10 @@ def run_demo(
     particle_porosity = 0.5
     particle_density = 0.6
     initial_concentration = 0
-    particle_radius = 1.0
+    particle_diameter = 2.0
     pore_diffusion = 0.1
-    surface_diffusion = 0
-    K = 0
+    surface_diffusion = 0.01
+    K = 1
     t_eval = np.array([2, 4, 6, 8, 10])
 
     isotherm = reactormodels.models.LinearIsotherm(K=K)
@@ -37,6 +37,7 @@ def run_demo(
         bulk_density=bulk_density,
         particle_density=particle_density,
         diameter=diameter,
+        particle_diameter=particle_diameter,
     )
 
     breakthrough = reactormodels.Breakthrough(
@@ -47,7 +48,11 @@ def run_demo(
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
-        column=column, n_interior_points=5, n_elements=30, add_inlet=True
+        column=column,
+        n_interior_points=5,
+        n_elements=10,
+        add_inlet=True,
+        resolution=reactormodels.models.DomainResolution.PARTICLE,
     )
 
     model = reactormodels.models.IntraparticleTransport(
@@ -64,7 +69,7 @@ def run_demo(
 
     fig, ax = plt.subplots(figsize=(8, 5))
     for i, t in enumerate(t_eval):
-        mask = x < 0.99 * particle_radius
+        mask = x < 0.99 * (particle_diameter / 2)
         C_numerical = C[i, mask]
 
         ax.plot(x[mask], C_numerical, marker="o", linestyle="-", label=f"t={t:g}")

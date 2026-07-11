@@ -36,7 +36,7 @@ class IntraparticleTransport:
         isotherm: Isotherm,
         numerics: NumericsConfig,
         mode: AdsorptionKinetics = AdsorptionKinetics.LOCAL_EQUILIBRIUM,
-        k_ldf: float = 0,
+        k_film: float = 0,
         inlet_bc: Type[InletBC] = DirichletBC,
     ):
         self.column = column
@@ -49,41 +49,18 @@ class IntraparticleTransport:
         self.iso = isotherm
         self.numerics = numerics
         self.mode = mode
-        self.k_ldf = k_ldf
+        self.k_film = k_film
         self.inlet_bc = inlet_bc(self.inlet_concentration)
         self.N = len(self.numerics.collocation.nodes)
 
-        if (
-            mode
-            in (
-                AdsorptionKinetics.LINEAR_DRIVING_FORCE,
-                AdsorptionKinetics.SECOND_ORDER,
-            )
-            and k_ldf <= 0
-        ):
-            raise ValueError(
-                "k_ldf must be > 0 for LINEAR_DRIVING_FORCE or SECOND_ORDER mode"
-            )
-
     def _n_vars(self) -> int:
         """Total length of the IDA state vector."""
-        if (
-            self.mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE
-            or self.mode == AdsorptionKinetics.SECOND_ORDER
-        ):
-            return 2 * self.N
         return [0, self.N - 1]
 
     def _split(self, y: np.ndarray):
         """Return (C, q) where q is None for LOCAL_EQUILIBRIUM."""
         C = y[: self.N]
-        if (
-            self.mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE
-            or self.mode == AdsorptionKinetics.SECOND_ORDER
-        ):
-            q = y[self.N :]
-        else:
-            q = None
+        q = None
         return C, q
 
     def _residual(self, t, y, ydot, result):
@@ -106,24 +83,11 @@ class IntraparticleTransport:
         dqdC = self.iso.dq_dC(c)
         lap_q = self.numerics.evaluate_radial_operator(self.iso.q(c))
 
-        if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
-            result[1 : self.N - 1] = (
-                transport
-                + self.column.particle_density * (dqdC * dcdt)[1 : self.N - 1]
-                - self.column.particle_density * self.Ds * lap_q[1 : self.N - 1]
-            )
-        else:
-            result[1 : self.N] = transport + self.column.bulk_density * dqdt[1:]
-
-        # solid phase
-        if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
-            pass
-        elif self.mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE:
-            result[self.N :] = dqdt - self.k_ldf * (self.iso.q(c) - q)
-        else:
-            result[self.N :] = dqdt - self.k_ldf * c * (self.iso.q(c) - q)
-
-        return 0
+        result[1 : self.N - 1] = (
+            transport
+            + self.column.particle_density * (dqdC * dcdt)[1 : self.N - 1]
+            - self.column.particle_density * self.Ds * lap_q[1 : self.N - 1]
+        )
 
     def _jacobian(self, t, y, ydot, result, cj, jac):
         C, q = self._split(y)
@@ -191,18 +155,7 @@ class IntraparticleTransport:
 
         # Surface concentration
         C0[-1] = self.inlet_concentration
-        if (
-            self.mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE
-            or self.mode == AdsorptionKinetics.SECOND_ORDER
-        ):
-            q0 = np.full(self.N, q_init)
-            q0[0] = self.iso.q(
-                self.inlet_concentration
-            )  # inlet node at equilibrium with feed
-            y0 = np.concatenate([C0, q0])
-        else:
-            y0 = C0.copy()
-
+        y0 = C0.copy()
         ydot0 = np.zeros_like(y0)
         return y0, ydot0
 

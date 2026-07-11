@@ -5,6 +5,7 @@ import numpy as np
 from .orthogonal_collocation import OrthogonalCollocation
 from .time_integrator import TimeIntegrator
 from ..properties.column import Column
+from ..models.domain_resolution import DomainResolution
 
 
 class NumericsConfig:
@@ -28,6 +29,7 @@ class NumericsConfig:
         rtol: float = 1e-8,
         atol: float = 1e-10,
         max_steps: int = 5000,
+        resolution: DomainResolution = DomainResolution.COLUMN,
     ):
         self.n_interior_points = n_interior_points
         self.alpha = alpha
@@ -37,6 +39,7 @@ class NumericsConfig:
         self.rtol = rtol
         self.atol = atol
         self.max_steps = max_steps
+        self.resolution = resolution
 
         if self.n_interior_points < 1:
             raise ValueError("n_interior_points must be >= 1")
@@ -49,8 +52,13 @@ class NumericsConfig:
         if self.max_steps < 1:
             raise ValueError("max_steps must be >= 1")
 
+        if self.resolution == DomainResolution.COLUMN:
+            domain_length = column.length
+        else:
+            domain_length = column.particle_radius()
+
         self.collocation = OrthogonalCollocation(
-            domain_length=column.length,
+            domain_length=domain_length,
             n_interior_points=self.n_interior_points,
             alpha=self.alpha,
             beta=self.beta,
