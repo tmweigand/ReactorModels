@@ -112,23 +112,26 @@ class DomainCoupling:
             result[offset + 1 : offset + self.Nr - 1] = intraparticle_transport
 
             # boundary condition
-            result[offset + self.Nr - 1] = cp_i[-1] - c[i]
+            grad_cp = self.particle_numerics.evaluate_gradient(cp_i, -1)
+            grad_q = dqdCp[-1] * grad_cp
+
+            diffusive_flux = (
+                self.column.particle_porosity * self.Dp * grad_cp
+                + self.column.particle_density * self.Ds * grad_q
+            )
+
+            film_flux = self.k_film * (c[i] - cp_i[-1])
+
+            result[offset + self.Nr - 1] = diffusive_flux - film_flux
 
             sink[i] = (
                 6
-                * self.k_film
+                * film_flux
                 * (1 - self.column.porosity)
                 / self.column.particle_diameter
             )
 
         result[1 : self.Nz] = transport + sink[1:]
-
-    def _algebraic_vars_idx(self):
-        """Create list identifying which equations are algebraic.
-
-        Only the inlet boundary condition for this model.
-        """
-        return [0]
 
     def _initial_conditions(self, C_init: float, C_in: float, Cp_init: float):
         """Return (y0, ydot0) consistent with the algebraic constraint."""
@@ -139,7 +142,7 @@ class DomainCoupling:
 
         Cp0 = np.full((self.Nz, self.Nr), C_init)
 
-        Cp0[0, -1] = C0[0]
+        Cp0[0, :] = C0[0]
 
         y0 = np.concatenate(
             [
@@ -150,6 +153,13 @@ class DomainCoupling:
 
         ydot0 = np.zeros_like(y0)
         return y0, ydot0
+
+    def _algebraic_vars_idx(self):
+        """Create list identifying which equations are algebraic.
+
+        Only the inlet boundary condition for this model.
+        """
+        return [0]
 
     def solve(self, t_span, t_eval, C_in=1.0, C_init=0.0, Cp_init=0.0):
         """Integrate from t_span[0] to t_span[1], returning results at t_eval."""

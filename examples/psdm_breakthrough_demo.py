@@ -8,9 +8,9 @@ import numpy as np
 
 def run_demo(
     show: bool = True,
-    save_path: str | Path = "data_out/domain_coupling_demo.png",
+    save_path: str | Path = "data_out/psdm_breakthrough_demo.png",
 ):
-    """Plot spatial profile solving particle and column PDEs."""
+    """Plot breakthrough profile for pore and surface diffusion model."""
 
     # particle
     particle_porosity = 0.5
@@ -30,7 +30,7 @@ def run_demo(
     bulk_density = 500
     feed_concentrations = 1
     superficial_velocity = 1
-    t_eval = np.array([10])
+    t_eval = np.linspace(1e-10, 10, 200)
 
     isotherm = reactormodels.models.LinearIsotherm(K=K)
 
@@ -83,29 +83,17 @@ def run_demo(
     z, r, C, Cp = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
 
     fig, ax = plt.subplots(figsize=(8, 5))
+    outlet_idx = np.argmin(np.abs(z - length))
+    C_numerical = C[:, outlet_idx]
 
-    # Choose several axial locations
-    indices = [
-        1,
-        len(z) // 4,
-        len(z) // 2,
-        3 * len(z) // 4,
-        len(z) - 1,
-    ]
+    ax.plot(t_eval, C_numerical, linestyle="-", label="Numeric")
 
-    for i in indices:
-        ax.plot(
-            r,
-            Cp[0, i, :],
-            marker="o",
-            label=f"z={z[i]:.2f}",
-        )
-
-    ax.set_title(f"Particle Concentration Profile at t = {t_eval}")
-    ax.set_xlabel("Particle radius, r")
-    ax.set_ylabel("Pore concentration")
+    ax.set_title("PSDM Breakthrough Profile")
+    ax.set_xlabel("Time")
+    ax.set_ylabel("C / C_in")
     ax.grid(True, alpha=0.3)
-    ax.legend()
+    ax.legend(fontsize=8, ncols=1)
+    fig.tight_layout()
 
     save_path = Path(save_path)
     save_path.parent.mkdir(parents=True, exist_ok=True)
