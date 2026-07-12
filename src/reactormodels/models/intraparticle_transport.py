@@ -55,7 +55,7 @@ class IntraparticleTransport:
 
     def _n_vars(self) -> int:
         """Total length of the IDA state vector."""
-        return [0, self.N - 1]
+        return self.N
 
     def _split(self, y: np.ndarray):
         """Return (C, q) where q is None for LOCAL_EQUILIBRIUM."""
@@ -90,53 +90,35 @@ class IntraparticleTransport:
         )
 
     def _jacobian(self, t, y, ydot, result, cj, jac):
-        C, q = self._split(y)
+        C = y[: self.N]
         n = self._n_vars()
         J = np.zeros((n, n))
 
-        # Row 0: algebraic constraint
-        J[0, : self.N] = self.inlet_bc.jacobian_row(
-            self.numerics.collocation.first_derivative[0, :]
-        )
+        J[0, :] = self.numerics.collocation.first_derivative[0]
 
-        # derivative of transport dF/dc
+        J[-1, -1] = 1.0
+
+        # derivative of transport
         d_transport = (
-            -self.column.porosity
-            * self.velocity
-            * self.numerics.collocation.first_derivative
-            + self.column.porosity
-            * self.DL
-            * self.numerics.collocation.second_derivative
+            -self.column.particle_porosity
+            * self.Dp
+            * self.numerics.collocation.radial_operator
         )
-        J[1 : self.N, : self.N] = -d_transport[1:, :]
 
-        if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
-            for i in range(1, self.N):
-                J[i, i] += cj * (
-                    self.column.porosity
-                    + self.column.get_bulk_density() * self.iso.dq_dC(C[i])
-                )
+        J[1:-1, :] = d_transport[1:-1]
 
-        elif self.mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE:
-            for i in range(1, self.N):
-                J[i, i] += cj * self.column.porosity
-                J[i, self.N + i] += cj * self.column.get_bulk_density()
+        dqdC = self.iso.dq_dC(C)
 
-            for i in range(self.N):
-                J[self.N + i, i] = -self.k_ldf * self.iso.dq_dC(C[i])
-                J[self.N + i, self.N + i] = self.k_ldf + cj
+        J[1:-1, :] -= (
+            self.column.particle_density
+            * self.Ds
+            * self.numerics.collocation.radial_operator[1:-1]
+            @ np.diag(dqdC)
+        )
 
-        else:
-            for i in range(1, self.N):
-                J[i, i] += cj * self.column.porosity
-                J[i, self.N + i] += cj * self.column.get_bulk_density()
+        mass = self.column.particle_porosity + self.column.particle_density * dqdC
 
-            for i in range(self.N):
-                J[self.N + i, i] = (
-                    -self.k_ldf * (self.iso.q(C[i]) + C[i] * self.iso.dq_dC(C[i]))
-                    + self.k_ldf * q[i]
-                )
-                J[self.N + i, self.N + i] = self.k_ldf * C[i] + cj
+        J[1:-1, 1:-1] += cj * np.diag(mass[1:-1])
 
         jac[:, :] = J
 
@@ -165,7 +147,7 @@ class IntraparticleTransport:
 
         result = self.numerics.integrate(
             residual=self._residual,
-            # jacobian=self._jacobian,
+            jacobian=self._jacobian,
             y0=y0,
             yp0=ydot0,
             t_span=t_span,
