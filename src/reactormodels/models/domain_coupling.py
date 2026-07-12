@@ -1,0 +1,185 @@
+"""domain_couples.py"""
+
+from __future__ import annotations
+from typing import Type
+import numpy as np
+
+from ..column_data import Column
+from ..breakthrough_data import Breakthrough
+from ..numerics.config import NumericsConfig
+from .isotherm import Isotherm
+from .adsorption_kinetics import AdsorptionKinetics
+from .boundary_conditions import InletBC, DanckwertsBC, DirichletBC
+
+__all__ = ["DomainCoupling"]
+
+
+class DomainCoupling:
+    """Solve conservation equations for column and particle domain simultaneously."""
+
+    def __init__(
+        self,
+        column: Column,
+        breakthrough: Breakthrough,
+        axial_diffusion: float,
+        pore_diffusion: float,
+        surface_diffusion: float,
+        initial_concentration: float,
+        isotherm: Isotherm,
+        column_numerics: NumericsConfig,
+        particle_numerics: NumericsConfig,
+        mode: AdsorptionKinetics = AdsorptionKinetics.LOCAL_EQUILIBRIUM,
+        k_film: float = 0,
+        inlet_bc: Type[InletBC] = DirichletBC,
+    ):
+        self.column = column
+        self.breakthrough = breakthrough
+        self.velocity = breakthrough.interstitial_velocity()
+        self.DL = axial_diffusion
+        self.Dp = pore_diffusion
+        self.Ds = surface_diffusion
+        self.inlet_concentration = breakthrough.mean_feed_concentration()
+        self.initial_concentration = initial_concentration
+        self.iso = isotherm
+        self.column_numerics = column_numerics
+        self.particle_numerics = particle_numerics
+        self.mode = mode
+        self.k_film = k_film
+        self.inlet_bc = inlet_bc(self.inlet_concentration)
+        self.Nz = len(self.column_numerics.collocation.nodes)
+        self.Nr = len(self.particle_numerics.collocation.nodes)
+
+    def _n_vars(self) -> int:
+        """Total length of the IDA state vector."""
+        return self.Nz + self.Nr * self.Nz
+
+    def _split(self, y: np.ndarray):
+        """Return (C, Cp) where Cp is the pore liquid concentration."""
+        C = y[: self.Nz]
+        Cp = y[self.Nz :].reshape(self.Nz, self.Nr)
+        return C, Cp
+
+    def _residual(self, t, y, ydot, result):
+        """IDA residual F(t, y, ydot) = 0.  Writes into `result` in-place."""
+        c, cp = self._split(y)
+        dcdt, dcpdt = self._split(ydot)
+
+        sink = np.zeros(self.Nz)
+
+        # bulk phase - inlet
+        result[0] = self.inlet_bc.residual(c[0])
+
+        # bulk phase - internal and outlet
+        transport = (
+            self.column.porosity * dcdt[1:]
+            + self.column.porosity
+            * self.velocity
+            * self.column_numerics.evaluate_gradient(c)[1:]
+            - self.column.porosity
+            * self.DL
+            * self.column_numerics.evaluate_second_derivative(c)[1:]
+        )
+
+        for i in range(self.Nz):
+            cp_i = cp[i]
+            dcpdt_i = dcpdt[i]
+
+            offset = self.Nz + i * self.Nr
+
+            # center: symmetry
+            result[offset] = self.particle_numerics.collocation.evaluate_gradient(
+                cp_i, 0
+            )
+
+            # particle phase - internal
+            Dp_term = (
+                self.column.particle_porosity * dcpdt_i[1 : self.Nr - 1]
+                - self.column.particle_porosity
+                * self.Dp
+                * self.particle_numerics.evaluate_radial_operator(cp_i)[1 : self.Nr - 1]
+            )
+
+            dqdCp = self.iso.dq_dC(cp_i)
+            lap_q = self.particle_numerics.evaluate_radial_operator(self.iso.q(cp_i))
+
+            Ds_term = (
+                self.column.particle_density * (dqdCp * dcpdt_i)[1 : self.Nr - 1]
+                - self.column.particle_density * self.Ds * lap_q[1 : self.Nr - 1]
+            )
+
+            intraparticle_transport = Dp_term + Ds_term
+
+            result[offset + 1 : offset + self.Nr - 1] = intraparticle_transport
+
+            # boundary condition
+            result[offset + self.Nr - 1] = cp_i[-1] - c[i]
+
+            sink[i] = (
+                6
+                * self.k_film
+                * (1 - self.column.porosity)
+                / self.column.particle_diameter
+            )
+
+        result[1 : self.Nz] = transport + sink[1:]
+
+    def _algebraic_vars_idx(self):
+        """Create list identifying which equations are algebraic.
+
+        Only the inlet boundary condition for this model.
+        """
+        return [0]
+
+    def _initial_conditions(self, C_init: float, C_in: float, Cp_init: float):
+        """Return (y0, ydot0) consistent with the algebraic constraint."""
+        C0 = np.full(self.Nz, self.initial_concentration)
+        C0[0] = self.inlet_bc.apply(
+            self.column_numerics.collocation.evaluate_gradient(C0, 0)
+        )
+
+        Cp0 = np.full((self.Nz, self.Nr), C_init)
+
+        Cp0[0, -1] = C0[0]
+
+        y0 = np.concatenate(
+            [
+                C0,
+                Cp0.ravel(),
+            ]
+        )
+
+        ydot0 = np.zeros_like(y0)
+        return y0, ydot0
+
+    def solve(self, t_span, t_eval, C_in=1.0, C_init=0.0, Cp_init=0.0):
+        """Integrate from t_span[0] to t_span[1], returning results at t_eval."""
+        y0, ydot0 = self._initial_conditions(C_init, C_in, Cp_init)
+
+        result = self.column_numerics.integrate(
+            residual=self._residual,
+            # jacobian=self._jacobian,
+            y0=y0,
+            yp0=ydot0,
+            t_span=t_span,
+            t_eval=t_eval,
+            algebraic_vars_idx=self._algebraic_vars_idx(),
+        )
+
+        if result.flag < 0:
+            raise RuntimeError(
+                f"IDA solver failed with flag {result.flag}: {result.message}"
+            )
+
+        # result.values.y has shape (n_out, n_vars); skip the t=t_span[0] row
+        y_out = result.values.y[1:]  # (n_times, n_vars)
+
+        C_out = y_out[:, : self.Nz]  # (n_times, N)
+
+        Cp_out = y_out[:, self.Nz :].reshape(len(t_eval), self.Nz, self.Nr)
+
+        return (
+            self.column_numerics.collocation.nodes,
+            self.particle_numerics.collocation.nodes,
+            C_out,
+            Cp_out,
+        )

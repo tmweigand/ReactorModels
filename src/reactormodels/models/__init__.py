@@ -3,6 +3,7 @@
 __all__ = [
     "AdsorptionKinetics",
     "DomainResolution",
+    "DomainCoupling",
     "LinearIsotherm",
     "LangmuirIsotherm",
     "FreundlichIsotherm",
@@ -21,6 +22,7 @@ __all__ = [
 
 from .adsorption_kinetics import AdsorptionKinetics
 from .domain_resolution import DomainResolution
+from .domain_coupling import DomainCoupling
 from .isotherm import LinearIsotherm, FreundlichIsotherm, LangmuirIsotherm
 from .boundary_conditions import DirichletBC, DanckwertsBC
 from .analytic_models import (
