@@ -14,23 +14,23 @@ def run_demo(
 
     # particle
     particle_porosity = 0.5
-    particle_density = 0.6
-    particle_diameter = 2
-    pore_diffusion = 0.001
-    surface_diffusion = 0.01
-    k_film = 0.01
+    particle_density = 0.6  # g/mL
+    particle_diameter = 0.07  # cm
+    pore_diffusion = 5e-6  # cm2/s
+    surface_diffusion = 5e-9  # cm2/s
+    k_film = 0.1  # cm/s
 
     # column
-    axial_diffusion = 0.01
-    K = 1
+    axial_diffusion = 0  # cm2/s
+    K = 100  # (mg/g) * (L/mg)
     initial_concentration = 0
-    length = 6
-    diameter = 2
-    porosity = 0.4
-    bulk_density = 500
-    feed_concentrations = 1
-    superficial_velocity = 1
-    t_eval = np.linspace(1e-10, 10, 200)
+    length = 100  # cm
+    diameter = 10  # cm
+    porosity = 0.334
+    bulk_density = 0.3998  # g/mL
+    feed_concentrations = 1  # mg/L
+    flow_rate = 40  # cm3/s
+    t_eval = np.linspace(1e-10, 175 * 1440 * 60, 200)  # s
 
     isotherm = reactormodels.models.LinearIsotherm(K=K)
 
@@ -47,7 +47,7 @@ def run_demo(
     breakthrough = reactormodels.Breakthrough(
         column=column,
         feed_concentrations=feed_concentrations,
-        superficial_velocity=superficial_velocity,
+        flow_rate=flow_rate,
         time=t_eval,
     )
 
@@ -62,7 +62,7 @@ def run_demo(
     particle_numerics = reactormodels.numerics.NumericsConfig(
         column=column,
         n_interior_points=3,
-        n_elements=8,
+        n_elements=1,
         add_inlet=True,
         resolution=reactormodels.models.DomainResolution.PARTICLE,
     )
@@ -83,13 +83,18 @@ def run_demo(
     z, r, C, Cp = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
 
     fig, ax = plt.subplots(figsize=(8, 5))
-    outlet_idx = np.argmin(np.abs(z - length))
-    C_numerical = C[:, outlet_idx]
+    C_numerical = C[:, -1]
 
-    ax.plot(t_eval, C_numerical, linestyle="-", label="Numeric")
+    addesigns_data = np.loadtxt("examples/AdDesignS_demo.txt", skiprows=2)
+
+    time_min = addesigns_data[:, 0]
+    C_ads = addesigns_data[:, 3]
+
+    ax.plot(t_eval / (1440 * 60), C_numerical, linestyle="-", label="ReactorModels")
+    ax.plot(time_min / 1440, C_ads, linestyle="--", label="AdDesignS")
 
     ax.set_title("PSDM Breakthrough Profile")
-    ax.set_xlabel("Time")
+    ax.set_xlabel("Time (days)")
     ax.set_ylabel("C / C_in")
     ax.grid(True, alpha=0.3)
     ax.legend(fontsize=8, ncols=1)
