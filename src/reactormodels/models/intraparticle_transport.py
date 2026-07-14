@@ -9,7 +9,7 @@ from ..breakthrough_data import Breakthrough
 from ..numerics.config import NumericsConfig
 from .isotherm import Isotherm
 from .adsorption_kinetics import AdsorptionKinetics
-from .boundary_conditions import InletBC, DanckwertsBC, DirichletBC
+from .boundary_conditions import InletBC, DirichletBC
 
 __all__ = ["IntraparticleTransport"]
 

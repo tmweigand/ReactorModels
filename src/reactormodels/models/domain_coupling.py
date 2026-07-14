@@ -9,7 +9,7 @@ from ..breakthrough_data import Breakthrough
 from ..numerics.config import NumericsConfig
 from .isotherm import Isotherm
 from .adsorption_kinetics import AdsorptionKinetics
-from .boundary_conditions import InletBC, DanckwertsBC, DirichletBC
+from .boundary_conditions import InletBC, DirichletBC
 
 __all__ = ["DomainCoupling"]
 
@@ -113,7 +113,7 @@ class DomainCoupling:
 
             # boundary condition
             grad_cp = self.particle_numerics.evaluate_gradient(cp_i, -1)
-            grad_q = dqdCp[-1] * grad_cp
+            grad_q = self.particle_numerics.evaluate_gradient(self.iso.q(cp_i), -1)
 
             diffusive_flux = (
                 self.column.particle_porosity * self.Dp * grad_cp
@@ -173,7 +173,7 @@ class DomainCoupling:
             rows = slice(offset + 1, surface)
             cols = slice(offset, offset + self.Nr)
 
-            L = self.particle_numerics.collocation.radial_operator
+            L = self.particle_numerics.collocation.radial_operator_matrix
 
             J[rows, cols] = -self.column.particle_porosity * self.Dp * L[
                 1:-1, :
@@ -211,14 +211,10 @@ class DomainCoupling:
 
     def _initial_conditions(self, C_init: float, C_in: float, Cp_init: float):
         """Return (y0, ydot0) consistent with the algebraic constraint."""
-        C0 = np.full(self.Nz, self.initial_concentration)
-        C0[0] = self.inlet_bc.apply(
-            self.column_numerics.collocation.evaluate_gradient(C0, 0)
-        )
+        C0 = np.full(self.Nz, C_init)
+        C0[0] = C_in
 
-        Cp0 = np.full((self.Nz, self.Nr), C_init)
-
-        Cp0[0, :] = C0[0]
+        Cp0 = np.full((self.Nz, self.Nr), Cp_init)
 
         y0 = np.concatenate(
             [

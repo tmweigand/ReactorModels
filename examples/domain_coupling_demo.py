@@ -14,23 +14,23 @@ def run_demo(
 
     # particle
     particle_porosity = 0.5
-    particle_density = 0.6
-    particle_diameter = 2
-    pore_diffusion = 0.001
-    surface_diffusion = 0.01
-    k_film = 0.01
+    particle_density = 0.6  # g/mL
+    particle_diameter = 0.07  # cm
+    pore_diffusion = 5e-6  # cm2/s
+    surface_diffusion = 5e-9  # cm2/s
+    k_film = 0.1  # cm/s
 
     # column
-    axial_diffusion = 0.01
-    K = 1
+    axial_diffusion = 0  # cm2/s
+    K = 10000  # (mg/g) * (L/mg)
     initial_concentration = 0
-    length = 6
-    diameter = 2
-    porosity = 0.4
-    bulk_density = 500
-    feed_concentrations = 1
-    superficial_velocity = 1
-    t_eval = np.array([10])
+    length = 100  # cm
+    diameter = 10  # cm
+    porosity = 0.334
+    bulk_density = 0.3998  # g/mL
+    feed_concentrations = 1  # mg/L
+    flow_rate = 40  # cm3/s
+    t_eval = np.array([10 * 1440 * 60])
 
     isotherm = reactormodels.models.LinearIsotherm(K=K)
 
@@ -47,7 +47,7 @@ def run_demo(
     breakthrough = reactormodels.Breakthrough(
         column=column,
         feed_concentrations=feed_concentrations,
-        superficial_velocity=superficial_velocity,
+        flow_rate=flow_rate,
         time=t_eval,
     )
 
@@ -86,7 +86,7 @@ def run_demo(
 
     # Choose several axial locations
     indices = [
-        1,
+        0,
         len(z) // 4,
         len(z) // 2,
         3 * len(z) // 4,

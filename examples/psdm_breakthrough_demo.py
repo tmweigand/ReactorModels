@@ -22,7 +22,7 @@ def run_demo(
 
     # column
     axial_diffusion = 0  # cm2/s
-    K = 100  # (mg/g) * (L/mg)
+    K = 10000  # (mg/g) * (L/mg)
     initial_concentration = 0
     length = 100  # cm
     diameter = 10  # cm
@@ -30,7 +30,7 @@ def run_demo(
     bulk_density = 0.3998  # g/mL
     feed_concentrations = 1  # mg/L
     flow_rate = 40  # cm3/s
-    t_eval = np.linspace(1e-10, 175 * 1440 * 60, 200)  # s
+    t_eval = np.linspace(1e-10, 174 * 1440 * 60, 200)  # s
 
     isotherm = reactormodels.models.LinearIsotherm(K=K)
 

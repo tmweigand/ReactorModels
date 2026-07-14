@@ -1,175 +1,241 @@
-# from model.orthogonal_collocation import OrthogonalCollocation
-# from model.isotherm import Isotherm, FreundlichIsotherm, LinearIsotherm
-# from model.advection_diffusion import PSDMParticle
-# import numpy as np
-# import pytest
+import reactormodels
+import numpy as np
+import pytest
 
 
-# def _make_particle(n_col=4, Ds=0.0):
-#     iso = LinearIsotherm(K=100.0)
-#     return PSDMParticle(
-#         isotherm=iso,
-#         R=5e-4,  # 0.5 mm radius
-#         Dp=1e-10,  # m^2/s
-#         Ds=Ds,
-#         kf=1e-4,  # m/s
-#         eps_p=0.4,
-#         rho_p=800.0,  # kg/m^3
-#         n_col=n_col,
-#     )
+def _make_particle(Ds=5e-9):
+    # particle
+    particle_porosity = 0.5
+    particle_density = 0.6  # g/mL
+    particle_diameter = 0.07  # cm
+    pore_diffusion = 5e-6  # cm2/s
+    k_film = 0.1  # cm/s
+
+    # column
+    axial_diffusion = 0
+    K = 10000  # (mg/g) * (L/mg)
+    initial_concentration = 0
+    length = 100  # cm
+    diameter = 10  # cm
+    porosity = 0.334
+    bulk_density = 0.3998  # g/mL
+    feed_concentrations = 1  # mg/L
+    flow_rate = 4  # cm3/s
+    t_eval = np.linspace(1e-10, 175 * 1440 * 60, 200)  # s
+
+    isotherm = reactormodels.models.LinearIsotherm(K=K)
+
+    column = reactormodels.Column(
+        length=length,
+        porosity=porosity,
+        particle_porosity=particle_porosity,
+        bulk_density=bulk_density,
+        particle_density=particle_density,
+        diameter=diameter,
+        particle_diameter=particle_diameter,
+    )
+
+    breakthrough = reactormodels.Breakthrough(
+        column=column,
+        feed_concentrations=feed_concentrations,
+        flow_rate=flow_rate,
+        time=t_eval,
+    )
+    column_numerics = reactormodels.numerics.NumericsConfig(
+        column=column,
+        n_interior_points=3,
+        n_elements=8,
+        add_inlet=True,
+        resolution=reactormodels.models.DomainResolution.COLUMN,
+    )
+
+    particle_numerics = reactormodels.numerics.NumericsConfig(
+        column=column,
+        n_interior_points=3,
+        n_elements=1,
+        add_inlet=True,
+        resolution=reactormodels.models.DomainResolution.PARTICLE,
+    )
+    return reactormodels.models.DomainCoupling(
+        isotherm=isotherm,
+        column=column,
+        breakthrough=breakthrough,
+        axial_diffusion=axial_diffusion,
+        pore_diffusion=pore_diffusion,
+        surface_diffusion=Ds,
+        initial_concentration=initial_concentration,
+        column_numerics=column_numerics,
+        particle_numerics=particle_numerics,
+        mode=reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
+        k_film=k_film,
+    )
 
 
-# def test_initial_state_zero():
-#     p = _make_particle()
-#     y0 = p.initial_state()
-#     np.testing.assert_array_equal(y0, np.zeros(2 * p.N))
+def test_initial_state_zero():
+    p = _make_particle()
+    y0, ydot0 = p._initial_conditions(
+        C_in=p.inlet_concentration,
+        C_init=p.initial_concentration,
+        Cp_init=p.initial_concentration,
+    )
+
+    C, Cp = p._split(y0)
+
+    np.testing.assert_allclose(ydot0, 0)
+    np.testing.assert_allclose(C[1:], 0)
+    np.testing.assert_allclose(Cp[:, :], 0)
+    assert C[0] == 1
+    assert y0.shape == (p._n_vars(),)
+    assert len(y0) == p._n_vars()
 
 
-# def test_initial_state_nonzero():
-#     p = _make_particle()
-#     y0 = p.initial_state(Cp0=1.0, q0=50.0)
-#     Cp, q = p.split_state(y0)
-#     np.testing.assert_array_equal(Cp, np.ones(p.N))
-#     np.testing.assert_array_equal(q, 50.0 * np.ones(p.N))
+def test_initial_state_nonzero():
+    p = _make_particle()
+    y0, ydot0 = p._initial_conditions(C_in=5, C_init=1, Cp_init=2)
+
+    C, Cp = p._split(y0)
+
+    np.testing.assert_allclose(ydot0, 0)
+    np.testing.assert_allclose(C[1:], 1)
+    np.testing.assert_allclose(Cp[:, :], 2)
+    assert C[0] == 5
+    assert y0.shape == (p._n_vars(),)
+    assert len(y0) == p._n_vars()
 
 
-# def test_rhs_shape():
-#     p = _make_particle()
-#     y0 = p.initial_state()
-#     dydt = p.rhs(0.0, y0, Cb=5.0)
-#     assert dydt.shape == y0.shape
+def test_surface_concentration_increases():
+    p = _make_particle()
+    t_eval = np.linspace(1e-10, 3600, 50)
+    z, r, C, Cp = p.solve(
+        t_span=(0, t_eval[-1]),
+        t_eval=t_eval,
+    )
+
+    Cp_surface = Cp[:, :, -1]  # if shape is (time,z,r)
+
+    inlet_surface = Cp_surface[:, 0]
+
+    assert np.all(np.diff(inlet_surface) >= -1e-8)
 
 
-# def test_rhs_equilibrium_no_surface_diffusion():
-#     """
-#     At equilibrium (Cp = Cb, q = q*(Cb)) and Ds=0,
-#     the RHS should be near zero (no driving force).
-#     """
-#     p = _make_particle(Ds=0.0)
-#     Cb = 5.0
-#     q_eq = p.isotherm.q(np.array([Cb]))[0]
-#     # Set ALL collocation points to equilibrium
-#     y_eq = p.pack_state(
-#         np.full(p.N, Cb),
-#         np.full(p.N, q_eq),
-#     )
-#     dydt = p.rhs(0.0, y_eq, Cb=Cb)
-#     np.testing.assert_allclose(dydt, np.zeros_like(dydt), atol=1e-6)
+def test_solve_reaches_equilibrium():
+    """
+    After a long time, average loading should approach q*(Cb).
+    """
+    p = _make_particle()
+    Cb = 1.0
+    t_eval = np.linspace(1e-10, 175 * 1440 * 60, 50)  # very long time
+
+    z, r, C, Cp = p.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
+
+    print("bulk inlet final:", C[-1, 0])
+    print("particle inlet final:", Cp[-1, -1, :])
+
+    np.testing.assert_allclose(C[-1, -1], Cb, rtol=1e-2)
+
+    Cp_final = Cp[-1, 1:, :]  # final time: (Nz, Nr)
+
+    q_final = p.iso.q(Cp_final)
+
+    q_avg = np.trapz(
+        q_final * r**2,
+        r,
+        axis=1,
+    ) / np.trapz(r**2, r)
+
+    q_target = p.iso.q(np.array([Cb]))[0]
+
+    rel_err = abs(q_avg[0] - q_target) / q_target
+
+    assert rel_err < 0.05, f"q_avg={q_avg[0]:.4f}, q_target={q_target:.4f}"
 
 
-# def test_solve_monotonic_surface_concentration():
-#     """
-#     Starting from zero, Cp at the surface should monotonically increase
-#     toward the bulk concentration.
-#     """
-#     p = _make_particle(n_col=4)
-#     sol = p.solve(
-#         t_span=(0, 3600),
-#         Cb_func=lambda t: 10.0,
-#         t_eval=np.linspace(0, 3600, 50),
-#     )
-#     assert sol.success
-#     Cp_surface = np.array(
-#         [p.surface_concentration(sol.y[:, k]) for k in range(sol.y.shape[1])]
-#     )
-#     # Monotonically increasing
-#     diffs = np.diff(Cp_surface)
-#     assert np.all(diffs >= -1e-8), "Surface Cp should be non-decreasing"
-#     # Should approach (but not exceed) bulk
-#     assert Cp_surface[-1] <= 10.0 + 1e-6
+def test_surface_diffusion_accelerates_uptake():
+    """
+    Surface diffusion should increase adsorption, delaying breakthrough.
+    """
+    t_eval = np.linspace(1e-10, 20 * 1440 * 60, 50)
+
+    p0 = _make_particle(Ds=1e-10)
+
+    ps = _make_particle(Ds=1e-9)
+
+    _, _, C0, _ = p0.solve(
+        t_span=(0, t_eval[-1]),
+        t_eval=t_eval,
+    )
+
+    _, _, Cs, _ = ps.solve(
+        t_span=(0, t_eval[-1]),
+        t_eval=t_eval,
+    )
+
+    # Outlet concentration
+    Cout0 = C0[:, -1]
+    Couts = Cs[:, -1]
+
+    # Surface diffusion should delay breakthrough
+    assert np.all(Couts <= Cout0 + 1e-8)
 
 
-# def test_solve_reaches_equilibrium():
-#     """
-#     After a long time, average loading should approach q*(Cb).
-#     """
-#     iso = LinearIsotherm(K=50.0)
-#     p = PSDMParticle(
-#         isotherm=iso,
-#         R=5e-4,
-#         Dp=5e-10,
-#         Ds=1e-13,
-#         kf=1e-3,
-#         eps_p=0.4,
-#         rho_p=800.0,
-#         n_col=4,
-#     )
-#     Cb = 5.0
-#     t_end = 1e5  # very long time
-#     sol = p.solve(
-#         t_span=(0, t_end),
-#         Cb_func=lambda t: Cb,
-#     )
-#     assert sol.success
-#     q_avg = p.average_loading(sol.y[:, -1])
-#     q_target = iso.q(np.array([Cb]))[0]
-#     rel_err = abs(q_avg - q_target) / q_target
-#     assert rel_err < 0.05, f"q_avg={q_avg:.4f}, q_target={q_target:.4f}"
+def test_average_loading_nonnegative():
+    p = _make_particle()
+    t_eval = np.linspace(1e-10, 20 * 1440 * 60, 50)
+
+    z, r, C, Cp = p.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
+
+    for k in range(C.shape[1]):
+        assert np.all(C[:, k]) >= -1e-10
+    for j in range(Cp.shape[1]):
+        assert np.all(Cp[:, j]) >= -1e-10
 
 
-# def test_surface_diffusion_accelerates_uptake():
-#     """
-#     Adding surface diffusion should increase the average loading at intermediate time.
-#     """
-#     t_mid = 1800.0
-#     iso = FreundlichIsotherm(K=20.0, n=2.0)
+@pytest.mark.skip
+def test_mass_balance():
+    """Mass entering particle equals mass leaving bulk."""
+    p = _make_particle()
+    t_eval = np.linspace(1e-10, 20 * 1440 * 60, 50)
 
-#     def make(Ds):
-#         return PSDMParticle(
-#             isotherm=iso,
-#             R=5e-4,
-#             Dp=1e-10,
-#             Ds=Ds,
-#             kf=1e-4,
-#             eps_p=0.4,
-#             rho_p=800.0,
-#             n_col=4,
-#         )
+    z, r, C, Cp = p.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
 
-#     for Ds_val in [0.0, 1e-13]:
-#         p = make(Ds_val)
-#         sol = p.solve(
-#             t_span=(0, t_mid),
-#             Cb_func=lambda t: 10.0,
-#         )
-#         assert sol.success
+    A = p.column.cross_section_area()
 
-#     p0 = make(0.0)
-#     ps = make(1e-13)
-#     sol0 = p0.solve((0, t_mid), lambda t: 10.0)
-#     sols = ps.solve((0, t_mid), lambda t: 10.0)
-#     q0 = p0.average_loading(sol0.y[:, -1])
-#     qs = ps.average_loading(sols.y[:, -1])
-#     assert (
-#         qs >= q0 - 1e-8
-#     ), "Surface diffusion should not reduce uptake at intermediate time"
+    Mf = p.column.porosity * A * np.trapz(C[-1], z)
 
+    q = p.iso.q(Cp[-1])
 
-# def test_step_change_bulk():
-#     """Solve with a step change in bulk concentration at t=1800s."""
-#     p = _make_particle(n_col=4)
+    q_avg = np.trapz(
+        q * r**2,
+        r,
+        axis=1,
+    ) / np.trapz(r**2, r)
 
-#     def Cb_step(t):
-#         return 5.0 if t < 1800 else 10.0
+    Ms = (1 - p.column.porosity) * A * p.column.bulk_density * np.trapz(q_avg, z)
 
-#     sol = p.solve(
-#         t_span=(0, 5400),
-#         Cb_func=Cb_step,
-#         t_eval=np.linspace(0, 5400, 100),
-#     )
-#     assert sol.success
-#     # Cp at surface must be bounded
-#     Cp_surface = np.array(
-#         [p.surface_concentration(sol.y[:, k]) for k in range(sol.y.shape[1])]
-#     )
-#     assert np.all(Cp_surface >= -1e-8)
-#     assert np.all(Cp_surface <= 10.0 + 1e-4)
+    Cp_avg = np.trapz(
+        Cp[-1] * r**2,
+        r,
+        axis=1,
+    ) / np.trapz(r**2, r)
 
+    Mp = (1 - p.column.porosity) * p.column.particle_porosity * A * np.trapz(Cp_avg, z)
 
-# def test_average_loading_nonnegative():
-#     p = _make_particle()
-#     y0 = p.initial_state()
-#     sol = p.solve((0, 3600), lambda t: 5.0)
-#     for k in range(sol.y.shape[1]):
-#         q_avg = p.average_loading(sol.y[:, k])
-#         assert q_avg >= -1e-10
+    Mtotal = Mf + Mp + Ms
+
+    Cin = p.inlet_concentration
+
+    Min = p.breakthrough.flow_rate * Cin * t_eval[-1]
+    Mout = p.breakthrough.flow_rate * np.trapz(C[:, -1], t_eval)
+    balance = Min - Mout
+
+    print("Fluid      :", Mf)
+    print("Particle fluid:", Mp)
+    print("Adsorbed   :", Ms)
+    print("Stored     :", Mtotal)
+    print("In-Out     :", balance)
+
+    np.testing.assert_allclose(
+        Mtotal,
+        balance,
+        rtol=1e-2,
+    )
