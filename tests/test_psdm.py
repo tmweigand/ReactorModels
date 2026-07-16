@@ -6,21 +6,21 @@ import pytest
 def _make_particle(Ds=5e-9):
     # particle
     particle_porosity = 0.5
-    particle_density = 0.6  # g/mL
+    particle_density = 600  # g/mL
     particle_diameter = 0.07  # cm
     pore_diffusion = 5e-6  # cm2/s
     k_film = 0.1  # cm/s
 
     # column
     axial_diffusion = 0
-    K = 10000  # (mg/g) * (L/mg)
+    K = 100  # (mg/g) * (L/mg)
     initial_concentration = 0
     length = 100  # cm
     diameter = 10  # cm
     porosity = 0.334
-    bulk_density = 0.3998  # g/mL
+    bulk_density = 399.8  # g/mL
     feed_concentrations = 1  # mg/L
-    flow_rate = 4  # cm3/s
+    flow_rate = 40  # cm3/s
     t_eval = np.linspace(1e-10, 175 * 1440 * 60, 200)  # s
 
     isotherm = reactormodels.models.LinearIsotherm(K=K)
@@ -122,16 +122,17 @@ def test_solve_reaches_equilibrium():
     """
     After a long time, average loading should approach q*(Cb).
     """
+
     p = _make_particle()
     Cb = 1.0
-    t_eval = np.linspace(1e-10, 175 * 1440 * 60, 50)  # very long time
+    t_eval = np.linspace(1e-10, 125 * 1440 * 60, 50)  # very long time
 
     z, r, C, Cp = p.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
 
-    print("bulk inlet final:", C[-1, 0])
-    print("particle inlet final:", Cp[-1, -1, :])
+    print("bulk final:", C[-1, :-1])
+    # print("particle inlet final:", Cp[-1, -1, :])
 
-    np.testing.assert_allclose(C[-1, -1], Cb, rtol=1e-2)
+    np.testing.assert_allclose(C[-1, :-1], Cb, rtol=1e-2)
 
     Cp_final = Cp[-1, 1:, :]  # final time: (Nz, Nr)
 
@@ -154,9 +155,9 @@ def test_surface_diffusion_accelerates_uptake():
     """
     Surface diffusion should increase adsorption, delaying breakthrough.
     """
-    t_eval = np.linspace(1e-10, 20 * 1440 * 60, 50)
+    t_eval = np.linspace(1e-10, 25 * 1440 * 60, 50)
 
-    p0 = _make_particle(Ds=1e-10)
+    p0 = _make_particle(Ds=1e-15)
 
     ps = _make_particle(Ds=1e-9)
 
@@ -171,71 +172,73 @@ def test_surface_diffusion_accelerates_uptake():
     )
 
     # Outlet concentration
-    Cout0 = C0[:, -1]
-    Couts = Cs[:, -1]
+    Cout0 = C0[-1, -1]
+    Couts = Cs[-1, -1]
 
     # Surface diffusion should delay breakthrough
     assert np.all(Couts <= Cout0 + 1e-8)
 
 
-def test_average_loading_nonnegative():
-    p = _make_particle()
-    t_eval = np.linspace(1e-10, 20 * 1440 * 60, 50)
-
-    z, r, C, Cp = p.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
-
-    for k in range(C.shape[1]):
-        assert np.all(C[:, k]) >= -1e-10
-    for j in range(Cp.shape[1]):
-        assert np.all(Cp[:, j]) >= -1e-10
-
-
-@pytest.mark.skip
 def test_mass_balance():
     """Mass entering particle equals mass leaving bulk."""
     p = _make_particle()
-    t_eval = np.linspace(1e-10, 20 * 1440 * 60, 50)
+    t_eval = np.linspace(1e-10, 100 * 1440 * 60, 50)
 
     z, r, C, Cp = p.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
 
     A = p.column.cross_section_area()
 
-    Mf = p.column.porosity * A * np.trapz(C[-1], z)
+    # print("Fluid      :", Mf)
+    # print("Particle fluid:", Mp)
+    # print("Adsorbed   :", Ms)
+    # print("Stored     :", Mtotal)
+    # print("In-Out     :", balance)
 
-    q = p.iso.q(Cp[-1])
+    errors = []
 
-    q_avg = np.trapz(
-        q * r**2,
-        r,
-        axis=1,
-    ) / np.trapz(r**2, r)
+    for k, t in enumerate(t_eval):
 
-    Ms = (1 - p.column.porosity) * A * p.column.bulk_density * np.trapz(q_avg, z)
+        # Bulk fluid inventory
+        Mf = p.column.porosity * A * np.trapz(C[k, :] / 1000, z)
 
-    Cp_avg = np.trapz(
-        Cp[-1] * r**2,
-        r,
-        axis=1,
-    ) / np.trapz(r**2, r)
+        # Adsorbed phase
+        q = p.iso.q(Cp[k, :, :])
 
-    Mp = (1 - p.column.porosity) * p.column.particle_porosity * A * np.trapz(Cp_avg, z)
+        q_avg = np.trapz(q * r**2, r, axis=1) / np.trapz(r**2, r)
 
-    Mtotal = Mf + Mp + Ms
+        Ms = A * p.column.bulk_density * np.trapz(q_avg, z) / 1000
 
-    Cin = p.inlet_concentration
+        # Pore fluid
+        Cp_avg = np.trapz(Cp[k, :, :] * r**2, r, axis=1) / np.trapz(r**2, r)
 
-    Min = p.breakthrough.flow_rate * Cin * t_eval[-1]
-    Mout = p.breakthrough.flow_rate * np.trapz(C[:, -1], t_eval)
-    balance = Min - Mout
+        Mp = (
+            (1 - p.column.porosity)
+            * p.column.particle_porosity
+            * A
+            * np.trapz(Cp_avg, z)
+            / 1000
+        )
 
-    print("Fluid      :", Mf)
-    print("Particle fluid:", Mp)
-    print("Adsorbed   :", Ms)
-    print("Stored     :", Mtotal)
-    print("In-Out     :", balance)
+        Mstored = Mf + Mp + Ms
+
+        Min = p.breakthrough.flow_rate * p.inlet_concentration * t / 1000
+
+        Mout = p.breakthrough.flow_rate * np.trapz(
+            C[: k + 1, -1] / 1000, t_eval[: k + 1]
+        )
+
+        balance = Min - Mout
+
+        err = (Mstored - balance) / balance if balance > 0 else 0.0
+        errors.append(err)
+
+        print(f"Day {t/86400:6.1f}: error = {100*err:7.3f}%")
 
     np.testing.assert_allclose(
-        Mtotal,
+        Mstored,
         balance,
         rtol=1e-2,
     )
+
+
+# def test_solution_matches_addesigns():

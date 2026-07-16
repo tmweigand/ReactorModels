@@ -14,7 +14,7 @@ def run_demo(
 
     # particle
     particle_porosity = 0.5
-    particle_density = 0.6  # g/mL
+    particle_density = 600  # g/L
     particle_diameter = 0.07  # cm
     pore_diffusion = 5e-6  # cm2/s
     surface_diffusion = 5e-9  # cm2/s
@@ -22,12 +22,12 @@ def run_demo(
 
     # column
     axial_diffusion = 0  # cm2/s
-    K = 10000  # (mg/g) * (L/mg)
+    K = 100  # (mg/g) * (L/mg)
     initial_concentration = 0
     length = 100  # cm
     diameter = 10  # cm
     porosity = 0.334
-    bulk_density = 0.3998  # g/mL
+    bulk_density = 399.8  # g/L
     feed_concentrations = 1  # mg/L
     flow_rate = 40  # cm3/s
     t_eval = np.linspace(1e-10, 174 * 1440 * 60, 200)  # s

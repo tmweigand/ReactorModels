@@ -199,3 +199,215 @@ def test_bohart_adams_equals_thomas():
     assert bh_solution == pytest.approx(
         t_solution, abs=1e-3
     ), f"Failed at t={time}: max error = {np.abs(bh_solution - t_solution).max():.3e}"
+
+
+# ---------------------------------------------------------------------
+# Mock objects
+# ---------------------------------------------------------------------
+
+
+class MockColumn:
+    porosity = 0.4
+
+    def get_particle_density(self):
+        return 1000.0
+
+    def get_bulk_density(self):
+        return 600.0
+
+    def get_sorbent_mass(self):
+        return 10.0
+
+    def column_volume(self):
+        return 2.0
+
+
+class MockBreakthrough:
+    def __init__(self):
+        self.column = MockColumn()
+
+    def interstitial_velocity(self):
+        return 1.5
+
+    def mean_feed_concentration(self):
+        return 100.0
+
+    def time_to_bed_volumes(self):
+        return np.array([0.5, 1.0, 2.0])
+
+    def bed_volumes_to_time(self):
+        return np.array([10.0, 20.0, 30.0])
+
+
+@pytest.fixture
+def breakthrough():
+    return MockBreakthrough()
+
+
+# ---------------------------------------------------------------------
+# Base class
+# ---------------------------------------------------------------------
+
+
+def test_base_model_not_implemented(breakthrough):
+    model = reactormodels.models.analytic_models.AnalyticModels(breakthrough)
+
+    with pytest.raises(NotImplementedError):
+        model.model(1, 1)
+
+
+# ---------------------------------------------------------------------
+# Ogata-Banks
+# ---------------------------------------------------------------------
+
+
+def test_ogatabanks_scalar(breakthrough):
+    model = reactormodels.models.OgataBanks(breakthrough, diffusion=0.1)
+
+    result = model.model(1.0, 5.0)
+
+    assert np.isfinite(result)
+    assert result >= 0
+
+
+def test_ogatabanks_vector(breakthrough):
+    model = reactormodels.models.OgataBanks(breakthrough, diffusion=0.1)
+
+    x = np.linspace(0, 5, 20)
+
+    result = model.model(x, 5.0)
+
+    assert result.shape == x.shape
+
+
+# ---------------------------------------------------------------------
+# Yoon-Nelson
+# ---------------------------------------------------------------------
+
+
+def test_yoon_nelson_midpoint():
+    model = reactormodels.models.YoonNelson(k_YN=1.0, t_50=10.0)
+
+    assert np.isclose(model.model(0, 10), 0.5)
+
+
+def test_yoon_nelson_warning():
+    model = reactormodels.models.YoonNelson(1.0, 10.0)
+
+    with pytest.warns(UserWarning):
+        model.breakthrough_profile(np.array([1, 2]), x=5)
+
+
+def test_yoon_nelson_spatial_not_implemented():
+    model = reactormodels.models.YoonNelson(1.0, 10.0)
+
+    with pytest.raises(NotImplementedError):
+        model.spatial_profile(np.array([1]), 5)
+
+
+# ---------------------------------------------------------------------
+# Clark
+# ---------------------------------------------------------------------
+
+
+def test_clark_model():
+    model = reactormodels.models.Clark(r=0.2, A=3.0, n=2.5)
+
+    result = model.model(0, 5)
+
+    assert 0 <= result <= 1
+
+
+def test_clark_warning():
+    model = reactormodels.models.Clark(0.2, 3.0, 2.5)
+
+    with pytest.warns(UserWarning):
+        model.breakthrough_profile(np.array([1]), x=10)
+
+
+# ---------------------------------------------------------------------
+# Bohart-Adams
+# ---------------------------------------------------------------------
+
+
+def test_bohart_adams(breakthrough):
+    model = reactormodels.models.BohartAdams(
+        breakthrough,
+        k_BA=0.01,
+        sorbent_capacity=5,
+    )
+
+    result = model.model(1.0, 10.0)
+
+    assert np.isfinite(result)
+    assert result >= 0
+
+
+# ---------------------------------------------------------------------
+# Thomas Rectangular
+# ---------------------------------------------------------------------
+
+
+def test_thomas_rectangular(breakthrough):
+    model = reactormodels.models.ThomasRectangular(
+        breakthrough,
+        k_Th=0.01,
+        sorbent_capacity=5,
+    )
+
+    result = model.model(1, 1)
+
+    assert np.isfinite(result).all()
+
+
+def test_thomas_rectangular_warning(breakthrough):
+    model = reactormodels.models.ThomasRectangular(
+        breakthrough,
+        k_Th=0.01,
+        sorbent_capacity=5,
+    )
+
+    with pytest.warns(UserWarning):
+        model.breakthrough_profile(np.array([1]), x=1)
+
+
+# ---------------------------------------------------------------------
+# Thomas Langmuir
+# ---------------------------------------------------------------------
+
+
+def test_thomas_langmuir_j_function(breakthrough):
+    model = reactormodels.models.ThomasLangmuir(
+        breakthrough,
+        langmuir_constant=0.2,
+        sorbent_capacity=5,
+        k_Th=0.01,
+    )
+
+    value = model._J_function(0.5, 0.5)
+
+    assert np.isfinite(value)
+
+
+def test_thomas_langmuir_model(breakthrough):
+    model = reactormodels.models.ThomasLangmuir(
+        breakthrough,
+        langmuir_constant=0.2,
+        sorbent_capacity=5,
+        k_Th=0.01,
+    )
+
+    x = np.array([1.0, 2.0, 3.0])
+    t = np.array([5.0, 10.0, 15.0])
+
+    result = model.model(x, t)
+
+    assert result.shape == x.shape
+    assert np.all(result >= 0)
+    assert np.all(result <= 1)
+
+
+def test_ogata_banks_retardation(breakthrough):
+    model = reactormodels.models.OgataBanks(breakthrough, diffusion=0.01, retardation=2)
+
+    assert np.isfinite(model.R)

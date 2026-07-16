@@ -1,4 +1,4 @@
-"""domain_couples.py"""
+"""domain_coupling.py"""
 
 from __future__ import annotations
 from typing import Type
