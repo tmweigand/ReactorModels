@@ -12,6 +12,8 @@ class Media:
         particle_density: float,
         mean_diameter: float,
         bed_density: float | None = None,
+        sphericity: float | None = None,
+        particle_radius: float | None = None,
     ):
         assert (
             0 < particle_porosity < 1
@@ -28,6 +30,8 @@ class Media:
         self.particle_density = particle_density
         self.mean_diameter = mean_diameter
         self.bed_density = bed_density
+        self.sphericity = sphericity
+        self.particle_radius = particle_radius
 
     def get_bed_density(self, bed_porosity: float) -> float:
         """Bed density (rho_b) = (1 - bed_porosity) * particle_density."""
