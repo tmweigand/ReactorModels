@@ -100,7 +100,7 @@ def test_ldf_converges_to_equilibrium_at_high_kldf():
 
 
 def test_ldf_q_tracks_equilibrium():
-    """q should approach q*(C) over time."""
+    """Q should approach q*(C) over time."""
     model, D, L, eps, rho_b, K = _base_model(
         reactormodels.models.AdsorptionKinetics.LINEAR_DRIVING_FORCE, k_ldf=0.5
     )

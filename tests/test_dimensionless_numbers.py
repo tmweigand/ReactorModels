@@ -3,38 +3,50 @@
 import numpy as np
 import pytest
 
-import reactormodels as rm
+
+from reactormodels import (
+    Water,
+    Chemical,
+    Media,
+    Breakthrough,
+    dimensionless_numbers,
+    Column,
+)
 
 
 @pytest.fixture
 def parameter_objects():
     """Create objects used to test parameter recall."""
-    column = rm.Column(
+    column = Column(
         length=1.2,
         porosity=0.4,
         diameter=0.2,
     )
 
-    media = rm.Media(
+    media = Media(
         particle_porosity=0.3,
         particle_density=1.2,
         mean_diameter=0.001,
         sphericity=0.9,
     )
 
-    water = rm.Water(
+    water = Water(
         water_matrix="Test water",
         density=1.0,
         viscosity=1.0,
         temperature=25.0,
     )
 
-    chemical = rm.Chemical(
+    chemical = Chemical(
         compound="Test compound",
         molar_volume=100.0,
     )
 
-    breakthrough = rm.Breakthrough(
+    breakthrough = Breakthrough(
+        column=column,
+        length=10,
+        diameter=0.2,
+        porosity=0.4,
         compound="Test compound",
         feed_concentrations=100.0,
         effluent_concentrations=np.array([0.0, 25.0, 50.0, 100.0]),
@@ -55,7 +67,7 @@ def test_reynolds_number_direct():
 
     expected = density * interstitial_velocity * diameter / viscosity
 
-    result = rm.dimensionless_numbers.reynolds_number(
+    result = dimensionless_numbers.reynolds_number(
         density,
         interstitial_velocity,
         diameter,
@@ -81,7 +93,7 @@ def test_reynolds_number_using_parameter_objects(
         / water.viscosity
     )
 
-    result = rm.dimensionless_numbers.reynolds_number(
+    result = dimensionless_numbers.reynolds_number(
         water=water,
         media=media,
         column=column,
@@ -103,7 +115,7 @@ def test_schmidt_number_using_chemical(
 
     expected = water.viscosity / (water.density * liquid_diffusion_coefficient)
 
-    result = rm.dimensionless_numbers.schmidt_number(
+    result = dimensionless_numbers.schmidt_number(
         water=water,
         chemical=chemical,
     )
@@ -124,7 +136,7 @@ def test_schmidt_number_with_direct_water_properties(
 
     expected = viscosity / (density * liquid_diffusion_coefficient)
 
-    result = rm.dimensionless_numbers.schmidt_number(
+    result = dimensionless_numbers.schmidt_number(
         viscosity=viscosity,
         density=density,
         chemical=chemical,
@@ -140,7 +152,7 @@ def test_peclet_number_direct():
 
     expected = reynolds * schmidt
 
-    result = rm.dimensionless_numbers.peclet_number(
+    result = dimensionless_numbers.peclet_number(
         reynolds=reynolds,
         schmidt=schmidt,
     )
@@ -172,7 +184,7 @@ def test_peclet_number_using_parameter_objects(
 
     expected = reynolds * schmidt
 
-    result = rm.dimensionless_numbers.peclet_number(
+    result = dimensionless_numbers.peclet_number(
         water=water,
         chemical=chemical,
         media=media,
@@ -193,7 +205,7 @@ def test_chern_chien_sherwood_number():
         1 + 1.5 * (1 - bed_porosity)
     )
 
-    result = rm.dimensionless_numbers.sherwood_number(
+    result = dimensionless_numbers.sherwood_number(
         method="chern_chien",
         reynolds=reynolds,
         schmidt=schmidt,
@@ -229,7 +241,7 @@ def test_sherwood_number_using_parameter_objects(
         1 + 1.5 * (1 - column.porosity)
     )
 
-    result = rm.dimensionless_numbers.sherwood_number(
+    result = dimensionless_numbers.sherwood_number(
         method="chern_chien",
         water=water,
         chemical=chemical,
@@ -247,7 +259,7 @@ def test_sherwood_constraints():
         ValueError,
         match="Wilson-Geankoplis requires",
     ):
-        rm.dimensionless_numbers.sherwood_number(
+        dimensionless_numbers.sherwood_number(
             method="wilson_geankoplis",
             reynolds=0.001,
             schmidt=1000.0,
@@ -261,7 +273,7 @@ def test_invalid_inputs():
         AssertionError,
         match="density must be positive",
     ):
-        rm.dimensionless_numbers.reynolds_number(
+        dimensionless_numbers.reynolds_number(
             density=0.0,
             interstitial_velocity=0.5,
             diameter=0.02,
@@ -272,7 +284,7 @@ def test_invalid_inputs():
         ValueError,
         match="chemical is required",
     ):
-        rm.dimensionless_numbers.schmidt_number(
+        dimensionless_numbers.schmidt_number(
             viscosity=0.001,
             density=1000.0,
         )
@@ -281,7 +293,7 @@ def test_invalid_inputs():
         ValueError,
         match="Unknown Sherwood method",
     ):
-        rm.dimensionless_numbers.sherwood_number(
+        dimensionless_numbers.sherwood_number(
             method="unknown",
             reynolds=25.0,
             schmidt=1000.0,

@@ -159,7 +159,7 @@ def test_second_gradient_matches_matrix_row(oc5):
 
 
 def test_gradient_linear(oc5):
-    """gradient of a linear function x should be all-ones."""
+    """Gradient of a linear function x should be all-ones."""
     result = oc5.evaluate_gradient(oc5.nodes)
     np.testing.assert_allclose(result, np.ones(len(oc5.nodes)), atol=1e-10)
 
@@ -173,7 +173,7 @@ def test_gradient_matches_matrix(oc5):
 
 
 def test_gradient_analytic_cubic(oc5):
-    """gradient of x³ should equal 3x² exactly (polynomial, no truncation error)."""
+    """Gradient of x³ should equal 3x² exactly (polynomial, no truncation error)."""
     x = oc5.nodes
     np.testing.assert_allclose(oc5.evaluate_gradient(x**3), 3 * x**2, atol=1e-10)
 

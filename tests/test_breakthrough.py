@@ -17,11 +17,16 @@ def test_breakthrough_class():
     porosity = 0.4
     threshold = 0.2
 
-    column = reactormodels.Column(length=length, diameter=diameter, porosity=porosity)
+    column = reactormodels.Column(
+        length=length,
+        diameter=diameter,
+        porosity=porosity,
+    )
 
     column_volume = column.column_volume()
 
     breakthrough = reactormodels.Breakthrough(
+        column=column,
         feed_concentrations=feed_concentrations,
         compound=compound,
         water_matrix=water_matrix,

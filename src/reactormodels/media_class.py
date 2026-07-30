@@ -8,23 +8,15 @@ class Media:
 
     def __init__(
         self,
-        particle_porosity: float,
-        particle_density: float,
-        mean_diameter: float,
+        particle_porosity: float | None = None,
+        particle_density: float | None = None,
+        mean_diameter: float | None = None,
         bed_density: float | None = None,
         sphericity: float | None = None,
         particle_radius: float | None = None,
-    ):
-        assert (
-            0 < particle_porosity < 1
-        ), f"particle_porosity must be in (0, 1), got {particle_porosity}"
-        assert (
-            particle_density > 0
-        ), f"particle_density must be positive, got {particle_density}"
-        assert mean_diameter > 0, f"mean_diameter must be positive, got {mean_diameter}"
-
-        if bed_density is not None:
-            assert bed_density > 0, f"bed_density must be positive, got {bed_density}"
+        **kwargs,
+    ) -> None:
+        super().__init__(**kwargs)
 
         self.particle_porosity = particle_porosity
         self.particle_density = particle_density

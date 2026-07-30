@@ -1,6 +1,5 @@
 import reactormodels
 import numpy as np
-import pytest
 
 
 def test_mass_balance_class():
