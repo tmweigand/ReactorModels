@@ -5,6 +5,17 @@ from . import numerics
 from . import postprocess
 from .breakthrough_data import Breakthrough
 from .column_data import Column
-from .breakthrough_data import Breakthrough
+from .water_class import Water
+from .chemical_class import Chemical
+from .media_class import Media
 
-__all__ = ["mqodels", "numerics", "postprocess", "Column", "Breakthrough"]
+__all__ = [
+    "models",
+    "numerics",
+    "postprocess",
+    "Column",
+    "Breakthrough",
+    "Water",
+    "Chemical",
+    "Media",
+]

@@ -8,7 +8,11 @@ Additional Sherwood correlations:
     Adsorption in Aqueous Systems, Table 3.
 """
 
-import reactormodels
+from .water_class import Water
+from .media_class import Media
+from .breakthrough_data import Breakthrough
+from .column_data import Column
+from .chemical_class import Chemical
 
 
 def _positive_parameter(
@@ -43,10 +47,10 @@ def reynolds_number(
     diameter: float | None = None,
     viscosity: float | None = None,
     *,
-    water: reactormodels.Water | None = None,
-    media: reactormodels.Media | None = None,
-    column: reactormodels.Column | None = None,
-    breakthrough: reactormodels.Breakthrough | None = None,
+    water: Water | None = None,
+    media: Media | None = None,
+    column: Column | None = None,
+    breakthrough: Breakthrough | None = None,
     superficial_velocity: float | None = None,
     bed_porosity: float | None = None,
     sphericity: float | None = None,
@@ -137,8 +141,8 @@ def schmidt_number(
     viscosity: float | None = None,
     density: float | None = None,
     *,
-    water: reactormodels.Water | None = None,
-    chemical: reactormodels.Chemical | None = None,
+    water: Water | None = None,
+    chemical: Chemical | None = None,
 ) -> float:
     """Calculate the Schmidt number.
 
@@ -183,11 +187,11 @@ def _resolve_reynolds_and_schmidt(
     reynolds: float | None,
     schmidt: float | None,
     *,
-    water: reactormodels.Water | None,
-    chemical: reactormodels.Chemical | None,
-    media: reactormodels.Media | None,
-    column: reactormodels.Column | None,
-    breakthrough: reactormodels.Breakthrough | None,
+    water: Water | None,
+    chemical: Chemical | None,
+    media: Media | None,
+    column: Column | None,
+    breakthrough: Breakthrough | None,
 ) -> tuple[float, float]:
     """Return supplied or calculated Reynolds and Schmidt numbers."""
     if reynolds is None:
@@ -220,11 +224,11 @@ def peclet_number(
     reynolds: float | None = None,
     schmidt: float | None = None,
     *,
-    water: reactormodels.Water | None = None,
-    chemical: reactormodels.Chemical | None = None,
-    media: reactormodels.Media | None = None,
-    column: reactormodels.Column | None = None,
-    breakthrough: reactormodels.Breakthrough | None = None,
+    water: Water | None = None,
+    chemical: Chemical | None = None,
+    media: Media | None = None,
+    column: Column | None = None,
+    breakthrough: Breakthrough | None = None,
 ) -> float:
     """Calculate the Peclet number.
 
@@ -252,11 +256,11 @@ def sherwood_number(
     schmidt: float | None = None,
     bed_porosity: float | None = None,
     *,
-    water: reactormodels.Water | None = None,
-    chemical: reactormodels.Chemical | None = None,
-    media: reactormodels.Media | None = None,
-    column: reactormodels.Column | None = None,
-    breakthrough: reactormodels.Breakthrough | None = None,
+    water: Water | None = None,
+    chemical: Chemical | None = None,
+    media: Media | None = None,
+    column: Column | None = None,
+    breakthrough: Breakthrough | None = None,
 ) -> float:
     """Calculate Sherwood number using the selected correlation.
 
