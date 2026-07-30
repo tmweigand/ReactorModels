@@ -133,15 +133,15 @@ are used to derive the Bohart-Adams analytical solution
 .. math::
     :label: BA_model
 
-    \frac C{C_o} = \frac {\exp\lrp{kC_o(t - L/v)}}{\exp\lrp{kC_o(t - L/v)} + \exp\lrp{(krho_pq_mL  / v)((1-\gke) / \gke)} - 1}
+    \frac C{C_o} = \frac {\exp\lrp{kC_o\lrp{t - \frac Lv}}}{\exp\lrp{kC_o\lrp{t - \frac Lv}} + \exp\lrp{\frac {k\rho_bq_mL}u} - 1}
 
-where :math:`t` is time and :math:`L` is the bed length. Though mathematically equivalent :cite:`Chu2010`, the so-called Thomas model is obtained by converting 
-units of parameters in Eqn :eq:`BA_model`
+where :math:`t` is time and :math:`L` is the bed length. Though mathematically equivalent :cite:`Chu2010`, the so-called Thomas 
+model is obtained by converting units of parameters in Eqn :eq:`BA_model`
 
 .. math::
     :label:
 
-    \frac C{C_o} = \frac {\exp\lrp{k_ThC_o(BVT - \gke)}}{\exp\lrp{k_ThC_o(BVT - \gke)} + \exp\lrp{k_Thq_ex/Q} - 1}
+    \frac C{C_o} = \frac {\exp\lrp{k_{Th}C_o\lrp{BVT - \gke}}}{\exp\lrp{k_{Th}C_o\lrp{BVT - \gke}} + \exp\lrp{k_{Th}q_ex/Q} - 1}
 
 <<<<<<< HEAD
 where :math:`t_V` is time in bed volumes treated, :math:`k_{Th}` is the Thomas model rate constant,
