@@ -8,8 +8,7 @@ from ..column_data import Column
 from ..breakthrough_data import Breakthrough
 from ..numerics.config import NumericsConfig
 from .isotherm import Isotherm
-from .adsorption_kinetics import AdsorptionKinetics
-from .boundary_conditions import InletBC, DirichletBC
+from .boundary_conditions import InletBC, DirichletBC, SymmetryBC
 
 __all__ = ["IntraparticleTransport"]
 
@@ -35,9 +34,9 @@ class IntraparticleTransport:
         initial_concentration: float,
         isotherm: Isotherm,
         numerics: NumericsConfig,
-        mode: AdsorptionKinetics = AdsorptionKinetics.LOCAL_EQUILIBRIUM,
         k_film: float = 0,
-        inlet_bc: Type[InletBC] = DirichletBC,
+        surface_bc: Type[InletBC] = DirichletBC,
+        center_bc: Type[InletBC] = SymmetryBC,
     ):
         self.column = column
         self.breakthrough = breakthrough
@@ -48,10 +47,10 @@ class IntraparticleTransport:
         self.initial_concentration = initial_concentration
         self.iso = isotherm
         self.numerics = numerics
-        self.mode = mode
         self.k_film = k_film
-        self.inlet_bc = inlet_bc(self.inlet_concentration)
         self.N = len(self.numerics.collocation.nodes)
+        self.surface_bc = surface_bc(self.inlet_concentration, node=-1)
+        self.center_bc = center_bc(node=0)
 
     def _n_vars(self) -> int:
         """Total length of the IDA state vector."""
@@ -69,9 +68,12 @@ class IntraparticleTransport:
         dcdt, dqdt = self._split(ydot)
 
         # Center: symmetry
-        result[0] = self.numerics.collocation.evaluate_gradient(c, 0)
+        result[0] = self.center_bc.residual(
+            gradient_concentration_0=self.numerics.collocation.evaluate_gradient(c, 0)
+        )
 
-        result[-1] = c[-1] - self.inlet_concentration
+        # Surface: dirichlet
+        result[-1] = self.surface_bc.residual(c[-1])
 
         # fluid phase - internal and outlet
         transport = (
@@ -94,15 +96,17 @@ class IntraparticleTransport:
         n = self._n_vars()
         J = np.zeros((n, n))
 
-        J[0, :] = self.numerics.collocation.first_derivative[0]
+        J[0, :] = self.center_bc.jacobian_row(
+            self.numerics.collocation.first_derivative[0, :]
+        )
 
-        J[-1, -1] = 1.0
+        J[-1, :] = self.surface_bc.jacobian_row(np.zeros(n))
 
         # derivative of transport
         d_transport = (
             -self.column.particle_porosity
             * self.Dp
-            * self.numerics.collocation.radial_operator
+            * self.numerics.collocation.radial_operator_matrix
         )
 
         J[1:-1, :] = d_transport[1:-1]
@@ -112,7 +116,7 @@ class IntraparticleTransport:
         J[1:-1, :] -= (
             self.column.particle_density
             * self.Ds
-            * self.numerics.collocation.radial_operator[1:-1]
+            * self.numerics.collocation.radial_operator_matrix[1:-1]
             @ np.diag(dqdC)
         )
 
@@ -121,7 +125,6 @@ class IntraparticleTransport:
         J[1:-1, 1:-1] += cj * np.diag(mass[1:-1])
 
         jac[:, :] = J
-
         return 0
 
     def _algebraic_vars_idx(self):
@@ -136,7 +139,8 @@ class IntraparticleTransport:
         C0 = np.full(self.N, self.initial_concentration)
 
         # Surface concentration
-        C0[-1] = self.inlet_concentration
+        C0[-1] = self.surface_bc.apply()
+
         y0 = C0.copy()
         ydot0 = np.zeros_like(y0)
         return y0, ydot0
@@ -147,7 +151,7 @@ class IntraparticleTransport:
 
         result = self.numerics.integrate(
             residual=self._residual,
-            # jacobian=self._jacobian,
+            jacobian=self._jacobian,
             y0=y0,
             yp0=ydot0,
             t_span=t_span,
@@ -165,13 +169,7 @@ class IntraparticleTransport:
 
         C_out = y_out[:, : self.N]  # (n_times, N)
 
-        if (
-            self.mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE
-            or self.mode == AdsorptionKinetics.SECOND_ORDER
-        ):
-            q_out = y_out[:, self.N :]  # (n_times, N)
-        else:
-            # Local equilibrium: recover q from C at each time step
-            q_out = np.array([self.iso.q(C_out[i]) for i in range(len(t_eval))])
+        # Local equilibrium: recover q from C at each time step
+        q_out = np.array([self.iso.q(C_out[i]) for i in range(len(t_eval))])
 
         return self.numerics.collocation.nodes, C_out, q_out

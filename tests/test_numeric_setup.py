@@ -60,19 +60,17 @@ def make_base_params():
     )
 
     column_numerics = reactormodels.numerics.NumericsConfig(
-        column=column,
+        domain_length=column.length,
         n_interior_points=3,
         n_elements=8,
         add_inlet=True,
-        resolution=reactormodels.models.DomainResolution.COLUMN,
     )
 
     particle_numerics = reactormodels.numerics.NumericsConfig(
-        column=column,
+        domain_length=column.particle_radius(),
         n_interior_points=3,
         n_elements=1,
         add_inlet=True,
-        resolution=reactormodels.models.DomainResolution.PARTICLE,
     )
 
     isotherm = reactormodels.models.LinearIsotherm(K=K)
@@ -171,7 +169,7 @@ def test_n_vars(b: BaseParams):
     assert ip._n_vars() == ip.N
 
     dc = make_DC(b)
-    assert dc._n_vars() == dc.Nz + dc.Nr * dc.Nz
+    assert dc._n_vars() == dc.N_column + dc.N_particle * (dc.N_column - 1)
 
 
 def test_split(b: BaseParams):
@@ -192,13 +190,14 @@ def test_split(b: BaseParams):
     assert q_ip is None
 
     dc = make_DC(b)
-    y_dc = np.arange(dc.Nz + dc.Nz * dc.Nr)
+    y_dc = np.arange(dc._n_vars())
 
     C_dc, Cp = dc._split(y_dc)
 
-    assert np.array_equal(C_dc, y_dc[: dc.Nz])
+    assert np.array_equal(C_dc, y_dc[: dc.N_column])
+    assert Cp.shape == (dc.N_column - 1, dc.N_particle)
 
-    expected_Cp = y_dc[dc.Nz :].reshape(dc.Nz, dc.Nr)
+    expected_Cp = y_dc[dc.N_column :].reshape(dc.N_column - 1, dc.N_particle)
     assert np.array_equal(Cp, expected_Cp)
 
     ade_ldf = make_ADE(
@@ -243,10 +242,19 @@ def test_residual_runs(b: BaseParams):
     assert result.shape == (n,)
     assert np.all(np.isfinite(result))
 
-    expected = dc.inlet_bc.residual(y[0])
+    # inlet BC row
+    expected_inlet = dc.inlet_bc.residual(y[0])
+    assert result[0] == expected_inlet
 
-    assert result[0] == expected
-    assert np.all(np.isfinite(result))
+    # center-symmetry BC row for the first particle block, gradient of a
+    # constant profile (y is all ones) should be exactly zero
+    offset0 = dc.N_column
+    grad0 = dc.particle_numerics.evaluate_gradient(
+        y[offset0 : offset0 + dc.N_particle], 0
+    )
+    expected_center0 = dc.center_bc.residual(gradient_concentration_0=grad0)
+    assert result[offset0] == expected_center0
+    assert np.isclose(result[offset0], 0.0)
 
 
 def test_jacobian_returns_zero(b: BaseParams):

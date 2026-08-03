@@ -48,11 +48,10 @@ def run_demo(
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
-        column=column,
+        domain_length=column.particle_radius(),
         n_interior_points=5,
         n_elements=10,
         add_inlet=True,
-        resolution=reactormodels.models.DomainResolution.PARTICLE,
     )
 
     model = reactormodels.models.IntraparticleTransport(
@@ -63,7 +62,6 @@ def run_demo(
         initial_concentration=initial_concentration,
         isotherm=isotherm,
         numerics=numerics,
-        mode=reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
     )
     x, C, q = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
 

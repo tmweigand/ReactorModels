@@ -2,13 +2,13 @@
 
 __all__ = [
     "AdsorptionKinetics",
-    "DomainResolution",
     "DomainCoupling",
     "LinearIsotherm",
     "LangmuirIsotherm",
     "FreundlichIsotherm",
     "DirichletBC",
     "DanckwertsBC",
+    "SymmetryBC",
     "AnalyticModels",
     "AdvectionDiffusion",
     "AdvectionDiffusionAdsorption",
@@ -21,10 +21,9 @@ __all__ = [
 ]
 
 from .adsorption_kinetics import AdsorptionKinetics
-from .domain_resolution import DomainResolution
 from .domain_coupling import DomainCoupling
 from .isotherm import LinearIsotherm, FreundlichIsotherm, LangmuirIsotherm
-from .boundary_conditions import DirichletBC, DanckwertsBC
+from .boundary_conditions import DirichletBC, DanckwertsBC, SymmetryBC
 from .analytic_models import (
     OgataBanks,
     YoonNelson,

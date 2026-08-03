@@ -36,7 +36,7 @@ def _base_model(mode, k_ldf=0.1, n_col=30):
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
-        column=column, n_interior_points=n_col, add_inlet=True
+        domain_length=column.length, n_interior_points=n_col, add_inlet=True
     )
 
     return (

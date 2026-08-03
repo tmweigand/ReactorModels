@@ -28,7 +28,10 @@ class AdvectionDiffusion:
         self.initial_concentration = breakthrough.initial_concentration
         self.numerics = numerics
         self.inlet_bc = inlet_bc(
-            self.inlet_concentration, self.velocity, self.diffusion
+            self.inlet_concentration,
+            node=0,
+            velocity=self.velocity,
+            diffusion=self.diffusion,
         )
         self.N = len(self.numerics.collocation.nodes)
 

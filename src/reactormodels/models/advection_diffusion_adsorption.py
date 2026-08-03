@@ -46,7 +46,9 @@ class AdvectionDiffusionAdsorption:
         self.numerics = numerics
         self.mode = mode
         self.k_ldf = k_ldf
-        self.inlet_bc = inlet_bc(self.inlet_concentration, self.velocity, self.DL)
+        self.inlet_bc = inlet_bc(
+            self.inlet_concentration, node=0, velocity=self.velocity, diffusion=self.DL
+        )
         self.N = len(self.numerics.collocation.nodes)
 
         if (

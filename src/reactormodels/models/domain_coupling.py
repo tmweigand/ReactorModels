@@ -8,8 +8,7 @@ from ..column_data import Column
 from ..breakthrough_data import Breakthrough
 from ..numerics.config import NumericsConfig
 from .isotherm import Isotherm
-from .adsorption_kinetics import AdsorptionKinetics
-from .boundary_conditions import InletBC, DirichletBC
+from .boundary_conditions import InletBC, DirichletBC, SymmetryBC
 
 __all__ = ["DomainCoupling"]
 
@@ -28,9 +27,9 @@ class DomainCoupling:
         isotherm: Isotherm,
         column_numerics: NumericsConfig,
         particle_numerics: NumericsConfig,
-        mode: AdsorptionKinetics = AdsorptionKinetics.LOCAL_EQUILIBRIUM,
         k_film: float = 0,
         inlet_bc: Type[InletBC] = DirichletBC,
+        center_bc: Type[InletBC] = SymmetryBC,
     ):
         self.column = column
         self.breakthrough = breakthrough
@@ -43,20 +42,20 @@ class DomainCoupling:
         self.iso = isotherm
         self.column_numerics = column_numerics
         self.particle_numerics = particle_numerics
-        self.mode = mode
         self.k_film = k_film
         self.inlet_bc = inlet_bc(self.inlet_concentration)
-        self.Nz = len(self.column_numerics.collocation.nodes)
-        self.Nr = len(self.particle_numerics.collocation.nodes)
+        self.center_bc = center_bc(node=0)
+        self.N_column = len(self.column_numerics.collocation.nodes)
+        self.N_particle = len(self.particle_numerics.collocation.nodes)
 
     def _n_vars(self) -> int:
         """Total length of the IDA state vector."""
-        return self.Nz + self.Nr * self.Nz
+        return self.N_column + self.N_particle * (self.N_column - 1)
 
     def _split(self, y: np.ndarray):
         """Return (C, Cp) where Cp is the pore liquid concentration."""
-        C = y[: self.Nz]
-        Cp = y[self.Nz :].reshape(self.Nz, self.Nr)
+        C = y[: self.N_column]
+        Cp = y[self.N_column :].reshape(self.N_column - 1, self.N_particle)
         return C, Cp
 
     def _residual(self, t, y, ydot, result):
@@ -64,7 +63,8 @@ class DomainCoupling:
         c, cp = self._split(y)
         dcdt, dcpdt = self._split(ydot)
 
-        sink = np.zeros(self.Nz)
+        sink = np.zeros(self.N_column)
+        result[:] = 0
 
         # bulk phase - inlet
         result[0] = self.inlet_bc.residual(c[0])
@@ -80,36 +80,44 @@ class DomainCoupling:
             * self.column_numerics.evaluate_second_derivative(c)[1:]
         )
 
-        for i in range(1, self.Nz):
+        for i in range(self.N_column - 1):
+            col_idx = i + 1
+
             cp_i = cp[i]
             dcpdt_i = dcpdt[i]
 
-            offset = self.Nz + i * self.Nr
+            offset = self.N_column + i * self.N_particle
 
             # center: symmetry
-            result[offset] = self.particle_numerics.collocation.evaluate_gradient(
-                cp_i, 0
+            result[offset] = self.center_bc.residual(
+                gradient_concentration_0=self.particle_numerics.evaluate_gradient(
+                    cp_i, 0
+                )
             )
 
             # particle phase - internal
             Dp_term = (
-                self.column.particle_porosity * dcpdt_i[1 : self.Nr - 1]
+                self.column.particle_porosity * dcpdt_i[1 : self.N_particle - 1]
                 - self.column.particle_porosity
                 * self.Dp
-                * self.particle_numerics.evaluate_radial_operator(cp_i)[1 : self.Nr - 1]
+                * self.particle_numerics.evaluate_radial_operator(cp_i)[
+                    1 : self.N_particle - 1
+                ]
             )
 
             dqdCp = self.iso.dq_dC(cp_i)
             lap_q = self.particle_numerics.evaluate_radial_operator(self.iso.q(cp_i))
 
             Ds_term = (
-                self.column.particle_density * (dqdCp * dcpdt_i)[1 : self.Nr - 1]
-                - self.column.particle_density * self.Ds * lap_q[1 : self.Nr - 1]
+                self.column.particle_density
+                * (dqdCp * dcpdt_i)[1 : self.N_particle - 1]
+                - self.column.particle_density
+                * self.Ds
+                * lap_q[1 : self.N_particle - 1]
             )
 
             intraparticle_transport = Dp_term + Ds_term
-
-            result[offset + 1 : offset + self.Nr - 1] = intraparticle_transport
+            result[offset + 1 : offset + self.N_particle - 1] = intraparticle_transport
 
             # boundary condition
             grad_cp = self.particle_numerics.evaluate_gradient(cp_i, -1)
@@ -120,29 +128,28 @@ class DomainCoupling:
                 + self.column.particle_density * self.Ds * grad_q
             )
 
-            film_flux = self.k_film * (c[i] - cp_i[-1])
+            film_flux = self.k_film * (c[col_idx] - cp_i[-1])
 
-            result[offset + self.Nr - 1] = diffusive_flux - film_flux
+            result[offset + self.N_particle - 1] = diffusive_flux - film_flux
 
-            sink[i] = (
+            sink[col_idx] = (
                 6
                 * film_flux
                 * (1 - self.column.porosity)
                 / self.column.particle_diameter
             )
 
-        result[1 : self.Nz] = transport + sink[1:]
+        result[1 : self.N_column] = transport + sink[1:]
 
     def _jacobian(self, t, y, ydot, result, cj, jac):
         C, Cp = self._split(y)
         n = self._n_vars()
         J = np.zeros((n, n))
 
-        J[0, : self.Nz] = self.inlet_bc.jacobian_row(
+        J[0, : self.N_column] = self.inlet_bc.jacobian_row(
             self.column_numerics.collocation.first_derivative[0]
         )
 
-        # derivative of axial transport
         d_transport = (
             self.column.porosity
             * self.velocity
@@ -152,26 +159,28 @@ class DomainCoupling:
             * self.column_numerics.collocation.second_derivative
         )
 
-        J[1 : self.Nz, : self.Nz] = d_transport[1:, :]
+        J[1 : self.N_column, : self.N_column] = d_transport[1:, :]
 
         coef = (
-            6 * (1 - self.column.porosity) / self.column.particle_diameter * self.k_film
+            6 * (1 - self.column.porosity) * self.k_film / self.column.particle_diameter
         )
 
-        for i in range(self.Nz):
-            J[i, i] += cj * self.column.porosity
-            J[i, i] += coef
+        for i in range(self.N_column - 1):
+            col_idx = i + 1
 
-            offset = self.Nz + i * self.Nr
-            surface = offset + self.Nr - 1
+            J[col_idx, col_idx] += cj * self.column.porosity
+            J[col_idx, col_idx] += coef
 
-            J[i, surface] -= coef
+            offset = self.N_column + i * self.N_particle
+            surface = offset + self.N_particle - 1
+
+            J[col_idx, surface] -= coef
 
             cp_i = Cp[i]
             dqdCp = self.iso.dq_dC(cp_i)
 
             rows = slice(offset + 1, surface)
-            cols = slice(offset, offset + self.Nr)
+            cols = slice(offset, offset + self.N_particle)
 
             L = self.particle_numerics.collocation.radial_operator_matrix
 
@@ -181,18 +190,18 @@ class DomainCoupling:
 
             mass = self.column.particle_porosity + self.column.particle_density * dqdCp
 
-            for j in range(1, self.Nr - 1):
+            for j in range(1, self.N_particle - 1):
                 J[offset + j, offset + j] += cj * mass[j]
 
             J[offset, :] = 0
+            J[offset, cols] = self.center_bc.jacobian_row(
+                self.particle_numerics.collocation.first_derivative[0, :]
+            )
 
-            J[offset, cols] = self.particle_numerics.collocation.first_derivative[0, :]
-
-            J[surface, i] = -self.k_film
+            J[surface, col_idx] = -self.k_film
 
             G = self.particle_numerics.collocation.first_derivative[-1, :]
             d2qdCp2 = self.iso.d2q_dC2(cp_i)
-
             grad_cp = G @ cp_i
 
             surface_diffusion_jac = (
@@ -206,15 +215,14 @@ class DomainCoupling:
             J[surface, surface] += self.k_film
 
         jac[:, :] = J
-
         return 0
 
     def _initial_conditions(self, C_init: float, C_in: float, Cp_init: float):
         """Return (y0, ydot0) consistent with the algebraic constraint."""
-        C0 = np.full(self.Nz, C_init)
-        C0[0] = C_in
+        C0 = np.full(self.N_column, C_init)
+        C0[0] = self.inlet_bc.apply()
 
-        Cp0 = np.full((self.Nz, self.Nr), Cp_init)
+        Cp0 = np.full((self.N_column - 1, self.N_particle), Cp_init)
 
         y0 = np.concatenate(
             [
@@ -255,9 +263,11 @@ class DomainCoupling:
         # result.values.y has shape (n_out, n_vars); skip the t=t_span[0] row
         y_out = result.values.y[1:]  # (n_times, n_vars)
 
-        C_out = y_out[:, : self.Nz]  # (n_times, N)
+        C_out = y_out[:, : self.N_column]  # (n_times, N)
 
-        Cp_out = y_out[:, self.Nz :].reshape(len(t_eval), self.Nz, self.Nr)
+        Cp_out = y_out[:, self.N_column :].reshape(
+            len(t_eval), self.N_column - 1, self.N_particle
+        )
 
         return (
             self.column_numerics.collocation.nodes,

@@ -52,19 +52,17 @@ def run_demo(
     )
 
     column_numerics = reactormodels.numerics.NumericsConfig(
-        column=column,
+        domain_length=column.length,
         n_interior_points=3,
         n_elements=8,
         add_inlet=True,
-        resolution=reactormodels.models.DomainResolution.COLUMN,
     )
 
     particle_numerics = reactormodels.numerics.NumericsConfig(
-        column=column,
+        domain_length=column.particle_radius(),
         n_interior_points=3,
         n_elements=1,
         add_inlet=True,
-        resolution=reactormodels.models.DomainResolution.PARTICLE,
     )
 
     model = reactormodels.models.DomainCoupling(
@@ -77,7 +75,6 @@ def run_demo(
         isotherm=isotherm,
         column_numerics=column_numerics,
         particle_numerics=particle_numerics,
-        mode=reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
         k_film=k_film,
     )
     z, r, C, Cp = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)

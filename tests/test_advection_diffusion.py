@@ -34,7 +34,7 @@ def test_ogata_banks(diffusion):
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
-        column=column, n_interior_points=5, n_elements=20
+        n_interior_points=5, n_elements=20, domain_length=column.length
     )
 
     model = reactormodels.models.AdvectionDiffusion(
@@ -92,7 +92,7 @@ def test_multi_element_ogata_banks():
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
-        column=column,
+        domain_length=column.length,
         n_interior_points=5,
         n_elements=20,
     )

@@ -38,7 +38,7 @@ def test_mass_balance_class():
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
-        column=column, n_interior_points=30, add_inlet=True
+        domain_length=column.length, n_interior_points=30, add_inlet=True
     )
 
     model = reactormodels.models.AdvectionDiffusionAdsorption(
