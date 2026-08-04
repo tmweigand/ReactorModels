@@ -99,10 +99,44 @@ def test_second_derivative_quadratic():
 def test_radial_operator_constant():
     """Laplacian of a constant should be zero."""
     oc = reactormodels.numerics.OrthogonalCollocation(n_interior_points=5)
-    L = oc.radial_operator()
+    L = oc.radial_operator_matrix
     u = np.ones(len(oc.nodes))
     result = L @ u
     np.testing.assert_allclose(result, np.zeros_like(result), atol=1e-10)
+
+
+def test_radial_operator_linear():
+    """Laplacian of a constant should be zero."""
+    oc = reactormodels.numerics.OrthogonalCollocation(n_interior_points=5)
+    L = oc.radial_operator_matrix
+    u = oc.nodes
+    result = L @ u
+    expected = 2 / u
+    np.testing.assert_allclose(result, expected, atol=1e-10)
+
+
+def test_radial_operator_quadratic_exact():
+    """Laplacian of r^2 is exactly 6 everywhere, including the origin
+    (where the L'Hopital limit 3*u'' = 3*2 = 6 agrees with 2 + 2/r*2r = 6)."""
+    oc = reactormodels.numerics.OrthogonalCollocation(n_interior_points=5)
+    L = oc.radial_operator_matrix
+    x = oc.nodes
+    u = x**2
+    result = L @ u
+    expected = 6.0 * np.ones_like(x)
+    np.testing.assert_allclose(result, expected, atol=1e-8)
+
+
+def test_radial_operator_quartic_exact():
+    """Laplacian of r^4 is 20*r^2 everywhere, including the origin
+    (limit 3*u''(0) = 3*12*0^2 = 0, matching 20*0^2 = 0)."""
+    oc = reactormodels.numerics.OrthogonalCollocation(n_interior_points=5)
+    L = oc.radial_operator_matrix
+    x = oc.nodes
+    u = x**4
+    result = L @ u
+    expected = 20.0 * x**2
+    np.testing.assert_allclose(result, expected, atol=1e-6)
 
 
 def test_multi_element_nodes():
@@ -173,26 +207,26 @@ def test_gradient_matches_matrix(oc5):
 
 
 def test_gradient_analytic_cubic(oc5):
-    """gradient of x³ should equal 3x² exactly (polynomial, no truncation error)."""
+    """Gradient of x³ should equal 3x² exactly (polynomial, no truncation error)."""
     x = oc5.nodes
     np.testing.assert_allclose(oc5.evaluate_gradient(x**3), 3 * x**2, atol=1e-10)
 
 
 def test_gradient_analytic_node_cubic(oc5):
-    """gradient(x³, node) == 3*x_node² at every node."""
+    """Gradient(x³, node) == 3*x_node² at every node."""
     x = oc5.nodes
     for i, xi in enumerate(x):
         assert oc5.evaluate_gradient(x**3, i) == pytest.approx(3 * xi**2, abs=1e-10)
 
 
 def test_second_gradient_quadratic(oc5):
-    """second_gradient of x² should be ~2 everywhere."""
+    """Second gradient of x² should be ~2 everywhere."""
     result = oc5.evaluate_second_derivative(oc5.nodes**2)
     np.testing.assert_allclose(result, 2.0 * np.ones(len(oc5.nodes)), atol=1e-8)
 
 
 def test_second_gradient_matches_matrix(oc5):
-    """second_gradient(f) == second_derivative @ f for arbitrary f."""
+    """Second gradient(f) == second_derivative @ f for arbitrary f."""
     f = oc5.nodes**3
     np.testing.assert_allclose(
         oc5.evaluate_second_derivative(f), oc5.second_derivative @ f, atol=1e-12
@@ -200,7 +234,7 @@ def test_second_gradient_matches_matrix(oc5):
 
 
 def test_second_gradient_analytic_cubic(oc5):
-    """second_gradient of x³ should equal 6x exactly."""
+    """Second gradient of x³ should equal 6x exactly."""
     x = oc5.nodes
     np.testing.assert_allclose(oc5.evaluate_second_derivative(x**3), 6 * x, atol=1e-9)
 
@@ -228,3 +262,9 @@ def test_integrate_linear(oc5):
 def test_integrate_quadratic(oc5):
     """Integral of x² over [0,1] should be 1/3."""
     assert oc5.integrate(oc5.nodes**2) == pytest.approx(1.0 / 3.0, abs=1e-10)
+
+
+def test_radial_deriv_linear(oc5):
+    """Gradient of a linear function x should be 2/x."""
+    result = oc5.evaluate_radial_operator(oc5.nodes)
+    np.testing.assert_allclose(result, 2 / oc5.nodes, atol=1e-10)
