@@ -142,14 +142,7 @@ class Breakthrough:
         """Calculate the axial Peclet number."""
         assert diffusion > 0, f"diffusion must be positive, got {diffusion}"
 
-        velocity = (
-            self._superficial_velocity
-            if self._superficial_velocity is not None
-            else self.calculate_superficial_velocity(
-                self.flow_rate,
-                self.column.cross_section_area(),
-            )
-        )
+        velocity = self.superficial_velocity()
 
         return velocity * self.column.length / (self.column.porosity * diffusion)
 
@@ -161,14 +154,7 @@ class Breakthrough:
         if column_volume is None:
             column_volume = self.column.column_volume()
 
-        velocity = (
-            self._superficial_velocity
-            if self._superficial_velocity is not None
-            else self.calculate_superficial_velocity(
-                self.flow_rate,
-                self.column.cross_section_area(),
-            )
-        )
+        velocity = self.superficial_velocity()
 
         if self.flow_rate is not None:
             flow_derived = column_volume / self.flow_rate

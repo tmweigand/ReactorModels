@@ -38,11 +38,3 @@ class Media:
             )
 
         return derived
-
-    def total_porosity(self, bed_porosity: float) -> float:
-        """Total porosity = bed_porosity + (1 - bed_porosity) * particle_porosity."""
-        assert (
-            0 < bed_porosity < 1
-        ), f"bed_porosity must be in (0, 1), got {bed_porosity}"
-
-        return bed_porosity + (1 - bed_porosity) * self.particle_porosity

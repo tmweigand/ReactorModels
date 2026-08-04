@@ -80,10 +80,7 @@ def reynolds_number(
         and column is not None
         and breakthrough is not None
     ):
-        superficial_velocity = breakthrough.calculate_superficial_velocity(
-            breakthrough.flow_rate,
-            column.cross_section_area(),
-        )
+        superficial_velocity = breakthrough.superficial_velocity()
 
         interstitial_velocity = breakthrough.calculate_interstitial_velocity(
             superficial_velocity,
@@ -250,10 +247,7 @@ def peclet_number(
             and column is not None
             and breakthrough is not None
         ):
-            superficial_velocity = breakthrough.calculate_superficial_velocity(
-                breakthrough.flow_rate,
-                column.cross_section_area(),
-            )
+            superficial_velocity = breakthrough.superficial_velocity()
 
             interstitial_velocity = breakthrough.calculate_interstitial_velocity(
                 superficial_velocity,

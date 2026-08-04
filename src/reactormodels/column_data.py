@@ -15,7 +15,7 @@ class Column:
         length: float,
         porosity: float,
         diameter: float,
-        media: Media,
+        media: Media | None = None,
         bulk_density: float | None = None,
         sorbent_mass: float | None = None,
         water: Water | None = None,
@@ -53,7 +53,9 @@ class Column:
 
     def get_bulk_density(self) -> float:
         """Return or calculate the packed-bed bulk density."""
-        particle_density = self.media.particle_density
+        particle_density = (
+            self.media.particle_density if self.media is not None else None
+        )
 
         if particle_density is not None:
             derived_bulk_density = (1.0 - self.porosity) * particle_density
@@ -76,12 +78,14 @@ class Column:
 
         raise ValueError(
             "Bulk density cannot be determined. Supply either "
-            "bulk_density or media.particle_density."
+            "bulk_density or media with particle_density."
         )
 
     def get_particle_density(self) -> float:
         """Return or calculate the media particle density."""
-        particle_density = self.media.particle_density
+        particle_density = (
+            self.media.particle_density if self.media is not None else None
+        )
 
         if self.bulk_density is not None:
             derived_particle_density = self.bulk_density / (1.0 - self.porosity)
@@ -104,14 +108,16 @@ class Column:
 
         raise ValueError(
             "Particle density cannot be determined. Supply either "
-            "bulk_density or media.particle_density."
+            "bulk_density or media with particle_density."
         )
 
     def get_sorbent_mass(self) -> float:
         """Return or calculate the sorbent mass in the packed bed."""
-        density_available = (
-            self.bulk_density is not None or self.media.particle_density is not None
+        media_density_available = (
+            self.media is not None and self.media.particle_density is not None
         )
+
+        density_available = self.bulk_density is not None or media_density_available
 
         if density_available:
             derived_sorbent_mass = self.get_bulk_density() * self.column_volume()
@@ -122,8 +128,7 @@ class Column:
                     self.sorbent_mass,
                 ), (
                     f"Supplied sorbent_mass {self.sorbent_mass} is "
-                    "inconsistent with "
-                    "bulk_density * column_volume "
+                    "inconsistent with bulk_density * column_volume "
                     f"= {derived_sorbent_mass:.4f}"
                 )
 
@@ -137,13 +142,11 @@ class Column:
             "bulk_density, or media.particle_density."
         )
 
-    def total_porosity(self) -> float:
+    def get_total_porosity(self) -> float:
         """Calculate the total bed and intraparticle porosity."""
-        particle_porosity = self.media.particle_porosity
+        particle_porosity = self.porosity
 
-        if particle_porosity is None:
-            raise ValueError(
-                "media.particle_porosity is required to calculate " "total porosity."
-            )
+        if self.media is not None and self.media.particle_porosity is not None:
+            particle_porosity = self.media.particle_porosity
 
         return self.porosity + (1.0 - self.porosity) * particle_porosity

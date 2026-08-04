@@ -28,15 +28,8 @@ def test_media_get_bed_density_and_total_porosity():
     bed_porosity = 0.4
 
     expected_bed_density = (1.0 - bed_porosity) * media.particle_density
-    expected_total_porosity = (
-        bed_porosity + (1.0 - bed_porosity) * media.particle_porosity
-    )
 
     np.testing.assert_allclose(
         media.get_bed_density(bed_porosity),
         expected_bed_density,
-    )
-    np.testing.assert_allclose(
-        media.total_porosity(bed_porosity),
-        expected_total_porosity,
     )
