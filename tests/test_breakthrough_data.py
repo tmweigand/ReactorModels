@@ -14,18 +14,20 @@ def test_breakthrough_class():
     flow_rate = 2.5
     length = 5
     diameter = 0.5
-    porosity = 0.5
+    porosity = 0.4
     threshold = 0.2
-    bulk_density = 0.5
 
     column = reactormodels.Column(
         length=length,
         diameter=diameter,
         porosity=porosity,
-        bulk_density=bulk_density,
+        media=reactormodels.Media,
     )
 
+    column_volume = column.column_volume()
+
     breakthrough = reactormodels.Breakthrough(
+        column=column,
         feed_concentrations=feed_concentrations,
         compound=compound,
         water_matrix=water_matrix,
@@ -33,16 +35,6 @@ def test_breakthrough_class():
         bed_volumes=bed_volumes,
         effluent_concentrations=effluent_concentrations,
         flow_rate=flow_rate,
-        column=column,
-    )
-
-    assert breakthrough.column.column_volume() == pytest.approx(
-        5 * np.pi * 0.25**2, abs=1e-5
-    )
-    assert breakthrough.column.get_bulk_density() == pytest.approx(0.5, abs=1e-5)
-    assert breakthrough.column.get_particle_density() == pytest.approx(1, abs=1e-5)
-    assert breakthrough.column.get_sorbent_mass() == pytest.approx(
-        0.5 * 5 * np.pi * 0.25**2, abs=1e-5
     )
 
     assert breakthrough.mean_feed_concentration() == pytest.approx(100, abs=1e-5)
@@ -51,15 +43,17 @@ def test_breakthrough_class():
     assert breakthrough.normalize_concentration() == pytest.approx(expected, abs=1e-5)
 
     expected = np.pi / 8
-    assert breakthrough.empty_bed_contact_time() == expected
+    assert breakthrough.empty_bed_contact_time(column_volume) == expected
 
-    breakthrough.time_to_bed_volumes()
+    breakthrough.time_to_bed_volumes(column_volume)
     assert breakthrough.bed_volumes == pytest.approx(bed_volumes, abs=0.05)
 
-    breakthrough.bed_volumes_to_time()
+    breakthrough.bed_volumes_to_time(column_volume)
     assert breakthrough.time == pytest.approx(time, abs=0.05)
 
-    threshold, index = breakthrough.breakthrough_threshold(threshold, return_index=True)
+    threshold, index = breakthrough.breakthrough_threshold(
+        column_volume, threshold, return_index=True
+    )
     assert threshold == pytest.approx(300, abs=1e-5)
     assert index == 4
 

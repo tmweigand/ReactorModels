@@ -1,6 +1,7 @@
-import reactormodels
 import numpy as np
 import pytest
+
+import reactormodels
 
 
 @pytest.mark.parametrize("diffusion", [0.01, 0.1])
@@ -8,21 +9,37 @@ def test_ogata_banks(diffusion):
     """Collocation solution must match the Ogata-Banks solution."""
     interstitial_velocity = 1.0
     column_length = 5.0
+    column_diameter = 0.2
     porosity = 0.5
     inlet_concentration = 1.0
     initial_concentration = 0.0
 
+    media = reactormodels.Media(
+        particle_porosity=0.3,
+        particle_density=1.2,
+        mean_diameter=0.001,
+        sphericity=0.9,
+    )
+
     column = reactormodels.Column(
         length=column_length,
         porosity=porosity,
+        diameter=column_diameter,
+        media=media,
     )
 
     t_eval = np.array([1.0, 2.0, 3.0])
 
+    superficial_velocity = interstitial_velocity * porosity
+    flow_rate = superficial_velocity * column.cross_section_area()
+
     breakthrough = reactormodels.Breakthrough(
         column=column,
+        compound="Test compound",
         feed_concentrations=inlet_concentration,
-        superficial_velocity=interstitial_velocity * porosity,
+        effluent_concentrations=np.zeros_like(t_eval),
+        flow_rate=flow_rate,
+        superficial_velocity=superficial_velocity,
         time=t_eval,
     )
 
@@ -45,20 +62,36 @@ def test_multi_element_ogata_banks():
     interstitial_velocity = 1.0
     diffusion = 0.01
     column_length = 5.0
+    column_diameter = 0.2
     porosity = 0.5
     inlet_concentration = 1.0
     initial_concentration = 0.0
     t_eval = np.array([2.0, 4.0])
 
+    media = reactormodels.Media(
+        particle_porosity=0.3,
+        particle_density=1.2,
+        mean_diameter=0.001,
+        sphericity=0.9,
+    )
+
     column = reactormodels.Column(
         length=column_length,
         porosity=porosity,
+        diameter=column_diameter,
+        media=media,
     )
+
+    superficial_velocity = interstitial_velocity * porosity
+    flow_rate = superficial_velocity * column.cross_section_area()
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
+        compound="Test compound",
         feed_concentrations=inlet_concentration,
-        superficial_velocity=interstitial_velocity * porosity,
+        effluent_concentrations=np.zeros_like(t_eval),
+        flow_rate=flow_rate,
+        superficial_velocity=superficial_velocity,
         time=t_eval,
     )
 

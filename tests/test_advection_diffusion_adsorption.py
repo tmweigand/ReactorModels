@@ -17,17 +17,28 @@ def _base_model(mode, k_ldf=0.1, n_col=30):
     diameter = 1
     time = [0, 1, 2]
 
+    media = reactormodels.Media(
+        particle_porosity=0.3,
+        particle_density=bulk_density / (1 - porosity),
+    )
+
     column = reactormodels.Column(
         length=column_length,
         porosity=porosity,
         bulk_density=bulk_density,
         diameter=diameter,
+        media=media,
     )
+
+    flow_rate = superficial_velocity * column.cross_section_area()
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
         superficial_velocity=superficial_velocity,
         feed_concentrations=inlet_concentration,
+        flow_rate=flow_rate,
+        effluent_concentrations=np.zeros(len(time)),
+        compound="Test compound",
         time=time,
     )
 

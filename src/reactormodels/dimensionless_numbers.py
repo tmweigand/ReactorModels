@@ -55,21 +55,7 @@ def reynolds_number(
     bed_porosity: float | None = None,
     sphericity: float | None = None,
 ) -> float:
-    """Calculate the standard or packed-bed Reynolds number.
-
-    Standard form:
-
-        Re = density * interstitial_velocity
-             * diameter / viscosity
-
-    Nonspherical-particle form:
-
-        Re = density * sphericity * interstitial_velocity
-             * diameter / viscosity
-
-    Parameters may be supplied directly or recalled from the existing
-    Water, Media, Column, and Breakthrough objects.
-    """
+    """Calculate the standard or packed-bed Reynolds number."""
     if water is not None:
         if density is None:
             density = water.density
@@ -94,14 +80,17 @@ def reynolds_number(
         and column is not None
         and breakthrough is not None
     ):
-        interstitial_velocity = column.interstitial_velocity(breakthrough.flow_rate)
-
-    if interstitial_velocity is None:
-        superficial_velocity = _positive_parameter(
-            "superficial_velocity",
-            superficial_velocity,
+        superficial_velocity = breakthrough.calculate_superficial_velocity(
+            breakthrough.flow_rate,
+            column.cross_section_area(),
         )
 
+        interstitial_velocity = breakthrough.calculate_interstitial_velocity(
+            superficial_velocity,
+            column.porosity,
+        )
+
+    if interstitial_velocity is None and superficial_velocity is not None:
         if bed_porosity is None and column is not None:
             bed_porosity = column.porosity
 
@@ -110,20 +99,28 @@ def reynolds_number(
             bed_porosity,
         )
 
+        superficial_velocity = _positive_parameter(
+            "superficial_velocity",
+            superficial_velocity,
+        )
+
         interstitial_velocity = superficial_velocity / bed_porosity
 
     density = _positive_parameter(
         "density",
         density,
     )
+
     interstitial_velocity = _positive_parameter(
         "interstitial_velocity",
         interstitial_velocity,
     )
+
     diameter = _positive_parameter(
         "diameter",
         diameter,
     )
+
     viscosity = _positive_parameter(
         "viscosity",
         viscosity,
@@ -140,18 +137,12 @@ def reynolds_number(
 def schmidt_number(
     viscosity: float | None = None,
     density: float | None = None,
+    diffusion_coefficient: float | None = None,
     *,
     water: Water | None = None,
     chemical: Chemical | None = None,
 ) -> float:
-    """Calculate the Schmidt number.
-
-    Sc = viscosity / (density * liquid_diffusion_coefficient)
-
-    The liquid diffusion coefficient is always calculated through:
-
-        chemical.liquid_diffusion_coefficient(viscosity)
-    """
+    """Calculate the Schmidt number."""
     if water is not None:
         if viscosity is None:
             viscosity = water.viscosity
@@ -163,24 +154,26 @@ def schmidt_number(
         "viscosity",
         viscosity,
     )
+
     density = _positive_parameter(
         "density",
         density,
     )
 
-    if chemical is None:
-        raise ValueError(
-            "chemical is required to calculate the " "liquid diffusion coefficient."
-        )
+    if diffusion_coefficient is None:
+        if chemical is None:
+            raise ValueError(
+                "chemical is required when diffusion_coefficient " "is not supplied."
+            )
 
-    liquid_diffusion_coefficient = chemical.liquid_diffusion_coefficient(viscosity)
+        diffusion_coefficient = chemical.liquid_diffusion_coefficient(viscosity)
 
-    liquid_diffusion_coefficient = _positive_parameter(
-        "liquid_diffusion_coefficient",
-        liquid_diffusion_coefficient,
+    diffusion_coefficient = _positive_parameter(
+        "diffusion_coefficient",
+        diffusion_coefficient,
     )
 
-    return viscosity / (density * liquid_diffusion_coefficient)
+    return viscosity / (density * diffusion_coefficient)
 
 
 def _resolve_reynolds_and_schmidt(
@@ -221,30 +214,94 @@ def _resolve_reynolds_and_schmidt(
 
 
 def peclet_number(
+    interstitial_velocity: float | None = None,
+    length: float | None = None,
+    axial_dispersion_coefficient: float | None = None,
+    *,
     reynolds: float | None = None,
     schmidt: float | None = None,
-    *,
     water: Water | None = None,
     chemical: Chemical | None = None,
     media: Media | None = None,
     column: Column | None = None,
     breakthrough: Breakthrough | None = None,
 ) -> float:
-    """Calculate the Peclet number.
+    """Calculate an axial or mass-transfer Peclet number."""
+    axial_parameters_provided = any(
+        value is not None
+        for value in (
+            interstitial_velocity,
+            length,
+            axial_dispersion_coefficient,
+        )
+    )
 
-    Pe = Re * Sc
+    mass_transfer_parameters_provided = reynolds is not None or schmidt is not None
 
-    Reynolds and Schmidt numbers may be supplied directly or calculated
-    from the existing parameter objects.
-    """
-    reynolds, schmidt = _resolve_reynolds_and_schmidt(
+    if axial_parameters_provided and mass_transfer_parameters_provided:
+        raise ValueError(
+            "Provide axial-dispersion parameters or Reynolds and "
+            "Schmidt numbers, not both."
+        )
+
+    if axial_parameters_provided:
+        if (
+            interstitial_velocity is None
+            and column is not None
+            and breakthrough is not None
+        ):
+            superficial_velocity = breakthrough.calculate_superficial_velocity(
+                breakthrough.flow_rate,
+                column.cross_section_area(),
+            )
+
+            interstitial_velocity = breakthrough.calculate_interstitial_velocity(
+                superficial_velocity,
+                column.porosity,
+            )
+
+        if length is None and column is not None:
+            length = column.length
+
+        interstitial_velocity = _positive_parameter(
+            "interstitial_velocity",
+            interstitial_velocity,
+        )
+
+        length = _positive_parameter(
+            "length",
+            length,
+        )
+
+        axial_dispersion_coefficient = _positive_parameter(
+            "axial_dispersion_coefficient",
+            axial_dispersion_coefficient,
+        )
+
+        return length * interstitial_velocity / axial_dispersion_coefficient
+
+    if reynolds is None:
+        reynolds = reynolds_number(
+            water=water,
+            media=media,
+            column=column,
+            breakthrough=breakthrough,
+        )
+
+    if schmidt is None:
+        schmidt = schmidt_number(
+            water=water,
+            chemical=chemical,
+        )
+
+    reynolds = _positive_parameter(
+        "reynolds",
         reynolds,
+    )
+
+    schmidt = _positive_parameter(
+        "schmidt",
         schmidt,
-        water=water,
-        chemical=chemical,
-        media=media,
-        column=column,
-        breakthrough=breakthrough,
     )
 
     return reynolds * schmidt

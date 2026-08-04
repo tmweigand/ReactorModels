@@ -3,26 +3,19 @@
 import numpy as np
 import pytest
 
-
 from reactormodels import (
-    Water,
-    Chemical,
-    Media,
     Breakthrough,
-    dimensionless_numbers,
+    Chemical,
     Column,
+    Media,
+    Water,
+    dimensionless_numbers,
 )
 
 
 @pytest.fixture
 def parameter_objects():
     """Create objects used to test parameter recall."""
-    column = Column(
-        length=1.2,
-        porosity=0.4,
-        diameter=0.2,
-    )
-
     media = Media(
         particle_porosity=0.3,
         particle_density=1.2,
@@ -42,11 +35,17 @@ def parameter_objects():
         molar_volume=100.0,
     )
 
+    column = Column(
+        length=1.2,
+        porosity=0.4,
+        diameter=0.2,
+        media=media,
+        water=water,
+        chemical=chemical,
+    )
+
     breakthrough = Breakthrough(
         column=column,
-        length=10,
-        diameter=0.2,
-        porosity=0.4,
         compound="Test compound",
         feed_concentrations=100.0,
         effluent_concentrations=np.array([0.0, 25.0, 50.0, 100.0]),
@@ -55,7 +54,13 @@ def parameter_objects():
         water_matrix="Test water",
     )
 
-    return column, media, water, chemical, breakthrough
+    return (
+        column,
+        media,
+        water,
+        chemical,
+        breakthrough,
+    )
 
 
 def test_reynolds_number_direct():
@@ -74,7 +79,10 @@ def test_reynolds_number_direct():
         viscosity,
     )
 
-    np.testing.assert_allclose(result, expected)
+    np.testing.assert_allclose(
+        result,
+        expected,
+    )
 
 
 def test_reynolds_number_using_parameter_objects(
@@ -83,7 +91,15 @@ def test_reynolds_number_using_parameter_objects(
     """Test Reynolds number using existing parameter classes."""
     column, media, water, _, breakthrough = parameter_objects
 
-    interstitial_velocity = column.interstitial_velocity(breakthrough.flow_rate)
+    superficial_velocity = breakthrough.calculate_superficial_velocity(
+        breakthrough.flow_rate,
+        column.cross_section_area(),
+    )
+
+    interstitial_velocity = breakthrough.calculate_interstitial_velocity(
+        superficial_velocity,
+        column.porosity,
+    )
 
     expected = (
         water.density
@@ -100,7 +116,10 @@ def test_reynolds_number_using_parameter_objects(
         breakthrough=breakthrough,
     )
 
-    np.testing.assert_allclose(result, expected)
+    np.testing.assert_allclose(
+        result,
+        expected,
+    )
 
 
 def test_schmidt_number_using_chemical(
@@ -120,7 +139,10 @@ def test_schmidt_number_using_chemical(
         chemical=chemical,
     )
 
-    np.testing.assert_allclose(result, expected)
+    np.testing.assert_allclose(
+        result,
+        expected,
+    )
 
 
 def test_schmidt_number_with_direct_water_properties(
@@ -142,7 +164,10 @@ def test_schmidt_number_with_direct_water_properties(
         chemical=chemical,
     )
 
-    np.testing.assert_allclose(result, expected)
+    np.testing.assert_allclose(
+        result,
+        expected,
+    )
 
 
 def test_peclet_number_direct():
@@ -157,7 +182,10 @@ def test_peclet_number_direct():
         schmidt=schmidt,
     )
 
-    np.testing.assert_allclose(result, expected)
+    np.testing.assert_allclose(
+        result,
+        expected,
+    )
 
 
 def test_peclet_number_using_parameter_objects(
@@ -166,7 +194,15 @@ def test_peclet_number_using_parameter_objects(
     """Test Peclet number using existing parameter classes."""
     column, media, water, chemical, breakthrough = parameter_objects
 
-    interstitial_velocity = column.interstitial_velocity(breakthrough.flow_rate)
+    superficial_velocity = breakthrough.calculate_superficial_velocity(
+        breakthrough.flow_rate,
+        column.cross_section_area(),
+    )
+
+    interstitial_velocity = breakthrough.calculate_interstitial_velocity(
+        superficial_velocity,
+        column.porosity,
+    )
 
     reynolds = (
         water.density
@@ -192,7 +228,10 @@ def test_peclet_number_using_parameter_objects(
         breakthrough=breakthrough,
     )
 
-    np.testing.assert_allclose(result, expected)
+    np.testing.assert_allclose(
+        result,
+        expected,
+    )
 
 
 def test_chern_chien_sherwood_number():
@@ -212,7 +251,10 @@ def test_chern_chien_sherwood_number():
         bed_porosity=bed_porosity,
     )
 
-    np.testing.assert_allclose(result, expected)
+    np.testing.assert_allclose(
+        result,
+        expected,
+    )
 
 
 def test_sherwood_number_using_parameter_objects(
@@ -221,7 +263,15 @@ def test_sherwood_number_using_parameter_objects(
     """Test Sherwood using recalled parameters."""
     column, media, water, chemical, breakthrough = parameter_objects
 
-    interstitial_velocity = column.interstitial_velocity(breakthrough.flow_rate)
+    superficial_velocity = breakthrough.calculate_superficial_velocity(
+        breakthrough.flow_rate,
+        column.cross_section_area(),
+    )
+
+    interstitial_velocity = breakthrough.calculate_interstitial_velocity(
+        superficial_velocity,
+        column.porosity,
+    )
 
     reynolds = (
         water.density
@@ -250,7 +300,10 @@ def test_sherwood_number_using_parameter_objects(
         breakthrough=breakthrough,
     )
 
-    np.testing.assert_allclose(result, expected)
+    np.testing.assert_allclose(
+        result,
+        expected,
+    )
 
 
 def test_sherwood_constraints():

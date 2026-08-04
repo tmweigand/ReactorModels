@@ -8,8 +8,8 @@ class Chemical:
 
     def __init__(
         self,
-        compound: str | None = None,
-        molar_volume: float | None = None,
+        compound: str,
+        molar_volume: float,
         molecular_weight: float | None = None,
         density: float | None = None,
         solubility: float | None = None,
@@ -17,9 +17,7 @@ class Chemical:
         boiling_point: float | None = None,
         diffusion_parameter: float | None = None,
         chemical_density: float | None = None,
-        **kwargs,
     ) -> None:
-        super().__init__(**kwargs)
 
         if chemical_density is not None:
             density = chemical_density

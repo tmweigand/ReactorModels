@@ -22,12 +22,17 @@ def test_thomas():
 
     isotherm = reactormodels.models.LangmuirIsotherm(K=K, q_m=q_m)
 
+    media = reactormodels.Media(
+        particle_porosity=0.3,
+        particle_density=particle_density,
+    )
+
     column = reactormodels.Column(
         length=length,
         porosity=porosity,
         bulk_density=bulk_density,
         diameter=diameter,
-        particle_density=particle_density,
+        media=media,
     )
 
     breakthrough = reactormodels.Breakthrough(

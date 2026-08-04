@@ -8,15 +8,13 @@ class Media:
 
     def __init__(
         self,
-        particle_porosity: float | None = None,
-        particle_density: float | None = None,
+        particle_porosity: float,
+        particle_density: float,
         mean_diameter: float | None = None,
         bed_density: float | None = None,
         sphericity: float | None = None,
         particle_radius: float | None = None,
-        **kwargs,
     ) -> None:
-        super().__init__(**kwargs)
 
         self.particle_porosity = particle_porosity
         self.particle_density = particle_density

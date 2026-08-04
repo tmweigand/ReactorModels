@@ -17,11 +17,17 @@ def test_mass_balance_class():
     v_eff = velocity / (porosity * R)
     t_eval = np.linspace(0.1 * column_length / v_eff, 1.5 * column_length / v_eff, 8)
 
+    media = reactormodels.Media(
+        particle_porosity=0.3,
+        particle_density=bulk_density / (1 - porosity),
+    )
+
     column = reactormodels.Column(
         length=column_length,
         porosity=porosity,
         bulk_density=bulk_density,
         diameter=diameter,
+        media=media,
     )
 
     breakthrough = reactormodels.Breakthrough(

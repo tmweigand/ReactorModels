@@ -21,6 +21,7 @@ def test_breakthrough_class():
         length=length,
         diameter=diameter,
         porosity=porosity,
+        media=reactormodels.Media,
     )
 
     column_volume = column.column_volume()

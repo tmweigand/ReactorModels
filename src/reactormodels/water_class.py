@@ -6,13 +6,11 @@ class Water:
 
     def __init__(
         self,
-        water_matrix: str | None = None,
+        water_matrix: str,
         density: float | None = None,
         viscosity: float | None = None,
         temperature: float | None = None,
-        **kwargs,
     ):
-        super().__init__(**kwargs)
 
         self.water_matrix = water_matrix
         self.density = density
