@@ -44,6 +44,7 @@ class OrthogonalCollocation:
         self.add_inlet = add_inlet
         self.n_elements = n_elements
         self.nodes, self.first_derivative, self.second_derivative = self._build()
+        self.radial_operator_matrix = self._build_radial_operator()
 
     def jacobi_roots_and_weights(self) -> tuple[np.ndarray, np.ndarray]:
         """Roots and quadrature weights of P_n^(alpha,beta), shifted to [0,1]."""
@@ -175,19 +176,26 @@ class OrthogonalCollocation:
             second_derivative / (self.domain_length**2),
         )
 
-    def radial_operator(self) -> np.ndarray:
+    def _build_radial_operator(self):
         """Spherical Laplacian: (1/r^2)*d/dr(r^2*du/dr) = d^2u/dr^2 + (2/r)*du/dr"""
         x = self.nodes
         L = np.zeros_like(self.second_derivative)
+
         for i, xi in enumerate(x):
             if xi < 1e-14:
-                L[i, :] = 3.0 * self.second_derivative[i, :]
+                L[i] = 3.0 * self.second_derivative[i]
             else:
-                L[i, :] = (
-                    self.second_derivative[i, :]
-                    + (2.0 / xi) * self.first_derivative[i, :]
-                )
+                L[i] = self.second_derivative[i] + (2.0 / xi) * self.first_derivative[i]
+
         return L
+
+    def evaluate_radial_operator(
+        self, f: np.ndarray, node: int | None = None
+    ) -> np.ndarray | float:
+        """Evaluate ∇²f = d²f/dr² + (2/r) df/dr."""
+        if node is None:
+            return self.radial_operator_matrix @ f
+        return self.radial_operator_matrix[node, :] @ f
 
     def evaluate_gradient(self, f: np.ndarray, node: None | int = None) -> float:
         """Return df/dx at a specific collocation node.
