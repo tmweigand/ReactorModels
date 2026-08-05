@@ -53,7 +53,7 @@ class DomainCoupling:
         return self.N_column + self.N_particle * (self.N_column - 1)
 
     def _split(self, y: np.ndarray):
-        """Return (C, Cp) where Cp is the pore liquid concentration."""
+        """Return (C, Cp) where Cp is a 2D numpy array."""
         C = y[: self.N_column]
         Cp = y[self.N_column :].reshape(self.N_column - 1, self.N_particle)
         return C, Cp
@@ -82,11 +82,10 @@ class DomainCoupling:
 
         for i in range(self.N_column - 1):
             col_idx = i + 1
+            offset = self.N_column + i * self.N_particle
 
             cp_i = cp[i]
             dcpdt_i = dcpdt[i]
-
-            offset = self.N_column + i * self.N_particle
 
             # center: symmetry
             result[offset] = self.center_bc.residual(
@@ -116,8 +115,7 @@ class DomainCoupling:
                 * lap_q[1 : self.N_particle - 1]
             )
 
-            intraparticle_transport = Dp_term + Ds_term
-            result[offset + 1 : offset + self.N_particle - 1] = intraparticle_transport
+            result[offset + 1 : offset + self.N_particle - 1] = Dp_term + Ds_term
 
             # boundary condition
             grad_cp = self.particle_numerics.evaluate_gradient(cp_i, -1)
@@ -234,12 +232,23 @@ class DomainCoupling:
         ydot0 = np.zeros_like(y0)
         return y0, ydot0
 
-    def _algebraic_vars_idx(self):
-        """Create list identifying which equations are algebraic.
+    def _algebraic_vars_idx(self) -> list[int]:
+        """Return indices of algebraic (non-differential) equations.
 
-        Only the inlet boundary condition for this model.
+        Currently: the inlet boundary condition, plus the particle-center
+        and particle-edge boundary conditions for every column node.
         """
-        return [0]
+        i = np.arange(self.N_column - 1)
+
+        var_idxs = [0]  # liquid_phase_inlet
+        var_idxs.extend(
+            (self.N_column + i * self.N_particle).tolist()
+        )  # particle center
+        var_idxs.extend(
+            (self.N_column + i * self.N_particle + (self.N_particle - 1)).tolist()
+        )  # particle edge
+
+        return var_idxs
 
     def solve(self, t_span, t_eval, C_in=1.0, C_init=0.0, Cp_init=0.0):
         """Integrate from t_span[0] to t_span[1], returning results at t_eval."""
@@ -247,7 +256,7 @@ class DomainCoupling:
 
         result = self.column_numerics.integrate(
             residual=self._residual,
-            jacobian=self._jacobian,
+            # jacobian=self._jacobian,
             y0=y0,
             yp0=ydot0,
             t_span=t_span,

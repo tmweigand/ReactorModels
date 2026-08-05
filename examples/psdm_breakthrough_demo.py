@@ -15,7 +15,7 @@ def run_demo(
     # particle
     particle_porosity = 0.5
     particle_density = 600  # g/L
-    particle_diameter = 0.07  # cm
+    particle_diameter = 0.07 * 2  # cm
     pore_diffusion = 5e-6  # cm2/s
     surface_diffusion = 5e-9  # cm2/s
     k_film = 0.1  # cm/s
