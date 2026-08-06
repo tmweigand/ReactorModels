@@ -91,13 +91,18 @@ def test_thomas_limiting_form(
         particle_density=0.6,
         particle_porosity=0.4,
     )
-
+    water = reactormodels.Water(water_matrix="tested_water")
+    chemical = reactormodels.Chemical(
+        compound="Test compound",
+    )
     column = reactormodels.Column(
         length=length,
         diameter=diameter,
         porosity=porosity,
         bulk_density=bulk_density,
         media=media,
+        water=water,
+        chemical=chemical,
     )
 
     breakthrough = reactormodels.Breakthrough(
@@ -167,13 +172,18 @@ def test_bohart_adams_equals_thomas():
         particle_porosity=0.3,
         particle_density=bulk_density / (1 - porosity),
     )
-
+    water = reactormodels.Water(water_matrix="tested_water")
+    chemical = reactormodels.Chemical(
+        compound="Test compound",
+    )
     column = reactormodels.Column(
         length=length,
         porosity=porosity,
         diameter=diameter,
         bulk_density=bulk_density,
         media=media,
+        water=water,
+        chemical=chemical,
     )
 
     feed_concentrations = [99, 101]

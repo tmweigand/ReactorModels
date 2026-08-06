@@ -7,7 +7,6 @@ def test_breakthrough_class():
 
     feed_concentrations = [101, 99]
     compound = "PFOA"
-    water_matrix = "Surface_Water"
     bed_volumes = np.array([0, 100, 200, 250, 350, 400, 500, 600])
     time = np.array(bed_volumes) * np.pi / 8
     effluent_concentrations = np.array([0, 0, 10, 15, 25, 80, 100, 100])
@@ -17,11 +16,17 @@ def test_breakthrough_class():
     porosity = 0.4
     threshold = 0.2
 
+    water = reactormodels.Water(water_matrix="tested_water")
+    chemical = reactormodels.Chemical(
+        compound="Test compound",
+    )
     column = reactormodels.Column(
         length=length,
         diameter=diameter,
         porosity=porosity,
         media=reactormodels.Media,
+        water=water,
+        chemical=chemical,
     )
 
     column_volume = column.column_volume()
@@ -30,7 +35,6 @@ def test_breakthrough_class():
         column=column,
         feed_concentrations=feed_concentrations,
         compound=compound,
-        water_matrix=water_matrix,
         time=time,
         bed_volumes=bed_volumes,
         effluent_concentrations=effluent_concentrations,

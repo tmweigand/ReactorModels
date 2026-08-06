@@ -21,11 +21,17 @@ def test_ogata_banks(diffusion):
         sphericity=0.9,
     )
 
+    water = reactormodels.Water(water_matrix="tested_water")
+    chemical = reactormodels.Chemical(
+        compound="Test compound",
+    )
     column = reactormodels.Column(
         length=column_length,
         porosity=porosity,
         diameter=column_diameter,
         media=media,
+        water=water,
+        chemical=chemical,
     )
 
     t_eval = np.array([1.0, 2.0, 3.0])
@@ -74,12 +80,18 @@ def test_multi_element_ogata_banks():
         mean_diameter=0.001,
         sphericity=0.9,
     )
+    water = reactormodels.Water(water_matrix="tested_water")
+    chemical = reactormodels.Chemical(
+        compound="Test compound",
+    )
 
     column = reactormodels.Column(
         length=column_length,
         porosity=porosity,
         diameter=column_diameter,
         media=media,
+        water=water,
+        chemical=chemical,
     )
 
     superficial_velocity = interstitial_velocity * porosity

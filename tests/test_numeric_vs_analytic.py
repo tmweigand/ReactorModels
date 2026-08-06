@@ -26,6 +26,10 @@ def test_thomas():
         particle_porosity=0.3,
         particle_density=particle_density,
     )
+    water = reactormodels.Water(water_matrix="tested_water")
+    chemical = reactormodels.Chemical(
+        compound="Test compound",
+    )
 
     column = reactormodels.Column(
         length=length,
@@ -33,6 +37,8 @@ def test_thomas():
         bulk_density=bulk_density,
         diameter=diameter,
         media=media,
+        water=water,
+        chemical=chemical,
     )
 
     breakthrough = reactormodels.Breakthrough(

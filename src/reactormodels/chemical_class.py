@@ -9,18 +9,14 @@ class Chemical:
     def __init__(
         self,
         compound: str,
-        molar_volume: float,
+        molar_volume: float | None = None,
         molecular_weight: float | None = None,
         density: float | None = None,
         solubility: float | None = None,
         vapor_pressure: float | None = None,
         boiling_point: float | None = None,
         diffusion_parameter: float | None = None,
-        chemical_density: float | None = None,
     ) -> None:
-
-        if chemical_density is not None:
-            density = chemical_density
 
         if molar_volume is not None:
             assert (
@@ -57,7 +53,17 @@ class Chemical:
         self,
         viscosity: float,
     ) -> float:
-        """Calculate the liquid-phase diffusion coefficient."""
+        """The liquid diffusivity
+        was determined from a correlation given by Hayduk and Laudie (1974):
+
+        ----reference----
+        (AdDesinS manual appendix F eq.no.7)
+
+        ----parameters----
+        DL is the liquid diffusivity (cm2/s)
+        Vb is the molar volume of the chemical at the normal boiling point (cm3/mol)
+        uL is the water viscosity (centipoise)
+        """  # noqa: D205, D401
         assert viscosity > 0, f"viscosity must be positive, got {viscosity}"
 
         if self.molar_volume is None:

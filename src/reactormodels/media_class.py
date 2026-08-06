@@ -8,8 +8,8 @@ class Media:
 
     def __init__(
         self,
-        particle_porosity: float,
-        particle_density: float,
+        particle_porosity: float | None = None,
+        particle_density: float | None = None,
         mean_diameter: float | None = None,
         bed_density: float | None = None,
         sphericity: float | None = None,
@@ -24,17 +24,21 @@ class Media:
         self.particle_radius = particle_radius
 
     def get_bed_density(self, bed_porosity: float) -> float:
-        """Bed density (rho_b) = (1 - bed_porosity) * particle_density."""
+        """Return bed density calculated from particle density and porosity."""
         assert (
             0 < bed_porosity < 1
         ), f"bed_porosity must be in (0, 1), got {bed_porosity}"
 
-        derived = (1 - bed_porosity) * self.particle_density
+        if self.particle_density is None:
+            raise ValueError("particle_density is required to calculate bed_density.")
+
+        derived = (1.0 - bed_porosity) * self.particle_density
 
         if self.bed_density is not None:
             assert np.isclose(derived, self.bed_density), (
-                f"Supplied bed_density {self.bed_density} inconsistent "
-                f"with (1 - bed_porosity) * particle_density = {derived:.4f}"
+                f"Supplied bed_density {self.bed_density} is inconsistent "
+                "with (1 - bed_porosity) * particle_density "
+                f"= {derived:.4f}"
             )
 
         return derived

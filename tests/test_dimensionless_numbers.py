@@ -1,64 +1,11 @@
-"""Tests for dimensionless_numbers.py."""
-
 import numpy as np
 import pytest
 
-from reactormodels import (
-    Breakthrough,
-    Chemical,
-    Column,
-    Media,
-    Water,
-    dimensionless_numbers,
-)
+from reactormodels import dimensionless_numbers
 
 
-@pytest.fixture
-def parameter_objects():
-    """Create objects used to test parameter recall."""
-    media = Media(
-        particle_porosity=0.3,
-        particle_density=1.2,
-        mean_diameter=0.001,
-        sphericity=0.9,
-    )
-
-    water = Water(
-        water_matrix="Test water",
-        density=1.0,
-        viscosity=1.0,
-        temperature=25.0,
-    )
-
-    chemical = Chemical(
-        compound="Test compound",
-        molar_volume=100.0,
-    )
-
-    column = Column(
-        length=1.2,
-        porosity=0.4,
-        diameter=0.2,
-        media=media,
-        water=water,
-        chemical=chemical,
-    )
-
-    breakthrough = Breakthrough(
-        column=column,
-        compound="Test compound",
-        feed_concentrations=100.0,
-        effluent_concentrations=np.array([0.0, 25.0, 50.0, 100.0]),
-        flow_rate=0.01,
-        time=np.array([0.0, 10.0, 20.0, 30.0]),
-        water_matrix="Test water",
-    )
-
-    return column, media, water, chemical, breakthrough
-
-
-def test_reynolds_number_direct():
-    """Test Reynolds number using direct parameters."""
+def test_reynolds_number():
+    """Test the Reynolds-number calculation."""
     density = 1000.0
     interstitial_velocity = 0.5
     diameter = 0.02
@@ -76,121 +23,48 @@ def test_reynolds_number_direct():
     np.testing.assert_allclose(result, expected)
 
 
-def test_reynolds_number_using_parameter_objects(parameter_objects):
-    """Test Reynolds number using existing parameter classes."""
-    column, media, water, _, breakthrough = parameter_objects
-
-    interstitial_velocity = breakthrough.interstitial_velocity()
-
-    expected = (
-        water.density
-        * media.sphericity
-        * media.mean_diameter
-        * interstitial_velocity
-        / water.viscosity
-    )
-
-    result = dimensionless_numbers.reynolds_number(
-        water=water,
-        media=media,
-        column=column,
-        breakthrough=breakthrough,
-    )
-
-    np.testing.assert_allclose(result, expected)
-
-
-def test_reynolds_number_with_superficial_velocity():
-    """Test conversion from superficial to interstitial velocity."""
+def test_reynolds_number_with_sphericity():
+    """Test the packed-bed Reynolds number with particle sphericity."""
     density = 1000.0
-    superficial_velocity = 0.01
+    interstitial_velocity = 0.01
     diameter = 0.001
     viscosity = 0.001
-    bed_porosity = 0.4
     sphericity = 0.9
 
-    expected = (
-        density
-        * sphericity
-        * diameter
-        * superficial_velocity
-        / (bed_porosity * viscosity)
-    )
+    expected = density * sphericity * interstitial_velocity * diameter / viscosity
 
     result = dimensionless_numbers.reynolds_number(
         density=density,
-        superficial_velocity=superficial_velocity,
+        interstitial_velocity=interstitial_velocity,
         diameter=diameter,
         viscosity=viscosity,
-        bed_porosity=bed_porosity,
         sphericity=sphericity,
     )
 
     np.testing.assert_allclose(result, expected)
 
 
-def test_reynolds_uses_column_porosity_for_superficial_velocity(
-    parameter_objects,
-):
-    """Test retrieval of bed porosity from Column."""
-    column, _, _, _, _ = parameter_objects
+@pytest.mark.parametrize(
+    ("parameter", "message"),
+    [
+        ("density", "density must be positive"),
+        ("interstitial_velocity", "interstitial_velocity must be positive"),
+        ("diameter", "diameter must be positive"),
+        ("viscosity", "viscosity must be positive"),
+    ],
+)
+def test_reynolds_rejects_nonpositive_parameters(parameter, message):
+    """Test rejection of nonpositive Reynolds-number parameters."""
+    parameters = {
+        "density": 1000.0,
+        "interstitial_velocity": 0.5,
+        "diameter": 0.02,
+        "viscosity": 0.001,
+    }
+    parameters[parameter] = 0.0
 
-    density = 1000.0
-    superficial_velocity = 0.01
-    diameter = 0.001
-    viscosity = 0.001
-
-    expected = density * diameter * superficial_velocity / (column.porosity * viscosity)
-
-    result = dimensionless_numbers.reynolds_number(
-        density=density,
-        superficial_velocity=superficial_velocity,
-        diameter=diameter,
-        viscosity=viscosity,
-        column=column,
-    )
-
-    np.testing.assert_allclose(result, expected)
-
-
-def test_reynolds_rejects_two_velocity_types():
-    """Test rejection of simultaneous velocity definitions."""
-    with pytest.raises(ValueError, match="not both"):
-        dimensionless_numbers.reynolds_number(
-            density=1000.0,
-            interstitial_velocity=0.02,
-            superficial_velocity=0.01,
-            diameter=0.001,
-            viscosity=0.001,
-            bed_porosity=0.4,
-        )
-
-
-def test_reynolds_requires_porosity_with_superficial_velocity():
-    """Test that superficial velocity requires bed porosity."""
-    with pytest.raises(ValueError, match="bed_porosity is required"):
-        dimensionless_numbers.reynolds_number(
-            density=1000.0,
-            superficial_velocity=0.01,
-            diameter=0.001,
-            viscosity=0.001,
-        )
-
-
-@pytest.mark.parametrize("bed_porosity", [0.0, 1.0, 1.2])
-def test_reynolds_rejects_invalid_porosity(bed_porosity):
-    """Test rejection of invalid bed porosity."""
-    with pytest.raises(
-        AssertionError,
-        match="bed_porosity must be between 0 and 1",
-    ):
-        dimensionless_numbers.reynolds_number(
-            density=1000.0,
-            superficial_velocity=0.01,
-            diameter=0.001,
-            viscosity=0.001,
-            bed_porosity=bed_porosity,
-        )
+    with pytest.raises(AssertionError, match=message):
+        dimensionless_numbers.reynolds_number(**parameters)
 
 
 @pytest.mark.parametrize("sphericity", [0.0, 1.1])
@@ -206,42 +80,8 @@ def test_reynolds_rejects_invalid_sphericity(sphericity):
         )
 
 
-def test_schmidt_number_using_chemical(parameter_objects):
-    """Test Schmidt number using Chemical liquid diffusion."""
-    _, _, water, chemical, _ = parameter_objects
-
-    diffusion_coefficient = chemical.liquid_diffusion_coefficient(water.viscosity)
-    expected = water.viscosity / (water.density * diffusion_coefficient)
-
-    result = dimensionless_numbers.schmidt_number(
-        water=water,
-        chemical=chemical,
-    )
-
-    np.testing.assert_allclose(result, expected)
-
-
-def test_schmidt_number_with_direct_water_properties(parameter_objects):
-    """Test Schmidt number using direct fluid properties and Chemical."""
-    _, _, _, chemical, _ = parameter_objects
-
-    viscosity = 0.001
-    density = 1000.0
-    diffusion_coefficient = chemical.liquid_diffusion_coefficient(viscosity)
-
-    expected = viscosity / (density * diffusion_coefficient)
-
-    result = dimensionless_numbers.schmidt_number(
-        viscosity=viscosity,
-        density=density,
-        chemical=chemical,
-    )
-
-    np.testing.assert_allclose(result, expected)
-
-
-def test_schmidt_number_with_direct_diffusion_coefficient():
-    """Test Schmidt number using a supplied diffusion coefficient."""
+def test_schmidt_number():
+    """Test the Schmidt-number calculation."""
     viscosity = 0.001
     density = 1000.0
     diffusion_coefficient = 1.0e-9
@@ -257,62 +97,44 @@ def test_schmidt_number_with_direct_diffusion_coefficient():
     np.testing.assert_allclose(result, expected)
 
 
-def test_schmidt_rejects_invalid_diffusion_coefficient():
-    """Test rejection of a nonpositive diffusion coefficient."""
-    with pytest.raises(
-        AssertionError,
-        match="diffusion_coefficient must be positive",
-    ):
-        dimensionless_numbers.schmidt_number(
-            viscosity=0.001,
-            density=1000.0,
-            diffusion_coefficient=0.0,
-        )
+@pytest.mark.parametrize(
+    ("parameter", "message"),
+    [
+        ("viscosity", "viscosity must be positive"),
+        ("density", "density must be positive"),
+        (
+            "diffusion_coefficient",
+            "diffusion_coefficient must be positive",
+        ),
+    ],
+)
+def test_schmidt_rejects_nonpositive_parameters(parameter, message):
+    """Test rejection of nonpositive Schmidt-number parameters."""
+    parameters = {
+        "viscosity": 0.001,
+        "density": 1000.0,
+        "diffusion_coefficient": 1.0e-9,
+    }
+    parameters[parameter] = 0.0
+
+    with pytest.raises(AssertionError, match=message):
+        dimensionless_numbers.schmidt_number(**parameters)
 
 
-def test_peclet_number_direct():
-    """Test mass-transfer Peclet number from Reynolds and Schmidt."""
+def test_peclet_number_from_reynolds_and_schmidt():
+    """Test the mass-transfer Peclet-number form."""
     reynolds = 25.0
     schmidt = 1000.0
-
-    expected = reynolds * schmidt
 
     result = dimensionless_numbers.peclet_number(
         reynolds=reynolds,
         schmidt=schmidt,
     )
 
-    np.testing.assert_allclose(result, expected)
+    np.testing.assert_allclose(result, reynolds * schmidt)
 
 
-def test_peclet_number_using_parameter_objects(parameter_objects):
-    """Test mass-transfer Peclet number using parameter classes."""
-    column, media, water, chemical, breakthrough = parameter_objects
-
-    reynolds = dimensionless_numbers.reynolds_number(
-        water=water,
-        media=media,
-        column=column,
-        breakthrough=breakthrough,
-    )
-    schmidt = dimensionless_numbers.schmidt_number(
-        water=water,
-        chemical=chemical,
-    )
-    expected = reynolds * schmidt
-
-    result = dimensionless_numbers.peclet_number(
-        water=water,
-        chemical=chemical,
-        media=media,
-        column=column,
-        breakthrough=breakthrough,
-    )
-
-    np.testing.assert_allclose(result, expected)
-
-
-def test_peclet_number_axial_form():
+def test_axial_peclet_number():
     """Test the axial-dispersion Peclet-number form."""
     interstitial_velocity = 0.5
     length = 2.0
@@ -329,28 +151,8 @@ def test_peclet_number_axial_form():
     np.testing.assert_allclose(result, expected)
 
 
-def test_peclet_number_axial_form_using_objects(parameter_objects):
-    """Test retrieval of velocity and length for axial Peclet."""
-    column, _, _, _, breakthrough = parameter_objects
-
-    axial_dispersion_coefficient = 0.02
-    expected = (
-        breakthrough.interstitial_velocity()
-        * column.length
-        / axial_dispersion_coefficient
-    )
-
-    result = dimensionless_numbers.peclet_number(
-        axial_dispersion_coefficient=axial_dispersion_coefficient,
-        column=column,
-        breakthrough=breakthrough,
-    )
-
-    np.testing.assert_allclose(result, expected)
-
-
 def test_peclet_rejects_mixed_parameter_sets():
-    """Test rejection of mixed axial and mass-transfer inputs."""
+    """Test rejection of mixed Peclet-number definitions."""
     with pytest.raises(ValueError, match="not both"):
         dimensionless_numbers.peclet_number(
             interstitial_velocity=0.5,
@@ -361,66 +163,95 @@ def test_peclet_rejects_mixed_parameter_sets():
         )
 
 
-def test_peclet_requires_axial_dispersion_coefficient():
-    """Test rejection of incomplete axial parameters."""
-    with pytest.raises(
-        ValueError,
-        match="axial_dispersion_coefficient is required",
-    ):
+@pytest.mark.parametrize(
+    ("parameters", "message"),
+    [
+        (
+            {
+                "length": 2.0,
+                "axial_dispersion_coefficient": 0.1,
+            },
+            "interstitial_velocity is required",
+        ),
+        (
+            {
+                "interstitial_velocity": 0.5,
+                "axial_dispersion_coefficient": 0.1,
+            },
+            "length is required",
+        ),
+        (
+            {
+                "interstitial_velocity": 0.5,
+                "length": 2.0,
+            },
+            "axial_dispersion_coefficient is required",
+        ),
+    ],
+)
+def test_peclet_requires_complete_axial_parameters(parameters, message):
+    """Test rejection of incomplete axial Peclet parameters."""
+    with pytest.raises(ValueError, match=message):
+        dimensionless_numbers.peclet_number(**parameters)
+
+
+def test_peclet_requires_reynolds():
+    """Test that the mass-transfer form requires Reynolds number."""
+    with pytest.raises(ValueError, match="reynolds is required"):
+        dimensionless_numbers.peclet_number()
+
+
+def test_peclet_requires_schmidt():
+    """Test that the mass-transfer form requires Schmidt number."""
+    with pytest.raises(ValueError, match="schmidt is required"):
+        dimensionless_numbers.peclet_number(reynolds=10.0)
+
+
+@pytest.mark.parametrize(
+    ("parameter", "message"),
+    [
+        (
+            "interstitial_velocity",
+            "interstitial_velocity must be positive",
+        ),
+        ("length", "length must be positive"),
+        (
+            "axial_dispersion_coefficient",
+            "axial_dispersion_coefficient must be positive",
+        ),
+    ],
+)
+def test_axial_peclet_rejects_nonpositive_parameters(parameter, message):
+    """Test rejection of nonpositive axial Peclet parameters."""
+    parameters = {
+        "interstitial_velocity": 0.5,
+        "length": 2.0,
+        "axial_dispersion_coefficient": 0.1,
+    }
+    parameters[parameter] = 0.0
+
+    with pytest.raises(AssertionError, match=message):
+        dimensionless_numbers.peclet_number(**parameters)
+
+
+@pytest.mark.parametrize(
+    ("reynolds", "schmidt", "message"),
+    [
+        (0.0, 1000.0, "reynolds must be positive"),
+        (10.0, 0.0, "schmidt must be positive"),
+    ],
+)
+def test_mass_transfer_peclet_rejects_nonpositive_parameters(
+    reynolds,
+    schmidt,
+    message,
+):
+    """Test rejection of nonpositive mass-transfer parameters."""
+    with pytest.raises(AssertionError, match=message):
         dimensionless_numbers.peclet_number(
-            interstitial_velocity=0.5,
-            length=2.0,
+            reynolds=reynolds,
+            schmidt=schmidt,
         )
-
-
-def test_chern_chien_sherwood_number():
-    """Test the Chern-Chien Sherwood correlation."""
-    reynolds = 25.0
-    schmidt = 1000.0
-    bed_porosity = 0.4
-
-    expected = (2 + 0.644 * reynolds**0.5 * schmidt ** (1 / 3)) * (
-        1 + 1.5 * (1 - bed_porosity)
-    )
-
-    result = dimensionless_numbers.sherwood_number(
-        method="chern_chien",
-        reynolds=reynolds,
-        schmidt=schmidt,
-        bed_porosity=bed_porosity,
-    )
-
-    np.testing.assert_allclose(result, expected)
-
-
-def test_sherwood_number_using_parameter_objects(parameter_objects):
-    """Test Sherwood number using recalled parameters."""
-    column, media, water, chemical, breakthrough = parameter_objects
-
-    reynolds = dimensionless_numbers.reynolds_number(
-        water=water,
-        media=media,
-        column=column,
-        breakthrough=breakthrough,
-    )
-    schmidt = dimensionless_numbers.schmidt_number(
-        water=water,
-        chemical=chemical,
-    )
-    expected = (2 + 0.644 * reynolds**0.5 * schmidt ** (1 / 3)) * (
-        1 + 1.5 * (1 - column.porosity)
-    )
-
-    result = dimensionless_numbers.sherwood_number(
-        method="chern_chien",
-        water=water,
-        chemical=chemical,
-        media=media,
-        column=column,
-        breakthrough=breakthrough,
-    )
-
-    np.testing.assert_allclose(result, expected)
 
 
 @pytest.mark.parametrize(
@@ -447,10 +278,14 @@ def test_sherwood_number_using_parameter_objects(parameter_objects):
             "kataoka",
             1.85 * ((1 - 0.4) / 0.4) ** (1 / 3) * 10.0 ** (1 / 3) * 1000.0 ** (1 / 3),
         ),
+        (
+            "chern_chien",
+            (2 + 0.644 * 10.0**0.5 * 1000.0 ** (1 / 3)) * (1 + 1.5 * (1 - 0.4)),
+        ),
     ],
 )
-def test_additional_sherwood_correlations(method, expected):
-    """Test the additional supported Sherwood correlations."""
+def test_sherwood_correlations(method, expected):
+    """Test Sherwood-number correlations with direct inputs."""
     result = dimensionless_numbers.sherwood_number(
         method=method,
         reynolds=10.0,
@@ -528,128 +363,123 @@ def test_sherwood_method_is_case_insensitive():
     np.testing.assert_allclose(result, expected)
 
 
-def test_wilson_geankoplis_reynolds_constraint():
-    """Test the Wilson-Geankoplis Reynolds constraint."""
-    with pytest.raises(ValueError, match="Wilson-Geankoplis requires"):
-        dimensionless_numbers.sherwood_number(
-            method="wilson_geankoplis",
-            reynolds=0.001,
-            schmidt=1000.0,
-            bed_porosity=0.4,
-        )
-
-
-def test_wilson_geankoplis_schmidt_constraint():
-    """Test the Wilson-Geankoplis Schmidt constraint."""
-    with pytest.raises(ValueError, match="950 < Schmidt"):
-        dimensionless_numbers.sherwood_number(
-            method="wilson_geankoplis",
-            reynolds=10.0,
-            schmidt=100.0,
-            bed_porosity=0.4,
-        )
-
-
 @pytest.mark.parametrize(
-    (
-        "method",
-        "reynolds",
-        "schmidt",
-        "bed_porosity",
-        "message",
-    ),
+    ("method", "reynolds", "schmidt", "message"),
     [
-        ("ohashi", 0.001, 1000.0, None, "Ohashi requires"),
         (
-            "williamson",
-            0.08,
+            "wilson_geankoplis",
+            0.001,
             1000.0,
-            0.4,
-            "Williamson requires",
+            "Wilson-Geankoplis requires",
         ),
         (
-            "williamson",
+            "wilson_geankoplis",
             10.0,
-            150.0,
-            0.4,
-            "Williamson requires",
+            100.0,
+            "950 < Schmidt",
         ),
+        ("ohashi", 0.001, 1000.0, "Ohashi requires"),
+        ("williamson", 0.08, 1000.0, "Williamson requires"),
+        ("williamson", 10.0, 150.0, "Williamson requires"),
         (
             "wakao_funazkri",
             3.0,
             1000.0,
-            None,
             "Wakao-Funazkri requires",
         ),
-        (
-            "kataoka",
-            200.0,
-            1000.0,
-            0.4,
-            "Kataoka requires",
-        ),
-        (
-            "gnielinski",
-            0.1,
-            1000.0,
-            0.4,
-            "Gnielinski requires",
-        ),
-        (
-            "gnielinski",
-            1.0,
-            12000.0,
-            0.4,
-            "Gnielinski requires",
-        ),
+        ("kataoka", 200.0, 1000.0, "Kataoka requires"),
+        ("gnielinski", 0.1, 1000.0, "Gnielinski requires"),
+        ("gnielinski", 1.0, 12000.0, "Gnielinski requires"),
     ],
 )
 def test_sherwood_correlation_constraints(
     method,
     reynolds,
     schmidt,
-    bed_porosity,
     message,
 ):
-    """Test validity constraints for Sherwood correlations."""
+    """Test the applicability limits of Sherwood correlations."""
     with pytest.raises(ValueError, match=message):
         dimensionless_numbers.sherwood_number(
             method=method,
             reynolds=reynolds,
             schmidt=schmidt,
-            bed_porosity=bed_porosity,
+            bed_porosity=0.4,
         )
 
 
-def test_sherwood_requires_bed_porosity():
+@pytest.mark.parametrize(
+    "method",
+    [
+        "tan",
+        "wilson_geankoplis",
+        "williamson",
+        "ko",
+        "kataoka",
+        "chern_chien",
+        "gnielinski",
+    ],
+)
+def test_sherwood_requires_bed_porosity(method):
     """Test correlations that require bed porosity."""
     with pytest.raises(ValueError, match="bed_porosity is required"):
         dimensionless_numbers.sherwood_number(
-            method="tan",
+            method=method,
             reynolds=10.0,
             schmidt=1000.0,
         )
 
 
-def test_invalid_inputs():
-    """Test rejection of essential invalid inputs."""
+@pytest.mark.parametrize(
+    "method",
+    [
+        "tan",
+        "wilson_geankoplis",
+        "williamson",
+        "ko",
+        "kataoka",
+        "chern_chien",
+        "gnielinski",
+    ],
+)
+@pytest.mark.parametrize("bed_porosity", [0.0, 1.0])
+def test_sherwood_rejects_invalid_bed_porosity(method, bed_porosity):
+    """Test rejection of invalid bed porosity."""
     with pytest.raises(
         AssertionError,
-        match="density must be positive",
+        match="bed_porosity must be between 0 and 1",
     ):
-        dimensionless_numbers.reynolds_number(
-            density=0.0,
-            interstitial_velocity=0.5,
-            diameter=0.02,
-            viscosity=0.001,
+        dimensionless_numbers.sherwood_number(
+            method=method,
+            reynolds=10.0,
+            schmidt=1000.0,
+            bed_porosity=bed_porosity,
         )
 
-    with pytest.raises(ValueError, match="chemical is required"):
-        dimensionless_numbers.schmidt_number(
-            viscosity=0.001,
-            density=1000.0,
+
+@pytest.mark.parametrize(
+    ("reynolds", "schmidt", "message"),
+    [
+        (0.0, 1000.0, "reynolds must be positive"),
+        (10.0, 0.0, "schmidt must be positive"),
+    ],
+)
+def test_sherwood_rejects_nonpositive_inputs(
+    reynolds,
+    schmidt,
+    message,
+):
+    """Test rejection of nonpositive Reynolds or Schmidt numbers."""
+    with pytest.raises(AssertionError, match=message):
+        dimensionless_numbers.sherwood_number(
+            method="ohashi",
+            reynolds=reynolds,
+            schmidt=schmidt,
         )
 
+
+def test_sherwood_rejects_unknown_method():
+    """Test rejection of an unsupported Sherwood correlation."""
     with pytest.raises(ValueError, match="Unknown Sherwood method"):
         dimensionless_numbers.sherwood_number(
             method="unknown",

@@ -8,12 +8,6 @@ Additional Sherwood correlations:
     Adsorption in Aqueous Systems, Table 3.
 """
 
-from .water_class import Water
-from .media_class import Media
-from .breakthrough_data import Breakthrough
-from .column_data import Column
-from .chemical_class import Chemical
-
 
 def _positive_parameter(
     parameter_name: str,
@@ -42,89 +36,20 @@ def _porosity_parameter(
 
 
 def reynolds_number(
-    density: float | None = None,
-    interstitial_velocity: float | None = None,
-    diameter: float | None = None,
-    viscosity: float | None = None,
-    *,
-    water: Water | None = None,
-    media: Media | None = None,
-    column: Column | None = None,
-    breakthrough: Breakthrough | None = None,
-    superficial_velocity: float | None = None,
-    bed_porosity: float | None = None,
-    sphericity: float | None = None,
+    density: float,
+    interstitial_velocity: float,
+    diameter: float,
+    viscosity: float,
+    sphericity: float = 1.0,
 ) -> float:
     """Calculate the standard or packed-bed Reynolds number."""
-    if water is not None:
-        if density is None:
-            density = water.density
-
-        if viscosity is None:
-            viscosity = water.viscosity
-
-    if media is not None:
-        if diameter is None:
-            diameter = media.mean_diameter
-
-        if sphericity is None:
-            sphericity = media.sphericity
-
-    if interstitial_velocity is not None and superficial_velocity is not None:
-        raise ValueError(
-            "Provide either interstitial_velocity or " "superficial_velocity, not both."
-        )
-
-    if (
-        interstitial_velocity is None
-        and column is not None
-        and breakthrough is not None
-    ):
-        superficial_velocity = breakthrough.superficial_velocity()
-
-        interstitial_velocity = breakthrough.calculate_interstitial_velocity(
-            superficial_velocity,
-            column.porosity,
-        )
-
-    if interstitial_velocity is None and superficial_velocity is not None:
-        if bed_porosity is None and column is not None:
-            bed_porosity = column.porosity
-
-        bed_porosity = _porosity_parameter(
-            "bed_porosity",
-            bed_porosity,
-        )
-
-        superficial_velocity = _positive_parameter(
-            "superficial_velocity",
-            superficial_velocity,
-        )
-
-        interstitial_velocity = superficial_velocity / bed_porosity
-
-    density = _positive_parameter(
-        "density",
-        density,
-    )
-
+    density = _positive_parameter("density", density)
     interstitial_velocity = _positive_parameter(
         "interstitial_velocity",
         interstitial_velocity,
     )
-
-    diameter = _positive_parameter(
-        "diameter",
-        diameter,
-    )
-
-    viscosity = _positive_parameter(
-        "viscosity",
-        viscosity,
-    )
-
-    if sphericity is None:
-        sphericity = 1.0
+    diameter = _positive_parameter("diameter", diameter)
+    viscosity = _positive_parameter("viscosity", viscosity)
 
     assert 0 < sphericity <= 1, f"sphericity must be in (0, 1], got {sphericity}"
 
@@ -132,82 +57,19 @@ def reynolds_number(
 
 
 def schmidt_number(
-    viscosity: float | None = None,
-    density: float | None = None,
-    diffusion_coefficient: float | None = None,
-    *,
-    water: Water | None = None,
-    chemical: Chemical | None = None,
+    viscosity: float,
+    density: float,
+    diffusion_coefficient: float,
 ) -> float:
     """Calculate the Schmidt number."""
-    if water is not None:
-        if viscosity is None:
-            viscosity = water.viscosity
-
-        if density is None:
-            density = water.density
-
-    viscosity = _positive_parameter(
-        "viscosity",
-        viscosity,
-    )
-
-    density = _positive_parameter(
-        "density",
-        density,
-    )
-
-    if diffusion_coefficient is None:
-        if chemical is None:
-            raise ValueError(
-                "chemical is required when diffusion_coefficient " "is not supplied."
-            )
-
-        diffusion_coefficient = chemical.liquid_diffusion_coefficient(viscosity)
-
+    viscosity = _positive_parameter("viscosity", viscosity)
+    density = _positive_parameter("density", density)
     diffusion_coefficient = _positive_parameter(
         "diffusion_coefficient",
         diffusion_coefficient,
     )
 
     return viscosity / (density * diffusion_coefficient)
-
-
-def _resolve_reynolds_and_schmidt(
-    reynolds: float | None,
-    schmidt: float | None,
-    *,
-    water: Water | None,
-    chemical: Chemical | None,
-    media: Media | None,
-    column: Column | None,
-    breakthrough: Breakthrough | None,
-) -> tuple[float, float]:
-    """Return supplied or calculated Reynolds and Schmidt numbers."""
-    if reynolds is None:
-        reynolds = reynolds_number(
-            water=water,
-            media=media,
-            column=column,
-            breakthrough=breakthrough,
-        )
-
-    if schmidt is None:
-        schmidt = schmidt_number(
-            water=water,
-            chemical=chemical,
-        )
-
-    reynolds = _positive_parameter(
-        "reynolds",
-        reynolds,
-    )
-    schmidt = _positive_parameter(
-        "schmidt",
-        schmidt,
-    )
-
-    return reynolds, schmidt
 
 
 def peclet_number(
@@ -217,13 +79,8 @@ def peclet_number(
     *,
     reynolds: float | None = None,
     schmidt: float | None = None,
-    water: Water | None = None,
-    chemical: Chemical | None = None,
-    media: Media | None = None,
-    column: Column | None = None,
-    breakthrough: Breakthrough | None = None,
 ) -> float:
-    """Calculate an axial or mass-transfer Peclet number."""
+    """Calculate an axial-dispersion or mass-transfer Peclet number."""
     axial_parameters_provided = any(
         value is not None
         for value in (
@@ -232,7 +89,6 @@ def peclet_number(
             axial_dispersion_coefficient,
         )
     )
-
     mass_transfer_parameters_provided = reynolds is not None or schmidt is not None
 
     if axial_parameters_provided and mass_transfer_parameters_provided:
@@ -242,31 +98,11 @@ def peclet_number(
         )
 
     if axial_parameters_provided:
-        if (
-            interstitial_velocity is None
-            and column is not None
-            and breakthrough is not None
-        ):
-            superficial_velocity = breakthrough.superficial_velocity()
-
-            interstitial_velocity = breakthrough.calculate_interstitial_velocity(
-                superficial_velocity,
-                column.porosity,
-            )
-
-        if length is None and column is not None:
-            length = column.length
-
         interstitial_velocity = _positive_parameter(
             "interstitial_velocity",
             interstitial_velocity,
         )
-
-        length = _positive_parameter(
-            "length",
-            length,
-        )
-
+        length = _positive_parameter("length", length)
         axial_dispersion_coefficient = _positive_parameter(
             "axial_dispersion_coefficient",
             axial_dispersion_coefficient,
@@ -274,44 +110,17 @@ def peclet_number(
 
         return length * interstitial_velocity / axial_dispersion_coefficient
 
-    if reynolds is None:
-        reynolds = reynolds_number(
-            water=water,
-            media=media,
-            column=column,
-            breakthrough=breakthrough,
-        )
-
-    if schmidt is None:
-        schmidt = schmidt_number(
-            water=water,
-            chemical=chemical,
-        )
-
-    reynolds = _positive_parameter(
-        "reynolds",
-        reynolds,
-    )
-
-    schmidt = _positive_parameter(
-        "schmidt",
-        schmidt,
-    )
+    reynolds = _positive_parameter("reynolds", reynolds)
+    schmidt = _positive_parameter("schmidt", schmidt)
 
     return reynolds * schmidt
 
 
 def sherwood_number(
     method: str,
-    reynolds: float | None = None,
-    schmidt: float | None = None,
+    reynolds: float,
+    schmidt: float,
     bed_porosity: float | None = None,
-    *,
-    water: Water | None = None,
-    chemical: Chemical | None = None,
-    media: Media | None = None,
-    column: Column | None = None,
-    breakthrough: Breakthrough | None = None,
 ) -> float:
     """Calculate Sherwood number using the selected correlation.
 
@@ -328,36 +137,16 @@ def sherwood_number(
         gnielinski
     """
     method = method.lower()
-
-    reynolds, schmidt = _resolve_reynolds_and_schmidt(
-        reynolds,
-        schmidt,
-        water=water,
-        chemical=chemical,
-        media=media,
-        column=column,
-        breakthrough=breakthrough,
-    )
-
-    if bed_porosity is None and column is not None:
-        bed_porosity = column.porosity
-
+    reynolds = _positive_parameter("reynolds", reynolds)
+    schmidt = _positive_parameter("schmidt", schmidt)
     peclet = reynolds * schmidt
 
     if method == "tan":
-        bed_porosity = _porosity_parameter(
-            "bed_porosity",
-            bed_porosity,
-        )
-
+        bed_porosity = _porosity_parameter("bed_porosity", bed_porosity)
         return 1.1 * peclet ** (1 / 3) / bed_porosity
 
     if method == "wilson_geankoplis":
-        bed_porosity = _porosity_parameter(
-            "bed_porosity",
-            bed_porosity,
-        )
-
+        bed_porosity = _porosity_parameter("bed_porosity", bed_porosity)
         porosity_reynolds = bed_porosity * reynolds
 
         if not 0.0016 < porosity_reynolds < 55:
@@ -366,7 +155,7 @@ def sherwood_number(
             )
 
         if not 950 < schmidt < 70000:
-            raise ValueError("Wilson-Geankoplis requires " "950 < Schmidt < 70000.")
+            raise ValueError("Wilson-Geankoplis requires 950 < Schmidt < 70000.")
 
         return 1.09 * peclet ** (1 / 3) / bed_porosity
 
@@ -383,45 +172,33 @@ def sherwood_number(
         return 2 + 0.59 * reynolds**0.6 * schmidt ** (1 / 3)
 
     if method == "williamson":
-        bed_porosity = _porosity_parameter(
-            "bed_porosity",
-            bed_porosity,
-        )
+        bed_porosity = _porosity_parameter("bed_porosity", bed_porosity)
 
         if not 0.08 < reynolds < 125:
-            raise ValueError("Williamson requires " "0.08 < Reynolds < 125.")
+            raise ValueError("Williamson requires 0.08 < Reynolds < 125.")
 
         if not 150 < schmidt < 1300:
-            raise ValueError("Williamson requires " "150 < Schmidt < 1300.")
+            raise ValueError("Williamson requires 150 < Schmidt < 1300.")
 
         return 2.4 * bed_porosity * reynolds**0.3 * schmidt**0.42
 
     if method == "ko":
-        bed_porosity = _porosity_parameter(
-            "bed_porosity",
-            bed_porosity,
-        )
-
+        bed_porosity = _porosity_parameter("bed_porosity", bed_porosity)
         return 0.325 / (bed_porosity * reynolds**0.36 * schmidt ** (1 / 3))
 
     if method == "wakao_funazkri":
         if not 3 < reynolds < 10000:
-            raise ValueError("Wakao-Funazkri requires " "3 < Reynolds < 10000.")
+            raise ValueError("Wakao-Funazkri requires 3 < Reynolds < 10000.")
 
         return 2 + 1.1 * reynolds**0.6 * schmidt ** (1 / 3)
 
     if method == "kataoka":
-        bed_porosity = _porosity_parameter(
-            "bed_porosity",
-            bed_porosity,
-        )
-
+        bed_porosity = _porosity_parameter("bed_porosity", bed_porosity)
         adjusted_reynolds = reynolds * bed_porosity / (1 - bed_porosity)
 
         if adjusted_reynolds >= 100:
             raise ValueError(
-                "Kataoka requires "
-                "Reynolds * bed_porosity "
+                "Kataoka requires Reynolds * bed_porosity "
                 "/ (1 - bed_porosity) < 100."
             )
 
@@ -433,29 +210,21 @@ def sherwood_number(
         )
 
     if method == "chern_chien":
-        bed_porosity = _porosity_parameter(
-            "bed_porosity",
-            bed_porosity,
-        )
-
+        bed_porosity = _porosity_parameter("bed_porosity", bed_porosity)
         return (2 + 0.644 * reynolds**0.5 * schmidt ** (1 / 3)) * (
             1 + 1.5 * (1 - bed_porosity)
         )
 
     if method == "gnielinski":
-        bed_porosity = _porosity_parameter(
-            "bed_porosity",
-            bed_porosity,
-        )
+        bed_porosity = _porosity_parameter("bed_porosity", bed_porosity)
 
         if peclet <= 500:
-            raise ValueError("Gnielinski requires " "Reynolds * Schmidt > 500.")
+            raise ValueError("Gnielinski requires Reynolds * Schmidt > 500.")
 
         if schmidt >= 12000:
             raise ValueError("Gnielinski requires Schmidt < 12000.")
 
         sherwood_laminar = 0.644 * reynolds**0.5 * schmidt ** (1 / 3)
-
         sherwood_turbulent = (
             0.037
             * reynolds**0.8

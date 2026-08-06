@@ -15,23 +15,14 @@ class Breakthrough:
     def __init__(
         self,
         feed_concentrations: float | np.ndarray,
+        column: Column,
         compound: str | None = None,
         flow_rate: float | None = None,
         effluent_concentrations: np.ndarray | None = None,
         bed_volumes: np.ndarray | None = None,
         time: np.ndarray | None = None,
-        water_matrix: str | None = None,
         superficial_velocity: float | None = None,
-        column: Column | None = None,
-        **kwargs,
     ) -> None:
-        if column is None:
-            column = Column(**kwargs)
-        elif kwargs:
-            raise TypeError(
-                "Do not provide Column keyword arguments when a column "
-                "object is already supplied."
-            )
 
         if time is None and bed_volumes is None:
             raise ValueError("Either time or bed_volumes must be provided.")
@@ -53,30 +44,15 @@ class Breakthrough:
 
         self.column = column
         self.compound = compound
-
-        self.water_matrix = (
-            water_matrix
-            if water_matrix is not None
-            else (
-                self.column.water.water_matrix
-                if self.column.water is not None
-                else None
-            )
-        )
-
         self.feed_concentrations = np.asarray(feed_concentrations)
-
         self.bed_volumes = None if bed_volumes is None else np.asarray(bed_volumes)
-
         self.time = None if time is None else np.asarray(time)
-
         self.effluent_concentrations = (
             None
             if effluent_concentrations is None
             else np.asarray(effluent_concentrations)
         )
         self.flow_rate = flow_rate
-
         self._superficial_velocity = superficial_velocity
 
     def mean_feed_concentration(self) -> float:
@@ -137,14 +113,6 @@ class Breakthrough:
             self.superficial_velocity(),
             self.column.porosity,
         )
-
-    def peclet(self, diffusion: float) -> float:
-        """Calculate the axial Peclet number."""
-        assert diffusion > 0, f"diffusion must be positive, got {diffusion}"
-
-        velocity = self.superficial_velocity()
-
-        return velocity * self.column.length / (self.column.porosity * diffusion)
 
     def empty_bed_contact_time(
         self,
@@ -325,7 +293,6 @@ class Breakthrough:
 
         return (
             f"Compound: {self.compound}\n"
-            f"Water matrix: {self.water_matrix}\n"
             "Mean feed concentration: "
             f"{self.mean_feed_concentration():.3f}\n"
             "Normalized concentrations: "

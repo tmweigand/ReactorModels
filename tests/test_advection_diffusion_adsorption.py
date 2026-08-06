@@ -21,13 +21,18 @@ def _base_model(mode, k_ldf=0.1, n_col=30):
         particle_porosity=0.3,
         particle_density=bulk_density / (1 - porosity),
     )
-
+    water = reactormodels.Water(water_matrix="tested_water")
+    chemical = reactormodels.Chemical(
+        compound="Test compound",
+    )
     column = reactormodels.Column(
         length=column_length,
         porosity=porosity,
         bulk_density=bulk_density,
         diameter=diameter,
         media=media,
+        water=water,
+        chemical=chemical,
     )
 
     flow_rate = superficial_velocity * column.cross_section_area()

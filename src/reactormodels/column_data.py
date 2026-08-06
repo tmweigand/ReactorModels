@@ -15,11 +15,11 @@ class Column:
         length: float,
         porosity: float,
         diameter: float,
-        media: Media | None = None,
+        media: Media,
+        water: Water,
+        chemical: Chemical,
         bulk_density: float | None = None,
         sorbent_mass: float | None = None,
-        water: Water | None = None,
-        chemical: Chemical | None = None,
     ) -> None:
         """Initialize packed-bed column properties."""
         assert length > 0, f"length must be positive, got {length}"
