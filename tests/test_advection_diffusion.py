@@ -1,57 +1,39 @@
+import reactormodels
 import numpy as np
 import pytest
-
-import reactormodels
 
 
 @pytest.mark.parametrize("diffusion", [0.01, 0.1])
 def test_ogata_banks(diffusion):
-    """Collocation solution must match the Ogata-Banks solution."""
-    interstitial_velocity = 1.0
-    column_length = 5.0
-    column_diameter = 0.2
+    """
+    Collocation solution must match Ogata-Banks analytical solution
+    for 1D advection-diffusion with step inlet BC.
+    """
+    superficial_velocity = 1  # m/s
+    column_length = 5.0  # m
     porosity = 0.5
     inlet_concentration = 1.0
     initial_concentration = 0.0
+    column_diameter = 1
+    t_eval = np.array([1.0, 2.0, 3.0])
 
-    media = reactormodels.Media(
-        particle_porosity=0.3,
-        particle_density=1.2,
-        mean_diameter=0.001,
-        sphericity=0.9,
-    )
-
-    water = reactormodels.Water(water_matrix="tested_water")
-    chemical = reactormodels.Chemical(
-        compound="Test compound",
-    )
     column = reactormodels.Column(
         length=column_length,
         porosity=porosity,
         diameter=column_diameter,
-        media=media,
-        water=water,
-        chemical=chemical,
+        media=reactormodels.Media(),
+        water=reactormodels.Water(),
+        chemical=reactormodels.Chemical(),
     )
-
-    t_eval = np.array([1.0, 2.0, 3.0])
-
-    superficial_velocity = interstitial_velocity * porosity
-    flow_rate = superficial_velocity * column.cross_section_area()
-
     breakthrough = reactormodels.Breakthrough(
         column=column,
-        compound="Test compound",
         feed_concentrations=inlet_concentration,
-        effluent_concentrations=np.zeros_like(t_eval),
-        flow_rate=flow_rate,
         superficial_velocity=superficial_velocity,
         time=t_eval,
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
-        column=column,
-        n_interior_points=30,
+        column=column, n_interior_points=5, n_elements=20
     )
 
     model = reactormodels.models.AdvectionDiffusion(
@@ -62,54 +44,57 @@ def test_ogata_banks(diffusion):
         numerics=numerics,
     )
 
+    x, C = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
+
+    ogata_banks = reactormodels.models.OgataBanks(
+        breakthrough=breakthrough, diffusion=diffusion
+    )
+
+    for i, t in enumerate(t_eval):
+        # Only compare interior of domain, away from outlet BC influence
+        mask = x < 0.8 * column_length
+        C_analytical = ogata_banks.spatial_profile(
+            x[mask],
+            t,
+        )
+        C_numerical = C[i, mask]
+
+        assert C_numerical == pytest.approx(
+            C_analytical, abs=1e-2
+        ), f"Failed at t={t}: max error = {np.abs(C_numerical - C_analytical).max():.2e}"
+
 
 def test_multi_element_ogata_banks():
-    """High-Pe case that fails with one element should pass with multiple elements."""
-    interstitial_velocity = 1.0
+    """High-Pe case that fails with single element should pass with multi-element."""
+
+    superficial_velocity = 1
     diffusion = 0.01
     column_length = 5.0
-    column_diameter = 0.2
     porosity = 0.5
     inlet_concentration = 1.0
     initial_concentration = 0.0
     t_eval = np.array([2.0, 4.0])
-
-    media = reactormodels.Media(
-        particle_porosity=0.3,
-        particle_density=1.2,
-        mean_diameter=0.001,
-        sphericity=0.9,
-    )
-    water = reactormodels.Water(water_matrix="tested_water")
-    chemical = reactormodels.Chemical(
-        compound="Test compound",
-    )
+    diameter = 1
 
     column = reactormodels.Column(
         length=column_length,
         porosity=porosity,
-        diameter=column_diameter,
-        media=media,
-        water=water,
-        chemical=chemical,
+        diameter=diameter,
+        media=reactormodels.Media(),
+        water=reactormodels.Water(),
+        chemical=reactormodels.Chemical(),
     )
-
-    superficial_velocity = interstitial_velocity * porosity
-    flow_rate = superficial_velocity * column.cross_section_area()
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
-        compound="Test compound",
         feed_concentrations=inlet_concentration,
-        effluent_concentrations=np.zeros_like(t_eval),
-        flow_rate=flow_rate,
         superficial_velocity=superficial_velocity,
         time=t_eval,
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
         column=column,
-        n_interior_points=3,
+        n_interior_points=5,
         n_elements=20,
     )
 
@@ -120,3 +105,21 @@ def test_multi_element_ogata_banks():
         initial_concentration=initial_concentration,
         numerics=numerics,
     )
+
+    x, C = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
+
+    ogata_banks = reactormodels.models.OgataBanks(
+        breakthrough=breakthrough, diffusion=diffusion
+    )
+
+    for i, t in enumerate(t_eval):
+        mask = x < 0.8 * column_length
+        C_analytical = ogata_banks.spatial_profile(
+            x[mask],
+            t,
+        )
+        C_numerical = C[i, mask]
+
+        assert C_numerical == pytest.approx(
+            C_analytical, abs=1e-2
+        ), f"Failed at t={t}: max error = {np.abs(C_numerical - C_analytical).max():.2e}"

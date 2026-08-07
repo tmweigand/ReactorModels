@@ -8,7 +8,7 @@ class Chemical:
 
     def __init__(
         self,
-        compound: str,
+        name: str = "default",
         molar_volume: float | None = None,
         molecular_weight: float | None = None,
         density: float | None = None,
@@ -39,7 +39,7 @@ class Chemical:
                 "diffusion_parameter must be positive, " f"got {diffusion}"
             )
 
-        self.compound = compound
+        self.name = name
         self.molecular_weight = molecular_weight
         self.molar_volume = molar_volume
         self.density = density

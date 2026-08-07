@@ -22,23 +22,14 @@ def test_thomas():
 
     isotherm = reactormodels.models.LangmuirIsotherm(K=K, q_m=q_m)
 
-    media = reactormodels.Media(
-        particle_porosity=0.3,
-        particle_density=particle_density,
-    )
-    water = reactormodels.Water(water_matrix="tested_water")
-    chemical = reactormodels.Chemical(
-        compound="Test compound",
-    )
-
     column = reactormodels.Column(
         length=length,
         porosity=porosity,
         bulk_density=bulk_density,
         diameter=diameter,
-        media=media,
-        water=water,
-        chemical=chemical,
+        media=reactormodels.Media(particle_density=particle_density),
+        water=reactormodels.Water(),
+        chemical=reactormodels.Chemical(),
     )
 
     breakthrough = reactormodels.Breakthrough(
@@ -49,7 +40,7 @@ def test_thomas():
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
-        column=column, n_interior_points=5, n_elements=20, add_inlet=True
+        column=column, n_interior_points=5, n_elements=10, add_inlet=True
     )
 
     model = reactormodels.models.AdvectionDiffusionAdsorption(

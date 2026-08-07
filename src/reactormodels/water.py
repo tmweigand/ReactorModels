@@ -6,7 +6,7 @@ class Water:
 
     def __init__(
         self,
-        water_matrix: str,
+        name: str = "default",
         density: float | None = None,
         viscosity: float | None = None,
         temperature: float | None = None,
@@ -18,7 +18,7 @@ class Water:
         if viscosity is not None:
             assert viscosity > 0, f"Water viscosity must be positive, got {viscosity}"
 
-        self.water_matrix = water_matrix
+        self.name = name
         self.density = density
         self.viscosity = viscosity
         self.temperature = temperature

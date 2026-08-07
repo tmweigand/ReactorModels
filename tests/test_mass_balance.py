@@ -1,5 +1,6 @@
 import reactormodels
 import numpy as np
+import pytest
 
 
 def test_mass_balance_class():
@@ -17,23 +18,14 @@ def test_mass_balance_class():
     v_eff = velocity / (porosity * R)
     t_eval = np.linspace(0.1 * column_length / v_eff, 1.5 * column_length / v_eff, 8)
 
-    media = reactormodels.Media(
-        particle_porosity=0.3,
-        particle_density=bulk_density / (1 - porosity),
-    )
-    water = reactormodels.Water(water_matrix="tested_water")
-    chemical = reactormodels.Chemical(
-        compound="Test compound",
-    )
-
     column = reactormodels.Column(
         length=column_length,
         porosity=porosity,
         bulk_density=bulk_density,
         diameter=diameter,
-        media=media,
-        water=water,
-        chemical=chemical,
+        media=reactormodels.Media(),
+        water=reactormodels.Water(),
+        chemical=reactormodels.Chemical(),
     )
 
     breakthrough = reactormodels.Breakthrough(

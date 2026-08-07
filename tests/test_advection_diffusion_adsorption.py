@@ -17,33 +17,20 @@ def _base_model(mode, k_ldf=0.1, n_col=30):
     diameter = 1
     time = [0, 1, 2]
 
-    media = reactormodels.Media(
-        particle_porosity=0.3,
-        particle_density=bulk_density / (1 - porosity),
-    )
-    water = reactormodels.Water(water_matrix="tested_water")
-    chemical = reactormodels.Chemical(
-        compound="Test compound",
-    )
     column = reactormodels.Column(
         length=column_length,
         porosity=porosity,
         bulk_density=bulk_density,
         diameter=diameter,
-        media=media,
-        water=water,
-        chemical=chemical,
+        media=reactormodels.Media(),
+        water=reactormodels.Water(),
+        chemical=reactormodels.Chemical(),
     )
-
-    flow_rate = superficial_velocity * column.cross_section_area()
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
         superficial_velocity=superficial_velocity,
         feed_concentrations=inlet_concentration,
-        flow_rate=flow_rate,
-        effluent_concentrations=np.zeros(len(time)),
-        compound="Test compound",
         time=time,
     )
 
@@ -116,7 +103,7 @@ def test_ldf_converges_to_equilibrium_at_high_kldf():
 
 
 def test_ldf_q_tracks_equilibrium():
-    """Q should approach q*(C) over time."""
+    """q should approach q*(C) over time."""
     model, D, L, eps, rho_b, K = _base_model(
         reactormodels.models.AdsorptionKinetics.LINEAR_DRIVING_FORCE, k_ldf=0.5
     )

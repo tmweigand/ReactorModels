@@ -50,9 +50,7 @@ def test_clark_becomes_yoon_nelson(time=np.linspace(0, 200, 200)):
     ), f"Failed at t={time}: max error = {np.abs(yoon_nelson - clark).max():.3e}"
 
 
-def test_thomas_limiting_form(
-    time=np.linspace(0, 10, 100), effluent_concentrations=None, compounds=None
-):
+def test_thomas_limiting_form(time=np.linspace(0, 10, 100)):
     """Thomas Model with Langmuir isotherm becomes rectangular as reverse rate constant approaches zero.
 
     q = q_m*K*C / (1 + K*C)
@@ -75,6 +73,7 @@ def test_thomas_limiting_form(
 
     q -> q_m*k_a*C / (k_a*C) -> q_m
     """
+
     time = np.linspace(1e-10, 10, 200)
     length = 1 / np.pi
     diameter = 2
@@ -87,29 +86,19 @@ def test_thomas_limiting_form(
     rate_constant = 10
     K = 500000
 
-    media = reactormodels.Media(
-        particle_density=0.6,
-        particle_porosity=0.4,
-    )
-    water = reactormodels.Water(water_matrix="tested_water")
-    chemical = reactormodels.Chemical(
-        compound="Test compound",
-    )
     column = reactormodels.Column(
         length=length,
         diameter=diameter,
         porosity=porosity,
         bulk_density=bulk_density,
-        media=media,
-        water=water,
-        chemical=chemical,
+        media=reactormodels.Media(particle_density=particle_density),
+        water=reactormodels.Water(),
+        chemical=reactormodels.Chemical(),
     )
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
         feed_concentrations=feed_concentrations,
-        effluent_concentrations=effluent_concentrations,
-        compound=compounds,
         flow_rate=flow_rate,
         time=time,
     )
@@ -168,22 +157,14 @@ def test_bohart_adams_equals_thomas():
     porosity = 0.38
     time = np.linspace(0, 200, 200)
 
-    media = reactormodels.Media(
-        particle_porosity=0.3,
-        particle_density=bulk_density / (1 - porosity),
-    )
-    water = reactormodels.Water(water_matrix="tested_water")
-    chemical = reactormodels.Chemical(
-        compound="Test compound",
-    )
     column = reactormodels.Column(
         length=length,
         porosity=porosity,
         diameter=diameter,
         bulk_density=bulk_density,
-        media=media,
-        water=water,
-        chemical=chemical,
+        media=reactormodels.Media(),
+        water=reactormodels.Water(),
+        chemical=reactormodels.Chemical(),
     )
 
     feed_concentrations = [99, 101]
@@ -191,22 +172,13 @@ def test_bohart_adams_equals_thomas():
     breakthrough = reactormodels.Breakthrough(
         column=column,
         feed_concentrations=feed_concentrations,
-        effluent_concentrations=np.zeros_like(time),
-        compound="Test compound",
         flow_rate=flow_rate,
         time=time,
     )
 
     k_BA = 0.002
     sorbent_capacity = 1000
-    k_Th = (
-        k_BA
-        * length
-        / breakthrough.calculate_superficial_velocity(
-            cross_section_area=column.cross_section_area(),
-            flow_rate=flow_rate,
-        )
-    )
+    k_Th = k_BA * length / breakthrough.superficial_velocity()
 
     bohart_adams = reactormodels.models.BohartAdams(
         breakthrough=breakthrough,
