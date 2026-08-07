@@ -3,11 +3,11 @@
 from . import models
 from . import numerics
 from . import postprocess
-from .breakthrough_data import Breakthrough
-from .column import Column
-from .water import Water
-from .chemical import Chemical
-from .media import Media
+from .properties.breakthrough import Breakthrough
+from .properties.column import Column
+from .properties.water import Water
+from .properties.chemical import Chemical
+from .properties.media import Media
 
 __all__ = [
     "models",

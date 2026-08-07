@@ -1,7 +1,7 @@
 """mass_balance.py"""
 
 from dataclasses import dataclass
-from ..breakthrough_data import Breakthrough
+from ..properties.breakthrough import Breakthrough
 import numpy as np
 import scipy
 

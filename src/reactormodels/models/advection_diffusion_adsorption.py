@@ -4,8 +4,8 @@ from __future__ import annotations
 from typing import Type
 import numpy as np
 
-from ..column import Column
-from ..breakthrough_data import Breakthrough
+from ..properties.column import Column
+from ..properties.breakthrough import Breakthrough
 from ..numerics.config import NumericsConfig
 from .isotherm import Isotherm
 from .adsorption_kinetics import AdsorptionKinetics

@@ -5,7 +5,7 @@ import numpy as np
 from scipy.special import erfc, erfcx
 from scipy.integrate import quad
 from scipy.special import i0
-from ..breakthrough_data import Breakthrough
+from ..properties.breakthrough import Breakthrough
 
 
 class AnalyticModels:
