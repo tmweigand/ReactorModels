@@ -4,10 +4,10 @@ from . import models
 from . import numerics
 from . import postprocess
 from .breakthrough_data import Breakthrough
-from .column_data import Column
-from .water_class import Water
-from .chemical_class import Chemical
-from .media_class import Media
+from .column import Column
+from .water import Water
+from .chemical import Chemical
+from .media import Media
 
 __all__ = [
     "models",

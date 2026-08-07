@@ -1,10 +1,10 @@
-"""column_data.py."""
+"""column.py."""
 
 import numpy as np
 
-from .chemical_class import Chemical
-from .media_class import Media
-from .water_class import Water
+from .chemical import Chemical
+from .media import Media
+from .water import Water
 
 
 class Column:

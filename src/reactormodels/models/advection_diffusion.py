@@ -3,7 +3,7 @@
 from typing import Type
 import numpy as np
 
-from ..column_data import Column
+from ..column import Column
 from ..breakthrough_data import Breakthrough
 from ..numerics.config import NumericsConfig
 from .boundary_conditions import InletBC, DirichletBC

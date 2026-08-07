@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import Type
 import numpy as np
 
-from ..column_data import Column
+from ..column import Column
 from ..breakthrough_data import Breakthrough
 from ..numerics.config import NumericsConfig
 from .isotherm import Isotherm

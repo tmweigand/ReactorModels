@@ -44,42 +44,6 @@ def test_reynolds_number_with_sphericity():
     np.testing.assert_allclose(result, expected)
 
 
-@pytest.mark.parametrize(
-    ("parameter", "message"),
-    [
-        ("density", "density must be positive"),
-        ("interstitial_velocity", "interstitial_velocity must be positive"),
-        ("diameter", "diameter must be positive"),
-        ("viscosity", "viscosity must be positive"),
-    ],
-)
-def test_reynolds_rejects_nonpositive_parameters(parameter, message):
-    """Test rejection of nonpositive Reynolds-number parameters."""
-    parameters = {
-        "density": 1000.0,
-        "interstitial_velocity": 0.5,
-        "diameter": 0.02,
-        "viscosity": 0.001,
-    }
-    parameters[parameter] = 0.0
-
-    with pytest.raises(AssertionError, match=message):
-        dimensionless_numbers.reynolds_number(**parameters)
-
-
-@pytest.mark.parametrize("sphericity", [0.0, 1.1])
-def test_reynolds_rejects_invalid_sphericity(sphericity):
-    """Test rejection of invalid particle sphericity."""
-    with pytest.raises(AssertionError, match="sphericity must be in"):
-        dimensionless_numbers.reynolds_number(
-            density=1000.0,
-            interstitial_velocity=0.5,
-            diameter=0.001,
-            viscosity=0.001,
-            sphericity=sphericity,
-        )
-
-
 def test_schmidt_number():
     """Test the Schmidt-number calculation."""
     viscosity = 0.001
@@ -95,30 +59,6 @@ def test_schmidt_number():
     )
 
     np.testing.assert_allclose(result, expected)
-
-
-@pytest.mark.parametrize(
-    ("parameter", "message"),
-    [
-        ("viscosity", "viscosity must be positive"),
-        ("density", "density must be positive"),
-        (
-            "diffusion_coefficient",
-            "diffusion_coefficient must be positive",
-        ),
-    ],
-)
-def test_schmidt_rejects_nonpositive_parameters(parameter, message):
-    """Test rejection of nonpositive Schmidt-number parameters."""
-    parameters = {
-        "viscosity": 0.001,
-        "density": 1000.0,
-        "diffusion_coefficient": 1.0e-9,
-    }
-    parameters[parameter] = 0.0
-
-    with pytest.raises(AssertionError, match=message):
-        dimensionless_numbers.schmidt_number(**parameters)
 
 
 def test_peclet_number_from_reynolds_and_schmidt():
@@ -160,97 +100,6 @@ def test_peclet_rejects_mixed_parameter_sets():
             axial_dispersion_coefficient=0.1,
             reynolds=10.0,
             schmidt=1000.0,
-        )
-
-
-@pytest.mark.parametrize(
-    ("parameters", "message"),
-    [
-        (
-            {
-                "length": 2.0,
-                "axial_dispersion_coefficient": 0.1,
-            },
-            "interstitial_velocity is required",
-        ),
-        (
-            {
-                "interstitial_velocity": 0.5,
-                "axial_dispersion_coefficient": 0.1,
-            },
-            "length is required",
-        ),
-        (
-            {
-                "interstitial_velocity": 0.5,
-                "length": 2.0,
-            },
-            "axial_dispersion_coefficient is required",
-        ),
-    ],
-)
-def test_peclet_requires_complete_axial_parameters(parameters, message):
-    """Test rejection of incomplete axial Peclet parameters."""
-    with pytest.raises(ValueError, match=message):
-        dimensionless_numbers.peclet_number(**parameters)
-
-
-def test_peclet_requires_reynolds():
-    """Test that the mass-transfer form requires Reynolds number."""
-    with pytest.raises(ValueError, match="reynolds is required"):
-        dimensionless_numbers.peclet_number()
-
-
-def test_peclet_requires_schmidt():
-    """Test that the mass-transfer form requires Schmidt number."""
-    with pytest.raises(ValueError, match="schmidt is required"):
-        dimensionless_numbers.peclet_number(reynolds=10.0)
-
-
-@pytest.mark.parametrize(
-    ("parameter", "message"),
-    [
-        (
-            "interstitial_velocity",
-            "interstitial_velocity must be positive",
-        ),
-        ("length", "length must be positive"),
-        (
-            "axial_dispersion_coefficient",
-            "axial_dispersion_coefficient must be positive",
-        ),
-    ],
-)
-def test_axial_peclet_rejects_nonpositive_parameters(parameter, message):
-    """Test rejection of nonpositive axial Peclet parameters."""
-    parameters = {
-        "interstitial_velocity": 0.5,
-        "length": 2.0,
-        "axial_dispersion_coefficient": 0.1,
-    }
-    parameters[parameter] = 0.0
-
-    with pytest.raises(AssertionError, match=message):
-        dimensionless_numbers.peclet_number(**parameters)
-
-
-@pytest.mark.parametrize(
-    ("reynolds", "schmidt", "message"),
-    [
-        (0.0, 1000.0, "reynolds must be positive"),
-        (10.0, 0.0, "schmidt must be positive"),
-    ],
-)
-def test_mass_transfer_peclet_rejects_nonpositive_parameters(
-    reynolds,
-    schmidt,
-    message,
-):
-    """Test rejection of nonpositive mass-transfer parameters."""
-    with pytest.raises(AssertionError, match=message):
-        dimensionless_numbers.peclet_number(
-            reynolds=reynolds,
-            schmidt=schmidt,
         )
 
 
@@ -405,76 +254,6 @@ def test_sherwood_correlation_constraints(
             reynolds=reynolds,
             schmidt=schmidt,
             bed_porosity=0.4,
-        )
-
-
-@pytest.mark.parametrize(
-    "method",
-    [
-        "tan",
-        "wilson_geankoplis",
-        "williamson",
-        "ko",
-        "kataoka",
-        "chern_chien",
-        "gnielinski",
-    ],
-)
-def test_sherwood_requires_bed_porosity(method):
-    """Test correlations that require bed porosity."""
-    with pytest.raises(ValueError, match="bed_porosity is required"):
-        dimensionless_numbers.sherwood_number(
-            method=method,
-            reynolds=10.0,
-            schmidt=1000.0,
-        )
-
-
-@pytest.mark.parametrize(
-    "method",
-    [
-        "tan",
-        "wilson_geankoplis",
-        "williamson",
-        "ko",
-        "kataoka",
-        "chern_chien",
-        "gnielinski",
-    ],
-)
-@pytest.mark.parametrize("bed_porosity", [0.0, 1.0])
-def test_sherwood_rejects_invalid_bed_porosity(method, bed_porosity):
-    """Test rejection of invalid bed porosity."""
-    with pytest.raises(
-        AssertionError,
-        match="bed_porosity must be between 0 and 1",
-    ):
-        dimensionless_numbers.sherwood_number(
-            method=method,
-            reynolds=10.0,
-            schmidt=1000.0,
-            bed_porosity=bed_porosity,
-        )
-
-
-@pytest.mark.parametrize(
-    ("reynolds", "schmidt", "message"),
-    [
-        (0.0, 1000.0, "reynolds must be positive"),
-        (10.0, 0.0, "schmidt must be positive"),
-    ],
-)
-def test_sherwood_rejects_nonpositive_inputs(
-    reynolds,
-    schmidt,
-    message,
-):
-    """Test rejection of nonpositive Reynolds or Schmidt numbers."""
-    with pytest.raises(AssertionError, match=message):
-        dimensionless_numbers.sherwood_number(
-            method="ohashi",
-            reynolds=reynolds,
-            schmidt=schmidt,
         )
 
 

@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from .column_data import Column
+from .column import Column
 
 
 class Breakthrough:
@@ -165,7 +165,6 @@ class Breakthrough:
                 )
 
             self.time = derived
-
             return derived
 
         if self.time is not None:
@@ -189,7 +188,6 @@ class Breakthrough:
                     "Supplied bed_volumes are inconsistent with "
                     "time / empty_bed_contact_time."
                 )
-
             return derived
 
         if self.bed_volumes is not None:
@@ -219,10 +217,8 @@ class Breakthrough:
         if threshold is None:
             if column_volume_or_threshold is None:
                 raise ValueError("A breakthrough threshold must be supplied.")
-
             threshold = column_volume_or_threshold
             column_volume = None
-
         else:
             column_volume = column_volume_or_threshold
 
@@ -234,7 +230,6 @@ class Breakthrough:
             self.bed_volumes = self.time_to_bed_volumes(column_volume)
 
         concentrations = self.normalize_concentration()
-
         mask = concentrations >= threshold
 
         if not np.any(mask):
@@ -243,24 +238,18 @@ class Breakthrough:
             )
 
         above_idx = int(np.argmax(mask))
-
         if above_idx == 0:
             breakthrough_bv = float(self.bed_volumes[0])
-
             if return_index:
                 return (
                     breakthrough_bv,
                     above_idx,
                 )
-
             return breakthrough_bv
 
         bv_above = self.bed_volumes[above_idx]
-
         c_above = concentrations[above_idx]
-
         bv_below = self.bed_volumes[above_idx - 1]
-
         c_below = concentrations[above_idx - 1]
 
         breakthrough_bv = float(
@@ -282,11 +271,8 @@ class Breakthrough:
     ) -> str:
         """Summarize breakthrough data."""
         normalized = self.normalize_concentration()
-
         ebct = self.empty_bed_contact_time()
-
         bv_value = self.breakthrough_threshold(threshold)
-
         flow_rate_text = (
             f"{self.flow_rate:.3f}" if self.flow_rate is not None else "Not supplied"
         )

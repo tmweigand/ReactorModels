@@ -1,4 +1,4 @@
-"""chemical_class.py"""
+"""chemical.py"""
 
 import numpy as np
 
@@ -15,7 +15,7 @@ class Chemical:
         solubility: float | None = None,
         vapor_pressure: float | None = None,
         boiling_point: float | None = None,
-        diffusion_parameter: float | None = None,
+        diffusion: float | None = None,
     ) -> None:
 
         if molar_volume is not None:
@@ -24,19 +24,19 @@ class Chemical:
             ), f"molar_volume must be positive, got {molar_volume}"
 
         if density is not None:
-            assert density > 0, f"density must be positive, got {density}"
+            assert density > 0, f"Chemical density must be positive, got {density}"
 
         if solubility is not None:
-            assert solubility >= 0, f"solubility must be non-negative, got {solubility}"
+            assert solubility >= 0, f"Solubility must be non-negative, got {solubility}"
 
         if vapor_pressure is not None:
             assert (
                 vapor_pressure >= 0
             ), f"vapor_pressure must be non-negative, got {vapor_pressure}"
 
-        if diffusion_parameter is not None:
-            assert diffusion_parameter > 0, (
-                "diffusion_parameter must be positive, " f"got {diffusion_parameter}"
+        if diffusion is not None:
+            assert diffusion > 0, (
+                "diffusion_parameter must be positive, " f"got {diffusion}"
             )
 
         self.compound = compound
@@ -47,23 +47,22 @@ class Chemical:
         self.solubility = solubility
         self.vapor_pressure = vapor_pressure
         self.boiling_point = boiling_point
-        self.diffusion_parameter = diffusion_parameter
+        self.diffusion = diffusion
 
     def liquid_diffusion_coefficient(
         self,
         viscosity: float,
     ) -> float:
-        """The liquid diffusivity
-        was determined from a correlation given by Hayduk and Laudie (1974):
+        """From a correlation given by Hayduk and Laudie (1974):
 
         ----reference----
-        (AdDesinS manual appendix F eq.no.7)
+        (AdDesignS manual appendix F eq.no.7)
 
         ----parameters----
         DL is the liquid diffusivity (cm2/s)
         Vb is the molar volume of the chemical at the normal boiling point (cm3/mol)
         uL is the water viscosity (centipoise)
-        """  # noqa: D205, D401
+        """
         assert viscosity > 0, f"viscosity must be positive, got {viscosity}"
 
         if self.molar_volume is None:

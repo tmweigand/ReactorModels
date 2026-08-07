@@ -1,4 +1,4 @@
-"""media_class.py"""
+"""media.py"""
 
 import numpy as np
 
@@ -8,19 +8,19 @@ class Media:
 
     def __init__(
         self,
-        particle_porosity: float | None = None,
-        particle_density: float | None = None,
         mean_diameter: float | None = None,
         bed_density: float | None = None,
         sphericity: float | None = None,
+        particle_porosity: float | None = None,
+        particle_density: float | None = None,
         particle_radius: float | None = None,
     ) -> None:
 
-        self.particle_porosity = particle_porosity
-        self.particle_density = particle_density
         self.mean_diameter = mean_diameter
         self.bed_density = bed_density
         self.sphericity = sphericity
+        self.particle_porosity = particle_porosity
+        self.particle_density = particle_density
         self.particle_radius = particle_radius
 
     def get_bed_density(self, bed_porosity: float) -> float:
