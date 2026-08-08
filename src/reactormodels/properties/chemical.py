@@ -9,13 +9,13 @@ class Chemical:
     def __init__(
         self,
         name: str = "default",
+        diffusion: float | None = None,
         molar_volume: float | None = None,
         molecular_weight: float | None = None,
         density: float | None = None,
         solubility: float | None = None,
         vapor_pressure: float | None = None,
         boiling_point: float | None = None,
-        diffusion: float | None = None,
     ) -> None:
 
         if molar_volume is not None:
@@ -40,6 +40,7 @@ class Chemical:
             )
 
         self.name = name
+        self.diffusion = diffusion
         self.molecular_weight = molecular_weight
         self.molar_volume = molar_volume
         self.density = density
@@ -47,7 +48,6 @@ class Chemical:
         self.solubility = solubility
         self.vapor_pressure = vapor_pressure
         self.boiling_point = boiling_point
-        self.diffusion = diffusion
 
     def liquid_diffusion_coefficient(
         self,

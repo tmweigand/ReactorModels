@@ -29,12 +29,13 @@ def test_thomas():
         diameter=diameter,
         media=reactormodels.Media(particle_density=particle_density),
         water=reactormodels.Water(),
-        chemical=reactormodels.Chemical(),
+        chemical=reactormodels.Chemical(diffusion=diffusion),
     )
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
         feed_concentrations=feed_concentrations,
+        initial_concentration=initial_concentration,
         flow_rate=flow_rate,
         time=t_eval,
     )
@@ -44,10 +45,7 @@ def test_thomas():
     )
 
     model = reactormodels.models.AdvectionDiffusionAdsorption(
-        column=column,
         breakthrough=breakthrough,
-        diffusion=diffusion,
-        initial_concentration=initial_concentration,
         isotherm=isotherm,
         numerics=numerics,
         mode=reactormodels.models.AdsorptionKinetics.SECOND_ORDER,

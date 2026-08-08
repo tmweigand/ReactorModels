@@ -24,13 +24,14 @@ def _base_model(mode, k_ldf=0.1, n_col=30):
         diameter=diameter,
         media=reactormodels.Media(),
         water=reactormodels.Water(),
-        chemical=reactormodels.Chemical(),
+        chemical=reactormodels.Chemical(diffusion=diffusion),
     )
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
         superficial_velocity=superficial_velocity,
         feed_concentrations=inlet_concentration,
+        initial_concentration=initial_concentration,
         time=time,
     )
 
@@ -40,10 +41,7 @@ def _base_model(mode, k_ldf=0.1, n_col=30):
 
     return (
         reactormodels.models.AdvectionDiffusionAdsorption(
-            column=column,
             breakthrough=breakthrough,
-            initial_concentration=initial_concentration,
-            diffusion=diffusion,
             isotherm=reactormodels.models.LinearIsotherm(K=K),
             numerics=numerics,
             mode=mode,

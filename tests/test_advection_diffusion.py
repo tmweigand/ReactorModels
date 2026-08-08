@@ -23,11 +23,12 @@ def test_ogata_banks(diffusion):
         diameter=column_diameter,
         media=reactormodels.Media(),
         water=reactormodels.Water(),
-        chemical=reactormodels.Chemical(),
+        chemical=reactormodels.Chemical(diffusion=diffusion),
     )
     breakthrough = reactormodels.Breakthrough(
         column=column,
         feed_concentrations=inlet_concentration,
+        initial_concentration=initial_concentration,
         superficial_velocity=superficial_velocity,
         time=t_eval,
     )
@@ -37,10 +38,7 @@ def test_ogata_banks(diffusion):
     )
 
     model = reactormodels.models.AdvectionDiffusion(
-        column=column,
         breakthrough=breakthrough,
-        diffusion=diffusion,
-        initial_concentration=initial_concentration,
         numerics=numerics,
     )
 
@@ -82,12 +80,13 @@ def test_multi_element_ogata_banks():
         diameter=diameter,
         media=reactormodels.Media(),
         water=reactormodels.Water(),
-        chemical=reactormodels.Chemical(),
+        chemical=reactormodels.Chemical(diffusion=diffusion),
     )
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
         feed_concentrations=inlet_concentration,
+        initial_concentration=initial_concentration,
         superficial_velocity=superficial_velocity,
         time=t_eval,
     )
@@ -99,10 +98,7 @@ def test_multi_element_ogata_banks():
     )
 
     model = reactormodels.models.AdvectionDiffusion(
-        column=column,
         breakthrough=breakthrough,
-        diffusion=diffusion,
-        initial_concentration=initial_concentration,
         numerics=numerics,
     )
 

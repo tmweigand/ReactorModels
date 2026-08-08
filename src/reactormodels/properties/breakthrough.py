@@ -14,8 +14,9 @@ class Breakthrough:
 
     def __init__(
         self,
-        feed_concentrations: float | np.ndarray,
         column: Column,
+        feed_concentrations: float | np.ndarray,
+        initial_concentration: float = 0.0,
         compound: str | None = None,
         flow_rate: float | None = None,
         effluent_concentrations: np.ndarray | None = None,
@@ -45,6 +46,7 @@ class Breakthrough:
         self.column = column
         self.compound = compound
         self.feed_concentrations = np.asarray(feed_concentrations)
+        self.initial_concentration = initial_concentration
         self.bed_volumes = None if bed_volumes is None else np.asarray(bed_volumes)
         self.time = None if time is None else np.asarray(time)
         self.effluent_concentrations = (

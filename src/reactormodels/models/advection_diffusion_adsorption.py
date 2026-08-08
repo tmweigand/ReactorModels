@@ -4,7 +4,6 @@ from __future__ import annotations
 from typing import Type
 import numpy as np
 
-from ..properties.column import Column
 from ..properties.breakthrough import Breakthrough
 from ..numerics.config import NumericsConfig
 from .isotherm import Isotherm
@@ -30,22 +29,19 @@ class AdvectionDiffusionAdsorption:
 
     def __init__(
         self,
-        column: Column,
         breakthrough: Breakthrough,
-        diffusion: float,
-        initial_concentration: float,
         isotherm: Isotherm,
         numerics: NumericsConfig,
         mode: AdsorptionKinetics = AdsorptionKinetics.LOCAL_EQUILIBRIUM,
         k_ldf: float = 0,
         inlet_bc: Type[InletBC] = DanckwertsBC,
     ):
-        self.column = column
+        self.column = breakthrough.column
         self.breakthrough = breakthrough
         self.velocity = breakthrough.interstitial_velocity
-        self.DL = diffusion
+        self.DL = breakthrough.column.chemical.diffusion
         self.inlet_concentration = breakthrough.mean_feed_concentration()
-        self.initial_concentration = initial_concentration
+        self.initial_concentration = breakthrough.initial_concentration
         self.iso = isotherm
         self.numerics = numerics
         self.mode = mode
