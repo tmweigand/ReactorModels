@@ -2,7 +2,6 @@
 
 import numpy as np
 
-from .chemical import Chemical
 from .media import Media
 from .water import Water
 
@@ -17,7 +16,6 @@ class Column:
         diameter: float,
         media: Media,
         water: Water,
-        chemical: Chemical,
         bulk_density: float | None = None,
         sorbent_mass: float | None = None,
     ) -> None:
@@ -41,7 +39,6 @@ class Column:
         self.bulk_density = bulk_density
         self.sorbent_mass = sorbent_mass
         self.water = water
-        self.chemical = chemical
 
     def cross_section_area(self) -> float:
         """Calculate the column cross-sectional area."""

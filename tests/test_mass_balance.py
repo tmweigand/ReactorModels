@@ -26,11 +26,11 @@ def test_mass_balance_class():
         diameter=diameter,
         media=reactormodels.Media(),
         water=reactormodels.Water(),
-        chemical=reactormodels.Chemical(diffusion=diffusion),
     )
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
+        chemical=reactormodels.Chemical(diffusion=diffusion),
         feed_concentrations=inlet_concentration,
         initial_concentration=initial_concentration,
         superficial_velocity=velocity,

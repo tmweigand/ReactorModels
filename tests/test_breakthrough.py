@@ -22,15 +22,14 @@ def test_breakthrough_class():
         porosity=porosity,
         media=reactormodels.Media,
         water=reactormodels.Water,
-        chemical=reactormodels.Chemical,
     )
 
     column_volume = column.column_volume()
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
+        chemical=reactormodels.Chemical,
         feed_concentrations=feed_concentrations,
-        compound=compound,
         time=time,
         bed_volumes=bed_volumes,
         effluent_concentrations=effluent_concentrations,

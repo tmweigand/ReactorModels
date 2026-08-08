@@ -3,6 +3,7 @@
 import numpy as np
 
 from .column import Column
+from .chemical import Chemical
 
 
 class Breakthrough:
@@ -15,6 +16,7 @@ class Breakthrough:
     def __init__(
         self,
         column: Column,
+        chemical: Chemical,
         feed_concentrations: float | np.ndarray,
         initial_concentration: float = 0.0,
         compound: str | None = None,
@@ -44,7 +46,7 @@ class Breakthrough:
             ), "Effluent concentration data contains NaN"
 
         self.column = column
-        self.compound = compound
+        self.chemical = chemical
         self.feed_concentrations = np.asarray(feed_concentrations)
         self.initial_concentration = initial_concentration
         self.bed_volumes = None if bed_volumes is None else np.asarray(bed_volumes)
@@ -275,7 +277,7 @@ class Breakthrough:
         )
 
         return (
-            f"Compound: {self.compound}\n"
+            f"Compound: {self.chemical.name}\n"
             "Mean feed concentration: "
             f"{self.mean_feed_concentration():.3f}\n"
             "Normalized concentrations: "

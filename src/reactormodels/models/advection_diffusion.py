@@ -23,7 +23,7 @@ class AdvectionDiffusion:
         inlet_bc: Type[InletBC] = DirichletBC,
     ):
         self.velocity = breakthrough.interstitial_velocity
-        self.diffusion = breakthrough.column.chemical.diffusion
+        self.diffusion = breakthrough.chemical.diffusion
         self.inlet_concentration = breakthrough.mean_feed_concentration()
         self.initial_concentration = breakthrough.initial_concentration
         self.numerics = numerics

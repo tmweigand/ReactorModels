@@ -29,11 +29,11 @@ def test_thomas():
         diameter=diameter,
         media=reactormodels.Media(particle_density=particle_density),
         water=reactormodels.Water(),
-        chemical=reactormodels.Chemical(diffusion=diffusion),
     )
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
+        chemical=reactormodels.Chemical(diffusion=diffusion),
         feed_concentrations=feed_concentrations,
         initial_concentration=initial_concentration,
         flow_rate=flow_rate,

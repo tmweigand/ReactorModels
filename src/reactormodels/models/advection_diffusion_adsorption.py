@@ -39,7 +39,7 @@ class AdvectionDiffusionAdsorption:
         self.column = breakthrough.column
         self.breakthrough = breakthrough
         self.velocity = breakthrough.interstitial_velocity
-        self.DL = breakthrough.column.chemical.diffusion
+        self.DL = breakthrough.chemical.diffusion
         self.inlet_concentration = breakthrough.mean_feed_concentration()
         self.initial_concentration = breakthrough.initial_concentration
         self.iso = isotherm

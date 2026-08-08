@@ -24,11 +24,11 @@ def _base_model(mode, k_ldf=0.1, n_col=30):
         diameter=diameter,
         media=reactormodels.Media(),
         water=reactormodels.Water(),
-        chemical=reactormodels.Chemical(diffusion=diffusion),
     )
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
+        chemical=reactormodels.Chemical(diffusion=diffusion),
         superficial_velocity=superficial_velocity,
         feed_concentrations=inlet_concentration,
         initial_concentration=initial_concentration,

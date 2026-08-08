@@ -93,11 +93,11 @@ def test_thomas_limiting_form(time=np.linspace(0, 10, 100)):
         bulk_density=bulk_density,
         media=reactormodels.Media(particle_density=particle_density),
         water=reactormodels.Water(),
-        chemical=reactormodels.Chemical(),
     )
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
+        chemical=reactormodels.Chemical(),
         feed_concentrations=feed_concentrations,
         flow_rate=flow_rate,
         time=time,
@@ -164,13 +164,13 @@ def test_bohart_adams_equals_thomas():
         bulk_density=bulk_density,
         media=reactormodels.Media(),
         water=reactormodels.Water(),
-        chemical=reactormodels.Chemical(),
     )
 
     feed_concentrations = [99, 101]
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
+        chemical=reactormodels.Chemical(),
         feed_concentrations=feed_concentrations,
         flow_rate=flow_rate,
         time=time,
