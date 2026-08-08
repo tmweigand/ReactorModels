@@ -66,7 +66,7 @@ def test_local_equilibrium_vs_ogata_banks():
 
     R = 1.0 + (rho_b * K) / eps
 
-    t_mid = 0.5 * column_length / (model.breakthrough.interstitial_velocity() / R)
+    t_mid = 0.5 * column_length / (model.breakthrough.interstitial_velocity / R)
     t_eval = np.array([0.25 * t_mid, t_mid, 2.0 * t_mid])
 
     x, C, q = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
@@ -92,7 +92,7 @@ def test_ldf_converges_to_equilibrium_at_high_kldf():
 
     D, L, eps, rho_b, K = params
     R = 1.0 + (rho_b * K) / eps
-    v_eff = eq_model.breakthrough.interstitial_velocity() / (eps * R)
+    v_eff = eq_model.breakthrough.interstitial_velocity / (eps * R)
     t_eval = np.array([0.5 * L / v_eff, L / v_eff])
 
     x, C_eq, q_eq = eq_model.solve((0, t_eval[-1]), t_eval)
@@ -108,7 +108,7 @@ def test_ldf_q_tracks_equilibrium():
         reactormodels.models.AdsorptionKinetics.LINEAR_DRIVING_FORCE, k_ldf=0.5
     )
     R = 1.0 + (rho_b * K) / eps
-    v_eff = model.breakthrough.interstitial_velocity() / (eps * R)
+    v_eff = model.breakthrough.interstitial_velocity / (eps * R)
     t_long = 5.0 * L / v_eff  # run long enough for q to equilibrate
 
     x, C, q = model.solve(t_span=(0, t_long), t_eval=np.array([t_long]))

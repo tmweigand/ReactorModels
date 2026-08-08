@@ -50,10 +50,10 @@ class OgataBanks(AnalyticModels):
 
         if self.R is not None:
             self.diffusion = diffusion / self.R
-            self.interstitial_velocity = breakthrough.interstitial_velocity() / self.R
+            self.interstitial_velocity = breakthrough.interstitial_velocity / self.R
         else:
             self.diffusion = diffusion
-            self.interstitial_velocity = breakthrough.interstitial_velocity()
+            self.interstitial_velocity = breakthrough.interstitial_velocity
 
         self.inlet_concentration = breakthrough.mean_feed_concentration()
 
@@ -181,7 +181,7 @@ class BohartAdams(AnalyticModels):
         super().__init__(breakthrough)
         self.k_BA = k_BA
         self.sorbent_capacity = sorbent_capacity
-        self.velocity = breakthrough.interstitial_velocity()
+        self.velocity = breakthrough.interstitial_velocity
         self.particle_density = self.column.get_particle_density()
         self.inlet_concentration = breakthrough.mean_feed_concentration()
 
@@ -298,7 +298,7 @@ class ThomasLangmuir(AnalyticModels):
         self.k_Th = k_Th
         self.particle_density = self.column.get_particle_density()
         self.inlet_concentration = breakthrough.mean_feed_concentration()
-        self.interstitial_velocity = breakthrough.interstitial_velocity()
+        self.interstitial_velocity = breakthrough.interstitial_velocity
 
         if self.column.porosity is not None and self.particle_density is not None:
             self.rho_arg = self.particle_density * (1 - self.column.porosity)

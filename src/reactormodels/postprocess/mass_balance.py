@@ -112,7 +112,7 @@ class MassBalance:
                 C=C_history[i],
                 q=q_history[i],
                 t=t_eval[i],
-                velocity=breakthrough.interstitial_velocity(),
+                velocity=breakthrough.interstitial_velocity,
                 porosity=breakthrough.column.porosity,
                 bulk_density=breakthrough.column.get_bulk_density(),
                 C_in=breakthrough.mean_feed_concentration(),

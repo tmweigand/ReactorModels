@@ -119,6 +119,7 @@ class OrthogonalCollocation:
         return x, A, B
 
     def _build_multi_element(self):
+        """Build collocation for multiple elements on [0,1]."""
         ne = self.n_elements
         xi, wi = self.jacobi_roots_and_weights()  # interior roots + weights on [0,1]
         n_local = self.n_interior_points + 2
@@ -160,6 +161,7 @@ class OrthogonalCollocation:
         return x_global, A_global, B_global
 
     def _build(self):
+        """Build elements"""
         if self.domain_length <= 0:
             raise ValueError("domain_length must be > 0")
 

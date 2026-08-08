@@ -33,84 +33,13 @@ def schmidt_number(
     return viscosity / (density * diffusion_coefficient)
 
 
-# def peclet_number(
-#     interstitial_velocity: float | None = None,
-#     length: float | None = None,
-#     axial_dispersion_coefficient: float | None = None,
-#     *,
-#     reynolds: float | None = None,
-#     schmidt: float | None = None,
-# ) -> float:
-#     """Calculate an axial-dispersion or mass-transfer Peclet number."""
-#     axial_parameters_provided = any(
-#         value is not None
-#         for value in (
-#             interstitial_velocity,
-#             length,
-#             axial_dispersion_coefficient,
-#         )
-#     )
-#     mass_transfer_parameters_provided = reynolds is not None or schmidt is not None
-
-#     if axial_parameters_provided and mass_transfer_parameters_provided:
-#         raise ValueError(
-#             "Provide axial-dispersion parameters or Reynolds and "
-#             "Schmidt numbers, not both."
-#         )
-
-#     if axial_parameters_provided:
-#         return length * interstitial_velocity / axial_dispersion_coefficient
-
-#     return reynolds * schmidt
-
-
 def peclet_number(
-    interstitial_velocity: float | None = None,
-    length: float | None = None,
-    axial_dispersion_coefficient: float | None = None,
-    *,
-    reynolds: float | None = None,
-    schmidt: float | None = None,
+    interstitial_velocity: float,
+    length: float,
+    diffusion: float,
 ) -> float:
-    """Calculate an axial-dispersion or mass-transfer Peclet number.
-
-    Provide either:
-        interstitial_velocity, length, axial_dispersion_coefficient
-    or:
-        reynolds, schmidt
-    """
-    axial_args = (interstitial_velocity, length, axial_dispersion_coefficient)
-    mass_transfer_args = (reynolds, schmidt)
-
-    axial_provided = any(v is not None for v in axial_args)
-    mass_transfer_provided = any(v is not None for v in mass_transfer_args)
-
-    if axial_provided and mass_transfer_provided:
-        raise ValueError(
-            "Provide axial-dispersion parameters or Reynolds and "
-            "Schmidt numbers, not both."
-        )
-
-    if axial_provided:
-        if any(v is None for v in axial_args):
-            raise ValueError(
-                "Axial-dispersion Peclet number requires interstitial_velocity, "
-                "length, and axial_dispersion_coefficient."
-            )
-        return length * interstitial_velocity / axial_dispersion_coefficient
-
-    if mass_transfer_provided:
-        if any(v is None for v in mass_transfer_args):
-            raise ValueError(
-                "Mass-transfer Peclet number requires both reynolds and schmidt."
-            )
-        return reynolds * schmidt
-
-    raise ValueError(
-        "Provide either axial-dispersion parameters "
-        "(interstitial_velocity, length, axial_dispersion_coefficient) "
-        "or mass-transfer parameters (reynolds, schmidt)."
-    )
+    """Calculate the Peclet number."""
+    return length * interstitial_velocity / diffusion
 
 
 _PorosityRequiredMethods = frozenset(
@@ -151,12 +80,18 @@ def sherwood_number(
     return correlation(reynolds, schmidt, bed_porosity)
 
 
-def _tan(reynolds: float, schmidt: float, bed_porosity: float) -> float:
+def _tan(reynolds: float, schmidt: float, bed_porosity: float | None) -> float:
+    """Calculate Sherwood number using the Tan correlation."""
+    assert bed_porosity is not None
     peclet = reynolds * schmidt
     return 1.1 * peclet ** (1 / 3) / bed_porosity
 
 
-def _wilson_geankoplis(reynolds: float, schmidt: float, bed_porosity: float) -> float:
+def _wilson_geankoplis(
+    reynolds: float, schmidt: float, bed_porosity: float | None
+) -> float:
+    """Calculate Sherwood number using the Wilson-Geankoplis correlation."""
+    assert bed_porosity is not None
     porosity_reynolds = bed_porosity * reynolds
 
     if not 0.0016 < porosity_reynolds < 55:
@@ -171,6 +106,7 @@ def _wilson_geankoplis(reynolds: float, schmidt: float, bed_porosity: float) -> 
 
 
 def _ohashi(reynolds: float, schmidt: float, _bed_porosity: float | None) -> float:
+    """Calculate Sherwood number using the Ohashi correlation."""
     if reynolds <= 0.001:
         raise ValueError("Ohashi requires Reynolds > 0.001.")
 
@@ -181,7 +117,9 @@ def _ohashi(reynolds: float, schmidt: float, _bed_porosity: float | None) -> flo
     return 2 + 0.59 * reynolds**0.6 * schmidt ** (1 / 3)
 
 
-def _williamson(reynolds: float, schmidt: float, bed_porosity: float) -> float:
+def _williamson(reynolds: float, schmidt: float, bed_porosity: float | None) -> float:
+    """Calculate Sherwood number using the Williamson correlation."""
+    assert bed_porosity is not None
     if not 0.08 < reynolds < 125:
         raise ValueError("Williamson requires 0.08 < Reynolds < 125.")
     if not 150 < schmidt < 1300:
@@ -190,20 +128,25 @@ def _williamson(reynolds: float, schmidt: float, bed_porosity: float) -> float:
     return 2.4 * bed_porosity * reynolds**0.3 * schmidt**0.42
 
 
-def _ko(reynolds: float, schmidt: float, bed_porosity: float) -> float:
+def _ko(reynolds: float, schmidt: float, bed_porosity: float | None) -> float:
+    """Calculate Sherwood number using the Ko correlation."""
+    assert bed_porosity is not None
     return 0.325 / (bed_porosity * reynolds**0.36 * schmidt ** (1 / 3))
 
 
 def _wakao_funazkri(
     reynolds: float, schmidt: float, _bed_porosity: float | None
 ) -> float:
+    """Calculate Sherwood number using the Wakao-Funazkri correlation."""
     if not 3 < reynolds < 10000:
         raise ValueError("Wakao-Funazkri requires 3 < Reynolds < 10000.")
 
     return 2 + 1.1 * reynolds**0.6 * schmidt ** (1 / 3)
 
 
-def _kataoka(reynolds: float, schmidt: float, bed_porosity: float) -> float:
+def _kataoka(reynolds: float, schmidt: float, bed_porosity: float | None) -> float:
+    """Calculate Sherwood number using the Kataoka correlation."""
+    assert bed_porosity is not None
     adjusted_reynolds = reynolds * bed_porosity / (1 - bed_porosity)
 
     if adjusted_reynolds >= 100:
@@ -219,13 +162,17 @@ def _kataoka(reynolds: float, schmidt: float, bed_porosity: float) -> float:
     )
 
 
-def _chern_chien(reynolds: float, schmidt: float, bed_porosity: float) -> float:
+def _chern_chien(reynolds: float, schmidt: float, bed_porosity: float | None) -> float:
+    """Calculate Sherwood number using the Chern-Chien correlation."""
+    assert bed_porosity is not None
     return (2 + 0.644 * reynolds**0.5 * schmidt ** (1 / 3)) * (
         1 + 1.5 * (1 - bed_porosity)
     )
 
 
-def _gnielinski(reynolds: float, schmidt: float, bed_porosity: float) -> float:
+def _gnielinski(reynolds: float, schmidt: float, bed_porosity: float | None) -> float:
+    """Calculate Sherwood number using the Gnielinski correlation."""
+    assert bed_porosity is not None
     peclet = reynolds * schmidt
 
     if peclet <= 500:

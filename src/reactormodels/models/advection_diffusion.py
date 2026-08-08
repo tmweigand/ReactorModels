@@ -27,7 +27,7 @@ class AdvectionDiffusion:
         inlet_bc: Type[InletBC] = DirichletBC,
     ):
         self.column = column
-        self.velocity = breakthrough.interstitial_velocity()
+        self.velocity = breakthrough.interstitial_velocity
         self.diffusion = diffusion
         self.inlet_concentration = breakthrough.mean_feed_concentration()
         self.initial_concentration = initial_concentration
@@ -53,6 +53,7 @@ class AdvectionDiffusion:
         return 0
 
     def _jacobian(self, t, C, Cdot, result, cj, jac):
+        """Build jacobian of _residual."""
         J = np.zeros((self.N, self.N))
 
         # Row 0: algebraic constraint, no Cdot term

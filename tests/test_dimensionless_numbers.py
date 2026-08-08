@@ -61,46 +61,21 @@ def test_schmidt_number():
     np.testing.assert_allclose(result, expected)
 
 
-def test_peclet_number_from_reynolds_and_schmidt():
-    """Test the mass-transfer Peclet-number form."""
-    reynolds = 25.0
-    schmidt = 1000.0
-
-    result = dimensionless_numbers.peclet_number(
-        reynolds=reynolds,
-        schmidt=schmidt,
-    )
-
-    np.testing.assert_allclose(result, reynolds * schmidt)
-
-
 def test_axial_peclet_number():
     """Test the axial-dispersion Peclet-number form."""
     interstitial_velocity = 0.5
     length = 2.0
-    axial_dispersion_coefficient = 0.1
+    diffusion = 0.1
 
-    expected = length * interstitial_velocity / axial_dispersion_coefficient
+    expected = length * interstitial_velocity / diffusion
 
     result = dimensionless_numbers.peclet_number(
         interstitial_velocity=interstitial_velocity,
         length=length,
-        axial_dispersion_coefficient=axial_dispersion_coefficient,
+        diffusion=diffusion,
     )
 
     np.testing.assert_allclose(result, expected)
-
-
-def test_peclet_rejects_mixed_parameter_sets():
-    """Test rejection of mixed Peclet-number definitions."""
-    with pytest.raises(ValueError, match="not both"):
-        dimensionless_numbers.peclet_number(
-            interstitial_velocity=0.5,
-            length=2.0,
-            axial_dispersion_coefficient=0.1,
-            reynolds=10.0,
-            schmidt=1000.0,
-        )
 
 
 @pytest.mark.parametrize(

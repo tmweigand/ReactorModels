@@ -42,7 +42,7 @@ class AdvectionDiffusionAdsorption:
     ):
         self.column = column
         self.breakthrough = breakthrough
-        self.velocity = breakthrough.interstitial_velocity()
+        self.velocity = breakthrough.interstitial_velocity
         self.DL = diffusion
         self.inlet_concentration = breakthrough.mean_feed_concentration()
         self.initial_concentration = initial_concentration
@@ -124,6 +124,7 @@ class AdvectionDiffusionAdsorption:
         return 0
 
     def _jacobian(self, t, y, ydot, result, cj, jac):
+        """Build jacobian of _residual."""
         C, q = self._split(y)
         n = self._n_vars()
         J = np.zeros((n, n))

@@ -178,7 +178,7 @@ def test_bohart_adams_equals_thomas():
 
     k_BA = 0.002
     sorbent_capacity = 1000
-    k_Th = k_BA * length / breakthrough.superficial_velocity()
+    k_Th = k_BA * length / breakthrough.superficial_velocity
 
     bohart_adams = reactormodels.models.BohartAdams(
         breakthrough=breakthrough,
