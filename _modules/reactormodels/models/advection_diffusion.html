@@ -78,8 +78,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Type</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">..column_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">Column</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..breakthrough_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">Breakthrough</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..properties.breakthrough</span><span class="w"> </span><span class="kn">import</span> <span class="n">Breakthrough</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..numerics.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumericsConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.boundary_conditions</span><span class="w"> </span><span class="kn">import</span> <span class="n">InletBC</span><span class="p">,</span> <span class="n">DirichletBC</span>
 
@@ -96,18 +95,14 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">column</span><span class="p">:</span> <span class="n">Column</span><span class="p">,</span>
         <span class="n">breakthrough</span><span class="p">:</span> <span class="n">Breakthrough</span><span class="p">,</span>
-        <span class="n">initial_concentration</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-        <span class="n">diffusion</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">numerics</span><span class="p">:</span> <span class="n">NumericsConfig</span><span class="p">,</span>
         <span class="n">inlet_bc</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">InletBC</span><span class="p">]</span> <span class="o">=</span> <span class="n">DirichletBC</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="o">=</span> <span class="n">column</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">interstitial_velocity</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">diffusion</span> <span class="o">=</span> <span class="n">diffusion</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">interstitial_velocity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diffusion</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">chemical</span><span class="o">.</span><span class="n">diffusion</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inlet_concentration</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">mean_feed_concentration</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">initial_concentration</span> <span class="o">=</span> <span class="n">initial_concentration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_concentration</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">initial_concentration</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span> <span class="o">=</span> <span class="n">numerics</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inlet_bc</span> <span class="o">=</span> <span class="n">inlet_bc</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">inlet_concentration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffusion</span>
@@ -130,6 +125,7 @@
         <span class="k">return</span> <span class="mi">0</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">Cdot</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">cj</span><span class="p">,</span> <span class="n">jac</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build jacobian of _residual.&quot;&quot;&quot;</span>
         <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">))</span>
 
         <span class="c1"># Row 0: algebraic constraint, no Cdot term</span>

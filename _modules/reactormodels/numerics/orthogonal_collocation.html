@@ -203,6 +203,7 @@
         <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_build_multi_element</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build collocation for multiple elements on [0,1].&quot;&quot;&quot;</span>
         <span class="n">ne</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_elements</span>
         <span class="n">xi</span><span class="p">,</span> <span class="n">wi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jacobi_roots_and_weights</span><span class="p">()</span>  <span class="c1"># interior roots + weights on [0,1]</span>
         <span class="n">n_local</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_interior_points</span> <span class="o">+</span> <span class="mi">2</span>
@@ -244,6 +245,7 @@
         <span class="k">return</span> <span class="n">x_global</span><span class="p">,</span> <span class="n">A_global</span><span class="p">,</span> <span class="n">B_global</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build elements&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain_length</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;domain_length must be &gt; 0&quot;</span><span class="p">)</span>
 

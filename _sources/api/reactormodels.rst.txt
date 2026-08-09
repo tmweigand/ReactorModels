@@ -19,18 +19,10 @@ Subpackages
 Submodules
 ----------
 
-reactormodels.breakthrough\_data module
----------------------------------------
+reactormodels.dimensionless\_numbers module
+-------------------------------------------
 
-.. automodule:: reactormodels.breakthrough_data
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-reactormodels.column\_data module
----------------------------------
-
-.. automodule:: reactormodels.column_data
+.. automodule:: reactormodels.dimensionless_numbers
    :members:
    :show-inheritance:
    :undoc-members:

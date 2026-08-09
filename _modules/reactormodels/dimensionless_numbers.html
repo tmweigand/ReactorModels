@@ -1,0 +1,323 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>reactormodels.dimensionless_numbers &mdash; ReactorModels 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=ccde76bc" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            ReactorModels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../model_development/index.html">Model Development</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">reactormodels</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ReactorModels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">reactormodels.dimensionless_numbers</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for reactormodels.dimensionless_numbers</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;dimensionless_numbers.py</span>
+
+<span class="sd">Reference book:</span>
+<span class="sd">    MWH&#39;s Water Treatment: Principles and Design, 3rd ed.</span>
+
+<span class="sd">Additional Sherwood correlations:</span>
+<span class="sd">    Xu et al. (2013), Mathematically Modeling Fixed-Bed</span>
+<span class="sd">    Adsorption in Aqueous Systems, Table 3.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+
+
+<div class="viewcode-block" id="reynolds_number">
+<a class="viewcode-back" href="../../api/reactormodels.html#reactormodels.dimensionless_numbers.reynolds_number">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">reynolds_number</span><span class="p">(</span>
+    <span class="n">density</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">interstitial_velocity</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">diameter</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">viscosity</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">sphericity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate the standard or packed-bed Reynolds number.&quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">sphericity</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;sphericity must be in (0, 1], got </span><span class="si">{</span><span class="n">sphericity</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">return</span> <span class="n">density</span> <span class="o">*</span> <span class="n">sphericity</span> <span class="o">*</span> <span class="n">interstitial_velocity</span> <span class="o">*</span> <span class="n">diameter</span> <span class="o">/</span> <span class="n">viscosity</span></div>
+
+
+
+<div class="viewcode-block" id="schmidt_number">
+<a class="viewcode-back" href="../../api/reactormodels.html#reactormodels.dimensionless_numbers.schmidt_number">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">schmidt_number</span><span class="p">(</span>
+    <span class="n">viscosity</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">density</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">diffusion_coefficient</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate the Schmidt number.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">viscosity</span> <span class="o">/</span> <span class="p">(</span><span class="n">density</span> <span class="o">*</span> <span class="n">diffusion_coefficient</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="peclet_number">
+<a class="viewcode-back" href="../../api/reactormodels.html#reactormodels.dimensionless_numbers.peclet_number">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">peclet_number</span><span class="p">(</span>
+    <span class="n">interstitial_velocity</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">diffusion</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate the Peclet number.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">length</span> <span class="o">*</span> <span class="n">interstitial_velocity</span> <span class="o">/</span> <span class="n">diffusion</span></div>
+
+
+
+<span class="n">_PorosityRequiredMethods</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;tan&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wilson_geankoplis&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;williamson&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ko&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;kataoka&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;chern_chien&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gnielinski&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="sherwood_number">
+<a class="viewcode-back" href="../../api/reactormodels.html#reactormodels.dimensionless_numbers.sherwood_number">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">sherwood_number</span><span class="p">(</span>
+    <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">reynolds</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">schmidt</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">bed_porosity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate Sherwood number using the selected correlation.</span>
+
+<span class="sd">    Available methods:</span>
+<span class="sd">        tan, wilson_geankoplis, ohashi, williamson, ko,</span>
+<span class="sd">        wakao_funazkri, kataoka, chern_chien, gnielinski</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">method</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">correlation</span> <span class="o">=</span> <span class="n">_CORRELATIONS</span><span class="p">[</span><span class="n">method</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown Sherwood method: </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">_PorosityRequiredMethods</span> <span class="ow">and</span> <span class="n">bed_porosity</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2"> requires bed_porosity.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">correlation</span><span class="p">(</span><span class="n">reynolds</span><span class="p">,</span> <span class="n">schmidt</span><span class="p">,</span> <span class="n">bed_porosity</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_tan</span><span class="p">(</span><span class="n">reynolds</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">schmidt</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">bed_porosity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate Sherwood number using the Tan correlation.&quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">bed_porosity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="n">peclet</span> <span class="o">=</span> <span class="n">reynolds</span> <span class="o">*</span> <span class="n">schmidt</span>
+    <span class="k">return</span> <span class="mf">1.1</span> <span class="o">*</span> <span class="n">peclet</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="n">bed_porosity</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_wilson_geankoplis</span><span class="p">(</span>
+    <span class="n">reynolds</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">schmidt</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">bed_porosity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate Sherwood number using the Wilson-Geankoplis correlation.&quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">bed_porosity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="n">porosity_reynolds</span> <span class="o">=</span> <span class="n">bed_porosity</span> <span class="o">*</span> <span class="n">reynolds</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="mf">0.0016</span> <span class="o">&lt;</span> <span class="n">porosity_reynolds</span> <span class="o">&lt;</span> <span class="mi">55</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Wilson-Geankoplis requires 0.0016 &lt; bed_porosity * Reynolds &lt; 55.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="mi">950</span> <span class="o">&lt;</span> <span class="n">schmidt</span> <span class="o">&lt;</span> <span class="mi">70000</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Wilson-Geankoplis requires 950 &lt; Schmidt &lt; 70000.&quot;</span><span class="p">)</span>
+
+    <span class="n">peclet</span> <span class="o">=</span> <span class="n">reynolds</span> <span class="o">*</span> <span class="n">schmidt</span>
+    <span class="k">return</span> <span class="mf">1.09</span> <span class="o">*</span> <span class="n">peclet</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="n">bed_porosity</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_ohashi</span><span class="p">(</span><span class="n">reynolds</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">schmidt</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">_bed_porosity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate Sherwood number using the Ohashi correlation.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">reynolds</span> <span class="o">&lt;=</span> <span class="mf">0.001</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Ohashi requires Reynolds &gt; 0.001.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">reynolds</span> <span class="o">&lt;</span> <span class="mf">5.8</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">1.58</span> <span class="o">*</span> <span class="n">reynolds</span><span class="o">**</span><span class="mf">0.4</span> <span class="o">*</span> <span class="n">schmidt</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">reynolds</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">1.21</span> <span class="o">*</span> <span class="n">reynolds</span><span class="o">**</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">schmidt</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">0.59</span> <span class="o">*</span> <span class="n">reynolds</span><span class="o">**</span><span class="mf">0.6</span> <span class="o">*</span> <span class="n">schmidt</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_williamson</span><span class="p">(</span><span class="n">reynolds</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">schmidt</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">bed_porosity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate Sherwood number using the Williamson correlation.&quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">bed_porosity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="mf">0.08</span> <span class="o">&lt;</span> <span class="n">reynolds</span> <span class="o">&lt;</span> <span class="mi">125</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Williamson requires 0.08 &lt; Reynolds &lt; 125.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="mi">150</span> <span class="o">&lt;</span> <span class="n">schmidt</span> <span class="o">&lt;</span> <span class="mi">1300</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Williamson requires 150 &lt; Schmidt &lt; 1300.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="mf">2.4</span> <span class="o">*</span> <span class="n">bed_porosity</span> <span class="o">*</span> <span class="n">reynolds</span><span class="o">**</span><span class="mf">0.3</span> <span class="o">*</span> <span class="n">schmidt</span><span class="o">**</span><span class="mf">0.42</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_ko</span><span class="p">(</span><span class="n">reynolds</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">schmidt</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">bed_porosity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate Sherwood number using the Ko correlation.&quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">bed_porosity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="mf">0.325</span> <span class="o">/</span> <span class="p">(</span><span class="n">bed_porosity</span> <span class="o">*</span> <span class="n">reynolds</span><span class="o">**</span><span class="mf">0.36</span> <span class="o">*</span> <span class="n">schmidt</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">3</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_wakao_funazkri</span><span class="p">(</span>
+    <span class="n">reynolds</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">schmidt</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">_bed_porosity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate Sherwood number using the Wakao-Funazkri correlation.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="mi">3</span> <span class="o">&lt;</span> <span class="n">reynolds</span> <span class="o">&lt;</span> <span class="mi">10000</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Wakao-Funazkri requires 3 &lt; Reynolds &lt; 10000.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">1.1</span> <span class="o">*</span> <span class="n">reynolds</span><span class="o">**</span><span class="mf">0.6</span> <span class="o">*</span> <span class="n">schmidt</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_kataoka</span><span class="p">(</span><span class="n">reynolds</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">schmidt</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">bed_porosity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate Sherwood number using the Kataoka correlation.&quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">bed_porosity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="n">adjusted_reynolds</span> <span class="o">=</span> <span class="n">reynolds</span> <span class="o">*</span> <span class="n">bed_porosity</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">bed_porosity</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">adjusted_reynolds</span> <span class="o">&gt;=</span> <span class="mi">100</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Kataoka requires Reynolds * bed_porosity / (1 - bed_porosity) &lt; 100.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="mf">1.85</span>
+        <span class="o">*</span> <span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">bed_porosity</span><span class="p">)</span> <span class="o">/</span> <span class="n">bed_porosity</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="o">*</span> <span class="n">reynolds</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="o">*</span> <span class="n">schmidt</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_chern_chien</span><span class="p">(</span><span class="n">reynolds</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">schmidt</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">bed_porosity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate Sherwood number using the Chern-Chien correlation.&quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">bed_porosity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="p">(</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">0.644</span> <span class="o">*</span> <span class="n">reynolds</span><span class="o">**</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">schmidt</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">3</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span>
+        <span class="mi">1</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">bed_porosity</span><span class="p">)</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gnielinski</span><span class="p">(</span><span class="n">reynolds</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">schmidt</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">bed_porosity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate Sherwood number using the Gnielinski correlation.&quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">bed_porosity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="n">peclet</span> <span class="o">=</span> <span class="n">reynolds</span> <span class="o">*</span> <span class="n">schmidt</span>
+
+    <span class="k">if</span> <span class="n">peclet</span> <span class="o">&lt;=</span> <span class="mi">500</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Gnielinski requires Reynolds * Schmidt &gt; 500.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">schmidt</span> <span class="o">&gt;=</span> <span class="mi">12000</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Gnielinski requires Schmidt &lt; 12000.&quot;</span><span class="p">)</span>
+
+    <span class="n">sherwood_laminar</span> <span class="o">=</span> <span class="mf">0.644</span> <span class="o">*</span> <span class="n">reynolds</span><span class="o">**</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">schmidt</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">sherwood_turbulent</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mf">0.037</span>
+        <span class="o">*</span> <span class="n">reynolds</span><span class="o">**</span><span class="mf">0.8</span>
+        <span class="o">*</span> <span class="n">schmidt</span>
+        <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mf">2.443</span> <span class="o">*</span> <span class="n">reynolds</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">schmidt</span> <span class="o">**</span> <span class="p">(</span><span class="mi">2</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">sherwood_laminar</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">sherwood_turbulent</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
+        <span class="mi">1</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">bed_porosity</span><span class="p">)</span>
+    <span class="p">)</span>
+
+
+<span class="n">_CORRELATIONS</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">],</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;tan&quot;</span><span class="p">:</span> <span class="n">_tan</span><span class="p">,</span>
+    <span class="s2">&quot;wilson_geankoplis&quot;</span><span class="p">:</span> <span class="n">_wilson_geankoplis</span><span class="p">,</span>
+    <span class="s2">&quot;ohashi&quot;</span><span class="p">:</span> <span class="n">_ohashi</span><span class="p">,</span>
+    <span class="s2">&quot;williamson&quot;</span><span class="p">:</span> <span class="n">_williamson</span><span class="p">,</span>
+    <span class="s2">&quot;ko&quot;</span><span class="p">:</span> <span class="n">_ko</span><span class="p">,</span>
+    <span class="s2">&quot;wakao_funazkri&quot;</span><span class="p">:</span> <span class="n">_wakao_funazkri</span><span class="p">,</span>
+    <span class="s2">&quot;kataoka&quot;</span><span class="p">:</span> <span class="n">_kataoka</span><span class="p">,</span>
+    <span class="s2">&quot;chern_chien&quot;</span><span class="p">:</span> <span class="n">_chern_chien</span><span class="p">,</span>
+    <span class="s2">&quot;gnielinski&quot;</span><span class="p">:</span> <span class="n">_gnielinski</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Timothy M. Weigand.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

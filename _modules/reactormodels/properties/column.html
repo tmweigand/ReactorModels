@@ -1,0 +1,226 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>reactormodels.properties.column &mdash; ReactorModels 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=ccde76bc" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            ReactorModels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../model_development/index.html">Model Development</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">reactormodels</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ReactorModels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">reactormodels.properties.column</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for reactormodels.properties.column</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;column.py.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.media</span><span class="w"> </span><span class="kn">import</span> <span class="n">Media</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.water</span><span class="w"> </span><span class="kn">import</span> <span class="n">Water</span>
+
+
+<div class="viewcode-block" id="Column">
+<a class="viewcode-back" href="../../../api/reactormodels.html#reactormodels.Column">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Column</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Packed-bed column data and calculations.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">diameter</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">porosity</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">media</span><span class="p">:</span> <span class="n">Media</span><span class="p">,</span>
+        <span class="n">water</span><span class="p">:</span> <span class="n">Water</span><span class="p">,</span>
+        <span class="n">bulk_density</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">sorbent_mass</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize packed-bed column properties.&quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;length must be positive, got </span><span class="si">{</span><span class="n">length</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">assert</span> <span class="n">diameter</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;diameter must be positive, got </span><span class="si">{</span><span class="n">diameter</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">porosity</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;porosity must be in (0, 1), got </span><span class="si">{</span><span class="n">porosity</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="n">bulk_density</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="p">(</span>
+                <span class="n">bulk_density</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;bulk_density must be positive, got </span><span class="si">{</span><span class="n">bulk_density</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="n">sorbent_mass</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="p">(</span>
+                <span class="n">sorbent_mass</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;sorbent_mass must be positive, got </span><span class="si">{</span><span class="n">sorbent_mass</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="n">length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span> <span class="o">=</span> <span class="n">porosity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diameter</span> <span class="o">=</span> <span class="n">diameter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">media</span> <span class="o">=</span> <span class="n">media</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bulk_density</span> <span class="o">=</span> <span class="n">bulk_density</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sorbent_mass</span> <span class="o">=</span> <span class="n">sorbent_mass</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">water</span> <span class="o">=</span> <span class="n">water</span>
+
+<div class="viewcode-block" id="Column.cross_section_area">
+<a class="viewcode-back" href="../../../api/reactormodels.html#reactormodels.Column.cross_section_area">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cross_section_area</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the column cross-sectional area.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="mf">0.25</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">diameter</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Column.column_volume">
+<a class="viewcode-back" href="../../../api/reactormodels.html#reactormodels.Column.column_volume">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">column_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the total column volume.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cross_section_area</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span></div>
+
+
+<div class="viewcode-block" id="Column.get_bulk_density">
+<a class="viewcode-back" href="../../../api/reactormodels.html#reactormodels.Column.get_bulk_density">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_bulk_density</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return or calculate the packed-bed bulk density.</span>
+
+<span class="sd">        Bed density = Mass_solids / Volume_total</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bulk_density</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bulk_density</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Bulk density cannot be determined. &quot;</span>
+                <span class="s2">&quot;Ensure media.particle_density is set.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">bulk_density</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bulk_density</span></div>
+
+
+<div class="viewcode-block" id="Column.get_particle_density">
+<a class="viewcode-back" href="../../../api/reactormodels.html#reactormodels.Column.get_particle_density">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_particle_density</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return or calculate the media particle density.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bulk_density</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Particle density cannot be determined. Ensure bulk_density is set.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">get_particle_density</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bulk_density</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Column.get_sorbent_mass">
+<a class="viewcode-back" href="../../../api/reactormodels.html#reactormodels.Column.get_sorbent_mass">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_sorbent_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return or calculate the sorbent mass in the packed bed.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorbent_mass</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorbent_mass</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bulk_density</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Particle density cannot be determined. Ensure bulk_density is set.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sorbent_mass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_bulk_density</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_volume</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorbent_mass</span></div>
+
+
+<div class="viewcode-block" id="Column.get_total_porosity">
+<a class="viewcode-back" href="../../../api/reactormodels.html#reactormodels.Column.get_total_porosity">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_total_porosity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the total bed and intraparticle porosity.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_porosity</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Media.particle_porosity is required to compute total porosity.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_porosity</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Timothy M. Weigand.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
