@@ -1,6 +1,7 @@
 .vscode
 .DS_Store
 .tox/
+.asv/
 src/reactormodels.egg-info/
 data_out/
 docs/_build/
