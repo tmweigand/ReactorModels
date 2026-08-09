@@ -28,6 +28,7 @@ dev = [
     "mypy>=1.15",
     "tox>=4",
     "pytest_benchmark>=5.1.0",
+    "asv>=0.6.6",
     "ruff>=0.11.5",
     "interrogate>=1.5.0",
 ]
