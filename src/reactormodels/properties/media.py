@@ -1,7 +1,5 @@
 """media.py"""
 
-import numpy as np
-
 
 class Media:
     """Adsorbent (media) particle parameters."""
@@ -23,22 +21,25 @@ class Media:
         self.particle_density = particle_density
         self.particle_radius = particle_radius
 
-    def get_bed_density(self, bed_porosity: float) -> float:
+    def get_bed_density(self, porosity: float) -> float:
         """Return bed density calculated from particle density and porosity."""
-        assert (
-            0 < bed_porosity < 1
-        ), f"bed_porosity must be in (0, 1), got {bed_porosity}"
+        if self.bed_density is not None:
+            return self.bed_density
+
+        assert 0 < porosity < 1, f"porosity must be in (0, 1), got {porosity}"
 
         if self.particle_density is None:
             raise ValueError("particle_density is required to calculate bed_density.")
 
-        derived = (1.0 - bed_porosity) * self.particle_density
+        self.bed_density = (1.0 - porosity) * self.particle_density
+        return self.bed_density
 
-        if self.bed_density is not None:
-            assert np.isclose(derived, self.bed_density), (
-                f"Supplied bed_density {self.bed_density} is inconsistent "
-                "with (1 - bed_porosity) * particle_density "
-                f"= {derived:.4f}"
-            )
+    def get_particle_density(self, bulk_density: float, porosity: float) -> float:
+        """Return the particle density with units of"""
+        if self.particle_density is not None:
+            return self.particle_density
 
-        return derived
+        assert 0 < porosity < 1, f"porosity must be in (0, 1), got {porosity}"
+
+        self.particle_density = bulk_density / (1.0 - porosity)
+        return self.particle_density

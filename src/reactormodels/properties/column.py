@@ -49,7 +49,10 @@ class Column:
         return self.cross_section_area() * self.length
 
     def get_bulk_density(self) -> float:
-        """Return or calculate the packed-bed bulk density."""
+        """Return or calculate the packed-bed bulk density.
+
+        Bed density = Mass_solids / Volume_total
+        """
         if self.bulk_density is not None:
             return self.bulk_density
 
@@ -69,12 +72,10 @@ class Column:
 
         if self.bulk_density is None:
             raise ValueError(
-                "Particle density cannot be determined."
-                "Ensure media.particle_density is set."
+                "Particle density cannot be determined. Ensure bulk_density is set."
             )
 
-        self.media.particle_density = self.bulk_density / (1.0 - self.porosity)
-        return self.media.particle_density
+        return self.media.get_particle_density(self.bulk_density, self.porosity)
 
     def get_sorbent_mass(self) -> float:
         """Return or calculate the sorbent mass in the packed bed."""
@@ -83,8 +84,7 @@ class Column:
 
         if self.bulk_density is None or self.media.particle_density is None:
             raise ValueError(
-                "Sorbent mass cannot be determined. "
-                "Ensure media.particle_density is set."
+                "Particle density cannot be determined. Ensure bulk_density is set."
             )
 
         self.sorbent_mass = self.get_bulk_density() * self.column_volume()
