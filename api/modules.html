@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="reactormodels package" href="reactormodels.html" />
-    <link rel="prev" title="Numeric Models" href="../numeric_models/index.html" /> 
+    <link rel="prev" title="Benchmarks" href="../benchmarks.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -45,6 +45,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../model_development/index.html">Model Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../benchmarks.html">Benchmarks</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
@@ -146,8 +147,10 @@
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation"><code class="docutils literal notranslate"><span class="pre">OrthogonalCollocation</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.NumericsConfig"><code class="docutils literal notranslate"><span class="pre">NumericsConfig</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.TimeIntegrator"><code class="docutils literal notranslate"><span class="pre">TimeIntegrator</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.convergence_order"><code class="docutils literal notranslate"><span class="pre">convergence_order()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#module-reactormodels.numerics.config">reactormodels.numerics.config module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#module-reactormodels.numerics.helpers">reactormodels.numerics.helpers module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#module-reactormodels.numerics.orthogonal_collocation">reactormodels.numerics.orthogonal_collocation module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#module-reactormodels.numerics.time_integrator">reactormodels.numerics.time_integrator module</a></li>
 </ul>
@@ -156,6 +159,20 @@
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.postprocess.html#reactormodels.postprocess.MassBalance"><code class="docutils literal notranslate"><span class="pre">MassBalance</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.postprocess.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.postprocess.html#module-reactormodels.postprocess.mass_balance">reactormodels.postprocess.mass_balance module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.properties.html">reactormodels.properties package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.properties.html#reactormodels.properties.Column"><code class="docutils literal notranslate"><span class="pre">Column</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.properties.html#reactormodels.properties.Breakthrough"><code class="docutils literal notranslate"><span class="pre">Breakthrough</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.properties.html#reactormodels.properties.Media"><code class="docutils literal notranslate"><span class="pre">Media</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.properties.html#reactormodels.properties.Water"><code class="docutils literal notranslate"><span class="pre">Water</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.properties.html#reactormodels.properties.Chemical"><code class="docutils literal notranslate"><span class="pre">Chemical</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.properties.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.properties.html#module-reactormodels.properties.breakthrough">reactormodels.properties.breakthrough module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.properties.html#module-reactormodels.properties.chemical">reactormodels.properties.chemical module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.properties.html#module-reactormodels.properties.column">reactormodels.properties.column module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.properties.html#module-reactormodels.properties.media">reactormodels.properties.media module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.properties.html#module-reactormodels.properties.water">reactormodels.properties.water module</a></li>
 </ul>
 </li>
 </ul>
@@ -168,6 +185,10 @@
 <li class="toctree-l3"><a class="reference internal" href="reactormodels.html#reactormodels.dimensionless_numbers.sherwood_number"><code class="docutils literal notranslate"><span class="pre">sherwood_number()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="reactormodels.html#module-reactormodels.fixtures">reactormodels.fixtures module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.html#reactormodels.fixtures.make_breakthrough"><code class="docutils literal notranslate"><span class="pre">make_breakthrough()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -178,7 +199,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../numeric_models/index.html" class="btn btn-neutral float-left" title="Numeric Models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../benchmarks.html" class="btn btn-neutral float-left" title="Benchmarks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="reactormodels.html" class="btn btn-neutral float-right" title="reactormodels package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

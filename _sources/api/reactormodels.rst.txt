@@ -15,6 +15,7 @@ Subpackages
    reactormodels.models
    reactormodels.numerics
    reactormodels.postprocess
+   reactormodels.properties
 
 Submodules
 ----------
@@ -23,6 +24,14 @@ reactormodels.dimensionless\_numbers module
 -------------------------------------------
 
 .. automodule:: reactormodels.dimensionless_numbers
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+reactormodels.fixtures module
+-----------------------------
+
+.. automodule:: reactormodels.fixtures
    :members:
    :show-inheritance:
    :undoc-members:

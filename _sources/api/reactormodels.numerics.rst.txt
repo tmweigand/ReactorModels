@@ -17,6 +17,14 @@ reactormodels.numerics.config module
    :show-inheritance:
    :undoc-members:
 
+reactormodels.numerics.helpers module
+-------------------------------------
+
+.. automodule:: reactormodels.numerics.helpers
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 reactormodels.numerics.orthogonal\_collocation module
 -----------------------------------------------------
 

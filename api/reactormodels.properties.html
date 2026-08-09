@@ -1,0 +1,508 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>reactormodels.properties package &mdash; ReactorModels 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=ccde76bc" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="reactormodels.postprocess package" href="reactormodels.postprocess.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            ReactorModels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../model_development/index.html">Model Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../benchmarks.html">Benchmarks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">reactormodels</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="reactormodels.html">reactormodels package</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.html#reactormodels.Column"><code class="docutils literal notranslate"><span class="pre">Column</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.html#reactormodels.Breakthrough"><code class="docutils literal notranslate"><span class="pre">Breakthrough</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.html#reactormodels.Water"><code class="docutils literal notranslate"><span class="pre">Water</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.html#reactormodels.Chemical"><code class="docutils literal notranslate"><span class="pre">Chemical</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.html#reactormodels.Media"><code class="docutils literal notranslate"><span class="pre">Media</span></code></a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="reactormodels.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html">reactormodels.models package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html">reactormodels.numerics package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.postprocess.html">reactormodels.postprocess package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">reactormodels.properties package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.html#module-reactormodels.dimensionless_numbers">reactormodels.dimensionless_numbers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.html#module-reactormodels.fixtures">reactormodels.fixtures module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ReactorModels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">reactormodels</a></li>
+          <li class="breadcrumb-item"><a href="reactormodels.html">reactormodels package</a></li>
+      <li class="breadcrumb-item active">reactormodels.properties package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/reactormodels.properties.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-reactormodels.properties">
+<span id="reactormodels-properties-package"></span><h1>reactormodels.properties package<a class="headerlink" href="#module-reactormodels.properties" title="Link to this heading"></a></h1>
+<p>Initialize the properties subpackage</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.properties.Column">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.properties.</span></span><span class="sig-name descname"><span class="pre">Column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diameter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">porosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">media</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#reactormodels.properties.media.Media" title="reactormodels.properties.media.Media"><span class="pre">Media</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">water</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#reactormodels.properties.water.Water" title="reactormodels.properties.water.Water"><span class="pre">Water</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bulk_density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sorbent_mass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/properties/column.html#Column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.Column" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Packed-bed column data and calculations.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.Column.cross_section_area">
+<span class="sig-name descname"><span class="pre">cross_section_area</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/column.html#Column.cross_section_area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.Column.cross_section_area" title="Link to this definition"></a></dt>
+<dd><p>Calculate the column cross-sectional area.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.Column.column_volume">
+<span class="sig-name descname"><span class="pre">column_volume</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/column.html#Column.column_volume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.Column.column_volume" title="Link to this definition"></a></dt>
+<dd><p>Calculate the total column volume.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.Column.get_bulk_density">
+<span class="sig-name descname"><span class="pre">get_bulk_density</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/column.html#Column.get_bulk_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.Column.get_bulk_density" title="Link to this definition"></a></dt>
+<dd><p>Return or calculate the packed-bed bulk density.</p>
+<p>Bed density = Mass_solids / Volume_total</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.Column.get_particle_density">
+<span class="sig-name descname"><span class="pre">get_particle_density</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/column.html#Column.get_particle_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.Column.get_particle_density" title="Link to this definition"></a></dt>
+<dd><p>Return or calculate the media particle density.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.Column.get_sorbent_mass">
+<span class="sig-name descname"><span class="pre">get_sorbent_mass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/column.html#Column.get_sorbent_mass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.Column.get_sorbent_mass" title="Link to this definition"></a></dt>
+<dd><p>Return or calculate the sorbent mass in the packed bed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.Column.get_total_porosity">
+<span class="sig-name descname"><span class="pre">get_total_porosity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/column.html#Column.get_total_porosity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.Column.get_total_porosity" title="Link to this definition"></a></dt>
+<dd><p>Calculate the total bed and intraparticle porosity.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.properties.Breakthrough">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.properties.</span></span><span class="sig-name descname"><span class="pre">Breakthrough</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#reactormodels.properties.column.Column" title="reactormodels.properties.column.Column"><span class="pre">Column</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">chemical</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#reactormodels.properties.chemical.Chemical" title="reactormodels.properties.chemical.Chemical"><span class="pre">Chemical</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">feed_concentrations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_concentration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">effluent_concentrations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bed_volumes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">superficial_velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/properties/breakthrough.html#Breakthrough"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.Breakthrough" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Collect information from experimental breakthrough data.</p>
+<p>water_matrix: label for water that was tested.
+feed_concentrations: feed concentrations over the experiment duration.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.Breakthrough.mean_feed_concentration">
+<span class="sig-name descname"><span class="pre">mean_feed_concentration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/breakthrough.html#Breakthrough.mean_feed_concentration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.Breakthrough.mean_feed_concentration" title="Link to this definition"></a></dt>
+<dd><p>Determine mean feed concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.Breakthrough.normalize_concentration">
+<span class="sig-name descname"><span class="pre">normalize_concentration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/breakthrough.html#Breakthrough.normalize_concentration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.Breakthrough.normalize_concentration" title="Link to this definition"></a></dt>
+<dd><p>Normalize effluent concentration by mean feed concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.Breakthrough.calculate_superficial_velocity">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">calculate_superficial_velocity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_section_area</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/breakthrough.html#Breakthrough.calculate_superficial_velocity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.Breakthrough.calculate_superficial_velocity" title="Link to this definition"></a></dt>
+<dd><p>Calculate superficial velocity, v = Q / A.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.Breakthrough.calculate_interstitial_velocity">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">calculate_interstitial_velocity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">superficial_velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">porosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/breakthrough.html#Breakthrough.calculate_interstitial_velocity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.Breakthrough.calculate_interstitial_velocity" title="Link to this definition"></a></dt>
+<dd><p>Calculate interstitial velocity, u = v / porosity.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="reactormodels.properties.Breakthrough.superficial_velocity">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">superficial_velocity</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.properties.Breakthrough.superficial_velocity" title="Link to this definition"></a></dt>
+<dd><p>Superficial velocity, either supplied directly or computed from flow_rate.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="reactormodels.properties.Breakthrough.interstitial_velocity">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">interstitial_velocity</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.properties.Breakthrough.interstitial_velocity" title="Link to this definition"></a></dt>
+<dd><p>Interstitial velocity, derived from superficial velocity and porosity.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.Breakthrough.empty_bed_contact_time">
+<span class="sig-name descname"><span class="pre">empty_bed_contact_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/breakthrough.html#Breakthrough.empty_bed_contact_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.Breakthrough.empty_bed_contact_time" title="Link to this definition"></a></dt>
+<dd><p>Calculate empty-bed contact time.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.Breakthrough.bed_volumes_to_time">
+<span class="sig-name descname"><span class="pre">bed_volumes_to_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/breakthrough.html#Breakthrough.bed_volumes_to_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.Breakthrough.bed_volumes_to_time" title="Link to this definition"></a></dt>
+<dd><p>Convert bed volumes to time.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.Breakthrough.time_to_bed_volumes">
+<span class="sig-name descname"><span class="pre">time_to_bed_volumes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/breakthrough.html#Breakthrough.time_to_bed_volumes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.Breakthrough.time_to_bed_volumes" title="Link to this definition"></a></dt>
+<dd><p>Convert time to bed volumes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.Breakthrough.has_breakthrough">
+<span class="sig-name descname"><span class="pre">has_breakthrough</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">breakthrough_fraction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/breakthrough.html#Breakthrough.has_breakthrough"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.Breakthrough.has_breakthrough" title="Link to this definition"></a></dt>
+<dd><p>Return True if C/C0 reaches the breakthrough fraction.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.Breakthrough.breakthrough_threshold">
+<span class="sig-name descname"><span class="pre">breakthrough_threshold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_volume_or_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/breakthrough.html#Breakthrough.breakthrough_threshold"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.Breakthrough.breakthrough_threshold" title="Link to this definition"></a></dt>
+<dd><p>Calculate bed volumes to a breakthrough threshold.</p>
+<dl class="simple">
+<dt>Supports both:</dt><dd><p>breakthrough_threshold(threshold)
+breakthrough_threshold(column_volume, threshold)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.Breakthrough.summary">
+<span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/breakthrough.html#Breakthrough.summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.Breakthrough.summary" title="Link to this definition"></a></dt>
+<dd><p>Summarize breakthrough data.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.properties.Media">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.properties.</span></span><span class="sig-name descname"><span class="pre">Media</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean_diameter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bed_density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sphericity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_porosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/properties/media.html#Media"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.Media" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Adsorbent (media) particle parameters.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.Media.get_bed_density">
+<span class="sig-name descname"><span class="pre">get_bed_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">porosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/media.html#Media.get_bed_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.Media.get_bed_density" title="Link to this definition"></a></dt>
+<dd><p>Return bed density calculated from particle density and porosity.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.Media.get_particle_density">
+<span class="sig-name descname"><span class="pre">get_particle_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bulk_density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">porosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/media.html#Media.get_particle_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.Media.get_particle_density" title="Link to this definition"></a></dt>
+<dd><p>Return the particle density with units of</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.properties.Water">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.properties.</span></span><span class="sig-name descname"><span class="pre">Water</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">viscosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/properties/water.html#Water"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.Water" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Water properties.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.properties.Chemical">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.properties.</span></span><span class="sig-name descname"><span class="pre">Chemical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">molar_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">molecular_weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solubility</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vapor_pressure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boiling_point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/properties/chemical.html#Chemical"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.Chemical" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Chemical properties.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.Chemical.liquid_diffusion_coefficient">
+<span class="sig-name descname"><span class="pre">liquid_diffusion_coefficient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">viscosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/chemical.html#Chemical.liquid_diffusion_coefficient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.Chemical.liquid_diffusion_coefficient" title="Link to this definition"></a></dt>
+<dd><p>From a correlation given by Hayduk and Laudie (1974):</p>
+<p>—-reference—-
+(AdDesignS manual appendix F eq.no.7)</p>
+<p>—-parameters—-
+DL is the liquid diffusivity (cm2/s)
+Vb is the molar volume of the chemical at the normal boiling point (cm3/mol)
+uL is the water viscosity (centipoise)</p>
+</dd></dl>
+
+</dd></dl>
+
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-reactormodels.properties.breakthrough">
+<span id="reactormodels-properties-breakthrough-module"></span><h2>reactormodels.properties.breakthrough module<a class="headerlink" href="#module-reactormodels.properties.breakthrough" title="Link to this heading"></a></h2>
+<p>breakthrough.py</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.properties.breakthrough.Breakthrough">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.properties.breakthrough.</span></span><span class="sig-name descname"><span class="pre">Breakthrough</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#reactormodels.properties.column.Column" title="reactormodels.properties.column.Column"><span class="pre">Column</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">chemical</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#reactormodels.properties.chemical.Chemical" title="reactormodels.properties.chemical.Chemical"><span class="pre">Chemical</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">feed_concentrations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_concentration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">effluent_concentrations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bed_volumes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">superficial_velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/properties/breakthrough.html#Breakthrough"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.breakthrough.Breakthrough" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Collect information from experimental breakthrough data.</p>
+<p>water_matrix: label for water that was tested.
+feed_concentrations: feed concentrations over the experiment duration.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.breakthrough.Breakthrough.mean_feed_concentration">
+<span class="sig-name descname"><span class="pre">mean_feed_concentration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/breakthrough.html#Breakthrough.mean_feed_concentration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.breakthrough.Breakthrough.mean_feed_concentration" title="Link to this definition"></a></dt>
+<dd><p>Determine mean feed concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.breakthrough.Breakthrough.normalize_concentration">
+<span class="sig-name descname"><span class="pre">normalize_concentration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/breakthrough.html#Breakthrough.normalize_concentration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.breakthrough.Breakthrough.normalize_concentration" title="Link to this definition"></a></dt>
+<dd><p>Normalize effluent concentration by mean feed concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.breakthrough.Breakthrough.calculate_superficial_velocity">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">calculate_superficial_velocity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_section_area</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/breakthrough.html#Breakthrough.calculate_superficial_velocity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.breakthrough.Breakthrough.calculate_superficial_velocity" title="Link to this definition"></a></dt>
+<dd><p>Calculate superficial velocity, v = Q / A.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.breakthrough.Breakthrough.calculate_interstitial_velocity">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">calculate_interstitial_velocity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">superficial_velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">porosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/breakthrough.html#Breakthrough.calculate_interstitial_velocity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.breakthrough.Breakthrough.calculate_interstitial_velocity" title="Link to this definition"></a></dt>
+<dd><p>Calculate interstitial velocity, u = v / porosity.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="reactormodels.properties.breakthrough.Breakthrough.superficial_velocity">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">superficial_velocity</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.properties.breakthrough.Breakthrough.superficial_velocity" title="Link to this definition"></a></dt>
+<dd><p>Superficial velocity, either supplied directly or computed from flow_rate.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="reactormodels.properties.breakthrough.Breakthrough.interstitial_velocity">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">interstitial_velocity</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#reactormodels.properties.breakthrough.Breakthrough.interstitial_velocity" title="Link to this definition"></a></dt>
+<dd><p>Interstitial velocity, derived from superficial velocity and porosity.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.breakthrough.Breakthrough.empty_bed_contact_time">
+<span class="sig-name descname"><span class="pre">empty_bed_contact_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/breakthrough.html#Breakthrough.empty_bed_contact_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.breakthrough.Breakthrough.empty_bed_contact_time" title="Link to this definition"></a></dt>
+<dd><p>Calculate empty-bed contact time.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.breakthrough.Breakthrough.bed_volumes_to_time">
+<span class="sig-name descname"><span class="pre">bed_volumes_to_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/breakthrough.html#Breakthrough.bed_volumes_to_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.breakthrough.Breakthrough.bed_volumes_to_time" title="Link to this definition"></a></dt>
+<dd><p>Convert bed volumes to time.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.breakthrough.Breakthrough.time_to_bed_volumes">
+<span class="sig-name descname"><span class="pre">time_to_bed_volumes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/breakthrough.html#Breakthrough.time_to_bed_volumes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.breakthrough.Breakthrough.time_to_bed_volumes" title="Link to this definition"></a></dt>
+<dd><p>Convert time to bed volumes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.breakthrough.Breakthrough.has_breakthrough">
+<span class="sig-name descname"><span class="pre">has_breakthrough</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">breakthrough_fraction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/breakthrough.html#Breakthrough.has_breakthrough"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.breakthrough.Breakthrough.has_breakthrough" title="Link to this definition"></a></dt>
+<dd><p>Return True if C/C0 reaches the breakthrough fraction.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.breakthrough.Breakthrough.breakthrough_threshold">
+<span class="sig-name descname"><span class="pre">breakthrough_threshold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_volume_or_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/breakthrough.html#Breakthrough.breakthrough_threshold"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.breakthrough.Breakthrough.breakthrough_threshold" title="Link to this definition"></a></dt>
+<dd><p>Calculate bed volumes to a breakthrough threshold.</p>
+<dl class="simple">
+<dt>Supports both:</dt><dd><p>breakthrough_threshold(threshold)
+breakthrough_threshold(column_volume, threshold)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.breakthrough.Breakthrough.summary">
+<span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/breakthrough.html#Breakthrough.summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.breakthrough.Breakthrough.summary" title="Link to this definition"></a></dt>
+<dd><p>Summarize breakthrough data.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-reactormodels.properties.chemical">
+<span id="reactormodels-properties-chemical-module"></span><h2>reactormodels.properties.chemical module<a class="headerlink" href="#module-reactormodels.properties.chemical" title="Link to this heading"></a></h2>
+<p>chemical.py</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.properties.chemical.Chemical">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.properties.chemical.</span></span><span class="sig-name descname"><span class="pre">Chemical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">molar_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">molecular_weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solubility</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vapor_pressure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boiling_point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/properties/chemical.html#Chemical"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.chemical.Chemical" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Chemical properties.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.chemical.Chemical.liquid_diffusion_coefficient">
+<span class="sig-name descname"><span class="pre">liquid_diffusion_coefficient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">viscosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/chemical.html#Chemical.liquid_diffusion_coefficient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.chemical.Chemical.liquid_diffusion_coefficient" title="Link to this definition"></a></dt>
+<dd><p>From a correlation given by Hayduk and Laudie (1974):</p>
+<p>—-reference—-
+(AdDesignS manual appendix F eq.no.7)</p>
+<p>—-parameters—-
+DL is the liquid diffusivity (cm2/s)
+Vb is the molar volume of the chemical at the normal boiling point (cm3/mol)
+uL is the water viscosity (centipoise)</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-reactormodels.properties.column">
+<span id="reactormodels-properties-column-module"></span><h2>reactormodels.properties.column module<a class="headerlink" href="#module-reactormodels.properties.column" title="Link to this heading"></a></h2>
+<p>column.py.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.properties.column.Column">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.properties.column.</span></span><span class="sig-name descname"><span class="pre">Column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diameter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">porosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">media</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#reactormodels.properties.media.Media" title="reactormodels.properties.media.Media"><span class="pre">Media</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">water</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#reactormodels.properties.water.Water" title="reactormodels.properties.water.Water"><span class="pre">Water</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bulk_density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sorbent_mass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/properties/column.html#Column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.column.Column" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Packed-bed column data and calculations.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.column.Column.cross_section_area">
+<span class="sig-name descname"><span class="pre">cross_section_area</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/column.html#Column.cross_section_area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.column.Column.cross_section_area" title="Link to this definition"></a></dt>
+<dd><p>Calculate the column cross-sectional area.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.column.Column.column_volume">
+<span class="sig-name descname"><span class="pre">column_volume</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/column.html#Column.column_volume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.column.Column.column_volume" title="Link to this definition"></a></dt>
+<dd><p>Calculate the total column volume.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.column.Column.get_bulk_density">
+<span class="sig-name descname"><span class="pre">get_bulk_density</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/column.html#Column.get_bulk_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.column.Column.get_bulk_density" title="Link to this definition"></a></dt>
+<dd><p>Return or calculate the packed-bed bulk density.</p>
+<p>Bed density = Mass_solids / Volume_total</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.column.Column.get_particle_density">
+<span class="sig-name descname"><span class="pre">get_particle_density</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/column.html#Column.get_particle_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.column.Column.get_particle_density" title="Link to this definition"></a></dt>
+<dd><p>Return or calculate the media particle density.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.column.Column.get_sorbent_mass">
+<span class="sig-name descname"><span class="pre">get_sorbent_mass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/column.html#Column.get_sorbent_mass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.column.Column.get_sorbent_mass" title="Link to this definition"></a></dt>
+<dd><p>Return or calculate the sorbent mass in the packed bed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.column.Column.get_total_porosity">
+<span class="sig-name descname"><span class="pre">get_total_porosity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/column.html#Column.get_total_porosity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.column.Column.get_total_porosity" title="Link to this definition"></a></dt>
+<dd><p>Calculate the total bed and intraparticle porosity.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-reactormodels.properties.media">
+<span id="reactormodels-properties-media-module"></span><h2>reactormodels.properties.media module<a class="headerlink" href="#module-reactormodels.properties.media" title="Link to this heading"></a></h2>
+<p>media.py</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.properties.media.Media">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.properties.media.</span></span><span class="sig-name descname"><span class="pre">Media</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean_diameter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bed_density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sphericity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_porosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/properties/media.html#Media"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.media.Media" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Adsorbent (media) particle parameters.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.media.Media.get_bed_density">
+<span class="sig-name descname"><span class="pre">get_bed_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">porosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/media.html#Media.get_bed_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.media.Media.get_bed_density" title="Link to this definition"></a></dt>
+<dd><p>Return bed density calculated from particle density and porosity.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.properties.media.Media.get_particle_density">
+<span class="sig-name descname"><span class="pre">get_particle_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bulk_density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">porosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/reactormodels/properties/media.html#Media.get_particle_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.media.Media.get_particle_density" title="Link to this definition"></a></dt>
+<dd><p>Return the particle density with units of</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-reactormodels.properties.water">
+<span id="reactormodels-properties-water-module"></span><h2>reactormodels.properties.water module<a class="headerlink" href="#module-reactormodels.properties.water" title="Link to this heading"></a></h2>
+<p>water.py</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.properties.water.Water">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.properties.water.</span></span><span class="sig-name descname"><span class="pre">Water</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">viscosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/properties/water.html#Water"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.properties.water.Water" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Water properties.</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="reactormodels.postprocess.html" class="btn btn-neutral float-left" title="reactormodels.postprocess package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Timothy M. Weigand.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
