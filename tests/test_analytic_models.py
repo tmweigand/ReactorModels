@@ -89,13 +89,15 @@ def test_thomas_limiting_form(time=np.linspace(0, 10, 100)):
     column = reactormodels.Column(
         length=length,
         diameter=diameter,
-        particle_density=particle_density,
         porosity=porosity,
         bulk_density=bulk_density,
+        media=reactormodels.Media(particle_density=particle_density),
+        water=reactormodels.Water(),
     )
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
+        chemical=reactormodels.Chemical(),
         feed_concentrations=feed_concentrations,
         flow_rate=flow_rate,
         time=time,
@@ -156,13 +158,19 @@ def test_bohart_adams_equals_thomas():
     time = np.linspace(0, 200, 200)
 
     column = reactormodels.Column(
-        length=length, porosity=porosity, diameter=diameter, bulk_density=bulk_density
+        length=length,
+        porosity=porosity,
+        diameter=diameter,
+        bulk_density=bulk_density,
+        media=reactormodels.Media(),
+        water=reactormodels.Water(),
     )
 
     feed_concentrations = [99, 101]
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
+        chemical=reactormodels.Chemical(),
         feed_concentrations=feed_concentrations,
         flow_rate=flow_rate,
         time=time,
@@ -170,7 +178,7 @@ def test_bohart_adams_equals_thomas():
 
     k_BA = 0.002
     sorbent_capacity = 1000
-    k_Th = k_BA * length / breakthrough.get_superficial_velocity()
+    k_Th = k_BA * length / breakthrough.superficial_velocity
 
     bohart_adams = reactormodels.models.BohartAdams(
         breakthrough=breakthrough,

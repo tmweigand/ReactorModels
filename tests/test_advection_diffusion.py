@@ -14,16 +14,21 @@ def test_ogata_banks(diffusion):
     porosity = 0.5
     inlet_concentration = 1.0
     initial_concentration = 0.0
-    diameter = 1
+    column_diameter = 1
     t_eval = np.array([1.0, 2.0, 3.0])
 
     column = reactormodels.Column(
-        length=column_length, porosity=porosity, diameter=diameter
+        length=column_length,
+        porosity=porosity,
+        diameter=column_diameter,
+        media=reactormodels.Media(),
+        water=reactormodels.Water(),
     )
-
     breakthrough = reactormodels.Breakthrough(
         column=column,
+        chemical=reactormodels.Chemical(diffusion=diffusion),
         feed_concentrations=inlet_concentration,
+        initial_concentration=initial_concentration,
         superficial_velocity=superficial_velocity,
         time=t_eval,
     )
@@ -33,10 +38,7 @@ def test_ogata_banks(diffusion):
     )
 
     model = reactormodels.models.AdvectionDiffusion(
-        column=column,
         breakthrough=breakthrough,
-        diffusion=diffusion,
-        initial_concentration=initial_concentration,
         numerics=numerics,
     )
 
@@ -73,12 +75,18 @@ def test_multi_element_ogata_banks():
     diameter = 1
 
     column = reactormodels.Column(
-        length=column_length, porosity=porosity, diameter=diameter
+        length=column_length,
+        porosity=porosity,
+        diameter=diameter,
+        media=reactormodels.Media(),
+        water=reactormodels.Water(),
     )
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
+        chemical=reactormodels.Chemical(diffusion=diffusion),
         feed_concentrations=inlet_concentration,
+        initial_concentration=initial_concentration,
         superficial_velocity=superficial_velocity,
         time=t_eval,
     )
@@ -90,10 +98,7 @@ def test_multi_element_ogata_banks():
     )
 
     model = reactormodels.models.AdvectionDiffusion(
-        column=column,
         breakthrough=breakthrough,
-        diffusion=diffusion,
-        initial_concentration=initial_concentration,
         numerics=numerics,
     )
 

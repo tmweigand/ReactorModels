@@ -193,7 +193,7 @@ def test_second_gradient_matches_matrix_row(oc5):
 
 
 def test_gradient_linear(oc5):
-    """gradient of a linear function x should be all-ones."""
+    """Gradient of a linear function x should be all-ones."""
     result = oc5.evaluate_gradient(oc5.nodes)
     np.testing.assert_allclose(result, np.ones(len(oc5.nodes)), atol=1e-10)
 

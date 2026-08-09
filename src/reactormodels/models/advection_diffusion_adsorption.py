@@ -4,8 +4,7 @@ from __future__ import annotations
 from typing import Type
 import numpy as np
 
-from ..column_data import Column
-from ..breakthrough_data import Breakthrough
+from ..properties.breakthrough import Breakthrough
 from ..numerics.config import NumericsConfig
 from .isotherm import Isotherm
 from .adsorption_kinetics import AdsorptionKinetics
@@ -30,22 +29,19 @@ class AdvectionDiffusionAdsorption:
 
     def __init__(
         self,
-        column: Column,
         breakthrough: Breakthrough,
-        diffusion: float,
-        initial_concentration: float,
         isotherm: Isotherm,
         numerics: NumericsConfig,
         mode: AdsorptionKinetics = AdsorptionKinetics.LOCAL_EQUILIBRIUM,
         k_ldf: float = 0,
         inlet_bc: Type[InletBC] = DanckwertsBC,
     ):
-        self.column = column
+        self.column = breakthrough.column
         self.breakthrough = breakthrough
-        self.velocity = breakthrough.interstitial_velocity()
-        self.DL = diffusion
+        self.velocity = breakthrough.interstitial_velocity
+        self.DL = breakthrough.chemical.diffusion
         self.inlet_concentration = breakthrough.mean_feed_concentration()
-        self.initial_concentration = initial_concentration
+        self.initial_concentration = breakthrough.initial_concentration
         self.iso = isotherm
         self.numerics = numerics
         self.mode = mode
@@ -124,6 +120,7 @@ class AdvectionDiffusionAdsorption:
         return 0
 
     def _jacobian(self, t, y, ydot, result, cj, jac):
+        """Build jacobian of _residual."""
         C, q = self._split(y)
         n = self._n_vars()
         J = np.zeros((n, n))

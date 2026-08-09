@@ -3,8 +3,7 @@
 from typing import Type
 import numpy as np
 
-from ..column_data import Column
-from ..breakthrough_data import Breakthrough
+from ..properties.breakthrough import Breakthrough
 from ..numerics.config import NumericsConfig
 from .boundary_conditions import InletBC, DirichletBC
 
@@ -19,18 +18,14 @@ class AdvectionDiffusion:
 
     def __init__(
         self,
-        column: Column,
         breakthrough: Breakthrough,
-        initial_concentration: float,
-        diffusion: float,
         numerics: NumericsConfig,
         inlet_bc: Type[InletBC] = DirichletBC,
     ):
-        self.column = column
-        self.velocity = breakthrough.interstitial_velocity()
-        self.diffusion = diffusion
+        self.velocity = breakthrough.interstitial_velocity
+        self.diffusion = breakthrough.chemical.diffusion
         self.inlet_concentration = breakthrough.mean_feed_concentration()
-        self.initial_concentration = initial_concentration
+        self.initial_concentration = breakthrough.initial_concentration
         self.numerics = numerics
         self.inlet_bc = inlet_bc(
             self.inlet_concentration, self.velocity, self.diffusion
@@ -53,6 +48,7 @@ class AdvectionDiffusion:
         return 0
 
     def _jacobian(self, t, C, Cdot, result, cj, jac):
+        """Build jacobian of _residual."""
         J = np.zeros((self.N, self.N))
 
         # Row 0: algebraic constraint, no Cdot term

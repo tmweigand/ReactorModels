@@ -4,7 +4,7 @@ import numpy as np
 
 from .orthogonal_collocation import OrthogonalCollocation
 from .time_integrator import TimeIntegrator
-from ..column_data import Column
+from ..properties.column import Column
 
 
 class NumericsConfig:
