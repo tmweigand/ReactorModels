@@ -169,7 +169,7 @@ def test_n_vars(b: BaseParams):
     assert ip._n_vars() == ip.N
 
     dc = make_DC(b)
-    assert dc._n_vars() == dc.N_column + dc.N_particle * (dc.N_column - 1)
+    assert dc._n_vars() == dc.N_column + dc.N_particle * dc.N_column
 
 
 def test_split(b: BaseParams):
@@ -195,9 +195,9 @@ def test_split(b: BaseParams):
     C_dc, Cp = dc._split(y_dc)
 
     assert np.array_equal(C_dc, y_dc[: dc.N_column])
-    assert Cp.shape == (dc.N_column - 1, dc.N_particle)
+    assert Cp.shape == (dc.N_column, dc.N_particle)
 
-    expected_Cp = y_dc[dc.N_column :].reshape(dc.N_column - 1, dc.N_particle)
+    expected_Cp = y_dc[dc.N_column :].reshape(dc.N_column, dc.N_particle)
     assert np.array_equal(Cp, expected_Cp)
 
     ade_ldf = make_ADE(

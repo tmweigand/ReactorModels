@@ -8,20 +8,20 @@ import numpy as np
 
 def run_demo(
     show: bool = True,
-    save_path: str | Path = "data_out/psdm_breakthrough_demo.png",
+    save_path: str | Path = "data_out/psdm_spatial_demo.png",
 ):
-    """Plot breakthrough profile for pore and surface diffusion model."""
+    """Plot the intraparticle concentration profile from psdm."""
 
     # particle
     particle_porosity = 0.5
     particle_density = 600  # g/L
-    particle_diameter = 0.07 * 2  # cm
+    particle_diameter = 0.07  # cm
     pore_diffusion = 5e-6  # cm2/s
-    surface_diffusion = 5e-10  # cm2/s
-    k_film = 0.075  # cm/s
+    surface_diffusion = 5e-12  # cm2/s
+    k_film = 0.1  # cm/s
 
     # column
-    axial_diffusion = 0  # cm2/s
+    axial_diffusion = 1e-20  # cm2/s
     K = 100  # (mg/g) * (L/mg)
     initial_concentration = 0
     length = 100  # cm
@@ -30,8 +30,7 @@ def run_demo(
     bulk_density = 399.8  # g/L
     feed_concentrations = 1  # mg/L
     flow_rate = 40  # cm3/s
-    time = np.array(np.loadtxt("examples/ads_time.txt", skiprows=0))
-    t_eval = time * 60  # s
+    t_eval = np.array([75 * 1440 * 60, 90 * 1440 * 60, 100 * 1440 * 60])  # s
 
     isotherm = reactormodels.models.LinearIsotherm(K=K)
 
@@ -54,7 +53,7 @@ def run_demo(
 
     column_numerics = reactormodels.numerics.NumericsConfig(
         domain_length=column.length,
-        n_interior_points=3,
+        n_interior_points=6,
         n_elements=8,
         add_inlet=True,
     )
@@ -81,15 +80,13 @@ def run_demo(
     z, r, C, Cp = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
 
     fig, ax = plt.subplots(figsize=(8, 5))
-    C_numerical = C[:, -1]
+    for i, t in enumerate(t_eval):
+        C_numerical = Cp[i, -1, :]
 
-    ads_data = np.loadtxt("examples/ads_eff.txt", skiprows=0)
+        ax.plot(r, C_numerical, marker="o", linestyle="-", label=f"t={t:g}")
 
-    ax.plot(t_eval / (1440 * 60), C_numerical, linestyle="-", label="ReactorModels")
-    ax.plot(time / 1440, ads_data, linestyle="--", label="AdDesignS")
-
-    ax.set_title("PSDM Breakthrough Profile")
-    ax.set_xlabel("Time (days)")
+    ax.set_title("PSDM Intraparticle Concentration Profile")
+    ax.set_xlabel("r")
     ax.set_ylabel("C / C_in")
     ax.grid(True, alpha=0.3)
     ax.legend(fontsize=8, ncols=1)
