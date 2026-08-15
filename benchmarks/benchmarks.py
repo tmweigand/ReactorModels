@@ -17,7 +17,7 @@ class ConvergenceSuite:
         self.t_end = 1.0
         self.breakthrough = make_breakthrough(t_end=self.t_end)
         numerics = NumericsConfig(
-            column=self.breakthrough.column,
+            domain_length=self.breakthrough.column,
             n_interior_points=n_interior_points,
             n_elements=n_elements,
             add_inlet=True,

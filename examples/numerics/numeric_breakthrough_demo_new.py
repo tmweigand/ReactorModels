@@ -17,7 +17,7 @@ def _run_case(n_interior_points: int, n_elements: int, t_end: float) -> dict:
     """Solve one case and compare against the Ogata-Banks analytical solution."""
     breakthrough = make_breakthrough(t_end=t_end)
     numerics = NumericsConfig(
-        column=breakthrough.column,
+        domain_length=breakthrough.column.length,
         n_interior_points=n_interior_points,
         n_elements=n_elements,
         add_inlet=True,
@@ -59,9 +59,12 @@ def run_demo(
 ):
     """Sweep numerical settings and plot error/work-precision vs Ogata-Banks."""
     t_end = 1.0
-    interior_points_sweep = (1, 3, 5, 7)
+    interior_points_sweep = (1, 2, 5, 10, 20)
     elements_sweep = (5, 10, 20, 40)
-    colors = {1: "#386cb0", 3: "#f27f0c", 5: "#4daf4a", 7: "#c83737"}
+
+    cmap = plt.get_cmap("tab10")
+    colors = {value: cmap(i) for i, value in enumerate(interior_points_sweep)}
+    # colors = {1: "#386cb0", 2: "#f27f0c", 5: "#4daf4a", 10: "#c83737"}
 
     results = [
         _run_case(n_interior_points, n_elements, t_end)

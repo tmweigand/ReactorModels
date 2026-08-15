@@ -12,29 +12,20 @@ def test_ogata_banks(diffusion):
     superficial_velocity = 1  # m/s
     column_length = 5.0  # m
     porosity = 0.5
-    inlet_concentration = 1.0
-    initial_concentration = 0.0
     column_diameter = 1
     t_eval = np.array([1.0, 2.0, 3.0])
 
-    column = reactormodels.Column(
+    breakthrough = reactormodels.fixtures.make_breakthrough(
         length=column_length,
-        porosity=porosity,
         diameter=column_diameter,
-        media=reactormodels.Media(),
-        water=reactormodels.Water(),
-    )
-    breakthrough = reactormodels.Breakthrough(
-        column=column,
-        chemical=reactormodels.Chemical(diffusion=diffusion),
-        feed_concentrations=inlet_concentration,
-        initial_concentration=initial_concentration,
+        porosity=porosity,
         superficial_velocity=superficial_velocity,
+        diffusion=diffusion,
         time=t_eval,
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
-        n_interior_points=5, n_elements=20, domain_length=column.length
+        n_interior_points=5, n_elements=20, domain_length=column_length
     )
 
     model = reactormodels.models.AdvectionDiffusion(
@@ -69,30 +60,20 @@ def test_multi_element_ogata_banks():
     diffusion = 0.01
     column_length = 5.0
     porosity = 0.5
-    inlet_concentration = 1.0
-    initial_concentration = 0.0
     t_eval = np.array([2.0, 4.0])
     diameter = 1
 
-    column = reactormodels.Column(
+    breakthrough = reactormodels.fixtures.make_breakthrough(
         length=column_length,
-        porosity=porosity,
         diameter=diameter,
-        media=reactormodels.Media(),
-        water=reactormodels.Water(),
-    )
-
-    breakthrough = reactormodels.Breakthrough(
-        column=column,
-        chemical=reactormodels.Chemical(diffusion=diffusion),
-        feed_concentrations=inlet_concentration,
-        initial_concentration=initial_concentration,
+        porosity=porosity,
         superficial_velocity=superficial_velocity,
+        diffusion=diffusion,
         time=t_eval,
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
-        domain_length=column.length,
+        domain_length=column_length,
         n_interior_points=5,
         n_elements=20,
     )

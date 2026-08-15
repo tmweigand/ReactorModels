@@ -6,37 +6,27 @@ import pytest
 
 def _base_model(mode, k_ldf=0.1, n_col=30):
     """Shared setup for all adsorption tests."""
-    superficial_velocity = 0.5
-    diffusion = 0.1
     column_length = 5.0
-    inlet_concentration = 1.0
-    initial_concentration = 0.0
+    diameter = 1
     porosity = 0.5
     bulk_density = 500.0
+    superficial_velocity = 0.5
+    diffusion = 0.1
     K = 0.5
-    diameter = 1
     time = [0, 1, 2]
 
-    column = reactormodels.Column(
+    breakthrough = reactormodels.fixtures.make_breakthrough(
         length=column_length,
+        diameter=diameter,
         porosity=porosity,
         bulk_density=bulk_density,
-        diameter=diameter,
-        media=reactormodels.Media(),
-        water=reactormodels.Water(),
-    )
-
-    breakthrough = reactormodels.Breakthrough(
-        column=column,
-        chemical=reactormodels.Chemical(diffusion=diffusion),
         superficial_velocity=superficial_velocity,
-        feed_concentrations=inlet_concentration,
-        initial_concentration=initial_concentration,
+        diffusion=diffusion,
         time=time,
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
-        domain_length=column.length, n_interior_points=n_col, add_inlet=True
+        domain_length=column_length, n_interior_points=n_col, add_inlet=True
     )
 
     return (
@@ -58,11 +48,11 @@ def _base_model(mode, k_ldf=0.1, n_col=30):
 
 def test_local_equilibrium_vs_ogata_banks():
     """Linear isotherm + local equilibrium = retarded Ogata-Banks."""
-    model, D, column_length, eps, rho_b, K = _base_model(
+    model, D, column_length, porosity, rho_b, K = _base_model(
         reactormodels.models.adsorption_kinetics.AdsorptionKinetics.LOCAL_EQUILIBRIUM
     )
 
-    R = 1.0 + (rho_b * K) / eps
+    R = 1.0 + (rho_b * K) / porosity
 
     t_mid = 0.5 * column_length / (model.breakthrough.interstitial_velocity / R)
     t_eval = np.array([0.25 * t_mid, t_mid, 2.0 * t_mid])

@@ -18,22 +18,24 @@ __all__ = ["make_breakthrough"]
 
 def make_breakthrough(
     *,
-    length: float = 5.0,
+    length: float = 1.0,
     diameter: float = 0.1,
     porosity: float = 0.5,
+    bulk_density: float = 1.0,
     superficial_velocity: float = 1.0,
     diffusion: float = 0.01,
     inlet_concentration: float = 1.0,
     initial_concentration: float = 0.0,
-    t_end: float = 1.0,
+    time: np.ndarray | None = None,
 ) -> Breakthrough:
     """Build a simple 1D advection-diffusion breakthrough problem."""
     column = Column(
         length=length,
         diameter=diameter,
         porosity=porosity,
+        bulk_density=bulk_density,
         media=Media(particle_density=1.0),
-        water=Water(name="clean-water"),
+        water=Water(name="water"),
     )
     chemical = Chemical(name="tracer", diffusion=diffusion)
 
@@ -43,5 +45,5 @@ def make_breakthrough(
         feed_concentrations=inlet_concentration,
         initial_concentration=initial_concentration,
         superficial_velocity=superficial_velocity,
-        time=np.array([t_end]),
+        time=time,
     )

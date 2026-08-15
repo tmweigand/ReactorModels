@@ -4,8 +4,8 @@ from __future__ import annotations
 from typing import Type
 import numpy as np
 
-from ..column_data import Column
-from ..breakthrough_data import Breakthrough
+from ..properties.column import Column
+from ..properties.breakthrough import Breakthrough
 from ..numerics.config import NumericsConfig
 from .isotherm import Isotherm
 from .boundary_conditions import InletBC, DirichletBC, SymmetryBC
@@ -27,7 +27,6 @@ class IntraparticleTransport:
 
     def __init__(
         self,
-        column: Column,
         breakthrough: Breakthrough,
         pore_diffusion: float,
         surface_diffusion: float,
@@ -38,9 +37,9 @@ class IntraparticleTransport:
         surface_bc: Type[InletBC] = DirichletBC,
         center_bc: Type[InletBC] = SymmetryBC,
     ):
-        self.column = column
         self.breakthrough = breakthrough
-        self.velocity = breakthrough.interstitial_velocity()
+        self.column = breakthrough.column
+        self.velocity = breakthrough.interstitial_velocity
         self.Dp = pore_diffusion
         self.Ds = surface_diffusion
         self.inlet_concentration = breakthrough.mean_feed_concentration()
