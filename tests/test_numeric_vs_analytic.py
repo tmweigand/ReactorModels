@@ -41,11 +41,7 @@ def test_thomas():
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
-<<<<<<< HEAD
-        column=column, n_interior_points=5, n_elements=10, add_inlet=True
-=======
-        domain_length=column.length, n_interior_points=5, n_elements=20, add_inlet=True
->>>>>>> 7ed46df (eliminate domain_resolution and redundant radial operators)
+        domain_length=column.length, n_interior_points=5, n_elements=10, add_inlet=True
     )
 
     model = reactormodels.models.AdvectionDiffusionAdsorption(

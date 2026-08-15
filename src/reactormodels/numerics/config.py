@@ -4,11 +4,6 @@ import numpy as np
 
 from .orthogonal_collocation import OrthogonalCollocation
 from .time_integrator import TimeIntegrator
-<<<<<<< HEAD
-from ..properties.column import Column
-from ..models.domain_resolution import DomainResolution
-=======
->>>>>>> 7ed46df (eliminate domain_resolution and redundant radial operators)
 
 
 class NumericsConfig:
