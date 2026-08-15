@@ -34,6 +34,7 @@ def _make_particle(Ds=5e-9, C_in=1):
         length=length,
         porosity=porosity,
         diameter=diameter,
+        bulk_density=bulk_density,
         media=media,
         water=reactormodels.Water(),
     )
@@ -60,7 +61,6 @@ def _make_particle(Ds=5e-9, C_in=1):
     )
     return reactormodels.models.DomainCoupling(
         isotherm=isotherm,
-        column=column,
         breakthrough=breakthrough,
         axial_diffusion=axial_diffusion,
         pore_diffusion=pore_diffusion,
@@ -214,7 +214,7 @@ def test_mass_balance():
 
         Mp = (
             (1 - p.column.porosity)
-            * p.column.particle_porosity
+            * p.column.media.particle_porosity
             * A
             * np.trapz(Cp_avg, z)
             / 1000

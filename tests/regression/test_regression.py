@@ -105,6 +105,7 @@ def _make_particle(
         length=L,
         porosity=porosity,
         diameter=Dia,
+        bulk_density=bulk_density,
         media=media,
         water=reactormodels.Water(),
     )
@@ -132,7 +133,6 @@ def _make_particle(
     )
     return reactormodels.models.DomainCoupling(
         isotherm=isotherm,
-        column=column,
         breakthrough=breakthrough,
         axial_diffusion=axial_diffusion,
         pore_diffusion=Dp,

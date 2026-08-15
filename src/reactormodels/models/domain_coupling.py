@@ -18,7 +18,6 @@ class DomainCoupling:
 
     def __init__(
         self,
-        column: Column,
         breakthrough: Breakthrough,
         axial_diffusion: float,
         pore_diffusion: float,
@@ -31,8 +30,8 @@ class DomainCoupling:
         inlet_bc: Type[InletBC] = DirichletBC,
         center_bc: Type[InletBC] = SymmetryBC,
     ):
-        self.column = column
-        self.breakthrough = breakthrough
+        self.breakthrough: Breakthrough = breakthrough
+        self.column: Column = breakthrough.column
         self.velocity = breakthrough.interstitial_velocity
         self.DL = axial_diffusion
         self.Dp = pore_diffusion
@@ -95,8 +94,8 @@ class DomainCoupling:
 
             # particle phase - internal
             Dp_term = (
-                self.column.particle_porosity * dcpdt_i[1 : self.N_particle - 1]
-                - self.column.particle_porosity
+                self.column.media.particle_porosity * dcpdt_i[1 : self.N_particle - 1]
+                - self.column.media.particle_porosity
                 * self.Dp
                 * self.particle_numerics.evaluate_radial_operator(cp_i)[
                     1 : self.N_particle - 1
@@ -107,9 +106,9 @@ class DomainCoupling:
             lap_q = self.particle_numerics.evaluate_radial_operator(self.iso.q(cp_i))
 
             Ds_term = (
-                self.column.particle_density
+                self.column.media.particle_density
                 * (dqdCp * dcpdt_i)[1 : self.N_particle - 1]
-                - self.column.particle_density
+                - self.column.media.particle_density
                 * self.Ds
                 * lap_q[1 : self.N_particle - 1]
             )
@@ -122,8 +121,8 @@ class DomainCoupling:
             grad_q = self.particle_numerics.evaluate_gradient(self.iso.q(cp_i), -1)
 
             diffusive_flux = (
-                self.column.particle_porosity * self.Dp * grad_cp
-                + self.column.particle_density * self.Ds * grad_q
+                self.column.media.particle_porosity * self.Dp * grad_cp
+                + self.column.media.particle_density * self.Ds * grad_q
             )
 
             if i == 0:
@@ -140,7 +139,7 @@ class DomainCoupling:
                     6
                     * film_flux
                     * (1 - self.column.porosity)
-                    / self.column.particle_diameter
+                    / self.column.media.particle_diameter
                 )
 
         result[1 : self.N_column] = transport + sink[1:]
@@ -166,7 +165,10 @@ class DomainCoupling:
         J[1 : self.N_column, : self.N_column] = d_transport[1:, :]
 
         coef = (
-            6 * (1 - self.column.porosity) * self.k_film / self.column.particle_diameter
+            6
+            * (1 - self.column.porosity)
+            * self.k_film
+            / self.column.media.particle_diameter
         )
 
         for i in range(self.N_column):
@@ -181,11 +183,16 @@ class DomainCoupling:
 
             L = self.particle_numerics.collocation.radial_operator_matrix
 
-            J[rows, cols] = -self.column.particle_porosity * self.Dp * L[
+            J[rows, cols] = -self.column.media.particle_porosity * self.Dp * L[
                 1:-1, :
-            ] - self.column.particle_density * self.Ds * L[1:-1, :] @ np.diag(dqdCp)
+            ] - self.column.media.particle_density * self.Ds * L[1:-1, :] @ np.diag(
+                dqdCp
+            )
 
-            mass = self.column.particle_porosity + self.column.particle_density * dqdCp
+            mass = (
+                self.column.media.particle_porosity
+                + self.column.media.particle_density * dqdCp
+            )
 
             for j in range(1, self.N_particle - 1):
                 J[offset + j, offset + j] += cj * mass[j]
@@ -204,8 +211,8 @@ class DomainCoupling:
             )
 
             J[surface, cols] = (
-                self.column.particle_porosity * self.Dp * G
-                + self.column.particle_density * self.Ds * surface_diffusion_jac
+                self.column.media.particle_porosity * self.Dp * G
+                + self.column.media.particle_density * self.Ds * surface_diffusion_jac
             )
 
             if i == 0:
