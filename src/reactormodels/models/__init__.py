@@ -9,7 +9,6 @@ __all__ = [
     "DirichletBC",
     "DanckwertsBC",
     "SymmetryBC",
-    "AnalyticModels",
     "AdvectionDiffusion",
     "AdvectionDiffusionAdsorption",
     "OgataBanks",
@@ -18,6 +17,7 @@ __all__ = [
     "BohartAdams",
     "ThomasRectangular",
     "ThomasLangmuir",
+    "IntraparticleTransport",
 ]
 
 from .adsorption_kinetics import AdsorptionKinetics
@@ -34,3 +34,4 @@ from .analytic_models import (
 )
 from .advection_diffusion import AdvectionDiffusion
 from .advection_diffusion_adsorption import AdvectionDiffusionAdsorption
+from .intraparticle_transport import IntraparticleTransport

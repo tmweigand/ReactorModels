@@ -4,7 +4,6 @@ from __future__ import annotations
 from typing import Type
 import numpy as np
 
-from ..properties.column import Column
 from ..properties.breakthrough import Breakthrough
 from ..numerics.config import NumericsConfig
 from .isotherm import Isotherm
@@ -38,7 +37,8 @@ class IntraparticleTransport:
         center_bc: Type[InletBC] = SymmetryBC,
     ):
         self.breakthrough = breakthrough
-        self.column = breakthrough.column
+        # self.column = breakthrough.column
+        self.media = breakthrough.column.media
         self.velocity = breakthrough.interstitial_velocity
         self.Dp = pore_diffusion
         self.Ds = surface_diffusion
@@ -76,8 +76,8 @@ class IntraparticleTransport:
 
         # fluid phase - internal and outlet
         transport = (
-            self.column.particle_porosity * dcdt[1 : self.N - 1]
-            - self.column.particle_porosity
+            self.media.particle_porosity * dcdt[1 : self.N - 1]
+            - self.media.particle_porosity
             * self.Dp
             * self.numerics.evaluate_radial_operator(c)[1 : self.N - 1]
         )
@@ -86,8 +86,8 @@ class IntraparticleTransport:
 
         result[1 : self.N - 1] = (
             transport
-            + self.column.particle_density * (dqdC * dcdt)[1 : self.N - 1]
-            - self.column.particle_density * self.Ds * lap_q[1 : self.N - 1]
+            + self.media.particle_density * (dqdC * dcdt)[1 : self.N - 1]
+            - self.media.particle_density * self.Ds * lap_q[1 : self.N - 1]
         )
 
     def _jacobian(self, t, y, ydot, result, cj, jac):
@@ -103,7 +103,7 @@ class IntraparticleTransport:
 
         # derivative of transport
         d_transport = (
-            -self.column.particle_porosity
+            -self.media.particle_porosity
             * self.Dp
             * self.numerics.collocation.radial_operator_matrix
         )
@@ -113,13 +113,13 @@ class IntraparticleTransport:
         dqdC = self.iso.dq_dC(C)
 
         J[1:-1, :] -= (
-            self.column.particle_density
+            self.media.particle_density
             * self.Ds
             * self.numerics.collocation.radial_operator_matrix[1:-1]
             @ np.diag(dqdC)
         )
 
-        mass = self.column.particle_porosity + self.column.particle_density * dqdC
+        mass = self.media.particle_porosity + self.media.particle_density * dqdC
 
         J[1:-1, 1:-1] += cj * np.diag(mass[1:-1])
 
