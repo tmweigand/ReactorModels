@@ -15,7 +15,7 @@ from reactormodels.fixtures import make_breakthrough
 
 def _run_case(n_interior_points: int, n_elements: int, t_end: float) -> dict:
     """Solve one case and compare against the Ogata-Banks analytical solution."""
-    breakthrough = make_breakthrough(t_end=t_end)
+    breakthrough = make_breakthrough(time=t_end)
     numerics = NumericsConfig(
         domain_length=breakthrough.column.length,
         n_interior_points=n_interior_points,
@@ -54,17 +54,16 @@ def _run_case(n_interior_points: int, n_elements: int, t_end: float) -> dict:
 
 
 def run_demo(
-    show: bool = True,
+    show: bool = False,
     save_path: str | Path = "data_out/ogata_banks_convergence_demo.png",
 ):
     """Sweep numerical settings and plot error/work-precision vs Ogata-Banks."""
     t_end = 1.0
-    interior_points_sweep = (1, 2, 5, 10, 20)
+    interior_points_sweep = (1, 3, 5, 7, 10)
     elements_sweep = (5, 10, 20, 40)
 
     cmap = plt.get_cmap("tab10")
     colors = {value: cmap(i) for i, value in enumerate(interior_points_sweep)}
-    # colors = {1: "#386cb0", 2: "#f27f0c", 5: "#4daf4a", 10: "#c83737"}
 
     results = [
         _run_case(n_interior_points, n_elements, t_end)
@@ -84,7 +83,7 @@ def run_demo(
             for r, order in zip(group, orders):
                 r[f"order_{key.split('_')[0]}"] = order
 
-    breakthrough = make_breakthrough(t_end=t_end)
+    breakthrough = make_breakthrough(time=t_end)
     x_analytic = np.linspace(0.0, breakthrough.column.length, 500)
     ogata_banks = reactormodels.models.OgataBanks(
         breakthrough=breakthrough, diffusion=breakthrough.chemical.diffusion

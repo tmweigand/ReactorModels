@@ -74,6 +74,6 @@ def _make_particle(Ds=5e-9, C_in=1):
 #         t_eval=t_eval,
 #     )
 #     print(c)
-#     np.testing.assert_array_equal(
+#     np.testing.assert_approx_equal(
 #         np.array([0.0, 0.00394456, 0.0175, 0.03105544, 0.035]), c[0]
 #     )

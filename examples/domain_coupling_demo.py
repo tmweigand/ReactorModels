@@ -7,7 +7,7 @@ import numpy as np
 
 
 def run_demo(
-    show: bool = True,
+    show: bool = False,
     save_path: str | Path = "data_out/domain_coupling_demo.png",
 ):
     """Plot spatial profile solving particle and column PDEs."""
@@ -34,41 +34,59 @@ def run_demo(
 
     isotherm = reactormodels.models.LinearIsotherm(K=K)
 
+    media = reactormodels.Media(
+        particle_porosity=particle_porosity,
+        particle_diameter=particle_diameter,
+        particle_density=particle_density,
+    )
+
     column = reactormodels.Column(
         length=length,
         porosity=porosity,
-        particle_porosity=particle_porosity,
-        bulk_density=bulk_density,
-        particle_density=particle_density,
         diameter=diameter,
-        particle_diameter=particle_diameter,
+        bulk_density=bulk_density,
+        media=media,
+        water=reactormodels.Water(),
     )
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
+        chemical=reactormodels.Chemical(),
         feed_concentrations=feed_concentrations,
         flow_rate=flow_rate,
         time=t_eval,
     )
 
+    # column = reactormodels.Column(
+    #     length=length,
+    #     porosity=porosity,
+    #     particle_porosity=particle_porosity,
+    #     bulk_density=bulk_density,
+    #     particle_density=particle_density,
+    #     diameter=diameter,
+    #     particle_diameter=particle_diameter,
+    # )
+
+    # breakthrough = reactormodels.Breakthrough(
+    #     column=column,
+    #     feed_concentrations=feed_concentrations,
+    #     flow_rate=flow_rate,
+    #     time=t_eval,
+    # )
+
     column_numerics = reactormodels.numerics.NumericsConfig(
-        column=column,
+        domain_length=column.length,
         n_interior_points=3,
         n_elements=8,
-        add_inlet=True,
-        resolution=reactormodels.models.DomainResolution.COLUMN,
     )
 
     particle_numerics = reactormodels.numerics.NumericsConfig(
-        column=column,
+        domain_length=media.particle_radius,
         n_interior_points=3,
         n_elements=8,
-        add_inlet=True,
-        resolution=reactormodels.models.DomainResolution.PARTICLE,
     )
 
     model = reactormodels.models.DomainCoupling(
-        column=column,
         breakthrough=breakthrough,
         axial_diffusion=axial_diffusion,
         pore_diffusion=pore_diffusion,
@@ -77,7 +95,7 @@ def run_demo(
         isotherm=isotherm,
         column_numerics=column_numerics,
         particle_numerics=particle_numerics,
-        mode=reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
+        # mode=reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
         k_film=k_film,
     )
     z, r, C, Cp = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)

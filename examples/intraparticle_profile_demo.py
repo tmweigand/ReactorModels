@@ -7,7 +7,7 @@ import numpy as np
 
 
 def run_demo(
-    show: bool = True,
+    show: bool = False,
     save_path: str | Path = "data_out/intraparticle_profile_demo.png",
 ):
     """Plot the intraparticle concentration profile."""
@@ -30,32 +30,54 @@ def run_demo(
 
     isotherm = reactormodels.models.LinearIsotherm(K=K)
 
+    media = reactormodels.Media(
+        particle_porosity=particle_porosity,
+        particle_diameter=particle_diameter,
+        particle_density=particle_density,
+    )
+
     column = reactormodels.Column(
         length=length,
         porosity=porosity,
-        particle_porosity=particle_porosity,
-        bulk_density=bulk_density,
-        particle_density=particle_density,
         diameter=diameter,
-        particle_diameter=particle_diameter,
+        bulk_density=bulk_density,
+        media=media,
+        water=reactormodels.Water(),
     )
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
+        chemical=reactormodels.Chemical(),
         feed_concentrations=feed_concentrations,
         superficial_velocity=superficial_velocity,
         time=t_eval,
     )
 
+    # column = reactormodels.Column(
+    #     length=length,
+    #     porosity=porosity,
+    #     particle_porosity=particle_porosity,
+    #     bulk_density=bulk_density,
+    #     particle_density=particle_density,
+    #     diameter=diameter,
+    #     particle_diameter=particle_diameter,
+    # )
+
+    # breakthrough = reactormodels.Breakthrough(
+    #     column=column,
+    #     feed_concentrations=feed_concentrations,
+    #     superficial_velocity=superficial_velocity,
+    #     time=t_eval,
+    # )
+
     numerics = reactormodels.numerics.NumericsConfig(
-        domain_length=column.particle_radius(),
+        domain_length=media.particle_radius,
         n_interior_points=5,
         n_elements=10,
         add_inlet=True,
     )
 
     model = reactormodels.models.IntraparticleTransport(
-        column=column,
         breakthrough=breakthrough,
         pore_diffusion=pore_diffusion,
         surface_diffusion=surface_diffusion,

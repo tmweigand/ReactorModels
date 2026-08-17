@@ -46,6 +46,7 @@ def _make_particle(Ds=5e-9, C_in=1):
         flow_rate=flow_rate,
         time=t_eval,
     )
+
     column_numerics = reactormodels.numerics.NumericsConfig(
         domain_length=column.length,
         n_interior_points=3,

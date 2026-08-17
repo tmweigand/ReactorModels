@@ -7,7 +7,7 @@ import numpy as np
 
 
 def run_demo(
-    show: bool = True,
+    show: bool = False,
     save_path: str | Path = "data_out/psdm_spatial_demo.png",
 ):
     """Plot the intraparticle concentration profile from psdm."""
@@ -34,23 +34,28 @@ def run_demo(
 
     isotherm = reactormodels.models.LinearIsotherm(K=K)
 
+    media = reactormodels.Media(
+        particle_porosity=particle_porosity,
+        particle_diameter=particle_diameter,
+        particle_density=particle_density,
+    )
+
     column = reactormodels.Column(
         length=length,
         porosity=porosity,
-        particle_porosity=particle_porosity,
-        bulk_density=bulk_density,
-        particle_density=particle_density,
         diameter=diameter,
-        particle_diameter=particle_diameter,
+        bulk_density=bulk_density,
+        media=media,
+        water=reactormodels.Water(),
     )
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
+        chemical=reactormodels.Chemical(),
         feed_concentrations=feed_concentrations,
         flow_rate=flow_rate,
         time=t_eval,
     )
-
     column_numerics = reactormodels.numerics.NumericsConfig(
         domain_length=column.length,
         n_interior_points=6,
@@ -59,14 +64,13 @@ def run_demo(
     )
 
     particle_numerics = reactormodels.numerics.NumericsConfig(
-        domain_length=column.particle_radius(),
+        domain_length=media.particle_radius,
         n_interior_points=3,
         n_elements=1,
         add_inlet=True,
     )
 
     model = reactormodels.models.DomainCoupling(
-        column=column,
         breakthrough=breakthrough,
         axial_diffusion=axial_diffusion,
         pore_diffusion=pore_diffusion,

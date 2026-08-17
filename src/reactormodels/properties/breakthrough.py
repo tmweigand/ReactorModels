@@ -19,7 +19,6 @@ class Breakthrough:
         chemical: Chemical,
         feed_concentrations: float | np.ndarray,
         initial_concentration: float = 0.0,
-        compound: str | None = None,
         flow_rate: float | None = None,
         effluent_concentrations: np.ndarray | None = None,
         bed_volumes: np.ndarray | None = None,
