@@ -17,16 +17,21 @@ def run_demo(
     porosity = 0.4
     bulk_density = 500.0  # kg/m^3
     diameter = 0.1
-    K = 0.5
+    K = 1
     C_in = 1.0
-    initial_concentration = 0
 
     isotherm = reactormodels.models.LinearIsotherm(K=K)
     R = 1.0 + (bulk_density * K) / porosity  # retardation factor
 
     t_eval = np.array([100.0, 200.0, 500.0, 1000.0])
 
+    media = reactormodels.Media()
+    water = reactormodels.Water()
+    chemical = reactormodels.Chemical(diffusion=diffusion)
+
     column = reactormodels.Column(
+        media=media,
+        water=water,
         length=domain_length,
         porosity=porosity,
         bulk_density=bulk_density,
@@ -34,6 +39,7 @@ def run_demo(
     )
 
     breakthrough = reactormodels.Breakthrough(
+        chemical=chemical,
         column=column,
         feed_concentrations=C_in,
         superficial_velocity=superficial_velocity,
@@ -45,10 +51,7 @@ def run_demo(
     )
 
     model = reactormodels.models.AdvectionDiffusionAdsorption(
-        column=column,
         breakthrough=breakthrough,
-        diffusion=diffusion,
-        initial_concentration=initial_concentration,
         isotherm=isotherm,
         numerics=numerics,
         mode=reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
