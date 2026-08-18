@@ -21,7 +21,7 @@ def run_demo(
     K = [0.3, 0.5]
     C_in = [[1], [1]]
     diffusion = [0.2, 0.1]  # m^2/s
-    n = [1.02, 1.01]
+    n = [1.2, 1.1]
 
     isotherm = reactormodels.models.FreundlichIsotherm(K, n)
 
@@ -77,13 +77,12 @@ def run_demo(
         C_ogata = ogata_banks.breakthrough_profile(time=t_eval, x=domain_length)
         ax.plot(t_eval, C_ogata, linestyle="-", label=label)
         ax.plot(t_eval, C[:, i, -1], linestyle="--", label=label)
-        ax.plot(t_eval, q[:, i, -1], linestyle=":", label=f"Solid:{label}")
 
     ax.set_title("Advection-Diffusion-Adsorption: Multi-Species")
     ax.set_xlabel("time (s)")
     ax.set_ylabel("C / C_in")
     ax.grid(True, alpha=0.3)
-    ax.legend(fontsize=8, ncols=3)
+    ax.legend(fontsize=8, ncols=len(species))
     fig.tight_layout()
 
     save_path = Path(save_path)

@@ -128,51 +128,103 @@ class FreundlichIsotherm(Isotherm):
             * C ** (1.0 / self.n[:, None] - 2.0)
         )
 
-    # def C(self, q: float | np.ndarray) -> np.ndarray:
-    #     """Return liquid phase concentration."""
-    #     q = np.asarray(q, dtype=float)
-    #     if self.n_species == 1:
-    #         Q = q
-    #         S = self.n[0] * q
+    def C_coupled(self, q):
+        q = np.asarray(q, dtype=float)
+        q = np.maximum(q, 0.0)
 
-    #         if np.all(q == 0):
-    #             return np.zeros_like(q)
+        if q.ndim == 1:
+            Q = np.sum(q)
+            S = np.sum(self.n * q)
 
-    #         return (q / Q) * (S / (self.n[0] * self.K[0])) ** self.n[0]
+            if Q == 0:
+                return np.zeros_like(q)
 
-    #     Q = np.sum(q, axis=0)
-    #     S = np.sum(self.n[:, None] * q, axis=0)
-    #     C = np.zeros_like(q)
+            return q / Q * (S / (self.n * self.K)) ** self.n
 
-    #     mask = Q > 0
+        if q.ndim == 2:
+            Q = np.sum(q, axis=0)
+            S = np.sum(self.n[:, None] * q, axis=0)
 
-    #     A = np.zeros_like(q)
-    #     A[:, mask] = (S[mask][None, :] / (self.n[:, None] * self.K[:, None])) ** self.n[
-    #         :, None
-    #     ]
+            C = np.zeros_like(q)
 
-    #     C[:, mask] = q[:, mask] / Q[mask][None, :] * A[:, mask]
+            mask = Q > 0
 
-    #     return C
+            C[:, mask] = (
+                q[:, mask]
+                / Q[mask][None, :]
+                * (S[mask][None, :] / (self.n[:, None] * self.K[:, None]))
+                ** self.n[:, None]
+            )
 
-    def C(self, q):
+            return C
+
+        raise ValueError("q must be 1D or 2D")
+
+    def dC_dq_coupled(self, q):
+        q = np.asarray(q, dtype=float)
+        q = np.maximum(q, 0.0)
+
+        # Single node: q = (n_species,)
+        if q.ndim == 1:
+            Q = np.sum(q)
+            S = np.sum(self.n * q)
+
+            J = np.zeros((self.n_species, self.n_species))
+
+            if Q == 0 or S == 0:
+                return J
+
+            for i in range(self.n_species):
+                A_i = (S / (self.n[i] * self.K[i])) ** self.n[i]
+
+                for j in range(self.n_species):
+                    delta_ij = 1.0 if i == j else 0.0
+
+                    J[i, j] = A_i * (
+                        (delta_ij * Q - q[i]) / Q**2
+                        + q[i] * self.n[i] * self.n[j] / (Q * S)
+                    )
+
+            return J
+
+        # Multiple spatial nodes:
+        # q = (n_species, n_nodes)
+        if q.ndim == 2:
+            n_nodes = q.shape[1]
+            J = np.zeros((self.n_species, self.n_species, n_nodes))
+
+            for k in range(n_nodes):
+                J[:, :, k] = self.dC_dq_coupled(q[:, k])
+
+            return J
+
+        raise ValueError("q must be 1D or 2D")
+
+    def C(self, q: float | np.ndarray) -> np.ndarray:
         q = np.asarray(q, dtype=float)
         q = np.maximum(q, 0.0)
 
         if self.n_species == 1:
             return (q / self.K[0]) ** self.n[0]
 
+        if q.ndim == 1:
+            return (q / self.K) ** self.n
+
         return (q / self.K[:, None]) ** self.n[:, None]
 
     def dC_dq(self, q: float | np.ndarray) -> np.ndarray:
-        """Calculate derivative of liquid phase concentration by sorbed mass concentration."""
         q = np.asarray(q, dtype=float)
         q = np.maximum(q, 0.0)
+
         if self.n_species == 1:
-            return self.n[0] * (1 / self.K[0]) ** self.n[0] * q ** (self.n[0] - 1)
+            return self.n[0] * self.K[0] ** (-self.n[0]) * q ** (self.n[0] - 1)
+
+        if q.ndim == 1:
+            return self.n * self.K ** (-self.n) * q ** (self.n - 1)
+
         return (
             self.n[:, None]
-            * (1 / self.K[:, None]) ** self.n[:, None]
+            * self.K[:, None] ** (-self.n[:, None])
             * q ** (self.n[:, None] - 1)
         )
 

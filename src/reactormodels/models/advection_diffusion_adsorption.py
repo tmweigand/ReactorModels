@@ -99,8 +99,15 @@ class AdvectionDiffusionAdsorption:
         result = result.reshape(self.n_species, self.N)
 
         if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
-            c[:, 1:] = self.iso.C(q)
-            dcdt[:, 1:] = self.iso.dC_dq(q) * dqdt
+            c[:, 1:] = self.iso.C_coupled(q)
+            # dcdt[:, 1:] = self.iso.dC_dq(q) * dqdt
+            dC_dq = self.iso.dC_dq_coupled(q)
+
+            dcdt[:, 1:] = np.einsum(
+                "ijn,jn->in",
+                dC_dq,
+                dqdt,
+            )
 
         # fluid phase - inlet
         gradient = self.numerics.collocation.evaluate_gradient(c)
@@ -216,7 +223,7 @@ class AdvectionDiffusionAdsorption:
         C0[:, 0] = self.inlet_bc.apply(gradient0)
 
         if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
-            q0 = self.iso.q(C0[:, 1:])
+            q0 = np.zeros((self.n_species, self.N - 1))
 
             y0 = np.concatenate(
                 [C0[:, 0:1], q0],
@@ -277,7 +284,10 @@ class AdvectionDiffusionAdsorption:
             # y[:, :, 1:] = q
             C_out = np.empty_like(y_out)
             C_out[:, :, 0] = y_out[:, :, 0]
-            C_out[:, :, 1:] = self.iso.C(y_out[:, :, 1:])
+
+            for k in range(len(y_out)):
+                C_out[k, :, 1:] = self.iso.C_coupled(y_out[k, :, 1:])
+
             q_out = y_out[:, :, 1:]
         else:
             # Existing single-species behavior
