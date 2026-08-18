@@ -19,7 +19,7 @@ def _build_advection_diffusion():
         diameter=1.0,
         porosity=0.5,
         superficial_velocity=0.5,
-        diffusion=0.1,
+        axial_diffusion=0.1,
         time=[0.0, 1.0],
     )
     numerics = reactormodels.numerics.NumericsConfig(
@@ -44,7 +44,7 @@ def _build_advection_diffusion_adsorption(
         porosity=0.5,
         bulk_density=500.0,
         superficial_velocity=0.5,
-        diffusion=0.1,
+        axial_diffusion=0.1,
         time=[0.0, 1.0],
     )
     numerics = reactormodels.numerics.NumericsConfig(
@@ -78,9 +78,15 @@ def _build_intraparticle_transport():
         media=media,
         water=reactormodels.Water(),
     )
+
+    chemical = reactormodels.Chemical(
+        pore_diffusion=5e-6,
+        surface_diffusion=5e-9,
+    )
+
     breakthrough = reactormodels.Breakthrough(
         column=column,
-        chemical=reactormodels.Chemical(),
+        chemical=chemical,
         feed_concentrations=1.0,
         flow_rate=40.0,
         time=np.linspace(1e-10, 10.0, 5),
@@ -95,11 +101,7 @@ def _build_intraparticle_transport():
     return reactormodels.models.IntraparticleTransport(
         isotherm=isotherm,
         breakthrough=breakthrough,
-        pore_diffusion=5e-6,
-        surface_diffusion=5e-9,
-        initial_concentration=0.0,
         numerics=numerics,
-        k_film=0.1,
     )
 
 
@@ -119,9 +121,16 @@ def _build_domain_coupling():
         media=media,
         water=reactormodels.Water(),
     )
+
+    chemical = reactormodels.Chemical(
+        axial_diffusion=0.0,
+        pore_diffusion=5e-6,
+        surface_diffusion=5e-9,
+    )
+
     breakthrough = reactormodels.Breakthrough(
         column=column,
-        chemical=reactormodels.Chemical(),
+        chemical=chemical,
         feed_concentrations=1.0,
         flow_rate=40.0,
         time=np.linspace(1e-10, 10.0, 5),
@@ -142,10 +151,6 @@ def _build_domain_coupling():
     return reactormodels.models.DomainCoupling(
         isotherm=isotherm,
         breakthrough=breakthrough,
-        axial_diffusion=0.0,
-        pore_diffusion=5e-6,
-        surface_diffusion=5e-9,
-        initial_concentration=0.0,
         column_numerics=column_numerics,
         particle_numerics=particle_numerics,
         k_film=0.1,

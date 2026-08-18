@@ -45,30 +45,18 @@ def run_demo(
         water=reactormodels.Water(),
     )
 
+    chemical = reactormodels.Chemical(
+        pore_diffusion=pore_diffusion,
+        surface_diffusion=surface_diffusion,
+    )
+
     breakthrough = reactormodels.Breakthrough(
         column=column,
-        chemical=reactormodels.Chemical(),
+        chemical=chemical,
         feed_concentrations=feed_concentrations,
         superficial_velocity=superficial_velocity,
         time=t_eval,
     )
-
-    # column = reactormodels.Column(
-    #     length=length,
-    #     porosity=porosity,
-    #     particle_porosity=particle_porosity,
-    #     bulk_density=bulk_density,
-    #     particle_density=particle_density,
-    #     diameter=diameter,
-    #     particle_diameter=particle_diameter,
-    # )
-
-    # breakthrough = reactormodels.Breakthrough(
-    #     column=column,
-    #     feed_concentrations=feed_concentrations,
-    #     superficial_velocity=superficial_velocity,
-    #     time=t_eval,
-    # )
 
     numerics = reactormodels.numerics.NumericsConfig(
         domain_length=media.particle_radius,
@@ -79,9 +67,6 @@ def run_demo(
 
     model = reactormodels.models.IntraparticleTransport(
         breakthrough=breakthrough,
-        pore_diffusion=pore_diffusion,
-        surface_diffusion=surface_diffusion,
-        initial_concentration=initial_concentration,
         isotherm=isotherm,
         numerics=numerics,
     )

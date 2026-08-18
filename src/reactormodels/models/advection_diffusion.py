@@ -5,16 +5,26 @@ import numpy as np
 
 from ..properties.breakthrough import Breakthrough
 from ..numerics.config import NumericsConfig
+from .numeric_model_base import NumericModel
 from .boundary_conditions import InletBC, DirichletBC
 
 
-class AdvectionDiffusion:
+class AdvectionDiffusion(NumericModel):
     """Advection-diffusion model.
 
     Governing equation:
         dC/dt + v * dC/dx - D * d2C/dx2 = 0
 
     """
+
+    _param_names = (
+        "velocity",
+        "axial_diffusion",
+        "inlet_concentration",
+        "initial_concentration",
+        "numerics",
+        "inlet_bc",
+    )
 
     def __init__(
         self,
@@ -23,7 +33,7 @@ class AdvectionDiffusion:
         inlet_bc: Type[InletBC] = DirichletBC,
     ):
         self.velocity = breakthrough.interstitial_velocity
-        self.diffusion = breakthrough.chemical.diffusion
+        self.axial_diffusion = breakthrough.chemical.axial_diffusion
         self.inlet_concentration = breakthrough.mean_feed_concentration()
         self.initial_concentration = breakthrough.initial_concentration
         self.numerics = numerics
@@ -31,9 +41,10 @@ class AdvectionDiffusion:
             self.inlet_concentration,
             node=0,
             velocity=self.velocity,
-            diffusion=self.diffusion,
+            diffusion=self.axial_diffusion,
         )
         self.N = len(self.numerics.collocation.nodes)
+        self.assert_parameters_set()
 
     def _residual(self, t, C, Cdot, result):
         """IDA residual callback.  Writes into `result` in-place."""
@@ -45,7 +56,7 @@ class AdvectionDiffusion:
         # Inter nodes and outlet
         rhs = -self.velocity * self.numerics.evaluate_gradient(
             C
-        ) + self.diffusion * self.numerics.evaluate_second_derivative(C)
+        ) + self.axial_diffusion * self.numerics.evaluate_second_derivative(C)
         result[1:] = Cdot[1:] - rhs[1:]
 
         return 0
@@ -62,7 +73,7 @@ class AdvectionDiffusion:
         # Rows 1:: dF/dC = -pde_jac,  dF/dCdot = I  => full J row = -pde_jac + cj*I
         pde_jac = (
             -self.velocity * self.numerics.collocation.first_derivative
-            + self.diffusion * self.numerics.collocation.second_derivative
+            + self.axial_diffusion * self.numerics.collocation.second_derivative
         )  # (N,N)
         J[1:, :] = -pde_jac[1:, :]  # dF/dC contribution
         for i in range(1, self.N):

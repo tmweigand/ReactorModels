@@ -1,6 +1,7 @@
 """Initialize the models subpackage"""
 
 __all__ = [
+    "NumericModel",
     "AdsorptionKinetics",
     "DomainCoupling",
     "LinearIsotherm",
@@ -20,6 +21,7 @@ __all__ = [
     "IntraparticleTransport",
 ]
 
+from .numeric_model_base import NumericModel
 from .adsorption_kinetics import AdsorptionKinetics
 from .domain_coupling import DomainCoupling
 from .isotherm import LinearIsotherm, FreundlichIsotherm, LangmuirIsotherm

@@ -34,7 +34,7 @@ def _run_case(n_interior_points: int, n_elements: int, t_end: float) -> dict:
     concentration_numerical = concentration_history[-1]
 
     ogata_banks = reactormodels.models.OgataBanks(
-        breakthrough=breakthrough, diffusion=breakthrough.chemical.diffusion
+        breakthrough=breakthrough, diffusion=breakthrough.chemical.axial_diffusion
     )
 
     error = concentration_numerical - ogata_banks.spatial_profile(x=x, time=t_end)
@@ -86,7 +86,7 @@ def run_demo(
     breakthrough = make_breakthrough(time=t_end)
     x_analytic = np.linspace(0.0, breakthrough.column.length, 500)
     ogata_banks = reactormodels.models.OgataBanks(
-        breakthrough=breakthrough, diffusion=breakthrough.chemical.diffusion
+        breakthrough=breakthrough, diffusion=breakthrough.chemical.axial_diffusion
     )
     concentration_analytic = ogata_banks.spatial_profile(x=x_analytic, time=t_end)
 

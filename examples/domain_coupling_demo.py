@@ -49,30 +49,19 @@ def run_demo(
         water=reactormodels.Water(),
     )
 
+    chemical = reactormodels.Chemical(
+        axial_diffusion=axial_diffusion,
+        pore_diffusion=pore_diffusion,
+        surface_diffusion=surface_diffusion,
+    )
+
     breakthrough = reactormodels.Breakthrough(
         column=column,
-        chemical=reactormodels.Chemical(),
+        chemical=chemical,
         feed_concentrations=feed_concentrations,
         flow_rate=flow_rate,
         time=t_eval,
     )
-
-    # column = reactormodels.Column(
-    #     length=length,
-    #     porosity=porosity,
-    #     particle_porosity=particle_porosity,
-    #     bulk_density=bulk_density,
-    #     particle_density=particle_density,
-    #     diameter=diameter,
-    #     particle_diameter=particle_diameter,
-    # )
-
-    # breakthrough = reactormodels.Breakthrough(
-    #     column=column,
-    #     feed_concentrations=feed_concentrations,
-    #     flow_rate=flow_rate,
-    #     time=t_eval,
-    # )
 
     column_numerics = reactormodels.numerics.NumericsConfig(
         domain_length=column.length,
@@ -88,14 +77,9 @@ def run_demo(
 
     model = reactormodels.models.DomainCoupling(
         breakthrough=breakthrough,
-        axial_diffusion=axial_diffusion,
-        pore_diffusion=pore_diffusion,
-        surface_diffusion=surface_diffusion,
-        initial_concentration=initial_concentration,
         isotherm=isotherm,
         column_numerics=column_numerics,
         particle_numerics=particle_numerics,
-        # mode=reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
         k_film=k_film,
     )
     z, r, C, Cp = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)

@@ -18,7 +18,7 @@ def test_thomas():
     k = 1
     K = 5000
     initial_concentration = 0
-    diffusion = 1e-20
+    axial_diffusion = 1e-20
 
     isotherm = reactormodels.models.LangmuirIsotherm(K=K, q_m=q_m)
 
@@ -33,7 +33,7 @@ def test_thomas():
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
-        chemical=reactormodels.Chemical(diffusion=diffusion),
+        chemical=reactormodels.Chemical(axial_diffusion=axial_diffusion),
         feed_concentrations=feed_concentrations,
         initial_concentration=initial_concentration,
         flow_rate=flow_rate,

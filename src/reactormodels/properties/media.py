@@ -25,6 +25,7 @@ class Media:
         self.particle_radius = particle_radius
         self.particle_diameter = particle_diameter
 
+        # Radius vs diameter support
         if self.particle_radius is not None and self.particle_diameter is not None:
             if not math.isclose(
                 self.particle_diameter,
@@ -33,7 +34,10 @@ class Media:
             ):
                 raise ValueError("particle_diameter must equal 2 * particle_radius")
 
-        if self.particle_diameter is not None:
+        elif self.particle_radius is not None:
+            self.particle_diameter = 2 * self.particle_radius
+
+        elif self.particle_diameter is not None:
             self.particle_radius = 0.5 * self.particle_diameter
 
     def get_bed_density(self, porosity: float) -> float:

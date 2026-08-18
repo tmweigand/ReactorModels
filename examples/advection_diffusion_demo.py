@@ -32,7 +32,7 @@ def run_demo(
         feed_concentrations=C_in,
         superficial_velocity=superficial_velocity,
         time=t_eval,
-        chemical=reactormodels.Chemical(diffusion=diffusion),
+        chemical=reactormodels.Chemical(axial_diffusion=diffusion),
     )
 
     numerics = reactormodels.numerics.NumericsConfig(

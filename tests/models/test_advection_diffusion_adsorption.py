@@ -11,7 +11,7 @@ def _base_model(mode, k_ldf=0.1, n_col=30):
     porosity = 0.5
     bulk_density = 500.0
     superficial_velocity = 0.5
-    diffusion = 0.1
+    axial_diffusion = 0.1
     K = 0.5
     time = [0, 1, 2]
 
@@ -21,7 +21,7 @@ def _base_model(mode, k_ldf=0.1, n_col=30):
         porosity=porosity,
         bulk_density=bulk_density,
         superficial_velocity=superficial_velocity,
-        diffusion=diffusion,
+        axial_diffusion=axial_diffusion,
         time=time,
     )
 
@@ -38,7 +38,7 @@ def _base_model(mode, k_ldf=0.1, n_col=30):
             k_ldf=k_ldf,
             inlet_bc=reactormodels.models.DirichletBC,
         ),
-        diffusion,
+        axial_diffusion,
         column_length,
         porosity,
         bulk_density,

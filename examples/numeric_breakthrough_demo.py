@@ -37,21 +37,13 @@ def run_demo(
         water=reactormodels.Water(),
     )
 
-    # column = reactormodels.Column(
-    #     length=length,
-    #     porosity=porosity,
-    #     bulk_density=bulk_density,
-    #     diameter=diameter,
-    #     particle_density=particle_density,
-    # )
-
     breakthrough = reactormodels.Breakthrough(
         column=column,
         initial_concentration=initial_concentration,
         feed_concentrations=feed_concentrations,
         flow_rate=flow_rate,
         time=t_eval,
-        chemical=reactormodels.Chemical(diffusion=diffusion),
+        chemical=reactormodels.Chemical(axial_diffusion=diffusion),
     )
 
     numerics = reactormodels.numerics.NumericsConfig(

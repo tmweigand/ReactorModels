@@ -13,7 +13,7 @@ def test_mass_balance_class():
     inlet_concentration = 1.0
     initial_concentration = 0.0
     diameter = 1
-    diffusion = 0.1
+    axial_diffusion = 0.1
 
     R = 1.0 + (bulk_density * K) / porosity
     v_eff = velocity / (porosity * R)
@@ -30,7 +30,7 @@ def test_mass_balance_class():
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
-        chemical=reactormodels.Chemical(diffusion=diffusion),
+        chemical=reactormodels.Chemical(axial_diffusion=axial_diffusion),
         feed_concentrations=inlet_concentration,
         initial_concentration=initial_concentration,
         superficial_velocity=velocity,

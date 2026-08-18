@@ -33,7 +33,7 @@ def run_demo(
         flow_rate=flow_rate,
         feed_concentrations=feed_concentrations,
         time=time,
-        chemical=reactormodels.Chemical(diffusion=diffusion),
+        chemical=reactormodels.Chemical(axial_diffusion=diffusion),
     )
 
     ogata_banks = reactormodels.models.OgataBanks(

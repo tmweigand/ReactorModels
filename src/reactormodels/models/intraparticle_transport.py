@@ -6,13 +6,14 @@ import numpy as np
 
 from ..properties.breakthrough import Breakthrough
 from ..numerics.config import NumericsConfig
+from .numeric_model_base import NumericModel
 from .isotherm import Isotherm
 from .boundary_conditions import InletBC, DirichletBC, SymmetryBC
 
 __all__ = ["IntraparticleTransport"]
 
 
-class IntraparticleTransport:
+class IntraparticleTransport(NumericModel):
     """1D transport through pore and/or surface diffusion in a spherical particle.
 
     The governing equations are:
@@ -24,32 +25,33 @@ class IntraparticleTransport:
 
     """
 
+    _param_names = (
+        "pore_diffusion",
+        "surface_diffusion",
+        "iso",
+        "numerics",
+        "surface_bc",
+        "center_bc",
+    )
+
     def __init__(
         self,
         breakthrough: Breakthrough,
-        pore_diffusion: float,
-        surface_diffusion: float,
-        initial_concentration: float,
         isotherm: Isotherm,
         numerics: NumericsConfig,
-        k_film: float = 0,
         surface_bc: Type[InletBC] = DirichletBC,
         center_bc: Type[InletBC] = SymmetryBC,
     ):
         self.breakthrough = breakthrough
-        # self.column = breakthrough.column
         self.media = breakthrough.column.media
-        self.velocity = breakthrough.interstitial_velocity
-        self.Dp = pore_diffusion
-        self.Ds = surface_diffusion
-        self.inlet_concentration = breakthrough.mean_feed_concentration()
-        self.initial_concentration = initial_concentration
+        self.pore_diffusion = breakthrough.chemical.pore_diffusion
+        self.surface_diffusion = breakthrough.chemical.surface_diffusion
         self.iso = isotherm
         self.numerics = numerics
-        self.k_film = k_film
         self.N = len(self.numerics.collocation.nodes)
-        self.surface_bc = surface_bc(self.inlet_concentration, node=-1)
+        self.surface_bc = surface_bc(breakthrough.mean_feed_concentration(), node=-1)
         self.center_bc = center_bc(node=0)
+        self.assert_parameters_set()
 
     def _n_vars(self) -> int:
         """Total length of the IDA state vector."""
@@ -78,7 +80,7 @@ class IntraparticleTransport:
         transport = (
             self.media.particle_porosity * dcdt[1 : self.N - 1]
             - self.media.particle_porosity
-            * self.Dp
+            * self.pore_diffusion
             * self.numerics.evaluate_radial_operator(c)[1 : self.N - 1]
         )
         dqdC = self.iso.dq_dC(c)
@@ -87,7 +89,9 @@ class IntraparticleTransport:
         result[1 : self.N - 1] = (
             transport
             + self.media.particle_density * (dqdC * dcdt)[1 : self.N - 1]
-            - self.media.particle_density * self.Ds * lap_q[1 : self.N - 1]
+            - self.media.particle_density
+            * self.surface_diffusion
+            * lap_q[1 : self.N - 1]
         )
 
     def _jacobian(self, t, y, ydot, result, cj, jac):
@@ -104,7 +108,7 @@ class IntraparticleTransport:
         # derivative of transport
         d_transport = (
             -self.media.particle_porosity
-            * self.Dp
+            * self.pore_diffusion
             * self.numerics.collocation.radial_operator_matrix
         )
 
@@ -114,7 +118,7 @@ class IntraparticleTransport:
 
         J[1:-1, :] -= (
             self.media.particle_density
-            * self.Ds
+            * self.surface_diffusion
             * self.numerics.collocation.radial_operator_matrix[1:-1]
             @ np.diag(dqdC)
         )
@@ -135,7 +139,7 @@ class IntraparticleTransport:
 
     def _initial_conditions(self, C_init: float, C_in: float, q_init: float):
         """Return (y0, ydot0) consistent with the algebraic constraint."""
-        C0 = np.full(self.N, self.initial_concentration)
+        C0 = np.full(self.N, C_init)
 
         # Surface concentration
         C0[-1] = self.surface_bc.apply()

@@ -39,10 +39,17 @@ def _make_particle(Ds=5e-9, C_in=1):
         water=reactormodels.Water(),
     )
 
+    chemical = reactormodels.Chemical(
+        axial_diffusion=axial_diffusion,
+        pore_diffusion=pore_diffusion,
+        surface_diffusion=Ds,
+    )
+
     breakthrough = reactormodels.Breakthrough(
         column=column,
-        chemical=reactormodels.Chemical(),
+        chemical=chemical,
         feed_concentrations=C_in,
+        initial_concentration=initial_concentration,
         flow_rate=flow_rate,
         time=t_eval,
     )
@@ -63,10 +70,6 @@ def _make_particle(Ds=5e-9, C_in=1):
     return reactormodels.models.DomainCoupling(
         isotherm=isotherm,
         breakthrough=breakthrough,
-        axial_diffusion=axial_diffusion,
-        pore_diffusion=pore_diffusion,
-        surface_diffusion=Ds,
-        initial_concentration=initial_concentration,
         column_numerics=column_numerics,
         particle_numerics=particle_numerics,
         k_film=k_film,
@@ -76,9 +79,9 @@ def _make_particle(Ds=5e-9, C_in=1):
 def test_initial_state_zero():
     p = _make_particle()
     y0, ydot0 = p._initial_conditions(
-        C_in=p.inlet_concentration,
-        C_init=p.initial_concentration,
-        Cp_init=p.initial_concentration,
+        C_in=p.breakthrough.mean_feed_concentration(),
+        C_init=p.breakthrough.initial_concentration,
+        Cp_init=p.breakthrough.initial_concentration,
     )
 
     C, Cp = p._split(y0)
@@ -223,7 +226,12 @@ def test_mass_balance():
 
         Mstored = Mf + Mp + Ms
 
-        Min = p.breakthrough.flow_rate * p.inlet_concentration * t / 1000
+        Min = (
+            p.breakthrough.flow_rate
+            * p.breakthrough.mean_feed_concentration()
+            * t
+            / 1000
+        )
 
         Mout = p.breakthrough.flow_rate * np.trapz(
             C[: k + 1, -1] / 1000, t_eval[: k + 1]

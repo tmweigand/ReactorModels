@@ -49,9 +49,15 @@ def run_demo(
         water=reactormodels.Water(),
     )
 
+    chemical = reactormodels.Chemical(
+        axial_diffusion=axial_diffusion,
+        pore_diffusion=pore_diffusion,
+        surface_diffusion=surface_diffusion,
+    )
+
     breakthrough = reactormodels.Breakthrough(
         column=column,
-        chemical=reactormodels.Chemical(),
+        chemical=chemical,
         feed_concentrations=feed_concentrations,
         flow_rate=flow_rate,
         time=t_eval,
@@ -72,10 +78,6 @@ def run_demo(
 
     model = reactormodels.models.DomainCoupling(
         breakthrough=breakthrough,
-        axial_diffusion=axial_diffusion,
-        pore_diffusion=pore_diffusion,
-        surface_diffusion=surface_diffusion,
-        initial_concentration=initial_concentration,
         isotherm=isotherm,
         column_numerics=column_numerics,
         particle_numerics=particle_numerics,

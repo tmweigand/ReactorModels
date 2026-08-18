@@ -6,6 +6,7 @@ import numpy as np
 
 from ..properties.breakthrough import Breakthrough
 from ..numerics.config import NumericsConfig
+from .numeric_model_base import NumericModel
 from .isotherm import Isotherm
 from .adsorption_kinetics import AdsorptionKinetics
 from .boundary_conditions import InletBC, DanckwertsBC
@@ -13,7 +14,7 @@ from .boundary_conditions import InletBC, DanckwertsBC
 __all__ = ["AdvectionDiffusionAdsorption"]
 
 
-class AdvectionDiffusionAdsorption:
+class AdvectionDiffusionAdsorption(NumericModel):
     """1D advection-diffusion with adsorption in a packed bed.
 
     The governing equations are:
@@ -27,6 +28,17 @@ class AdvectionDiffusionAdsorption:
 
     """
 
+    _param_names = (
+        "velocity",
+        "axial_diffusion",
+        "inlet_concentration",
+        "initial_concentration",
+        "iso",
+        "numerics",
+        "mode",
+        "inlet_bc",
+    )
+
     def __init__(
         self,
         breakthrough: Breakthrough,
@@ -39,7 +51,7 @@ class AdvectionDiffusionAdsorption:
         self.column = breakthrough.column
         self.breakthrough = breakthrough
         self.velocity = breakthrough.interstitial_velocity
-        self.DL = breakthrough.chemical.diffusion
+        self.axial_diffusion = breakthrough.chemical.axial_diffusion
         self.inlet_concentration = breakthrough.mean_feed_concentration()
         self.initial_concentration = breakthrough.initial_concentration
         self.iso = isotherm
@@ -47,7 +59,10 @@ class AdvectionDiffusionAdsorption:
         self.mode = mode
         self.k_ldf = k_ldf
         self.inlet_bc = inlet_bc(
-            self.inlet_concentration, node=0, velocity=self.velocity, diffusion=self.DL
+            self.inlet_concentration,
+            node=0,
+            velocity=self.velocity,
+            diffusion=self.axial_diffusion,
         )
         self.N = len(self.numerics.collocation.nodes)
 
@@ -62,6 +77,8 @@ class AdvectionDiffusionAdsorption:
             raise ValueError(
                 "k_ldf must be > 0 for LINEAR_DRIVING_FORCE or SECOND_ORDER mode"
             )
+
+        self.assert_parameters_set()
 
     def _n_vars(self) -> int:
         """Total length of the IDA state vector."""
@@ -101,7 +118,7 @@ class AdvectionDiffusionAdsorption:
             * self.velocity
             * self.numerics.evaluate_gradient(c)[1:]
             - self.column.porosity
-            * self.DL
+            * self.axial_diffusion
             * self.numerics.evaluate_second_derivative(c)[1:]
         )
         if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
@@ -138,7 +155,7 @@ class AdvectionDiffusionAdsorption:
             * self.velocity
             * self.numerics.collocation.first_derivative
             + self.column.porosity
-            * self.DL
+            * self.axial_diffusion
             * self.numerics.collocation.second_derivative
         )
         J[1 : self.N, : self.N] = -d_transport[1:, :]

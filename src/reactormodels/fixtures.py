@@ -23,7 +23,7 @@ def make_breakthrough(
     porosity: float = 0.5,
     bulk_density: float = 1.0,
     superficial_velocity: float = 1.0,
-    diffusion: float = 0.01,
+    axial_diffusion: float = 0.01,
     inlet_concentration: float = 1.0,
     initial_concentration: float = 0.0,
     time: np.ndarray | None = None,
@@ -37,7 +37,7 @@ def make_breakthrough(
         media=Media(particle_density=1.0),
         water=Water(name="water"),
     )
-    chemical = Chemical(name="tracer", diffusion=diffusion)
+    chemical = Chemical(name="tracer", axial_diffusion=axial_diffusion)
 
     return Breakthrough(
         column=column,

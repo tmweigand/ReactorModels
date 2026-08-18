@@ -7,22 +7,30 @@ import numpy as np
 from ..properties.column import Column
 from ..properties.breakthrough import Breakthrough
 from ..numerics.config import NumericsConfig
+from .numeric_model_base import NumericModel
 from .isotherm import Isotherm
 from .boundary_conditions import InletBC, DirichletBC, SymmetryBC
 
 __all__ = ["DomainCoupling"]
 
 
-class DomainCoupling:
+class DomainCoupling(NumericModel):
     """Solve conservation equations for column and particle domain simultaneously."""
+
+    _param_names = (
+        "axial_diffusion",
+        "pore_diffusion",
+        "surface_diffusion",
+        "iso",
+        "column_numerics",
+        "particle_numerics",
+        "inlet_bc",
+        "center_bc",
+    )
 
     def __init__(
         self,
         breakthrough: Breakthrough,
-        axial_diffusion: float,
-        pore_diffusion: float,
-        surface_diffusion: float,
-        initial_concentration: float,
         isotherm: Isotherm,
         column_numerics: NumericsConfig,
         particle_numerics: NumericsConfig,
@@ -32,20 +40,18 @@ class DomainCoupling:
     ):
         self.breakthrough: Breakthrough = breakthrough
         self.column: Column = breakthrough.column
-        self.velocity = breakthrough.interstitial_velocity
-        self.DL = axial_diffusion
-        self.Dp = pore_diffusion
-        self.Ds = surface_diffusion
-        self.inlet_concentration = breakthrough.mean_feed_concentration()
-        self.initial_concentration = initial_concentration
+        self.axial_diffusion = breakthrough.chemical.axial_diffusion
+        self.pore_diffusion = breakthrough.chemical.pore_diffusion
+        self.surface_diffusion = breakthrough.chemical.surface_diffusion
         self.iso = isotherm
         self.column_numerics = column_numerics
         self.particle_numerics = particle_numerics
         self.k_film = k_film
-        self.inlet_bc = inlet_bc(self.inlet_concentration)
+        self.inlet_bc = inlet_bc(breakthrough.mean_feed_concentration())
         self.center_bc = center_bc(node=0)
         self.N_column = len(self.column_numerics.collocation.nodes)
         self.N_particle = len(self.particle_numerics.collocation.nodes)
+        self.assert_parameters_set()
 
     def _n_vars(self) -> int:
         """Total length of the IDA state vector."""
@@ -72,10 +78,10 @@ class DomainCoupling:
         transport = (
             self.column.porosity * dcdt[1:]
             + self.column.porosity
-            * self.velocity
+            * self.breakthrough.interstitial_velocity
             * self.column_numerics.evaluate_gradient(c)[1:]
             - self.column.porosity
-            * self.DL
+            * self.axial_diffusion
             * self.column_numerics.evaluate_second_derivative(c)[1:]
         )
 
@@ -96,7 +102,7 @@ class DomainCoupling:
             Dp_term = (
                 self.column.media.particle_porosity * dcpdt_i[1 : self.N_particle - 1]
                 - self.column.media.particle_porosity
-                * self.Dp
+                * self.pore_diffusion
                 * self.particle_numerics.evaluate_radial_operator(cp_i)[
                     1 : self.N_particle - 1
                 ]
@@ -109,7 +115,7 @@ class DomainCoupling:
                 self.column.media.particle_density
                 * (dqdCp * dcpdt_i)[1 : self.N_particle - 1]
                 - self.column.media.particle_density
-                * self.Ds
+                * self.surface_diffusion
                 * lap_q[1 : self.N_particle - 1]
             )
 
@@ -121,8 +127,8 @@ class DomainCoupling:
             grad_q = self.particle_numerics.evaluate_gradient(self.iso.q(cp_i), -1)
 
             diffusive_flux = (
-                self.column.media.particle_porosity * self.Dp * grad_cp
-                + self.column.media.particle_density * self.Ds * grad_q
+                self.column.media.particle_porosity * self.pore_diffusion * grad_cp
+                + self.column.media.particle_density * self.surface_diffusion * grad_q
             )
 
             if i == 0:
@@ -134,6 +140,9 @@ class DomainCoupling:
 
             result[offset + self.N_particle - 1] = diffusive_flux - film_flux
 
+            assert film_flux is not None
+            assert self.column.porosity is not None
+            assert self.column.media.particle_diameter is not None
             if i > 0:
                 sink[i] = (
                     6
@@ -155,10 +164,10 @@ class DomainCoupling:
 
         d_transport = (
             self.column.porosity
-            * self.velocity
+            * self.breakthrough.interstitial_velocity
             * self.column_numerics.collocation.first_derivative
             - self.column.porosity
-            * self.DL
+            * self.axial_diffusion
             * self.column_numerics.collocation.second_derivative
         )
 
@@ -183,9 +192,13 @@ class DomainCoupling:
 
             L = self.particle_numerics.collocation.radial_operator_matrix
 
-            J[rows, cols] = -self.column.media.particle_porosity * self.Dp * L[
+            J[
+                rows, cols
+            ] = -self.column.media.particle_porosity * self.pore_diffusion * L[
                 1:-1, :
-            ] - self.column.media.particle_density * self.Ds * L[1:-1, :] @ np.diag(
+            ] - self.column.media.particle_density * self.surface_diffusion * L[
+                1:-1, :
+            ] @ np.diag(
                 dqdCp
             )
 
@@ -211,8 +224,10 @@ class DomainCoupling:
             )
 
             J[surface, cols] = (
-                self.column.media.particle_porosity * self.Dp * G
-                + self.column.media.particle_density * self.Ds * surface_diffusion_jac
+                self.column.media.particle_porosity * self.pore_diffusion * G
+                + self.column.media.particle_density
+                * self.surface_diffusion
+                * surface_diffusion_jac
             )
 
             if i == 0:

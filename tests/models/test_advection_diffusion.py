@@ -3,8 +3,8 @@ import numpy as np
 import pytest
 
 
-@pytest.mark.parametrize("diffusion", [0.01, 0.1])
-def test_ogata_banks(diffusion):
+@pytest.mark.parametrize("axial_diffusion", [0.01, 0.1])
+def test_ogata_banks(axial_diffusion):
     """
     Collocation solution must match Ogata-Banks analytical solution
     for 1D advection-diffusion with step inlet BC.
@@ -20,7 +20,7 @@ def test_ogata_banks(diffusion):
         diameter=column_diameter,
         porosity=porosity,
         superficial_velocity=superficial_velocity,
-        diffusion=diffusion,
+        axial_diffusion=axial_diffusion,
         time=t_eval,
     )
 
@@ -36,7 +36,7 @@ def test_ogata_banks(diffusion):
     x, C = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
 
     ogata_banks = reactormodels.models.OgataBanks(
-        breakthrough=breakthrough, diffusion=diffusion
+        breakthrough=breakthrough, diffusion=axial_diffusion
     )
 
     for i, t in enumerate(t_eval):
@@ -57,7 +57,7 @@ def test_multi_element_ogata_banks():
     """High-Pe case that fails with single element should pass with multi-element."""
 
     superficial_velocity = 1
-    diffusion = 0.01
+    axial_diffusion = 0.01
     column_length = 5.0
     porosity = 0.5
     t_eval = np.array([2.0, 4.0])
@@ -68,7 +68,7 @@ def test_multi_element_ogata_banks():
         diameter=diameter,
         porosity=porosity,
         superficial_velocity=superficial_velocity,
-        diffusion=diffusion,
+        axial_diffusion=axial_diffusion,
         time=t_eval,
     )
 
@@ -86,7 +86,7 @@ def test_multi_element_ogata_banks():
     x, C = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
 
     ogata_banks = reactormodels.models.OgataBanks(
-        breakthrough=breakthrough, diffusion=diffusion
+        breakthrough=breakthrough, diffusion=axial_diffusion
     )
 
     for i, t in enumerate(t_eval):

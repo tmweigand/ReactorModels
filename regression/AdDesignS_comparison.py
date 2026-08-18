@@ -1,4 +1,5 @@
-"""
+"""AdDesignS_comparison.py
+
 Runs reactormodels' PSDM (`_make_particle` / DomainCoupling) for every
 case already present in regression/AdDesignS_breakthrough.txt, so the
 two models can be compared case-by-case.
@@ -30,20 +31,26 @@ import reactormodels
 
 AD_BREAKTHROUGH_FILE = Path("regression/AdDesignS_breakthrough.txt")
 OUT_BREAKTHROUGH_FILE = Path("regression/reactormodels_breakthrough.txt")
-PLOT_DIR = Path("regression/regression_out")
+PLOT_DIR = Path("data_out/regression/regression_out")
 
 # AdDesignS param name -> _make_particle kwarg name
 PARAM_MAP = {
     "kf": "kf",
-    "Ds": "Ds",
-    "Dp": "Dp",
-    "particle_porosity": "eps_p",
-    "particle_radius": "R",
+    "surface_diffusion": "surface_diffusion",
+    "pore_diffusion": "pore_diffusion",
+    "particle_porosity": "particle_porosity",
+    "particle_radius": "particle_radius",
 }
 
 # Baseline kwargs - must match _make_particle's defaults / the
 # AdDesignS baseline case's physical values.
-BASELINE_KWARGS = dict(Ds=5e-10, Dp=5e-6, kf=0.1, eps_p=0.5, R=0.07)
+BASELINE_KWARGS = dict(
+    surface_diffusion=5e-10,
+    pore_diffusion=5e-6,
+    kf=0.1,
+    particle_porosity=0.5,
+    particle_radius=0.07,
+)
 
 
 # ============================================================
@@ -75,62 +82,61 @@ def load_addesigns_results(path: Path) -> dict:
 # ============================================================
 
 
-def _make_particle(Ds=5e-10, Dp=5e-6, kf=0.1, eps_p=0.5, R=0.07):
-    # particle
-    particle_density = 600  # g/mL
-    particle_diameter = 2 * R  # cm
+def _make_particle(
+    surface_diffusion=5e-10,
+    pore_diffusion=5e-6,
+    kf=0.1,
+    particle_porosity=0.5,
+    particle_radius=0.07,
+    time=None,
+):
 
-    # column
-    axial_diffusion = 0
-    K = 100  # (mg/g) * (L/mg)
-    initial_concentration = 0
-    porosity = 0.334
-    feed_concentrations = 1  # mg/L
-    diameter = 10  # cm
-    flow_rate = 40  # cm3/s
-    length = 100  # cm
-    bulk_density = 399.8  # g/L
+    isotherm = reactormodels.models.LinearIsotherm(K=100)  # (mg/g) * (L/mg)
 
-    isotherm = reactormodels.models.LinearIsotherm(K=K)
+    media = reactormodels.Media(
+        particle_porosity=particle_porosity,
+        particle_radius=particle_radius,
+        particle_density=600,  # g/mL
+    )
 
     column = reactormodels.Column(
-        length=length,
-        porosity=porosity,
-        particle_porosity=eps_p,
-        bulk_density=bulk_density,
-        particle_density=particle_density,
-        diameter=diameter,
-        particle_diameter=particle_diameter,
+        length=100,  # cm
+        porosity=0.334,
+        diameter=10,  # cm
+        bulk_density=399.8,  # g/L
+        media=media,
+        water=reactormodels.Water(),
+    )
+
+    chemical = reactormodels.Chemical(
+        axial_diffusion=0,
+        pore_diffusion=pore_diffusion,
+        surface_diffusion=surface_diffusion,
     )
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
-        feed_concentrations=feed_concentrations,
-        flow_rate=flow_rate,
+        feed_concentrations=1.0,
+        flow_rate=40,  # cm3/s
         time=time,
+        chemical=chemical,
     )
 
     column_numerics = reactormodels.numerics.NumericsConfig(
         domain_length=column.length,
         n_interior_points=8,
         n_elements=6,
-        add_inlet=True,
     )
 
     particle_numerics = reactormodels.numerics.NumericsConfig(
-        domain_length=column.particle_radius(),
+        domain_length=media.particle_radius,
         n_interior_points=3,
         n_elements=1,
-        add_inlet=True,
     )
+
     return reactormodels.models.DomainCoupling(
         isotherm=isotherm,
-        column=column,
         breakthrough=breakthrough,
-        axial_diffusion=axial_diffusion,
-        pore_diffusion=Dp,
-        surface_diffusion=Ds,
-        initial_concentration=initial_concentration,
         column_numerics=column_numerics,
         particle_numerics=particle_numerics,
         k_film=kf,
@@ -145,11 +151,10 @@ def _make_particle(Ds=5e-10, Dp=5e-6, kf=0.1, eps_p=0.5, R=0.07):
 def run_case(case: dict, kwargs_override: dict):
     """Solve one case on the AdDesignS output time grid for that case.
     Returns (time_min list, C_over_C0 list)."""
-    global time
     t_eval = np.array(case["time"]) * 60
     time = t_eval / 1440 / 60
 
-    p = _make_particle(**kwargs_override)
+    p = _make_particle(**kwargs_override, time=time)
     z, r, C, Cp = p.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
     C_numerical = C[:, -1]
     return case["time"], C_numerical.tolist()
@@ -171,12 +176,6 @@ def make_plot(name, case, time_min, c_numerical, out_dir: Path):
     fig.savefig(save_path, dpi=150)
     plt.close(fig)
     return save_path
-
-
-def compute_rmse(c_numerical, case_c) -> float:
-    a = np.array(c_numerical)
-    b = np.array(case_c)
-    return float(np.sqrt(np.mean((a - b) ** 2)))
 
 
 def make_param_sensitivity_plot(
@@ -243,6 +242,7 @@ def main():
     failures = []
 
     for name, case in ad_results.items():
+        print(name)
         kwargs_override = dict(BASELINE_KWARGS)
         if case["param"] != "baseline":
             mapped = PARAM_MAP.get(case["param"])
@@ -251,16 +251,14 @@ def main():
                 continue
             kwargs_override[mapped] = float(case["value"])
 
+        print(kwargs_override)
+
         print(
             f"  [{name}] running (param={case['param']}, "
             f"value={case['value'] or 'baseline'})..."
         )
-        try:
-            time_min, c_numerical = run_case(case, kwargs_override)
-        except Exception as e:  # noqa: BLE001
-            print(f"  [{name}] FAILED: {e}")
-            failures.append((name, str(e)))
-            continue
+
+        time_min, c_numerical = run_case(case, kwargs_override)
 
         model_results[name] = {"time_min": time_min, "c_numerical": c_numerical}
 
@@ -276,7 +274,7 @@ def main():
                 }
             )
 
-        rmse = compute_rmse(c_numerical, case["c"])
+        rmse = reactormodels.numerics.helpers.compute_rmse(c_numerical, case["c"])
         rmse_rows.append(
             {
                 "name": name,

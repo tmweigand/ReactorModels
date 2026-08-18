@@ -9,7 +9,9 @@ class Chemical:
     def __init__(
         self,
         name: str = "default",
-        diffusion: float | None = None,
+        axial_diffusion: float | None = None,
+        pore_diffusion: float | None = None,
+        surface_diffusion: float | None = None,
         molar_volume: float | None = None,
         molecular_weight: float | None = None,
         density: float | None = None,
@@ -34,13 +36,25 @@ class Chemical:
                 vapor_pressure >= 0
             ), f"vapor_pressure must be non-negative, got {vapor_pressure}"
 
-        if diffusion is not None:
-            assert diffusion > 0, (
-                "diffusion_parameter must be positive, " f"got {diffusion}"
+        if axial_diffusion is not None:
+            assert axial_diffusion >= 0, (
+                "Axial diffusion must be positive, " f"got {axial_diffusion}"
+            )
+
+        if pore_diffusion is not None:
+            assert pore_diffusion >= 0, (
+                "Pore diffusion must be positive, " f"got {pore_diffusion}"
+            )
+
+        if surface_diffusion is not None:
+            assert surface_diffusion >= 0, (
+                "Surface diffusion must be positive, " f"got {surface_diffusion}"
             )
 
         self.name = name
-        self.diffusion = diffusion
+        self.axial_diffusion = axial_diffusion
+        self.pore_diffusion = pore_diffusion
+        self.surface_diffusion = surface_diffusion
         self.molecular_weight = molecular_weight
         self.molar_volume = molar_volume
         self.density = density
