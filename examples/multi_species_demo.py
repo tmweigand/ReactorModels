@@ -57,6 +57,7 @@ def run_demo(
         isotherm=isotherm,
         numerics=numerics,
         mode=reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
+        # k_ldf=0.1,
     )
     x, C, q = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
 

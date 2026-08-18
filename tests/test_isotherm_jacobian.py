@@ -155,3 +155,62 @@ def test_coupled_freundlich_chain_rule():
         rtol=1e-5,
         atol=1e-7,
     )
+
+
+def test_coupled_ldf_equilibrium_driving_force():
+    """At equilibrium, the LDF driving force should be zero."""
+
+    n = np.array([0.7, 0.9])
+    K = np.array([0.5, 0.8])
+
+    isotherm = FreundlichIsotherm(
+        n=n,
+        K=K,
+    )
+    C = np.array([0.2, 0.3])
+
+    q = isotherm.q_coupled(C)
+
+    C_recovered = isotherm.C_coupled(q)
+
+    print("C:", C)
+    print("q:", q)
+    print("C recovered:", C_recovered)
+
+    np.testing.assert_allclose(
+        C_recovered,
+        C,
+        rtol=1e-7,
+        atol=1e-9,
+    )
+
+    # Arbitrary sorbed concentrations
+    q = np.array([0.3, 0.5])
+
+    # Convert q -> C using the coupled isotherm
+    C = isotherm.C_coupled(q)
+
+    # Recover equilibrium q from C
+    q_star = isotherm.q_coupled(C)
+
+    # LDF driving force
+    driving_force = q_star - q
+
+    print("q:", q)
+    print("C:", C)
+    print("q*:", q_star)
+    print("driving force:", driving_force)
+
+    np.testing.assert_allclose(
+        q_star,
+        q,
+        rtol=1e-5,
+        atol=1e-7,
+    )
+
+    np.testing.assert_allclose(
+        driving_force,
+        0.0,
+        rtol=1e-5,
+        atol=1e-7,
+    )

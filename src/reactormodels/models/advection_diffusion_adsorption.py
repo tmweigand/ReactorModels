@@ -75,7 +75,7 @@ class AdvectionDiffusionAdsorption:
             self.mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE
             or self.mode == AdsorptionKinetics.SECOND_ORDER
         ):
-            return 2 * self.N
+            return 2 * self.N * self.n_species
         return self.N * self.n_species
 
     def _split(self, y: np.ndarray):
@@ -88,17 +88,19 @@ class AdvectionDiffusionAdsorption:
 
             q = y[:, 1:]
         else:
-            q = y[self.N :]
-            C = y[: self.N]
+            y = y.reshape(self.n_species, 2, self.N)
+
+            C = y[:, 0, :]
+            q = y[:, 1, :]
         return C, q
 
     def _residual(self, t, y, ydot, result):
         """IDA residual F(t, y, ydot) = 0.  Writes into `result` in-place."""
         c, q = self._split(y)
         dcdt, dqdt = self._split(ydot)
-        result = result.reshape(self.n_species, self.N)
 
         if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
+            result = result.reshape(self.n_species, self.N)
             c[:, 1:] = self.iso.C_coupled(q)
             # dcdt[:, 1:] = self.iso.dC_dq(q) * dqdt
             dC_dq = self.iso.dC_dq_coupled(q)
@@ -109,13 +111,22 @@ class AdvectionDiffusionAdsorption:
                 dqdt,
             )
 
-        # fluid phase - inlet
-        gradient = self.numerics.collocation.evaluate_gradient(c)
+            # fluid phase - inlet
+            gradient = self.numerics.collocation.evaluate_gradient(c)
 
-        result[:, 0] = self.inlet_bc.residual(
-            c[:, 0],
-            gradient[:, 0],
-        )
+            result[:, 0] = self.inlet_bc.residual(
+                c[:, 0],
+                gradient[:, 0],
+            )
+        else:
+            result = result.reshape(self.n_species, 2, self.N)
+
+            gradient = self.numerics.collocation.evaluate_gradient(c)
+
+            result[:, 0, 0] = self.inlet_bc.residual(
+                c[:, 0],
+                gradient[:, 0],
+            )
 
         # fluid phase - internal and outlet
         transport = (
@@ -127,18 +138,20 @@ class AdvectionDiffusionAdsorption:
             * self.DL[:, None]
             * self.numerics.evaluate_second_derivative(c)[:, 1:]
         )
+
+        # liquid phase
         if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
             result[:, 1:] = transport + self.column.bulk_density * dqdt
         else:
-            result[1 : self.N] = transport + self.column.bulk_density * dqdt[1:]
+            result[:, 0, 1:] = transport + self.column.bulk_density * dqdt[:, 1:]
 
         # solid phase
         if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
             pass
         elif self.mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE:
-            result[self.N :] = dqdt - self.k_ldf * (self.iso.q(c) - q)
+            result[:, 1, :] = dqdt - self.k_ldf * (self.iso.q(c) - q)
         else:
-            result[self.N :] = dqdt - self.k_ldf * c * (self.iso.q(c) - q)
+            result[:, 1, :] = dqdt - self.k_ldf * c * (self.iso.q(c) - q)
 
         return 0
 
@@ -197,19 +210,20 @@ class AdvectionDiffusionAdsorption:
         return 0
 
     def _algebraic_vars_idx(self):
-        """Create list identifying which equations are algebraic.
-
-        Only the inlet boundary condition for this model.
-        """
+        """Return indices of algebraic variables."""
         if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
             return [i * self.N for i in range(self.n_species)]
-        return [0]
+
+        # LDF / SECOND_ORDER:
+        # one algebraic variable per species: C_i at node 0
+        return [2 * i * self.N for i in range(self.n_species)]
 
     def _initial_conditions(
         self, C_init: float | np.ndarray, q_init: float | np.ndarray
     ):
         """Return (y0, ydot0) consistent with the algebraic constraint."""
         C_init = np.asarray(C_init, dtype=float)
+        q_init = np.asarray(q_init, dtype=float)
 
         if C_init.ndim == 0:
             C_init = np.full(self.n_species, C_init)
@@ -222,30 +236,26 @@ class AdvectionDiffusionAdsorption:
         gradient0 = self.numerics.collocation.evaluate_gradient(C0, 0)
         C0[:, 0] = self.inlet_bc.apply(gradient0)
 
+        if q_init.ndim == 0:
+            q_init = np.full(self.n_species, q_init)
+
         if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
-            q0 = np.zeros((self.n_species, self.N - 1))
+            q0 = np.broadcast_to(
+                q_init[:, None],
+                (self.n_species, self.N - 1),
+            ).copy()
 
             y0 = np.concatenate(
                 [C0[:, 0:1], q0],
                 axis=1,
             ).ravel()
         else:
-            q_init = np.asarray(q_init, dtype=float)
-            if q_init.ndim == 0:
-                q_init = np.full(self.n_species, q_init)
-
             q0 = np.broadcast_to(
                 q_init[:, None],
                 (self.n_species, self.N),
             ).copy()
 
-            q0[:, 0] = self.iso.q(
-                self.inlet_concentration
-            )  # inlet node at equilibrium with feed
-            y0 = np.concatenate(
-                [C0, q0],
-                axis=1,
-            ).ravel()
+            y0 = np.stack([C0, q0], axis=1).ravel()
 
         ydot0 = np.zeros_like(y0)
         return y0, ydot0
@@ -290,15 +300,14 @@ class AdvectionDiffusionAdsorption:
 
             q_out = y_out[:, :, 1:]
         else:
-            # Existing single-species behavior
-            C_out = y_out[:, : self.N]
-
-            if self.mode in (
-                AdsorptionKinetics.LINEAR_DRIVING_FORCE,
-                AdsorptionKinetics.SECOND_ORDER,
-            ):
-                q_out = y_out[:, self.N :]
-            else:
-                q_out = np.array([self.iso.q(C_out[i]) for i in range(len(t_eval))])
+            y_out = y_out.reshape(
+                len(y_out),
+                self.n_species,
+                2,
+                self.N,
+            )
+            # Multi-species linear isotherm
+            C_out = y_out[:, :, 0, :]
+            q_out = y_out[:, :, 1, :]
 
         return (self.numerics.collocation.nodes, C_out, q_out)
