@@ -74,25 +74,107 @@ class FreundlichIsotherm(Isotherm):
 
     """
 
-    def __init__(self, K: float, n: float):
-        self.K = K
-        self.n = n
+    def __init__(self, K: float | np.ndarray, n: float | np.ndarray):
+        self.K = np.atleast_1d(np.asarray(K, dtype=float))
+        self.n = np.atleast_1d(np.asarray(n, dtype=float))
+
+        if self.K.shape != self.n.shape:
+            raise ValueError("K and n must have the same shape.")
+
+        if np.any(self.K <= 0):
+            raise ValueError("K must be greater than zero.")
+
+        if np.any(self.n <= 0):
+            raise ValueError("n must be greater than zero.")
+
+        self.n_species = len(self.K)
 
     def q(self, C: float | np.ndarray) -> np.ndarray:
         """Return sorbed mass concentration"""
         C = np.asarray(C, dtype=float)
-        return self.K * np.maximum(C, 0.0) ** (1.0 / self.n)
+        C = np.maximum(C, 0.0)
+        if self.n_species == 1:
+            return self.K[0] * C ** (1.0 / self.n[0])
+
+        return self.K[:, None] * C ** (1.0 / self.n[:, None])
 
     def dq_dC(self, C: float | np.ndarray) -> np.ndarray:
         """Calculate the derivative of sorbed mass concentration by concentration."""
         C = np.asarray(C, dtype=float)
         C = np.maximum(C, 1e-30)
-        return (self.K / self.n) * C ** (1.0 / self.n - 1.0)
+
+        if self.n_species == 1:
+            return self.K[0] / self.n[0] * C ** (1.0 / self.n[0] - 1.0)
+
+        return self.K[:, None] / self.n[:, None] * C ** (1.0 / self.n[:, None] - 1.0)
 
     def d2q_dC2(self, C: float | np.ndarray) -> np.ndarray:
         """Calculate the second derivative."""
-        C = np.maximum(np.asarray(C, dtype=float), 1e-30)
-        return (self.K / self.n) * (1.0 / self.n - 1.0) * C ** (1.0 / self.n - 2.0)
+        C = np.asarray(C, dtype=float)
+        C = np.maximum(C, 1e-30)
+
+        if self.n_species == 1:
+            return (
+                self.K[0]
+                / self.n[0]
+                * (1.0 / self.n[0] - 1.0)
+                * C ** (1.0 / self.n[0] - 2.0)
+            )
+
+        return (
+            self.K[:, None]
+            / self.n[:, None]
+            * (1.0 / self.n[:, None] - 1.0)
+            * C ** (1.0 / self.n[:, None] - 2.0)
+        )
+
+    # def C(self, q: float | np.ndarray) -> np.ndarray:
+    #     """Return liquid phase concentration."""
+    #     q = np.asarray(q, dtype=float)
+    #     if self.n_species == 1:
+    #         Q = q
+    #         S = self.n[0] * q
+
+    #         if np.all(q == 0):
+    #             return np.zeros_like(q)
+
+    #         return (q / Q) * (S / (self.n[0] * self.K[0])) ** self.n[0]
+
+    #     Q = np.sum(q, axis=0)
+    #     S = np.sum(self.n[:, None] * q, axis=0)
+    #     C = np.zeros_like(q)
+
+    #     mask = Q > 0
+
+    #     A = np.zeros_like(q)
+    #     A[:, mask] = (S[mask][None, :] / (self.n[:, None] * self.K[:, None])) ** self.n[
+    #         :, None
+    #     ]
+
+    #     C[:, mask] = q[:, mask] / Q[mask][None, :] * A[:, mask]
+
+    #     return C
+
+    def C(self, q):
+        q = np.asarray(q, dtype=float)
+        q = np.maximum(q, 0.0)
+
+        if self.n_species == 1:
+            return (q / self.K[0]) ** self.n[0]
+
+        return (q / self.K[:, None]) ** self.n[:, None]
+
+    def dC_dq(self, q: float | np.ndarray) -> np.ndarray:
+        """Calculate derivative of liquid phase concentration by sorbed mass concentration."""
+        q = np.asarray(q, dtype=float)
+        q = np.maximum(q, 0.0)
+        if self.n_species == 1:
+            return self.n[0] * (1 / self.K[0]) ** self.n[0] * q ** (self.n[0] - 1)
+        return (
+            self.n[:, None]
+            * (1 / self.K[:, None]) ** self.n[:, None]
+            * q ** (self.n[:, None] - 1)
+        )
 
 
 class LinearIsotherm(Isotherm):
@@ -106,15 +188,15 @@ class LinearIsotherm(Isotherm):
     """
 
     def __init__(self, K: float):
-        self.K = K
+        self.K = np.asarray(K, dtype=float)
 
     def q(self, C: float | np.ndarray) -> np.ndarray:
         """Return sorbed mass concentration."""
-        return self.K * np.asarray(C, dtype=float)
+        return self.K[:, None] * np.asarray(C, dtype=float)
 
     def dq_dC(self, C: float | np.ndarray) -> np.ndarray:
         """Calculate the derivative of sorbed mass concentration by concentration."""
-        return self.K * np.ones_like(np.asarray(C, dtype=float))
+        return self.K[:, None] * np.ones_like(np.asarray(C, dtype=float))
 
     def d2q_dC2(self, C: float | np.ndarray) -> np.ndarray:
         """Calculate the second derivative."""
@@ -122,11 +204,11 @@ class LinearIsotherm(Isotherm):
 
     def C(self, q: float | np.ndarray) -> np.ndarray:
         """Return liquid phase concentration."""
-        return np.asarray(q, dtype=float) / self.K
+        return np.asarray(q, dtype=float) / self.K[:, None]
 
     def dC_dq(self, q: float | np.ndarray) -> np.ndarray:
         """Calculate derivative of liquid phase concentration by sorbed mass concentration."""
-        return np.ones_like(np.asarray(q, dtype=float)) / self.K
+        return np.ones_like(np.asarray(q, dtype=float)) / self.K[:, None]
 
 
 def fit_isotherm(

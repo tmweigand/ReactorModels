@@ -39,8 +39,11 @@ class AdvectionDiffusionAdsorption:
         self.column = breakthrough.column
         self.breakthrough = breakthrough
         self.velocity = breakthrough.interstitial_velocity
-        self.DL = breakthrough.chemical.diffusion
-        self.inlet_concentration = breakthrough.mean_feed_concentration()
+        self.DL = np.atleast_1d(
+            np.asarray(breakthrough.chemical.diffusion, dtype=float)
+        )
+        self.n_species = len(self.DL)
+        self.inlet_concentration = np.atleast_1d(breakthrough.mean_feed_concentration())
         self.initial_concentration = breakthrough.initial_concentration
         self.iso = isotherm
         self.numerics = numerics
@@ -48,6 +51,11 @@ class AdvectionDiffusionAdsorption:
         self.k_ldf = k_ldf
         self.inlet_bc = inlet_bc(self.inlet_concentration, self.velocity, self.DL)
         self.N = len(self.numerics.collocation.nodes)
+
+        if len(self.inlet_concentration) != self.n_species:
+            raise ValueError(
+                "Number of inlet concentrations must match number of species."
+            )
 
         if (
             mode
@@ -68,15 +76,17 @@ class AdvectionDiffusionAdsorption:
             or self.mode == AdsorptionKinetics.SECOND_ORDER
         ):
             return 2 * self.N
-        return self.N
+        return self.N * self.n_species
 
     def _split(self, y: np.ndarray):
         """Return (C, q) where q is None for LOCAL_EQUILIBRIUM."""
         if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
-            C = np.empty(self.N)
-            C[0] = y[0]
+            y = y.reshape(self.n_species, self.N)
 
-            q = y[1:]
+            C = np.empty_like(y)
+            C[:, 0] = y[:, 0]
+
+            q = y[:, 1:]
         else:
             q = y[self.N :]
             C = y[: self.N]
@@ -86,28 +96,32 @@ class AdvectionDiffusionAdsorption:
         """IDA residual F(t, y, ydot) = 0.  Writes into `result` in-place."""
         c, q = self._split(y)
         dcdt, dqdt = self._split(ydot)
+        result = result.reshape(self.n_species, self.N)
 
         if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
-            c[1:] = self.iso.C(q)
-            dcdt[1:] = self.iso.dC_dq(q) * dqdt
+            c[:, 1:] = self.iso.C(q)
+            dcdt[:, 1:] = self.iso.dC_dq(q) * dqdt
 
         # fluid phase - inlet
-        result[0] = self.inlet_bc.residual(
-            c[0], self.numerics.collocation.evaluate_gradient(c, 0)
+        gradient = self.numerics.collocation.evaluate_gradient(c)
+
+        result[:, 0] = self.inlet_bc.residual(
+            c[:, 0],
+            gradient[:, 0],
         )
 
         # fluid phase - internal and outlet
         transport = (
-            self.column.porosity * dcdt[1:]
+            self.column.porosity * dcdt[:, 1:]
             + self.column.porosity
             * self.velocity
-            * self.numerics.evaluate_gradient(c)[1:]
+            * self.numerics.evaluate_gradient(c)[:, 1:]
             - self.column.porosity
-            * self.DL
-            * self.numerics.evaluate_second_derivative(c)[1:]
+            * self.DL[:, None]
+            * self.numerics.evaluate_second_derivative(c)[:, 1:]
         )
         if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
-            result[1 : self.N] = transport + self.column.bulk_density * dqdt
+            result[:, 1:] = transport + self.column.bulk_density * dqdt
         else:
             result[1 : self.N] = transport + self.column.bulk_density * dqdt[1:]
 
@@ -180,29 +194,58 @@ class AdvectionDiffusionAdsorption:
 
         Only the inlet boundary condition for this model.
         """
+        if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
+            return [i * self.N for i in range(self.n_species)]
         return [0]
 
-    def _initial_conditions(self, C_init: float, C_in: float, q_init: float):
+    def _initial_conditions(
+        self, C_init: float | np.ndarray, q_init: float | np.ndarray
+    ):
         """Return (y0, ydot0) consistent with the algebraic constraint."""
-        C0 = np.full(self.N, C_init)
-        C0[0] = self.inlet_bc.apply(self.numerics.collocation.evaluate_gradient(C0, 0))
-        if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
-            q0 = self.iso.q(C0[1:])
+        C_init = np.asarray(C_init, dtype=float)
 
-            y0 = np.concatenate(([C0[0]], q0))
+        if C_init.ndim == 0:
+            C_init = np.full(self.n_species, C_init)
+
+        C0 = np.broadcast_to(
+            C_init[:, None],
+            (self.n_species, self.N),
+        ).copy()
+
+        gradient0 = self.numerics.collocation.evaluate_gradient(C0, 0)
+        C0[:, 0] = self.inlet_bc.apply(gradient0)
+
+        if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
+            q0 = self.iso.q(C0[:, 1:])
+
+            y0 = np.concatenate(
+                [C0[:, 0:1], q0],
+                axis=1,
+            ).ravel()
         else:
-            q0 = np.full(self.N, q_init)
-            q0[0] = self.iso.q(
+            q_init = np.asarray(q_init, dtype=float)
+            if q_init.ndim == 0:
+                q_init = np.full(self.n_species, q_init)
+
+            q0 = np.broadcast_to(
+                q_init[:, None],
+                (self.n_species, self.N),
+            ).copy()
+
+            q0[:, 0] = self.iso.q(
                 self.inlet_concentration
             )  # inlet node at equilibrium with feed
-            y0 = np.concatenate([C0, q0])
+            y0 = np.concatenate(
+                [C0, q0],
+                axis=1,
+            ).ravel()
 
         ydot0 = np.zeros_like(y0)
         return y0, ydot0
 
-    def solve(self, t_span, t_eval, C_in=1.0, C_init=0.0, q_init=0.0):
+    def solve(self, t_span, t_eval, C_init=0.0, q_init=0.0):
         """Integrate from t_span[0] to t_span[1], returning results at t_eval."""
-        y0, ydot0 = self._initial_conditions(C_init, C_in, q_init)
+        y0, ydot0 = self._initial_conditions(C_init, q_init)
 
         result = self.numerics.integrate(
             residual=self._residual,
@@ -222,15 +265,30 @@ class AdvectionDiffusionAdsorption:
         # result.values.y has shape (n_out, n_vars); skip the t=t_span[0] row
         y_out = result.values.y[1:]  # (n_times, n_vars)
 
-        C_out = y_out[:, : self.N]  # (n_times, N)
-
-        if (
-            self.mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE
-            or self.mode == AdsorptionKinetics.SECOND_ORDER
-        ):
-            q_out = y_out[:, self.N :]  # (n_times, N)
+        if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
+            # (n_times, n_species, N)
+            y_out = y_out.reshape(
+                len(y_out),
+                self.n_species,
+                self.N,
+            )
+            # State:
+            # y[:, :, 0] = inlet C
+            # y[:, :, 1:] = q
+            C_out = np.empty_like(y_out)
+            C_out[:, :, 0] = y_out[:, :, 0]
+            C_out[:, :, 1:] = self.iso.C(y_out[:, :, 1:])
+            q_out = y_out[:, :, 1:]
         else:
-            # Local equilibrium: recover q from C at each time step
-            q_out = np.array([self.iso.q(C_out[i]) for i in range(len(t_eval))])
+            # Existing single-species behavior
+            C_out = y_out[:, : self.N]
 
-        return self.numerics.collocation.nodes, C_out, q_out
+            if self.mode in (
+                AdsorptionKinetics.LINEAR_DRIVING_FORCE,
+                AdsorptionKinetics.SECOND_ORDER,
+            ):
+                q_out = y_out[:, self.N :]
+            else:
+                q_out = np.array([self.iso.q(C_out[i]) for i in range(len(t_eval))])
+
+        return (self.numerics.collocation.nodes, C_out, q_out)

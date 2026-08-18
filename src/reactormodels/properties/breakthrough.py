@@ -59,9 +59,12 @@ class Breakthrough:
         self.flow_rate = flow_rate
         self._superficial_velocity = superficial_velocity
 
-    def mean_feed_concentration(self) -> float:
+    def mean_feed_concentration(self) -> np.ndarray:
         """Determine mean feed concentration."""
-        return float(np.mean(self.feed_concentrations))
+        concentrations = np.asarray(self.feed_concentrations, dtype=float)
+        if concentrations.ndim == 1:
+            return np.mean(concentrations)
+        return np.mean(concentrations, axis=1)
 
     def normalize_concentration(self) -> np.ndarray:
         """Normalize effluent concentration by mean feed concentration."""

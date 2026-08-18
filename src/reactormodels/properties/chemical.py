@@ -35,7 +35,7 @@ class Chemical:
             ), f"vapor_pressure must be non-negative, got {vapor_pressure}"
 
         if diffusion is not None:
-            assert diffusion > 0, (
+            assert np.all(np.array(diffusion) > 0), (
                 "diffusion_parameter must be positive, " f"got {diffusion}"
             )
 
