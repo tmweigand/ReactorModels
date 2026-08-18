@@ -1,27 +1,60 @@
-import numpy as np
-from reactormodels.IO import load_input_output_file
+"""Test Input_output.py."""
+
+from pathlib import Path
+
+import reactormodels
+
+from reactormodels.IO.Input_output import load_input_file
+
+DATA_DIRECTORY = (
+    Path(__file__).resolve().parents[1] / "src" / "reactormodels" / "IO" / "data"
+)
+
+PARAMETER_FILE = DATA_DIRECTORY / "experimental_input_parameter.xlsx"
+
+BREAKTHROUGH_FILE = DATA_DIRECTORY / "experimental_input_breakthrough.xlsx"
 
 
-def test_load_csv_file(tmp_path):
-    file_path = tmp_path / "data.csv"
-    file_path.write_text("1,2\n3,4\n")
-    result = load_input_output_file(file_path)
-    np.testing.assert_array_equal(result, np.array([[1, 2], [3, 4]]))
+def test_load_input_file():
+    """Test loading all experimental input data."""
+    data = load_input_file(
+        parameter_file=PARAMETER_FILE,
+        breakthrough_file=BREAKTHROUGH_FILE,
+        breakthrough_sheet="effluent_concentration",
+    )
 
+    assert isinstance(data["water"], reactormodels.Water)
+    assert isinstance(data["media"], reactormodels.Media)
+    assert isinstance(data["column"], reactormodels.Column)
 
-def test_load_txt_file(tmp_path):
-    file_path = tmp_path / "data.txt"
-    file_path.write_text("1 2\n3 4\n")
-    result = load_input_output_file(file_path)
-    np.testing.assert_array_equal(result, np.array([[1, 2], [3, 4]]))
+    assert data["chemicals"]
+    assert data["breakthroughs"]
 
+    for chemical in data["chemicals"].values():
+        assert isinstance(
+            chemical,
+            reactormodels.Chemical,
+        )
 
-def test_unsupported_extension_raises(tmp_path):
-    file_path = tmp_path / "data.bad"
-    file_path.write_text("1 2\n")
-    try:
-        load_input_output_file(file_path)
-    except ValueError as error:
-        assert "Unsupported extension" in str(error)
-    else:
-        raise AssertionError("Expected ValueError")
+    for breakthrough in data["breakthroughs"].values():
+        assert isinstance(
+            breakthrough,
+            reactormodels.Breakthrough,
+        )
+
+    print("\nWater:")
+    print(vars(data["water"]))
+
+    print("\nMedia:")
+    print(vars(data["media"]))
+
+    print("\nColumn:")
+    print(vars(data["column"]))
+
+    print("\nChemicals:")
+    for name, chemical in data["chemicals"].items():
+        print(name, vars(chemical))
+
+    print("\nBreakthroughs:")
+    for name, breakthrough in data["breakthroughs"].items():
+        print(name, vars(breakthrough))
