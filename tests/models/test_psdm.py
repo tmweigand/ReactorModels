@@ -67,7 +67,7 @@ def _make_particle(Ds=5e-9, C_in=1):
         n_elements=1,
         add_inlet=True,
     )
-    return reactormodels.models.DomainCoupling(
+    return reactormodels.models.PSDM(
         isotherm=isotherm,
         breakthrough=breakthrough,
         column_numerics=column_numerics,

@@ -6,15 +6,16 @@ import numpy as np
 
 from ..properties.column import Column
 from ..properties.breakthrough import Breakthrough
+from ..properties.film_transfer import FilmTransfer
 from ..numerics.config import NumericsConfig
 from .numeric_model_base import NumericModel
 from .isotherm import Isotherm
 from .boundary_conditions import InletBC, DirichletBC, SymmetryBC
 
-__all__ = ["DomainCoupling"]
+__all__ = ["PSDM"]
 
 
-class DomainCoupling(NumericModel):
+class PSDM(NumericModel):
     """Solve conservation equations for column and particle domain simultaneously."""
 
     _param_names = (
@@ -34,7 +35,7 @@ class DomainCoupling(NumericModel):
         isotherm: Isotherm,
         column_numerics: NumericsConfig,
         particle_numerics: NumericsConfig,
-        k_film: float = 0,
+        k_film: float | FilmTransfer = 0,
         inlet_bc: Type[InletBC] = DirichletBC,
         center_bc: Type[InletBC] = SymmetryBC,
     ):
@@ -46,7 +47,7 @@ class DomainCoupling(NumericModel):
         self.iso = isotherm
         self.column_numerics = column_numerics
         self.particle_numerics = particle_numerics
-        self.k_film = k_film
+        self.k_film = k_film.k_film if isinstance(k_film, FilmTransfer) else k_film
         self.inlet_bc = inlet_bc(breakthrough.mean_feed_concentration())
         self.center_bc = center_bc(node=0)
         self.N_column = len(self.column_numerics.collocation.nodes)

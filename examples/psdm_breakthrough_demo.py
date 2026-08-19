@@ -23,7 +23,6 @@ def run_demo(
     # column
     axial_diffusion = 0  # cm2/s
     K = 100  # (mg/g) * (L/mg)
-    initial_concentration = 0
     length = 100  # cm
     diameter = 10  # cm
     porosity = 0.334
@@ -78,7 +77,7 @@ def run_demo(
         add_inlet=True,
     )
 
-    model = reactormodels.models.DomainCoupling(
+    model = reactormodels.models.PSDM(
         breakthrough=breakthrough,
         isotherm=isotherm,
         column_numerics=column_numerics,

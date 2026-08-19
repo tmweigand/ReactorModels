@@ -29,8 +29,8 @@ import reactormodels
 # CONFIG
 # ============================================================
 
-AD_BREAKTHROUGH_FILE = Path("regression/AdDesignS_breakthrough.txt")
-OUT_BREAKTHROUGH_FILE = Path("regression/reactormodels_breakthrough.txt")
+AD_BREAKTHROUGH_FILE = Path("examples/regression/AdDesignS_breakthrough.txt")
+OUT_BREAKTHROUGH_FILE = Path("examples/regression/reactormodels_breakthrough.txt")
 PLOT_DIR = Path("data_out/regression/regression_out")
 
 # AdDesignS param name -> _make_particle kwarg name
@@ -134,7 +134,7 @@ def _make_particle(
         n_elements=1,
     )
 
-    return reactormodels.models.DomainCoupling(
+    return reactormodels.models.PSDM(
         isotherm=isotherm,
         breakthrough=breakthrough,
         column_numerics=column_numerics,

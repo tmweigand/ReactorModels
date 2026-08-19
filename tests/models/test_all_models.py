@@ -105,7 +105,7 @@ def _build_intraparticle_transport():
     )
 
 
-def _build_domain_coupling():
+def _build_psdm():
     isotherm = reactormodels.models.LinearIsotherm(K=100.0)
 
     media = reactormodels.Media(
@@ -148,7 +148,7 @@ def _build_domain_coupling():
         n_elements=1,
         add_inlet=True,
     )
-    return reactormodels.models.DomainCoupling(
+    return reactormodels.models.PSDM(
         isotherm=isotherm,
         breakthrough=breakthrough,
         column_numerics=column_numerics,
@@ -161,7 +161,7 @@ MODEL_BUILDERS = {
     "AdvectionDiffusion": _build_advection_diffusion,
     "AdvectionDiffusionAdsorption": _build_advection_diffusion_adsorption,
     "IntraparticleTransport": _build_intraparticle_transport,
-    "DomainCoupling": _build_domain_coupling,
+    "PSDM": _build_psdm,
 }
 
 

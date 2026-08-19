@@ -9,7 +9,7 @@ import pytest
 
 import reactormodels
 
-AD_BREAKTHROUGH_FILE = Path("regression/AdDesignS_breakthrough.txt")
+AD_BREAKTHROUGH_FILE = Path("tests/regression/AdDesignS_breakthrough.txt")
 RMSE_THRESHOLD = 1e-2
 
 PARAM_MAP = {
@@ -37,7 +37,6 @@ BASELINE_KWARGS = dict(
 
 
 def load_addesigns_results(path: Path) -> dict:
-
     results = {}
     with open(path, newline="") as f:
         reader = csv.DictReader(f, delimiter="\t")
@@ -114,7 +113,7 @@ def make_particle(
         n_elements=1,
         add_inlet=True,
     )
-    return reactormodels.models.DomainCoupling(
+    return reactormodels.models.PSDM(
         isotherm=isotherm,
         breakthrough=breakthrough,
         column_numerics=column_numerics,
@@ -130,9 +129,8 @@ def run_case(case: dict, kwargs_override: dict):
     time = t_eval / 1440 / 60
 
     p = make_particle(**kwargs_override, time=time)
-    z, r, C, Cp = p.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
-    C_numerical = C[:, -1]
-    return case["time"], C_numerical.tolist()
+    _, _, C, _ = p.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
+    return C[:, -1]
 
 
 AD_RESULTS = load_addesigns_results(AD_BREAKTHROUGH_FILE)
@@ -150,10 +148,11 @@ def test_rmse_against_addesigns(name):
         value = float(case["value"])
         kwargs_override[mapped] = value
 
-        run_case(case, kwargs_override)
-    # rmse = compute_rmse(c_numerical, case["c"])
+        rmse = reactormodels.numerics.helpers.compute_rmse(
+            run_case(case, kwargs_override), case["c"]
+        )
 
-    # assert rmse < RMSE_THRESHOLD, (
-    #     f"{name}: RMSE {rmse:.5f} exceeds threshold {RMSE_THRESHOLD} "
-    #     f"(param={case['param']}, value={case['value']})"
-    # )
+        assert rmse < RMSE_THRESHOLD, (
+            f"{name}: RMSE {rmse:.5f} exceeds threshold {RMSE_THRESHOLD} "
+            f"(param={case['param']}, value={case['value']})"
+        )
