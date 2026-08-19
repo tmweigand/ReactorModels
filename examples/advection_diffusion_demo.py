@@ -43,7 +43,7 @@ def run_demo(
         breakthrough=breakthrough,
         numerics=numerics,
     )
-    x, C = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
+    x, C = model.solve()
 
     ogata_banks = reactormodels.models.OgataBanks(
         breakthrough=breakthrough, diffusion=diffusion

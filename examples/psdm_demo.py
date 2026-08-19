@@ -81,7 +81,7 @@ def run_demo(
         particle_numerics=particle_numerics,
         k_film=k_film,
     )
-    z, r, C, Cp = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
+    z, r, C, Cp = model.solve()
 
     fig, ax = plt.subplots(figsize=(8, 5))
 

@@ -152,10 +152,9 @@ def run_case(case: dict, kwargs_override: dict):
     """Solve one case on the AdDesignS output time grid for that case.
     Returns (time_min list, C_over_C0 list)."""
     t_eval = np.array(case["time"]) * 60
-    time = t_eval / 1440 / 60
 
-    p = _make_particle(**kwargs_override, time=time)
-    z, r, C, Cp = p.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
+    p = _make_particle(**kwargs_override, time=t_eval)
+    z, r, C, Cp = p.solve()
     C_numerical = C[:, -1]
     return case["time"], C_numerical.tolist()
 

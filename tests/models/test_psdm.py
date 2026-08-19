@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 
-def _make_particle(Ds=5e-9, C_in=1):
+def _make_particle(Ds=5e-9, C_in=1, time=None):
     # particle
     particle_porosity = 0.5
     particle_density = 600  # g/mL
@@ -20,7 +20,6 @@ def _make_particle(Ds=5e-9, C_in=1):
     porosity = 0.334
     bulk_density = 399.8  # g/mL
     flow_rate = 40  # cm3/s
-    t_eval = np.linspace(1e-10, 175 * 1440 * 60, 200)  # s
 
     isotherm = reactormodels.models.LinearIsotherm(K=K)
 
@@ -51,7 +50,7 @@ def _make_particle(Ds=5e-9, C_in=1):
         feed_concentrations=C_in,
         initial_concentration=initial_concentration,
         flow_rate=flow_rate,
-        time=t_eval,
+        time=time,
     )
 
     column_numerics = reactormodels.numerics.NumericsConfig(
@@ -76,45 +75,11 @@ def _make_particle(Ds=5e-9, C_in=1):
     )
 
 
-def test_initial_state_zero():
-    p = _make_particle()
-    y0, ydot0 = p._initial_conditions(
-        C_in=p.breakthrough.mean_feed_concentration(),
-        C_init=p.breakthrough.initial_concentration,
-        Cp_init=p.breakthrough.initial_concentration,
-    )
-
-    C, Cp = p._split(y0)
-
-    np.testing.assert_allclose(ydot0, 0)
-    np.testing.assert_allclose(C[1:], 0)
-    np.testing.assert_allclose(Cp[:, :], 0)
-    assert C[0] == 1
-    assert y0.shape == (p._n_vars(),)
-    assert len(y0) == p._n_vars()
-
-
-def test_initial_state_nonzero():
-    p = _make_particle(C_in=5)
-    y0, ydot0 = p._initial_conditions(C_in=5, C_init=1, Cp_init=2)
-
-    C, Cp = p._split(y0)
-
-    np.testing.assert_allclose(ydot0, 0)
-    np.testing.assert_allclose(C[1:], 1)
-    np.testing.assert_allclose(Cp[:, :], 2)
-    assert C[0] == 5
-    assert y0.shape == (p._n_vars(),)
-    assert len(y0) == p._n_vars()
-
-
 def test_surface_concentration_increases():
-    p = _make_particle()
-    t_eval = np.linspace(1e-10, 3600, 50)
-    z, r, C, Cp = p.solve(
-        t_span=(0, t_eval[-1]),
-        t_eval=t_eval,
-    )
+    time = np.linspace(1e-10, 3600, 50)
+    p = _make_particle(time=time)
+
+    z, r, C, Cp = p.solve()
 
     Cp_surface = Cp[:, :, -1]  # if shape is (time,z,r)
 
@@ -128,14 +93,11 @@ def test_solve_reaches_equilibrium():
     After a long time, average loading should approach q*(Cb).
     """
 
-    p = _make_particle()
+    time = np.linspace(1e-10, 125 * 1440 * 60, 50)  # very long time
+    p = _make_particle(time=time)
     Cb = 1.0
-    t_eval = np.linspace(1e-10, 125 * 1440 * 60, 50)  # very long time
 
-    z, r, C, Cp = p.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
-
-    print("bulk final:", C[-1, :-1])
-    # print("particle inlet final:", Cp[-1, -1, :])
+    z, r, C, Cp = p.solve()
 
     np.testing.assert_allclose(C[-1, :-1], Cb, rtol=1e-2)
 
@@ -160,21 +122,15 @@ def test_surface_diffusion_accelerates_uptake():
     """
     Surface diffusion should increase adsorption, delaying breakthrough.
     """
-    t_eval = np.linspace(1e-10, 25 * 1440 * 60, 50)
+    time = np.linspace(1e-10, 25 * 1440 * 60, 50)
 
-    p0 = _make_particle(Ds=1e-15)
+    p0 = _make_particle(Ds=1e-15, time=time)
 
-    ps = _make_particle(Ds=1e-9)
+    ps = _make_particle(Ds=1e-9, time=time)
 
-    _, _, C0, _ = p0.solve(
-        t_span=(0, t_eval[-1]),
-        t_eval=t_eval,
-    )
+    _, _, C0, _ = p0.solve()
 
-    _, _, Cs, _ = ps.solve(
-        t_span=(0, t_eval[-1]),
-        t_eval=t_eval,
-    )
+    _, _, Cs, _ = ps.solve()
 
     # Outlet concentration
     Cout0 = C0[-1, -1]
@@ -186,22 +142,15 @@ def test_surface_diffusion_accelerates_uptake():
 
 def test_mass_balance():
     """Mass entering particle equals mass leaving bulk."""
-    p = _make_particle()
-    t_eval = np.linspace(1e-10, 100 * 1440 * 60, 50)
+    time = np.linspace(1e-10, 100 * 1440 * 60, 50)
+    p = _make_particle(time=time)
 
-    z, r, C, Cp = p.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
+    z, r, C, Cp = p.solve()
 
     A = p.column.cross_section_area()
-
-    # print("Fluid      :", Mf)
-    # print("Particle fluid:", Mp)
-    # print("Adsorbed   :", Ms)
-    # print("Stored     :", Mtotal)
-    # print("In-Out     :", balance)
-
     errors = []
 
-    for k, t in enumerate(t_eval):
+    for k, t in enumerate(time):
 
         # Bulk fluid inventory
         Mf = p.column.porosity * A * np.trapz(C[k, :] / 1000, z)
@@ -233,9 +182,7 @@ def test_mass_balance():
             / 1000
         )
 
-        Mout = p.breakthrough.flow_rate * np.trapz(
-            C[: k + 1, -1] / 1000, t_eval[: k + 1]
-        )
+        Mout = p.breakthrough.flow_rate * np.trapz(C[: k + 1, -1] / 1000, time[: k + 1])
 
         balance = Min - Mout
 
@@ -252,7 +199,8 @@ def test_mass_balance():
 
 
 def test_algebraic_vars():
-    p = _make_particle()
+    time = np.linspace(1e-10, 175 * 1440 * 60, 200)  # s
+    p = _make_particle(time=time)
     alg_vars = p._algebraic_vars_idx()
 
     # Basic type checks

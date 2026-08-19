@@ -70,7 +70,7 @@ def run_demo(
         isotherm=isotherm,
         numerics=numerics,
     )
-    x, C, q = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
+    x, C, q = model.solve()
 
     fig, ax = plt.subplots(figsize=(8, 5))
     for i, t in enumerate(t_eval):

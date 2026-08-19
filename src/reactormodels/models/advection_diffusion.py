@@ -32,6 +32,7 @@ class AdvectionDiffusion(NumericModel):
         numerics: NumericsConfig,
         inlet_bc: Type[InletBC] = DirichletBC,
     ):
+        self.breakthrough = breakthrough
         self.velocity = breakthrough.interstitial_velocity
         self.axial_diffusion = breakthrough.chemical.axial_diffusion
         self.inlet_concentration = breakthrough.mean_feed_concentration()
@@ -96,7 +97,7 @@ class AdvectionDiffusion(NumericModel):
         """
         return [0]
 
-    def solve(self, t_span, t_eval):
+    def solve(self):
         """Integrate from t_span[0] to t_span[1], returning results at t_eval."""
         c, dcdt = self._initial_conditions()
         result = self.numerics.integrate(
@@ -104,8 +105,8 @@ class AdvectionDiffusion(NumericModel):
             jacobian=self._jacobian,
             y0=c,
             yp0=dcdt,
-            t_span=t_span,
-            t_eval=t_eval,
+            t_span=[0, self.breakthrough.time.tolist()],
+            t_eval=self.breakthrough.time,
             algebraic_vars_idx=self._algebraic_vars_idx(),
         )
         if result.flag < 0:

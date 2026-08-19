@@ -199,7 +199,7 @@ class AdvectionDiffusionAdsorption(NumericModel):
         """
         return [0]
 
-    def _initial_conditions(self, C_init: float, C_in: float, q_init: float):
+    def _initial_conditions(self):
         """Return (y0, ydot0) consistent with the algebraic constraint."""
         C0 = np.full(self.N, self.initial_concentration)
         C0[0] = self.inlet_bc.apply(self.numerics.collocation.evaluate_gradient(C0, 0))
@@ -207,7 +207,7 @@ class AdvectionDiffusionAdsorption(NumericModel):
             self.mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE
             or self.mode == AdsorptionKinetics.SECOND_ORDER
         ):
-            q0 = np.full(self.N, q_init)
+            q0 = np.full(self.N, self.breakthrough.initial_mass_fraction)
             q0[0] = self.iso.q(
                 self.inlet_concentration
             )  # inlet node at equilibrium with feed
@@ -218,17 +218,17 @@ class AdvectionDiffusionAdsorption(NumericModel):
         ydot0 = np.zeros_like(y0)
         return y0, ydot0
 
-    def solve(self, t_span, t_eval, C_in=1.0, C_init=0.0, q_init=0.0):
+    def solve(self):
         """Integrate from t_span[0] to t_span[1], returning results at t_eval."""
-        y0, ydot0 = self._initial_conditions(C_init, C_in, q_init)
+        y0, ydot0 = self._initial_conditions()
 
         result = self.numerics.integrate(
             residual=self._residual,
             jacobian=self._jacobian,
             y0=y0,
             yp0=ydot0,
-            t_span=t_span,
-            t_eval=t_eval,
+            t_span=[0, self.breakthrough.time.tolist()],
+            t_eval=self.breakthrough.time,
             algebraic_vars_idx=self._algebraic_vars_idx(),
         )
 
@@ -249,6 +249,8 @@ class AdvectionDiffusionAdsorption(NumericModel):
             q_out = y_out[:, self.N :]  # (n_times, N)
         else:
             # Local equilibrium: recover q from C at each time step
-            q_out = np.array([self.iso.q(C_out[i]) for i in range(len(t_eval))])
+            q_out = np.array(
+                [self.iso.q(C_out[i]) for i in range(len(self.breakthrough.time))]
+            )
 
         return self.numerics.collocation.nodes, C_out, q_out

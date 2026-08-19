@@ -48,7 +48,7 @@ def test_mass_balance_class():
         mode=reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
     )
 
-    x, C, q = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
+    x, C, q = model.solve()
 
     balances = reactormodels.postprocess.MassBalance.from_solution(
         x=x, breakthrough=breakthrough, C_history=C, q_history=q, t_eval=t_eval

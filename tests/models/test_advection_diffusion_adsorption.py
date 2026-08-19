@@ -13,7 +13,7 @@ def _base_model(mode, k_ldf=0.1, n_col=30):
     superficial_velocity = 0.5
     axial_diffusion = 0.1
     K = 0.5
-    time = [0, 1, 2]
+    dummy_time = [0, 1, 2]
 
     breakthrough = reactormodels.fixtures.make_breakthrough(
         length=column_length,
@@ -22,7 +22,7 @@ def _base_model(mode, k_ldf=0.1, n_col=30):
         bulk_density=bulk_density,
         superficial_velocity=superficial_velocity,
         axial_diffusion=axial_diffusion,
-        time=time,
+        time=dummy_time,
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
@@ -57,7 +57,9 @@ def test_local_equilibrium_vs_ogata_banks():
     t_mid = 0.5 * column_length / (model.breakthrough.interstitial_velocity / R)
     t_eval = np.array([0.25 * t_mid, t_mid, 2.0 * t_mid])
 
-    x, C, q = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
+    model.breakthrough.time = t_eval
+
+    x, C, q = model.solve()
 
     ogata_banks = reactormodels.models.OgataBanks(
         breakthrough=model.breakthrough, diffusion=D, retardation=R
@@ -83,11 +85,16 @@ def test_ldf_converges_to_equilibrium_at_high_kldf():
     v_eff = eq_model.breakthrough.interstitial_velocity / (eps * R)
     t_eval = np.array([0.5 * L / v_eff, L / v_eff])
 
-    x, C_eq, q_eq = eq_model.solve((0, t_eval[-1]), t_eval)
-    x, C_ldf, q_ldf = ldf_model.solve((0, t_eval[-1]), t_eval)
+    eq_model.breakthrough.time = t_eval
+    ldf_model.breakthrough.time = t_eval
+
+    _, C_eq, q_eq = eq_model.solve()
+    _, C_ldf, q_ldf = ldf_model.solve()
 
     # High k_ldf → LDF ≈ equilibrium
     assert C_ldf == pytest.approx(C_eq, abs=1e-2)
+
+    assert q_ldf == pytest.approx(q_eq, abs=1e-2)
 
 
 def test_ldf_q_tracks_equilibrium():
@@ -97,9 +104,11 @@ def test_ldf_q_tracks_equilibrium():
     )
     R = 1.0 + (rho_b * K) / eps
     v_eff = model.breakthrough.interstitial_velocity / (eps * R)
-    t_long = 5.0 * L / v_eff  # run long enough for q to equilibrate
+    t_long = np.array([5.0 * L / v_eff])  # run long enough for q to equilibrate
 
-    x, C, q = model.solve(t_span=(0, t_long), t_eval=np.array([t_long]))
+    model.breakthrough.time = t_long
+
+    _, C, q = model.solve()
 
     q_eq = model.iso.q(C[0])
     # q should be close to q*(C) at long times

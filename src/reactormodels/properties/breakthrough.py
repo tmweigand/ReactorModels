@@ -19,6 +19,7 @@ class Breakthrough:
         chemical: Chemical,
         feed_concentrations: float | np.ndarray,
         initial_concentration: float = 0.0,
+        initial_mass_fraction: float = 0.0,
         flow_rate: float | None = None,
         effluent_concentrations: np.ndarray | None = None,
         bed_volumes: np.ndarray | None = None,
@@ -48,6 +49,7 @@ class Breakthrough:
         self.chemical = chemical
         self.feed_concentrations = np.asarray(feed_concentrations)
         self.initial_concentration = initial_concentration
+        self.initial_mass_fraction = initial_mass_fraction
         self.bed_volumes = None if bed_volumes is None else np.asarray(bed_volumes)
         self.time = None if time is None else np.asarray(time)
         self.effluent_concentrations = (

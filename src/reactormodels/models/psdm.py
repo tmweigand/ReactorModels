@@ -244,12 +244,14 @@ class PSDM(NumericModel):
         jac[:, :] = J
         return 0
 
-    def _initial_conditions(self, C_init: float, C_in: float, Cp_init: float):
+    def _initial_conditions(self):
         """Return (y0, ydot0) consistent with the algebraic constraint."""
-        C0 = np.full(self.N_column, C_init)
+        C0 = np.full(self.N_column, self.breakthrough.initial_concentration)
         C0[0] = self.inlet_bc.apply()
 
-        Cp0 = np.full((self.N_column, self.N_particle), Cp_init)
+        Cp0 = np.full(
+            (self.N_column, self.N_particle), self.breakthrough.initial_concentration
+        )
 
         y0 = np.concatenate(
             [
@@ -279,17 +281,17 @@ class PSDM(NumericModel):
 
         return var_idxs
 
-    def solve(self, t_span, t_eval, C_in=1.0, C_init=0.0, Cp_init=0.0):
+    def solve(self):
         """Integrate from t_span[0] to t_span[1], returning results at t_eval."""
-        y0, ydot0 = self._initial_conditions(C_init, C_in, Cp_init)
+        y0, ydot0 = self._initial_conditions()
 
         result = self.column_numerics.integrate(
             residual=self._residual,
             jacobian=self._jacobian,
             y0=y0,
             yp0=ydot0,
-            t_span=t_span,
-            t_eval=t_eval,
+            t_span=[0, self.breakthrough.time.tolist()],
+            t_eval=self.breakthrough.time,
             algebraic_vars_idx=self._algebraic_vars_idx(),
         )
 
@@ -304,7 +306,7 @@ class PSDM(NumericModel):
         C_out = y_out[:, : self.N_column]  # (n_times, N)
 
         Cp_out = y_out[:, self.N_column :].reshape(
-            len(t_eval), self.N_column, self.N_particle
+            len(self.breakthrough.time), self.N_column, self.N_particle
         )
 
         return (

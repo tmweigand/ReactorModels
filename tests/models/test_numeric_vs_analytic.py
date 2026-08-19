@@ -51,7 +51,7 @@ def test_thomas():
         mode=reactormodels.models.AdsorptionKinetics.SECOND_ORDER,
         k_ldf=k,
     )
-    x, C, q = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
+    x, C, _ = model.solve()
 
     thomas = reactormodels.models.ThomasLangmuir(
         breakthrough=breakthrough, langmuir_constant=K, sorbent_capacity=q_m, k_Th=k

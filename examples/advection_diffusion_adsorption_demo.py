@@ -54,7 +54,7 @@ def run_demo(
         numerics=numerics,
         mode=reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
     )
-    x, C, q = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval, C_in=C_in)
+    x, C, _ = model.solve()
 
     ogata_banks = reactormodels.models.OgataBanks(
         breakthrough=breakthrough, diffusion=diffusion, retardation=R

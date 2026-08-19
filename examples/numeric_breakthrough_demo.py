@@ -57,7 +57,7 @@ def run_demo(
         mode=reactormodels.models.AdsorptionKinetics.SECOND_ORDER,
         k_ldf=k,
     )
-    x, C, q = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
+    x, C, q = model.solve()
 
     bohart_adams = reactormodels.models.BohartAdams(
         breakthrough=breakthrough, k_BA=k, sorbent_capacity=q_m

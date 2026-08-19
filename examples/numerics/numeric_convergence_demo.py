@@ -15,21 +15,18 @@ from reactormodels.fixtures import make_breakthrough
 
 def _run_case(n_interior_points: int, n_elements: int, t_end: float) -> dict:
     """Solve one case and compare against the Ogata-Banks analytical solution."""
-    breakthrough = make_breakthrough(time=t_end)
+    breakthrough = make_breakthrough(time=np.array([t_end]))
     numerics = NumericsConfig(
         domain_length=breakthrough.column.length,
         n_interior_points=n_interior_points,
         n_elements=n_elements,
-        add_inlet=True,
     )
     model = reactormodels.models.AdvectionDiffusion(
         breakthrough=breakthrough, numerics=numerics
     )
 
     start = perf_counter()
-    x, concentration_history = model.solve(
-        t_span=(0.0, t_end), t_eval=np.array([t_end])
-    )
+    x, concentration_history = model.solve()
     cpu_time_seconds = perf_counter() - start
     concentration_numerical = concentration_history[-1]
 

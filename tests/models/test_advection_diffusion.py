@@ -33,7 +33,7 @@ def test_ogata_banks(axial_diffusion):
         numerics=numerics,
     )
 
-    x, C = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
+    x, C = model.solve()
 
     ogata_banks = reactormodels.models.OgataBanks(
         breakthrough=breakthrough, diffusion=axial_diffusion
@@ -83,7 +83,7 @@ def test_multi_element_ogata_banks():
         numerics=numerics,
     )
 
-    x, C = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
+    x, C = model.solve()
 
     ogata_banks = reactormodels.models.OgataBanks(
         breakthrough=breakthrough, diffusion=axial_diffusion
