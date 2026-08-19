@@ -25,6 +25,10 @@ class FilmTransfer:
 
     @property
     def reynolds(self) -> float:
+        """Reynolds number for film transfer"""
+
+        assert self.breakthrough.column.media.particle_diameter is not None
+
         return reynolds_number(
             self.density,
             self.breakthrough.interstitial_velocity,
@@ -35,10 +39,12 @@ class FilmTransfer:
 
     @property
     def schmidt(self) -> float:
+        """Schmidt number for film transfer"""
         return schmidt_number(self.viscosity, self.density, self.diffusion_coefficient)
 
     @property
     def sherwood(self) -> float:
+        """Sherwood number for film transfer"""
         return sherwood_number(
             self.method,
             self.reynolds,
@@ -51,6 +57,12 @@ class FilmTransfer:
         """Film mass transfer coefficient, computed unless explicitly supplied."""
         if self._k_film is not None:
             return self._k_film
-        d_p = self.breakthrough.column.media.particle_diameter
-        self._k_film = self.sherwood * self.diffusion_coefficient / d_p
+
+        assert self.breakthrough.column.media.particle_diameter is not None
+
+        self._k_film = (
+            self.sherwood
+            * self.diffusion_coefficient
+            / self.breakthrough.column.media.particle_diameter
+        )
         return self._k_film

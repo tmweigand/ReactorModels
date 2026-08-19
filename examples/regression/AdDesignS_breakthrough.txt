@@ -1,1 +1,1 @@
-/Users/tim/Desktop/pfas_modeling/reactormodels/tests/regression/AdDesignS_breakthrough.txt
+../../tests/regression/AdDesignS_breakthrough.txt

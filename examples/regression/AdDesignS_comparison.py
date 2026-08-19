@@ -25,12 +25,8 @@ import matplotlib.pyplot as plt
 
 import reactormodels
 
-# ============================================================
-# CONFIG
-# ============================================================
-
 AD_BREAKTHROUGH_FILE = Path("examples/regression/AdDesignS_breakthrough.txt")
-OUT_BREAKTHROUGH_FILE = Path("examples/regression/reactormodels_breakthrough.txt")
+OUT_BREAKTHROUGH_FILE = Path("data_out/regression/reactormodels_breakthrough.txt")
 PLOT_DIR = Path("data_out/regression/regression_out")
 
 # AdDesignS param name -> _make_particle kwarg name
@@ -53,11 +49,6 @@ BASELINE_KWARGS = dict(
 )
 
 
-# ============================================================
-# Load the AdDesignS regression results
-# ============================================================
-
-
 def load_addesigns_results(path: Path) -> dict:
     results = {}
     with open(path, newline="") as f:
@@ -75,11 +66,6 @@ def load_addesigns_results(path: Path) -> dict:
             results[name]["time"].append(float(row["time_min"]))
             results[name]["c"].append(float(row["C_over_C0"]))
     return results
-
-
-# ============================================================
-# reactormodels PSDM setup
-# ============================================================
 
 
 def _make_particle(
@@ -143,18 +129,12 @@ def _make_particle(
     )
 
 
-# ============================================================
-# Per-case run
-# ============================================================
-
-
 def run_case(case: dict, kwargs_override: dict):
-    """Solve one case on the AdDesignS output time grid for that case.
-    Returns (time_min list, C_over_C0 list)."""
+    """Solve one case on the AdDesignS output time grid"""
     t_eval = np.array(case["time"]) * 60
 
     p = _make_particle(**kwargs_override, time=t_eval)
-    z, r, C, Cp = p.solve()
+    _, _, C, _ = p.solve()
     C_numerical = C[:, -1]
     return case["time"], C_numerical.tolist()
 
@@ -226,18 +206,13 @@ def make_param_sensitivity_plot(
     return save_path
 
 
-# ============================================================
-# Main
-# ============================================================
-
-
 def main():
     ad_results = load_addesigns_results(AD_BREAKTHROUGH_FILE)
     print(f"Loaded {len(ad_results)} cases from {AD_BREAKTHROUGH_FILE}")
 
     out_rows = []
     rmse_rows = []
-    model_results = {}  # name -> {"time_min": [...], "c_numerical": [...]}
+    model_results = {}
     failures = []
 
     for name, case in ad_results.items():
@@ -249,8 +224,6 @@ def main():
                 print(f"  [{name}] SKIPPED - unrecognized param '{case['param']}'")
                 continue
             kwargs_override[mapped] = float(case["value"])
-
-        print(kwargs_override)
 
         print(
             f"  [{name}] running (param={case['param']}, "
