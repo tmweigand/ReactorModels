@@ -9,6 +9,7 @@ from .properties.column import Column
 from .properties.water import Water
 from .properties.chemical import Chemical
 from .properties.media import Media
+from .properties.film_transfer import FilmTransfer
 
 __all__ = [
     "models",
@@ -20,4 +21,5 @@ __all__ = [
     "Water",
     "Chemical",
     "Media",
+    "FilmTransfer",
 ]

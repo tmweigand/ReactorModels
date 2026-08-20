@@ -26,16 +26,22 @@ def make_breakthrough(
     axial_diffusion: float = 0.01,
     inlet_concentration: float = 1.0,
     initial_concentration: float = 0.0,
-    time: np.ndarray | None = None,
+    time: np.ndarray = np.array([1.0]),
+    water: Water | None = None,
 ) -> Breakthrough:
     """Build a simple 1D advection-diffusion breakthrough problem."""
+    if water is not None:
+        _water = water
+    else:
+        _water = Water(name="water")
+
     column = Column(
         length=length,
         diameter=diameter,
         porosity=porosity,
         bulk_density=bulk_density,
-        media=Media(particle_density=1.0),
-        water=Water(name="water"),
+        media=Media(particle_density=1.0, particle_radius=1.0),
+        water=_water,
     )
     chemical = Chemical(name="tracer", axial_diffusion=axial_diffusion)
 

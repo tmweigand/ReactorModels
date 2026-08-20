@@ -48,7 +48,7 @@ def test_thomas():
         breakthrough=breakthrough,
         isotherm=isotherm,
         numerics=numerics,
-        mode=reactormodels.models.AdsorptionKinetics.SECOND_ORDER,
+        kinetics=reactormodels.models.AdsorptionKinetics.SECOND_ORDER,
         k_ldf=k,
     )
     x, C, _ = model.solve()

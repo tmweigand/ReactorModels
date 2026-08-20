@@ -54,7 +54,7 @@ def run_demo(
         breakthrough=breakthrough,
         isotherm=isotherm,
         numerics=numerics,
-        mode=reactormodels.models.AdsorptionKinetics.SECOND_ORDER,
+        kinetics=reactormodels.models.AdsorptionKinetics.SECOND_ORDER,
         k_ldf=k,
     )
     x, C, q = model.solve()

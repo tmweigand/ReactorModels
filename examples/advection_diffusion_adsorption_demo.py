@@ -52,7 +52,7 @@ def run_demo(
         breakthrough=breakthrough,
         isotherm=isotherm,
         numerics=numerics,
-        mode=reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
+        kinetics=reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
     )
     x, C, _ = model.solve()
 

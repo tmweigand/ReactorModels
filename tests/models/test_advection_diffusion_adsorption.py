@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 
-def _base_model(mode, k_ldf=0.1, n_col=30):
+def _base_model(kinetics, k_ldf=0.1, n_col=30):
     """Shared setup for all adsorption tests."""
     column_length = 5.0
     diameter = 1
@@ -34,7 +34,7 @@ def _base_model(mode, k_ldf=0.1, n_col=30):
             breakthrough=breakthrough,
             isotherm=reactormodels.models.LinearIsotherm(K=K),
             numerics=numerics,
-            mode=mode,
+            kinetics=kinetics,
             k_ldf=k_ldf,
             inlet_bc=reactormodels.models.DirichletBC,
         ),
@@ -110,6 +110,51 @@ def test_ldf_q_tracks_equilibrium():
 
     _, C, q = model.solve()
 
-    q_eq = model.iso.q(C[0])
+    q_eq = model.isotherm.q(C[0])
     # q should be close to q*(C) at long times
     assert q[0] == pytest.approx(q_eq, rel=0.05)
+
+
+def test_parameter_check():
+    """Checking of None variables"""
+    column_length = 5.0
+    diameter = 1
+    porosity = 0.5
+    bulk_density = 500.0
+    superficial_velocity = 0.5
+    axial_diffusion = None
+    K = None
+    dummy_time = [0, 1, 2]
+
+    breakthrough = reactormodels.fixtures.make_breakthrough(
+        length=column_length,
+        diameter=diameter,
+        porosity=porosity,
+        bulk_density=bulk_density,
+        superficial_velocity=superficial_velocity,
+        axial_diffusion=axial_diffusion,
+        time=dummy_time,
+    )
+
+    numerics = reactormodels.numerics.NumericsConfig(
+        domain_length=column_length, n_interior_points=5, add_inlet=True
+    )
+
+    with pytest.raises(
+        ValueError,
+        match=(
+            r"AdvectionDiffusionAdsorption is missing required parameter\(s\): "
+            r"axial_diffusion, FreundlichIsotherm\.K, FreundlichIsotherm\.n"
+        ),
+    ):
+        reactormodels.models.AdvectionDiffusionAdsorption(
+            breakthrough=breakthrough,
+            isotherm=reactormodels.models.FreundlichIsotherm(
+                K=K,
+                n=None,
+            ),
+            numerics=numerics,
+            kinetics=reactormodels.models.adsorption_kinetics.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
+            k_ldf=0.1,
+            inlet_bc=reactormodels.models.DirichletBC,
+        )

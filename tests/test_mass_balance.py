@@ -45,7 +45,7 @@ def test_mass_balance_class():
         breakthrough=breakthrough,
         isotherm=reactormodels.models.LinearIsotherm(K=K),
         numerics=numerics,
-        mode=reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
+        kinetics=reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
     )
 
     x, C, q = model.solve()

@@ -100,3 +100,31 @@ def test_multi_element_ogata_banks():
         assert C_numerical == pytest.approx(
             C_analytical, abs=1e-2
         ), f"Failed at t={t}: max error = {np.abs(C_numerical - C_analytical).max():.2e}"
+
+
+def test_parameter_check():
+    """Set diffusion to None and ensure error."""
+    superficial_velocity = 1  # m/sn
+    column_length = 5.0  # m
+    porosity = 0.5
+    column_diameter = 1
+    t_eval = np.array([1.0, 2.0, 3.0])
+
+    breakthrough = reactormodels.fixtures.make_breakthrough(
+        length=column_length,
+        diameter=column_diameter,
+        porosity=porosity,
+        superficial_velocity=superficial_velocity,
+        axial_diffusion=None,
+        time=t_eval,
+    )
+
+    numerics = reactormodels.numerics.NumericsConfig(
+        n_interior_points=5, n_elements=20, domain_length=column_length
+    )
+
+    with pytest.raises(ValueError):
+        reactormodels.models.AdvectionDiffusion(
+            breakthrough=breakthrough,
+            numerics=numerics,
+        )

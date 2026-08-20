@@ -103,7 +103,7 @@ def test_solve_reaches_equilibrium():
 
     Cp_final = Cp[-1, 1:, :]  # final time: (Nz, Nr)
 
-    q_final = p.iso.q(Cp_final)
+    q_final = p.isotherm.q(Cp_final)
 
     q_avg = np.trapz(
         q_final * r**2,
@@ -111,7 +111,7 @@ def test_solve_reaches_equilibrium():
         axis=1,
     ) / np.trapz(r**2, r)
 
-    q_target = p.iso.q(np.array([Cb]))[0]
+    q_target = p.isotherm.q(np.array([Cb]))[0]
 
     rel_err = abs(q_avg[0] - q_target) / q_target
 
@@ -156,7 +156,7 @@ def test_mass_balance():
         Mf = p.column.porosity * A * np.trapz(C[k, :] / 1000, z)
 
         # Adsorbed phase
-        q = p.iso.q(Cp[k, :, :])
+        q = p.isotherm.q(Cp[k, :, :])
 
         q_avg = np.trapz(q * r**2, r, axis=1) / np.trapz(r**2, r)
 
@@ -229,3 +229,9 @@ def test_algebraic_vars():
     i_last = p.N_column - 2
     assert p.N_column + i_last * p.N_particle in alg_vars
     assert p.N_column + i_last * p.N_particle + (p.N_particle - 1) in alg_vars
+
+
+def test_parameter_check():
+    """Set params to None and ensure error."""
+    with pytest.raises(ValueError):
+        _make_particle(Ds=None)

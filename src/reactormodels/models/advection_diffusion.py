@@ -20,10 +20,6 @@ class AdvectionDiffusion(NumericModel):
     _param_names = (
         "velocity",
         "axial_diffusion",
-        "inlet_concentration",
-        "initial_concentration",
-        "numerics",
-        "inlet_bc",
     )
 
     def __init__(
@@ -32,19 +28,30 @@ class AdvectionDiffusion(NumericModel):
         numerics: NumericsConfig,
         inlet_bc: Type[InletBC] = DirichletBC,
     ):
+
+        # Physical parameters
         self.breakthrough = breakthrough
         self.velocity = breakthrough.interstitial_velocity
         self.axial_diffusion = breakthrough.chemical.axial_diffusion
-        self.inlet_concentration = breakthrough.mean_feed_concentration()
+
+        # Initial conditions
         self.initial_concentration = breakthrough.initial_concentration
-        self.numerics = numerics
+
+        # Boundary conditions
+        self.inlet_concentration = breakthrough.mean_feed_concentration()
         self.inlet_bc = inlet_bc(
-            self.inlet_concentration,
+            breakthrough.mean_feed_concentration(),
             node=0,
             velocity=self.velocity,
             diffusion=self.axial_diffusion,
         )
+
+        # Numerics
+        self.numerics = numerics
+
+        # Discretization
         self.N = len(self.numerics.collocation.nodes)
+
         self.assert_parameters_set()
 
     def _residual(self, t, C, Cdot, result):

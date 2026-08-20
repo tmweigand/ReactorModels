@@ -35,7 +35,7 @@ def _build_advection_diffusion():
 
 
 def _build_advection_diffusion_adsorption(
-    mode=reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
+    kinetics=reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
     k_ldf=0.0,
 ):
     breakthrough = reactormodels.fixtures.make_breakthrough(
@@ -57,7 +57,7 @@ def _build_advection_diffusion_adsorption(
         breakthrough=breakthrough,
         isotherm=reactormodels.models.LinearIsotherm(K=0.5),
         numerics=numerics,
-        mode=mode,
+        kinetics=kinetics,
         k_ldf=k_ldf,
     )
 
@@ -220,12 +220,12 @@ def test_jacobian_matches_finite_difference(model_name):
 
 
 @pytest.mark.parametrize(
-    "mode,k_ldf",
+    "kinetics,k_ldf",
     [
         (reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM, 0.0),
         (reactormodels.models.AdsorptionKinetics.LINEAR_DRIVING_FORCE, 0.5),
     ],
 )
-def test_adsorption_jacobian_matches_finite_difference_across_modes(mode, k_ldf):
-    model = _build_advection_diffusion_adsorption(mode=mode, k_ldf=k_ldf)
+def test_adsorption_jacobian_matches_finite_difference_across_modes(kinetics, k_ldf):
+    model = _build_advection_diffusion_adsorption(kinetics=kinetics, k_ldf=k_ldf)
     _assert_jacobian_matches_finite_difference(model)

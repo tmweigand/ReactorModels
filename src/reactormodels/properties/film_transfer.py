@@ -10,23 +10,25 @@ class FilmTransfer:
     def __init__(
         self,
         breakthrough: Breakthrough,
-        viscosity: float,
-        density: float,
-        diffusion_coefficient: float,
         method: str = "gnielinski",
         k_film: float | None = None,
     ) -> None:
         self.breakthrough = breakthrough
-        self.viscosity = viscosity
-        self.density = density
-        self.diffusion_coefficient = diffusion_coefficient
         self.method = method
         self._k_film = k_film
+
+        assert breakthrough.column.water.viscosity is not None
+        self.viscosity = breakthrough.column.water.viscosity
+
+        assert breakthrough.column.water.density is not None
+        self.density = breakthrough.column.water.density
+
+        assert breakthrough.chemical.axial_diffusion is not None
+        self.diffusion_coefficient = breakthrough.chemical.axial_diffusion
 
     @property
     def reynolds(self) -> float:
         """Reynolds number for film transfer"""
-
         assert self.breakthrough.column.media.particle_diameter is not None
 
         return reynolds_number(

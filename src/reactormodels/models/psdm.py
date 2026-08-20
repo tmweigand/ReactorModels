@@ -19,14 +19,12 @@ class PSDM(NumericModel):
     """Solve conservation equations for column and particle domain simultaneously."""
 
     _param_names = (
+        "velocity",
         "axial_diffusion",
         "pore_diffusion",
         "surface_diffusion",
-        "iso",
-        "column_numerics",
-        "particle_numerics",
-        "inlet_bc",
-        "center_bc",
+        "isotherm",
+        "k_film",
     )
 
     def __init__(
@@ -39,19 +37,28 @@ class PSDM(NumericModel):
         inlet_bc: Type[InletBC] = DirichletBC,
         center_bc: Type[InletBC] = SymmetryBC,
     ):
+        # Physical parameters
         self.breakthrough: Breakthrough = breakthrough
         self.column: Column = breakthrough.column
+        self.velocity = breakthrough.interstitial_velocity
         self.axial_diffusion = breakthrough.chemical.axial_diffusion
         self.pore_diffusion = breakthrough.chemical.pore_diffusion
         self.surface_diffusion = breakthrough.chemical.surface_diffusion
-        self.iso = isotherm
-        self.column_numerics = column_numerics
-        self.particle_numerics = particle_numerics
+        self.isotherm = isotherm
         self.k_film = k_film.k_film if isinstance(k_film, FilmTransfer) else k_film
+
+        # Boundary conditions
         self.inlet_bc = inlet_bc(breakthrough.mean_feed_concentration())
         self.center_bc = center_bc(node=0)
+
+        # Numerics
+        self.column_numerics = column_numerics
+        self.particle_numerics = particle_numerics
+
+        # Discretization
         self.N_column = len(self.column_numerics.collocation.nodes)
         self.N_particle = len(self.particle_numerics.collocation.nodes)
+
         self.assert_parameters_set()
 
     def _n_vars(self) -> int:
@@ -79,7 +86,7 @@ class PSDM(NumericModel):
         transport = (
             self.column.porosity * dcdt[1:]
             + self.column.porosity
-            * self.breakthrough.interstitial_velocity
+            * self.velocity
             * self.column_numerics.evaluate_gradient(c)[1:]
             - self.column.porosity
             * self.axial_diffusion
@@ -109,8 +116,10 @@ class PSDM(NumericModel):
                 ]
             )
 
-            dqdCp = self.iso.dq_dC(cp_i)
-            lap_q = self.particle_numerics.evaluate_radial_operator(self.iso.q(cp_i))
+            dqdCp = self.isotherm.dq_dC(cp_i)
+            lap_q = self.particle_numerics.evaluate_radial_operator(
+                self.isotherm.q(cp_i)
+            )
 
             Ds_term = (
                 self.column.media.particle_density
@@ -125,7 +134,7 @@ class PSDM(NumericModel):
 
             # boundary condition
             grad_cp = self.particle_numerics.evaluate_gradient(cp_i, -1)
-            grad_q = self.particle_numerics.evaluate_gradient(self.iso.q(cp_i), -1)
+            grad_q = self.particle_numerics.evaluate_gradient(self.isotherm.q(cp_i), -1)
 
             diffusive_flux = (
                 self.column.media.particle_porosity * self.pore_diffusion * grad_cp
@@ -165,7 +174,7 @@ class PSDM(NumericModel):
 
         d_transport = (
             self.column.porosity
-            * self.breakthrough.interstitial_velocity
+            * self.velocity
             * self.column_numerics.collocation.first_derivative
             - self.column.porosity
             * self.axial_diffusion
@@ -186,7 +195,7 @@ class PSDM(NumericModel):
             surface = offset + self.N_particle - 1
 
             cp_i = Cp[i]
-            dqdCp = self.iso.dq_dC(cp_i)
+            dqdCp = self.isotherm.dq_dC(cp_i)
 
             rows = slice(offset + 1, surface)
             cols = slice(offset, offset + self.N_particle)
@@ -217,7 +226,7 @@ class PSDM(NumericModel):
             )
 
             G = self.particle_numerics.collocation.first_derivative[-1, :]
-            d2qdCp2 = self.iso.d2q_dC2(cp_i)
+            d2qdCp2 = self.isotherm.d2q_dC2(cp_i)
             grad_cp = G @ cp_i
 
             surface_diffusion_jac = (
