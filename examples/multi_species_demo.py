@@ -8,22 +8,30 @@ import numpy as np
 
 def run_demo(
     show: bool = True,
-    save_path: str | Path = "data_out/advection_diffusion_adsorption_demo.png",
+    save_path: str | Path = "data_out/multi_species_demo.png",
 ):
     """Plot the numerical collocation solution against the Ogata-Banks solution."""
     superficial_velocity = 1.0  # m/s
-    diffusion = 0.01  # m^2/s
     domain_length = 5.0  # m
     porosity = 0.4
     bulk_density = 500.0  # kg/m^3
     diameter = 0.1
-    K = 1
-    C_in = 1.0
 
-    isotherm = reactormodels.models.LinearIsotherm(K=K)
-    R = 1.0 + (bulk_density * K) / porosity  # retardation factor
+    # multi-species params
+    C_in = [[1], [1]]
+    n = [1, 1]
+    K = [0.3, 0.5]
+    Co = [1, 1]
+    diffusion = [0.1, 0.2]  # m^2/s
+    MW = [1, 1]
+    z = [2, 1]
+    q_m = 1
+    pb = 1
 
-    t_eval = np.array([100.0, 200.0, 500.0, 1000.0])
+    # isotherm = reactormodels.models.CompetitiveIonIsotherm(K, MW, z, Co, q_m, pb)
+    isotherm = reactormodels.models.LinearIsotherm(K)
+
+    t_eval = np.linspace(1e-10, 2000, 200)
 
     media = reactormodels.Media()
     water = reactormodels.Water()
@@ -47,7 +55,7 @@ def run_demo(
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
-        column=column, n_interior_points=5, n_elements=20, add_inlet=True
+        column=column, n_interior_points=8, n_elements=6, add_inlet=True
     )
 
     model = reactormodels.models.AdvectionDiffusionAdsorption(
@@ -55,32 +63,34 @@ def run_demo(
         isotherm=isotherm,
         numerics=numerics,
         mode=reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
+        # k_ldf=0.01,
     )
-    x, C, q = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval, C_in=C_in)
-
-    ogata_banks = reactormodels.models.OgataBanks(
-        breakthrough=breakthrough, diffusion=diffusion, retardation=R
-    )
+    x, C, q = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
 
     fig, ax = plt.subplots(figsize=(8, 5))
-    for i, t in enumerate(t_eval):
-        mask = x < 0.8 * domain_length
-        C_analytical = ogata_banks.spatial_profile(time=t, x=x[mask])
-        C_numerical = C[i, mask]
-        max_error = np.abs(C_numerical - C_analytical).max()
-
-        print(f"t={t:g} s, max error={max_error:.2e}")
-
-        ax.plot(
-            x[mask], C_numerical, marker="o", linestyle="-", label=f"numerical t={t:g}"
+    species = ["1", "2"]
+    for i, label in enumerate(species):
+        R = 1.0 + (bulk_density * K[i]) / porosity
+        ogata_breakthrough = reactormodels.Breakthrough(
+            column=column,
+            chemical=chemical,
+            feed_concentrations=C_in[i],
+            superficial_velocity=superficial_velocity,
+            time=t_eval,
         )
-        ax.plot(x[mask], C_analytical, linestyle="--", label=f"analytical t={t:g}")
+        ogata_banks = reactormodels.models.OgataBanks(
+            breakthrough=ogata_breakthrough, diffusion=diffusion[i], retardation=R
+        )
+        C_ogata = ogata_banks.breakthrough_profile(time=t_eval, x=domain_length)
+        ax.plot(t_eval, C_ogata, linestyle="-", label=label)
+        ax.plot(t_eval, C[:, i, -1], linestyle="--", label=label)
+        # ax.plot(t_eval, q[:, i, -1], linestyle=":", label=f"q: {label}")
 
-    ax.set_title("Advection-Diffusion: Numerical vs Analytical Solutions")
-    ax.set_xlabel("x [m]")
+    ax.set_title("Advection-Diffusion-Adsorption: Multi-Species")
+    ax.set_xlabel("time (s)")
     ax.set_ylabel("C / C_in")
     ax.grid(True, alpha=0.3)
-    ax.legend(fontsize=8, ncols=2)
+    ax.legend(fontsize=8, ncols=len(species))
     fig.tight_layout()
 
     save_path = Path(save_path)

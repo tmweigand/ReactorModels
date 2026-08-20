@@ -5,6 +5,7 @@ __all__ = [
     "LinearIsotherm",
     "LangmuirIsotherm",
     "FreundlichIsotherm",
+    "CompetitiveIonIsotherm",
     "DirichletBC",
     "DanckwertsBC",
     "AnalyticModels",
@@ -19,7 +20,12 @@ __all__ = [
 ]
 
 from .adsorption_kinetics import AdsorptionKinetics
-from .isotherm import LinearIsotherm, FreundlichIsotherm, LangmuirIsotherm
+from .isotherm import (
+    LinearIsotherm,
+    FreundlichIsotherm,
+    LangmuirIsotherm,
+    CompetitiveIonIsotherm,
+)
 from .boundary_conditions import DirichletBC, DanckwertsBC
 from .analytic_models import (
     OgataBanks,

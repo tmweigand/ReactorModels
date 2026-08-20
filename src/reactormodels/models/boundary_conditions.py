@@ -11,14 +11,16 @@ class InletBC:
     """
 
     def __init__(self, inlet_concentration, velocity=None, diffusion=None):
-        raise NotImplementedError
+        self.inlet_concentration = np.asarray(inlet_concentration, dtype=float)
 
     def apply(self, gradient_concentration_0: None | float = None):
         """Return the value on the boundary"""
         raise NotImplementedError
 
     def residual(
-        self, concentration_0: float, gradient_concentration_0: None | float = None
+        self,
+        concentration_0: float | np.ndarray,
+        gradient_concentration_0: float | np.ndarray | None = None,
     ):
         """Compute the residual at inlet boundary."""
         raise NotImplementedError
@@ -36,11 +38,11 @@ class DirichletBC(InletBC):
     """
 
     def __init__(self, inlet_concentration, velocity=None, diffusion=None):
-        self.inlet_concentration = inlet_concentration
+        self.inlet_concentration = np.asarray(inlet_concentration, dtype=float)
 
     def apply(self, gradient_concentration_0: None | float = None):
         """Return the value on the boundary"""
-        return self.inlet_concentration
+        return self.inlet_concentration.copy()
 
     def residual(
         self, concentration_0: float, gradient_concentration_0: None | float = None
@@ -63,9 +65,9 @@ class DanckwertsBC(InletBC):
     """
 
     def __init__(self, inlet_concentration, velocity, diffusion):
-        self.inlet_concentration = inlet_concentration
-        self.velocity = velocity
-        self.diffusion = diffusion
+        self.inlet_concentration = np.asarray(inlet_concentration, dtype=float)
+        self.velocity = np.asarray(velocity, dtype=float)
+        self.diffusion = np.asarray(diffusion, dtype=float)
 
     def apply(self, gradient_concentration_0: None | float = None):
         """Return the value on the boundary"""
@@ -88,8 +90,11 @@ class DanckwertsBC(InletBC):
             + self.diffusion * gradient_concentration_0
         )
 
-    def jacobian_row(self, A_row: np.ndarray) -> np.ndarray:
-        """dF/dC: residual = v*(C_in - C[0]) + D*(A[0,:] @ C)."""
-        row = self.diffusion * A_row
+    def jacobian_row(
+        self,
+        A_row: np.ndarray,
+        species: int = 0,
+    ) -> np.ndarray:
+        row = self.diffusion[species] * A_row.copy()
         row[0] -= self.velocity
         return row

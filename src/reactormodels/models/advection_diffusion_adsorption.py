@@ -39,8 +39,11 @@ class AdvectionDiffusionAdsorption:
         self.column = breakthrough.column
         self.breakthrough = breakthrough
         self.velocity = breakthrough.interstitial_velocity
-        self.DL = breakthrough.chemical.diffusion
-        self.inlet_concentration = breakthrough.mean_feed_concentration()
+        self.DL = np.atleast_1d(
+            np.asarray(breakthrough.chemical.diffusion, dtype=float)
+        )
+        self.n_species = len(self.DL)
+        self.inlet_concentration = np.atleast_1d(breakthrough.mean_feed_concentration())
         self.initial_concentration = breakthrough.initial_concentration
         self.iso = isotherm
         self.numerics = numerics
@@ -48,6 +51,11 @@ class AdvectionDiffusionAdsorption:
         self.k_ldf = k_ldf
         self.inlet_bc = inlet_bc(self.inlet_concentration, self.velocity, self.DL)
         self.N = len(self.numerics.collocation.nodes)
+
+        if len(self.inlet_concentration) != self.n_species:
+            raise ValueError(
+                "Number of inlet concentrations must match number of species."
+            )
 
         if (
             mode
@@ -67,19 +75,23 @@ class AdvectionDiffusionAdsorption:
             self.mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE
             or self.mode == AdsorptionKinetics.SECOND_ORDER
         ):
-            return 2 * self.N
-        return self.N
+            return 2 * self.N * self.n_species
+        return self.N * self.n_species
 
     def _split(self, y: np.ndarray):
         """Return (C, q) where q is None for LOCAL_EQUILIBRIUM."""
-        C = y[: self.N]
-        if (
-            self.mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE
-            or self.mode == AdsorptionKinetics.SECOND_ORDER
-        ):
-            q = y[self.N :]
+        if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
+            y = y.reshape(self.n_species, self.N)
+
+            C = np.empty_like(y)
+            C[:, 0] = y[:, 0]
+
+            q = y[:, 1:]
         else:
-            q = None
+            y = y.reshape(self.n_species, 2, self.N)
+
+            C = y[:, 0, :]
+            q = y[:, 1, :]
         return C, q
 
     def _residual(self, t, y, ydot, result):
@@ -87,121 +99,276 @@ class AdvectionDiffusionAdsorption:
         c, q = self._split(y)
         dcdt, dqdt = self._split(ydot)
 
-        # fluid phase - inlet
-        result[0] = self.inlet_bc.residual(
-            c[0], self.numerics.collocation.evaluate_gradient(c, 0)
-        )
+        if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
+            result = result.reshape(self.n_species, self.N)
+            c[:, 1:] = self.iso.C(q)
+
+            if self.n_species == 1:
+                dcdt[:, 1:] = self.iso.dC_dq(q) * dqdt
+            elif self.iso.coupled:
+                dC_dq = self.iso.dC_dq(q)
+
+                dcdt[:, 1:] = np.einsum(
+                    "ijn,jn->in",
+                    dC_dq,
+                    dqdt,
+                )
+
+            else:
+                # Uncoupled isotherm
+                dcdt[:, 1:] = self.iso.dC_dq(q) * dqdt
+
+            # fluid phase - inlet
+            gradient = self.numerics.collocation.evaluate_gradient(c)
+
+            result[:, 0] = self.inlet_bc.residual(
+                c[:, 0],
+                gradient[:, 0],
+            )
+        else:
+            result = result.reshape(self.n_species, 2, self.N)
+
+            gradient = self.numerics.collocation.evaluate_gradient(c)
+
+            result[:, 0, 0] = self.inlet_bc.residual(
+                c[:, 0],
+                gradient[:, 0],
+            )
 
         # fluid phase - internal and outlet
         transport = (
-            self.column.porosity * dcdt[1:]
+            self.column.porosity * dcdt[:, 1:]
             + self.column.porosity
             * self.velocity
-            * self.numerics.evaluate_gradient(c)[1:]
+            * self.numerics.evaluate_gradient(c)[:, 1:]
             - self.column.porosity
-            * self.DL
-            * self.numerics.evaluate_second_derivative(c)[1:]
+            * self.DL[:, None]
+            * self.numerics.evaluate_second_derivative(c)[:, 1:]
         )
+
+        # liquid phase
         if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
-            result[1 : self.N] = (
-                transport + self.column.bulk_density * (self.iso.dq_dC(c) * dcdt)[1:]
-            )
+            result[:, 1:] = transport + self.column.bulk_density * dqdt
         else:
-            result[1 : self.N] = transport + self.column.bulk_density * dqdt[1:]
+            result[:, 0, 1:] = transport + self.column.bulk_density * dqdt[:, 1:]
 
         # solid phase
         if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
             pass
         elif self.mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE:
-            result[self.N :] = dqdt - self.k_ldf * (self.iso.q(c) - q)
+            result[:, 1, :] = dqdt - self.k_ldf * (self.iso.q(c) - q)
         else:
-            result[self.N :] = dqdt - self.k_ldf * c * (self.iso.q(c) - q)
+            result[:, 1, :] = dqdt - self.k_ldf * c * (self.iso.q(c) - q)
 
         return 0
 
     def _jacobian(self, t, y, ydot, result, cj, jac):
-        """Build jacobian of _residual."""
-        C, q = self._split(y)
+        """Build Jacobian of F(t, y, ydot)."""
+        c, q = self._split(y)
+
         n = self._n_vars()
         J = np.zeros((n, n))
 
-        # Row 0: algebraic constraint
-        J[0, : self.N] = self.inlet_bc.jacobian_row(
-            self.numerics.collocation.first_derivative[0, :]
-        )
+        D1 = self.numerics.collocation.first_derivative
+        D2 = self.numerics.collocation.second_derivative
 
-        # derivative of transport dF/dc
-        d_transport = (
-            -self.column.porosity
-            * self.velocity
-            * self.numerics.collocation.first_derivative
-            + self.column.porosity
-            * self.DL
-            * self.numerics.collocation.second_derivative
-        )
-        J[1 : self.N, : self.N] = -d_transport[1:, :]
+        eps = self.column.porosity
+        rho_b = self.column.bulk_density
 
+        # LOCAL EQUILIBRIUM
         if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
-            for i in range(1, self.N):
-                J[i, i] += cj * (
-                    self.column.porosity
-                    + self.column.get_bulk_density() * self.iso.dq_dC(C[i])
-                )
 
-        elif self.mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE:
-            for i in range(1, self.N):
-                J[i, i] += cj * self.column.porosity
-                J[i, self.N + i] += cj * self.column.get_bulk_density()
+            def idx_q(i, k):
+                return i * self.N + k
 
-            for i in range(self.N):
-                J[self.N + i, i] = -self.k_ldf * self.iso.dq_dC(C[i])
-                J[self.N + i, self.N + i] = self.k_ldf + cj
+            # Inlet boundary conditions
+            for i in range(self.n_species):
+                row = idx_q(i, 0)
 
+                J[row, :] = 0.0
+
+                for k in range(self.N):
+                    J[row, idx_q(i, k)] = self.inlet_bc.jacobian_row(
+                        D1[0, :],
+                        species=i,
+                    )[k]
+
+            dC_dq = self.iso.dC_dq(q)
+
+            # Interior equations
+            for i in range(self.n_species):
+                for k in range(1, self.N):
+                    row = idx_q(i, k)
+                    # Transport contribution
+                    #
+                    # F_i contains:
+                    #
+                    #   eps*v*dC_i/dx
+                    #   - eps*D*d2C_i/dx2
+                    #
+                    # C is a function of q, so this will eventually need
+                    # the chain rule through dC/dq.
+
+                    # Time derivative contribution
+                    #
+                    # eps*dC_i/dt + rho_b*dq_i/dt
+                    #
+                    # dC_i/dt = sum_j dC_i/dq_j * dq_j/dt
+                    #
+                    # Therefore:
+                    #
+                    # dF_i/dq_j =
+                    #     cj * (eps*dC_i/dq_j + rho_b*delta_ij)
+                    if self.iso.coupled:
+                        for j in range(self.n_species):
+                            J[row, idx_q(j, k)] += cj * eps * dC_dq[i, j, k - 1]
+                            if i == j:
+                                J[row, idx_q(j, k)] += cj * rho_b
+
+                    else:
+                        J[row, idx_q(i, k)] += cj * (eps * dC_dq[i, k - 1] + rho_b)
+
+        # LDF / SECOND ORDER
         else:
-            for i in range(1, self.N):
-                J[i, i] += cj * self.column.porosity
-                J[i, self.N + i] += cj * self.column.get_bulk_density()
 
-            for i in range(self.N):
-                J[self.N + i, i] = (
-                    -self.k_ldf * (self.iso.q(C[i]) + C[i] * self.iso.dq_dC(C[i]))
-                    + self.k_ldf * q[i]
+            def idx_C(i, k):
+                return i * 2 * self.N + k
+
+            def idx_q(i, k):
+                return i * 2 * self.N + self.N + k
+
+            # Inlet boundary conditions
+            for i in range(self.n_species):
+                row = idx_C(i, 0)
+
+                bc_row = self.inlet_bc.jacobian_row(
+                    D1[0, :],
+                    species=i,
                 )
-                J[self.N + i, self.N + i] = self.k_ldf * C[i] + cj
+
+                for k in range(self.N):
+                    J[row, idx_C(i, k)] = bc_row[k]
+
+            # Liquid-phase equations
+            for i in range(self.n_species):
+                for k in range(1, self.N):
+                    row = idx_C(i, k)
+
+                    # dF_C / dC
+                    for m in range(self.N):
+                        J[row, idx_C(i, m)] += (
+                            eps * self.velocity * D1[k, m] - eps * self.DL[i] * D2[k, m]
+                        )
+
+                    # eps*dC/dt
+                    J[row, idx_C(i, k)] += cj * eps
+
+                    # rho_b*dq/dt
+                    J[row, idx_q(i, k)] += cj * rho_b
+
+            # Solid-phase equations
+            for i in range(self.n_species):
+                for k in range(self.N):
+                    row = idx_q(i, k)
+                    C = c[i, k]
+                    q_i = q[i, k]
+
+                    # LDF
+                    # F_q = dq/dt - k_ldf * (q_eq(C) - q)
+                    # dF/dC = -k * dq_eq/dC
+                    # dF/dq = cj + k
+                    if self.mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE:
+                        for k in range(self.N):
+                            row = idx_q(i, k)
+                            dq_dC = self.iso.K[i]
+
+                            # dF_q / dC
+                            J[row, idx_C(i, k)] = -self.k_ldf * dq_dC
+
+                            # dF_q / dq
+                            J[row, idx_q(i, k)] = self.k_ldf + cj
+
+                    # SECOND ORDER
+                    # F_q =
+                    #   dq/dt - k*C*(q_eq(C) - q)
+                    # dF/dC =
+                    #   -k*(q_eq + C*dq_eq/dC) + k*q
+                    # dF/dq =
+                    #   k*C + cj
+                    elif self.mode == AdsorptionKinetics.SECOND_ORDER:
+                        for k in range(self.N):
+                            row = idx_q(i, k)
+
+                            C = c[i, k]
+                            q_i = q[i, k]
+
+                            q_eq = self.iso.K[i] * C
+                            dq_dC = self.iso.K[i]
+
+                            # dF_q / dC
+                            J[row, idx_C(i, k)] = -self.k_ldf * (q_eq - q_i + C * dq_dC)
+
+                            # dF_q / dq
+                            J[row, idx_q(i, k)] = self.k_ldf * C + cj
 
         jac[:, :] = J
 
         return 0
 
     def _algebraic_vars_idx(self):
-        """Create list identifying which equations are algebraic.
+        """Return indices of algebraic variables."""
+        if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
+            return [i * self.N for i in range(self.n_species)]
 
-        Only the inlet boundary condition for this model.
-        """
-        return [0]
+        # LDF / SECOND_ORDER:
+        # one algebraic variable per species: C_i at node 0
+        return [2 * i * self.N for i in range(self.n_species)]
 
-    def _initial_conditions(self, C_init: float, C_in: float, q_init: float):
+    def _initial_conditions(
+        self, C_init: float | np.ndarray, q_init: float | np.ndarray
+    ):
         """Return (y0, ydot0) consistent with the algebraic constraint."""
-        C0 = np.full(self.N, self.initial_concentration)
-        C0[0] = self.inlet_bc.apply(self.numerics.collocation.evaluate_gradient(C0, 0))
-        if (
-            self.mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE
-            or self.mode == AdsorptionKinetics.SECOND_ORDER
-        ):
-            q0 = np.full(self.N, q_init)
-            q0[0] = self.iso.q(
-                self.inlet_concentration
-            )  # inlet node at equilibrium with feed
-            y0 = np.concatenate([C0, q0])
+        C_init = np.asarray(C_init, dtype=float)
+        q_init = np.asarray(q_init, dtype=float)
+
+        if C_init.ndim == 0:
+            C_init = np.full(self.n_species, C_init)
+
+        C0 = np.broadcast_to(
+            C_init[:, None],
+            (self.n_species, self.N),
+        ).copy()
+
+        gradient0 = self.numerics.collocation.evaluate_gradient(C0, 0)
+        C0[:, 0] = self.inlet_bc.apply(gradient0)
+
+        if q_init.ndim == 0:
+            q_init = np.full(self.n_species, q_init)
+
+        if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
+            q0 = np.broadcast_to(
+                q_init[:, None],
+                (self.n_species, self.N - 1),
+            ).copy()
+
+            y0 = np.concatenate(
+                [C0[:, 0:1], q0],
+                axis=1,
+            ).ravel()
         else:
-            y0 = C0.copy()
+            q0 = np.broadcast_to(
+                q_init[:, None],
+                (self.n_species, self.N),
+            ).copy()
+
+            y0 = np.stack([C0, q0], axis=1).ravel()
 
         ydot0 = np.zeros_like(y0)
         return y0, ydot0
 
-    def solve(self, t_span, t_eval, C_in=1.0, C_init=0.0, q_init=0.0):
+    def solve(self, t_span, t_eval, C_init=0.0, q_init=0.0):
         """Integrate from t_span[0] to t_span[1], returning results at t_eval."""
-        y0, ydot0 = self._initial_conditions(C_init, C_in, q_init)
+        y0, ydot0 = self._initial_conditions(C_init, q_init)
 
         result = self.numerics.integrate(
             residual=self._residual,
@@ -221,15 +388,32 @@ class AdvectionDiffusionAdsorption:
         # result.values.y has shape (n_out, n_vars); skip the t=t_span[0] row
         y_out = result.values.y[1:]  # (n_times, n_vars)
 
-        C_out = y_out[:, : self.N]  # (n_times, N)
+        if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
+            # (n_times, n_species, N)
+            y_out = y_out.reshape(
+                len(y_out),
+                self.n_species,
+                self.N,
+            )
+            # State:
+            # y[:, :, 0] = inlet C
+            # y[:, :, 1:] = q
+            C_out = np.empty_like(y_out)
+            C_out[:, :, 0] = y_out[:, :, 0]
 
-        if (
-            self.mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE
-            or self.mode == AdsorptionKinetics.SECOND_ORDER
-        ):
-            q_out = y_out[:, self.N :]  # (n_times, N)
+            for k in range(len(y_out)):
+                C_out[k, :, 1:] = self.iso.C(y_out[k, :, 1:])
+
+            q_out = y_out[:, :, 1:]
         else:
-            # Local equilibrium: recover q from C at each time step
-            q_out = np.array([self.iso.q(C_out[i]) for i in range(len(t_eval))])
+            y_out = y_out.reshape(
+                len(y_out),
+                self.n_species,
+                2,
+                self.N,
+            )
+            # Multi-species linear isotherm
+            C_out = y_out[:, :, 0, :]
+            q_out = y_out[:, :, 1, :]
 
-        return self.numerics.collocation.nodes, C_out, q_out
+        return (self.numerics.collocation.nodes, C_out, q_out)
