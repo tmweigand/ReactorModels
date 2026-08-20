@@ -90,8 +90,11 @@ class DanckwertsBC(InletBC):
             + self.diffusion * gradient_concentration_0
         )
 
-    def jacobian_row(self, A_row: np.ndarray) -> np.ndarray:
-        """dF/dC: residual = v*(C_in - C[0]) + D*(A[0,:] @ C)."""
-        row = self.diffusion * A_row
+    def jacobian_row(
+        self,
+        A_row: np.ndarray,
+        species: int = 0,
+    ) -> np.ndarray:
+        row = self.diffusion[species] * A_row.copy()
         row[0] -= self.velocity
         return row

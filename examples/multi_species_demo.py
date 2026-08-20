@@ -18,12 +18,18 @@ def run_demo(
     diameter = 0.1
 
     # multi-species params
-    K = [0.3, 0.5]
     C_in = [[1], [1]]
-    diffusion = [0.2, 0.1]  # m^2/s
-    n = [1.2, 1.1]
+    n = [1, 1]
+    K = [0.3, 0.5]
+    Co = [1, 1]
+    diffusion = [0.1, 0.2]  # m^2/s
+    MW = [1, 1]
+    z = [2, 1]
+    q_m = 1
+    pb = 1
 
-    isotherm = reactormodels.models.FreundlichIsotherm(K, n)
+    # isotherm = reactormodels.models.CompetitiveIonIsotherm(K, MW, z, Co, q_m, pb)
+    isotherm = reactormodels.models.LinearIsotherm(K)
 
     t_eval = np.linspace(1e-10, 2000, 200)
 
@@ -57,7 +63,7 @@ def run_demo(
         isotherm=isotherm,
         numerics=numerics,
         mode=reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
-        # k_ldf=0.1,
+        # k_ldf=0.01,
     )
     x, C, q = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
 
@@ -78,6 +84,7 @@ def run_demo(
         C_ogata = ogata_banks.breakthrough_profile(time=t_eval, x=domain_length)
         ax.plot(t_eval, C_ogata, linestyle="-", label=label)
         ax.plot(t_eval, C[:, i, -1], linestyle="--", label=label)
+        # ax.plot(t_eval, q[:, i, -1], linestyle=":", label=f"q: {label}")
 
     ax.set_title("Advection-Diffusion-Adsorption: Multi-Species")
     ax.set_xlabel("time (s)")

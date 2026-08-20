@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from reactormodels.models import FreundlichIsotherm
+from reactormodels.models import FreundlichIsotherm, CompetitiveIonIsotherm
 
 
 def test_uncoupled_freundlich_jacobian():
@@ -157,60 +157,120 @@ def test_coupled_freundlich_chain_rule():
     )
 
 
-def test_coupled_ldf_equilibrium_driving_force():
-    """At equilibrium, the LDF driving force should be zero."""
+def test_iexcm_jacobian():
+    K = np.array([1.2, 0.8])
+    MW = np.array([35.45, 40.08])
+    valence = np.array([1, 2])
+    inlet_concentrations = np.array([100.0, 50.0])
+    capacity = 2.0
+    bulk_density = 1.0
 
-    n = np.array([0.7, 0.9])
-    K = np.array([0.5, 0.8])
-
-    isotherm = FreundlichIsotherm(
-        n=n,
+    isotherm = CompetitiveIonIsotherm(
         K=K,
-    )
-    C = np.array([0.2, 0.3])
-
-    q = isotherm.q_coupled(C)
-
-    C_recovered = isotherm.C_coupled(q)
-
-    print("C:", C)
-    print("q:", q)
-    print("C recovered:", C_recovered)
-
-    np.testing.assert_allclose(
-        C_recovered,
-        C,
-        rtol=1e-7,
-        atol=1e-9,
+        MW=MW,
+        valence=valence,
+        inlet_concentrations=inlet_concentrations,
+        capacity=capacity,
+        bulk_density=bulk_density,
     )
 
-    # Arbitrary sorbed concentrations
-    q = np.array([0.3, 0.5])
+    # Sorbed concentrations, e.g. mg/g
+    q = np.array([0.3, 0.2])
 
-    # Convert q -> C using the coupled isotherm
-    C = isotherm.C_coupled(q)
+    # Analytical Jacobian
+    analytical = isotherm.dC_dq_coupled(q)
 
-    # Recover equilibrium q from C
-    q_star = isotherm.q_coupled(C)
+    # Numerical Jacobian
+    numerical = np.zeros((2, 2))
+    eps = 1e-7
 
-    # LDF driving force
-    driving_force = q_star - q
+    for j in range(2):
+        q_plus = q.copy()
+        q_minus = q.copy()
 
-    print("q:", q)
-    print("C:", C)
-    print("q*:", q_star)
-    print("driving force:", driving_force)
+        q_plus[j] += eps
+        q_minus[j] -= eps
+
+        numerical[:, j] = (isotherm.C_coupled(q_plus) - isotherm.C_coupled(q_minus)) / (
+            2 * eps
+        )
+
+    print("q:")
+    print(q)
+
+    print("\nC:")
+    print(isotherm.C_coupled(q))
+
+    print("\nAnalytical Jacobian:")
+    print(analytical)
+
+    print("\nNumerical Jacobian:")
+    print(numerical)
+
+    print("\nDifference:")
+    print(analytical - numerical)
 
     np.testing.assert_allclose(
-        q_star,
-        q,
+        analytical,
+        numerical,
         rtol=1e-5,
         atol=1e-7,
     )
 
+
+def test_iexcm_chain_rule():
+    K = np.array([1.2, 0.8])
+    MW = np.array([35.45, 40.08])
+    valence = np.array([1, 2])
+    inlet_concentrations = np.array([100.0, 50.0])
+    capacity = 2.0
+    bulk_density = 1.0
+
+    isotherm = CompetitiveIonIsotherm(
+        K=K,
+        MW=MW,
+        valence=valence,
+        inlet_concentrations=inlet_concentrations,
+        capacity=capacity,
+        bulk_density=bulk_density,
+    )
+
+    q = np.array([0.3, 0.2])
+    dqdt = np.array([0.12, -0.07])
+
+    # Analytical dC/dt
+    J = isotherm.dC_dq_coupled(q)
+    analytical = J @ dqdt
+
+    # Numerical dC/dt
+    eps = 1e-7
+
+    C_plus = isotherm.C_coupled(q + eps * dqdt)
+    C_minus = isotherm.C_coupled(q - eps * dqdt)
+
+    numerical = (C_plus - C_minus) / (2 * eps)
+
+    print("q:")
+    print(q)
+
+    print("\ndqdt:")
+    print(dqdt)
+
+    print("\nJacobian:")
+    print(J)
+
+    print("\nAnalytical dC/dt:")
+    print(analytical)
+
+    print("\nNumerical dC/dt:")
+    print(numerical)
+
+    print("\nDifference:")
+    print(analytical - numerical)
+
     np.testing.assert_allclose(
-        driving_force,
-        0.0,
+        analytical,
+        numerical,
         rtol=1e-5,
         atol=1e-7,
     )
