@@ -10,6 +10,7 @@ __all__ = [
     "AnalyticModels",
     "AdvectionDiffusion",
     "AdvectionDiffusionAdsorption",
+    "AdvectionDiffusionAdsorptionSolid",
     "OgataBanks",
     "YoonNelson",
     "Clark",
@@ -31,3 +32,4 @@ from .analytic_models import (
 )
 from .advection_diffusion import AdvectionDiffusion
 from .advection_diffusion_adsorption import AdvectionDiffusionAdsorption
+from .advection_diffusion_adsorption_q import AdvectionDiffusionAdsorptionSolid

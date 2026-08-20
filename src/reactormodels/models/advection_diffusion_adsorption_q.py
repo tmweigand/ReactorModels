@@ -1,4 +1,4 @@
-"""advection_diffusion_adsorption.py"""
+"""advection_diffusion_adsorption_q.py"""
 
 from __future__ import annotations
 from typing import Type
@@ -10,10 +10,10 @@ from .isotherm import Isotherm
 from .adsorption_kinetics import AdsorptionKinetics
 from .boundary_conditions import InletBC, DanckwertsBC
 
-__all__ = ["AdvectionDiffusionAdsorption"]
+__all__ = ["AdvectionDiffusionAdsorptionSolid"]
 
 
-class AdvectionDiffusionAdsorption:
+class AdvectionDiffusionAdsorptionSolid:
     """1D advection-diffusion with adsorption in a packed bed.
 
     The governing equations are:
@@ -72,20 +72,24 @@ class AdvectionDiffusionAdsorption:
 
     def _split(self, y: np.ndarray):
         """Return (C, q) where q is None for LOCAL_EQUILIBRIUM."""
-        C = y[: self.N]
-        if (
-            self.mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE
-            or self.mode == AdsorptionKinetics.SECOND_ORDER
-        ):
-            q = y[self.N :]
+        if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
+            C = np.empty(self.N)
+            C[0] = y[0]
+
+            q = y[1:]
         else:
-            q = None
+            q = y[self.N :]
+            C = y[: self.N]
         return C, q
 
     def _residual(self, t, y, ydot, result):
         """IDA residual F(t, y, ydot) = 0.  Writes into `result` in-place."""
         c, q = self._split(y)
         dcdt, dqdt = self._split(ydot)
+
+        if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
+            c[1:] = self.iso.C(q)
+            dcdt[1:] = self.iso.dC_dq(q) * dqdt
 
         # fluid phase - inlet
         result[0] = self.inlet_bc.residual(
@@ -103,9 +107,7 @@ class AdvectionDiffusionAdsorption:
             * self.numerics.evaluate_second_derivative(c)[1:]
         )
         if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
-            result[1 : self.N] = (
-                transport + self.column.bulk_density * (self.iso.dq_dC(c) * dcdt)[1:]
-            )
+            result[1 : self.N] = transport + self.column.bulk_density * dqdt
         else:
             result[1 : self.N] = transport + self.column.bulk_density * dqdt[1:]
 
@@ -184,28 +186,27 @@ class AdvectionDiffusionAdsorption:
         """Return (y0, ydot0) consistent with the algebraic constraint."""
         C0 = np.full(self.N, C_init)
         C0[0] = self.inlet_bc.apply(self.numerics.collocation.evaluate_gradient(C0, 0))
-        if (
-            self.mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE
-            or self.mode == AdsorptionKinetics.SECOND_ORDER
-        ):
+
+        if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
+            q0 = np.full(self.N - 1, q_init)
+            y0 = np.concatenate(([C0[0]], q0))
+        else:
             q0 = np.full(self.N, q_init)
             q0[0] = self.iso.q(
                 self.inlet_concentration
             )  # inlet node at equilibrium with feed
             y0 = np.concatenate([C0, q0])
-        else:
-            y0 = C0.copy()
 
         ydot0 = np.zeros_like(y0)
         return y0, ydot0
 
-    def solve(self, t_span, t_eval, C_in=1.0, C_init=0.0, q_init=0.0):
+    def solve(self, t_span, t_eval, C_init=0.0, q_init=0.0):
         """Integrate from t_span[0] to t_span[1], returning results at t_eval."""
         y0, ydot0 = self._initial_conditions(C_init, q_init)
 
         result = self.numerics.integrate(
             residual=self._residual,
-            jacobian=self._jacobian,
+            # jacobian=self._jacobian,
             y0=y0,
             yp0=ydot0,
             t_span=t_span,
@@ -221,15 +222,19 @@ class AdvectionDiffusionAdsorption:
         # result.values.y has shape (n_out, n_vars); skip the t=t_span[0] row
         y_out = result.values.y[1:]  # (n_times, n_vars)
 
-        C_out = y_out[:, : self.N]  # (n_times, N)
-
         if (
             self.mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE
             or self.mode == AdsorptionKinetics.SECOND_ORDER
         ):
             q_out = y_out[:, self.N :]  # (n_times, N)
+            C_out = y_out[:, : self.N]
         else:
             # Local equilibrium: recover q from C at each time step
-            q_out = np.array([self.iso.q(C_out[i]) for i in range(len(t_eval))])
+            q_out = np.empty_like(y_out)
+
+            q_out[:, 0] = self.iso.q(y_out[:, 0])
+            q_out[:, 1:] = y_out[:, 1:]
+
+            C_out = self.iso.C(q_out)
 
         return self.numerics.collocation.nodes, C_out, q_out
