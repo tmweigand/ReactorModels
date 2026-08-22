@@ -8,13 +8,13 @@ def test_media_stores_properties():
     media = reactormodels.Media(
         particle_porosity=0.35,
         particle_density=1.5,
-        mean_diameter=0.001,
+        particle_diameter=0.001,
         bed_density=0.9,
     )
 
     assert media.particle_porosity == 0.35
     assert media.particle_density == 1.5
-    assert media.mean_diameter == 0.001
+    assert media.particle_diameter == 0.001
     assert media.bed_density == 0.9
 
 
@@ -23,7 +23,7 @@ def test_media_get_bed_density_and_total_porosity():
     media = reactormodels.Media(
         particle_porosity=0.35,
         particle_density=1.5,
-        mean_diameter=0.001,
+        particle_diameter=0.001,
     )
     bed_porosity = 0.4
 

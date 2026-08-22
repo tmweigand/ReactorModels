@@ -122,6 +122,7 @@ class AdvectionDiffusionAdsorption(NumericModel):
             * self.axial_diffusion
             * self.numerics.evaluate_second_derivative(c)[1:]
         )
+
         if self.kinetics == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
             result[1 : self.N] = (
                 transport

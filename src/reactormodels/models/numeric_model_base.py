@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+from ..properties.breakthrough import Breakthrough
+from ..numerics.config import NumericsConfig
+
 import inspect
 from typing import Any
 
@@ -29,6 +32,8 @@ class NumericModel:
     """
 
     _param_names: tuple[str, ...] = ()
+    breakthrough: Breakthrough
+    numerics: NumericsConfig
 
     def parameters(self) -> dict[str, Any]:
         """Return the model's configured parameters as {name: value}."""

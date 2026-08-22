@@ -6,7 +6,6 @@ import pytest
 def test_breakthrough_class():
 
     feed_concentrations = [101, 99]
-    compound = "PFOA"
     bed_volumes = np.array([0, 100, 200, 250, 350, 400, 500, 600])
     time = np.array(bed_volumes) * np.pi / 8
     effluent_concentrations = np.array([0, 0, 10, 15, 25, 80, 100, 100])
@@ -57,3 +56,67 @@ def test_breakthrough_class():
     assert index == 4
 
     assert breakthrough.has_breakthrough(0.01)
+
+
+def test_breakthough_time():
+
+    feed_concentrations = [101, 99]
+    bed_volumes = np.array([0, 100, 200, 250, 350, 400, 500, 600], dtype=float)
+    time = np.array(bed_volumes) * np.pi / 8
+    effluent_concentrations = np.array([0, 0, 10, 15, 25, 80, 100, 100])
+    flow_rate = 2.5
+    length = 5
+    diameter = 0.5
+    porosity = 0.4
+
+    column = reactormodels.Column(
+        length=length,
+        diameter=diameter,
+        porosity=porosity,
+        media=reactormodels.Media,
+        water=reactormodels.Water,
+    )
+
+    breakthrough = reactormodels.Breakthrough(
+        column=column,
+        chemical=reactormodels.Chemical,
+        feed_concentrations=feed_concentrations,
+        time=time,
+        bed_volumes=None,
+        effluent_concentrations=effluent_concentrations,
+        flow_rate=flow_rate,
+    )
+
+    np.testing.assert_array_almost_equal(breakthrough.bed_volumes, bed_volumes)
+
+
+def test_breakthough_bed_volumes():
+
+    feed_concentrations = [101, 99]
+    bed_volumes = np.array([0, 100, 200, 250, 350, 400, 500, 600], dtype=float)
+    time = np.array(bed_volumes) * np.pi / 8
+    effluent_concentrations = np.array([0, 0, 10, 15, 25, 80, 100, 100])
+    flow_rate = 2.5
+    length = 5
+    diameter = 0.5
+    porosity = 0.4
+
+    column = reactormodels.Column(
+        length=length,
+        diameter=diameter,
+        porosity=porosity,
+        media=reactormodels.Media,
+        water=reactormodels.Water,
+    )
+
+    breakthrough = reactormodels.Breakthrough(
+        column=column,
+        chemical=reactormodels.Chemical,
+        feed_concentrations=feed_concentrations,
+        time=None,
+        bed_volumes=bed_volumes,
+        effluent_concentrations=effluent_concentrations,
+        flow_rate=flow_rate,
+    )
+
+    np.testing.assert_array_almost_equal(breakthrough.time, time)

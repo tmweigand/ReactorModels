@@ -1,17 +1,26 @@
-import reactormodels
 import numpy as np
 import pytest
 
+import reactormodels
 
-def _make_particle(Ds=5e-9, C_in=1, time=None):
-    # particle
+SECONDS_PER_DAY = 24 * 60 * 60
+
+
+def _make_particle(
+    Ds: float = 5e-9,
+    C_in: float = 1,
+    time: np.ndarray | None = None,
+) -> reactormodels.models.PSDM:
+    """Create a PSDM model for testing."""
+
+    # Particle properties
     particle_porosity = 0.5
     particle_density = 600  # g/mL
     particle_diameter = 0.07  # cm
-    pore_diffusion = 5e-6  # cm2/s
+    pore_diffusion = 5e-6  # cm²/s
     k_film = 0.1  # cm/s
 
-    # column
+    # Column properties
     axial_diffusion = 0
     K = 100  # (mg/g) * (L/mg)
     initial_concentration = 0
@@ -19,7 +28,7 @@ def _make_particle(Ds=5e-9, C_in=1, time=None):
     diameter = 10  # cm
     porosity = 0.334
     bulk_density = 399.8  # g/mL
-    flow_rate = 40  # cm3/s
+    flow_rate = 40  # cm³/s
 
     isotherm = reactormodels.models.LinearIsotherm(K=K)
 
@@ -66,6 +75,7 @@ def _make_particle(Ds=5e-9, C_in=1, time=None):
         n_elements=1,
         add_inlet=True,
     )
+
     return reactormodels.models.PSDM(
         isotherm=isotherm,
         breakthrough=breakthrough,
@@ -76,162 +86,131 @@ def _make_particle(Ds=5e-9, C_in=1, time=None):
 
 
 def test_surface_concentration_increases():
+    """Surface concentration should increase monotonically with time."""
+
     time = np.linspace(1e-10, 3600, 50)
-    p = _make_particle(time=time)
+    model = _make_particle(time=time)
 
-    z, r, C, Cp = p.solve()
+    _, _, _, Cp = model.solve()
 
-    Cp_surface = Cp[:, :, -1]  # if shape is (time,z,r)
+    # Cp shape: (time, column position, particle radius)
+    surface_concentration = Cp[:, 0, -1]
 
-    inlet_surface = Cp_surface[:, 0]
-
-    assert np.all(np.diff(inlet_surface) >= -1e-8)
+    assert np.all(np.diff(surface_concentration) >= -1e-8)
 
 
 def test_solve_reaches_equilibrium():
-    """
-    After a long time, average loading should approach q*(Cb).
-    """
+    """Long-time solution should approach adsorption equilibrium."""
 
-    time = np.linspace(1e-10, 125 * 1440 * 60, 50)  # very long time
-    p = _make_particle(time=time)
+    time = np.linspace(1e-10, 125 * 1440 * 60, 50)
+    model = _make_particle(time=time)
+
     Cb = 1.0
+    _, r, C, Cp = model.solve()
 
-    z, r, C, Cp = p.solve()
-
+    # Bulk concentration should approach the feed concentration.
     np.testing.assert_allclose(C[-1, :-1], Cb, rtol=1e-2)
 
-    Cp_final = Cp[-1, 1:, :]  # final time: (Nz, Nr)
+    # Calculate radial average of the final sorbed concentration.
+    Cp_final = Cp[-1, 1:, :]
+    q_final = model.isotherm.q(Cp_final)
 
-    q_final = p.isotherm.q(Cp_final)
+    q_avg = np.trapz(q_final * r**2, r, axis=1) / np.trapz(r**2, r)
 
-    q_avg = np.trapz(
-        q_final * r**2,
-        r,
-        axis=1,
-    ) / np.trapz(r**2, r)
+    q_target = model.isotherm.q(np.array([Cb]))[0]
+    relative_error = abs(q_avg[0] - q_target) / q_target
 
-    q_target = p.isotherm.q(np.array([Cb]))[0]
-
-    rel_err = abs(q_avg[0] - q_target) / q_target
-
-    assert rel_err < 0.05, f"q_avg={q_avg[0]:.4f}, q_target={q_target:.4f}"
+    assert relative_error < 0.05, f"q_avg={q_avg[0]:.4f}, q_target={q_target:.4f}"
 
 
-def test_surface_diffusion_accelerates_uptake():
-    """
-    Surface diffusion should increase adsorption, delaying breakthrough.
-    """
-    time = np.linspace(1e-10, 25 * 1440 * 60, 50)
+def test_surface_diffusion_delays_breakthrough():
+    """Increasing surface diffusion should delay breakthrough."""
 
-    p0 = _make_particle(Ds=1e-15, time=time)
+    time = np.linspace(1e-10, 25 * SECONDS_PER_DAY, 50)
 
-    ps = _make_particle(Ds=1e-9, time=time)
-
-    _, _, C0, _ = p0.solve()
-
-    _, _, Cs, _ = ps.solve()
-
-    # Outlet concentration
-    Cout0 = C0[-1, -1]
-    Couts = Cs[-1, -1]
-
-    # Surface diffusion should delay breakthrough
-    assert np.all(Couts <= Cout0 + 1e-8)
-
-
-def test_mass_balance():
-    """Mass entering particle equals mass leaving bulk."""
-    time = np.linspace(1e-10, 100 * 1440 * 60, 50)
-    p = _make_particle(time=time)
-
-    z, r, C, Cp = p.solve()
-
-    A = p.column.cross_section_area()
-    errors = []
-
-    for k, t in enumerate(time):
-
-        # Bulk fluid inventory
-        Mf = p.column.porosity * A * np.trapz(C[k, :] / 1000, z)
-
-        # Adsorbed phase
-        q = p.isotherm.q(Cp[k, :, :])
-
-        q_avg = np.trapz(q * r**2, r, axis=1) / np.trapz(r**2, r)
-
-        Ms = A * p.column.bulk_density * np.trapz(q_avg, z) / 1000
-
-        # Pore fluid
-        Cp_avg = np.trapz(Cp[k, :, :] * r**2, r, axis=1) / np.trapz(r**2, r)
-
-        Mp = (
-            (1 - p.column.porosity)
-            * p.column.media.particle_porosity
-            * A
-            * np.trapz(Cp_avg, z)
-            / 1000
-        )
-
-        Mstored = Mf + Mp + Ms
-
-        Min = (
-            p.breakthrough.flow_rate
-            * p.breakthrough.mean_feed_concentration()
-            * t
-            / 1000
-        )
-
-        Mout = p.breakthrough.flow_rate * np.trapz(C[: k + 1, -1] / 1000, time[: k + 1])
-
-        balance = Min - Mout
-
-        err = (Mstored - balance) / balance if balance > 0 else 0.0
-        errors.append(err)
-
-        print(f"Day {t/86400:6.1f}: error = {100*err:7.3f}%")
-
-    np.testing.assert_allclose(
-        Mstored,
-        balance,
-        rtol=1e-2,
+    model_no_surface_diffusion = _make_particle(
+        Ds=1e-15,
+        time=time,
     )
+    model_with_surface_diffusion = _make_particle(
+        Ds=1e-9,
+        time=time,
+    )
+
+    _, _, C_no_diffusion, _ = model_no_surface_diffusion.solve()
+    _, _, C_with_diffusion, _ = model_with_surface_diffusion.solve()
+
+    outlet_no_diffusion = C_no_diffusion[-1, -1]
+    outlet_with_diffusion = C_with_diffusion[-1, -1]
+
+    assert outlet_with_diffusion <= outlet_no_diffusion + 1e-8
 
 
 def test_algebraic_vars():
-    time = np.linspace(1e-10, 175 * 1440 * 60, 200)  # s
-    p = _make_particle(time=time)
-    alg_vars = p._algebraic_vars_idx()
+    """Algebraic variable indices should be valid and unique."""
 
-    # Basic type checks
-    assert isinstance(alg_vars, list)
-    assert all(isinstance(v, int) for v in alg_vars)
+    model = _make_particle(time=np.linspace(1e-10, 175 * SECONDS_PER_DAY, 200))
 
-    # Expected count: 1 inlet + 2 per column node (center + edge)
-    expected_len = 1 + 2 * (p.N_column - 1)
-    assert len(alg_vars) == expected_len
+    algebraic_vars = model._algebraic_vars_idx()
 
-    # Inlet BC is always index 0
-    assert alg_vars[0] == 0
+    assert isinstance(algebraic_vars, list)
+    assert all(isinstance(index, int) for index in algebraic_vars)
 
-    # No duplicate indices
-    assert len(alg_vars) == len(set(alg_vars))
+    expected_count = 1 + 2 * (model.N_column - 1)
+    assert len(algebraic_vars) == expected_count
 
-    # All indices within bounds of the full y array
-    y_len = p.N_column + (p.N_column - 1) * p.N_particle
-    assert all(0 <= v < y_len for v in alg_vars)
+    # Inlet boundary condition.
+    assert algebraic_vars[0] == 0
 
-    # Spot-check the particle center/edge indices for column node 0
-    assert p.N_column in alg_vars  # first particle center
-    assert p.N_column + (p.N_particle - 1) in alg_vars  # first particle edge
+    # Indices should be unique and within the full state vector.
+    assert len(algebraic_vars) == len(set(algebraic_vars))
 
-    # Spot-check the last column node
-    i_last = p.N_column - 2
-    assert p.N_column + i_last * p.N_particle in alg_vars
-    assert p.N_column + i_last * p.N_particle + (p.N_particle - 1) in alg_vars
+    state_size = model.N_column + (model.N_column - 1) * model.N_particle
+    assert all(0 <= index < state_size for index in algebraic_vars)
+
+    # First particle: center and edge.
+    first_particle = model.N_column
+    assert first_particle in algebraic_vars
+    assert first_particle + model.N_particle - 1 in algebraic_vars
+
+    # Last particle: center and edge.
+    last_particle = model.N_column + ((model.N_column - 2) * model.N_particle)
+    assert last_particle in algebraic_vars
+    assert last_particle + model.N_particle - 1 in algebraic_vars
 
 
 def test_parameter_check():
-    """Set params to None and ensure error."""
+    """Missing required parameters should raise ValueError."""
+
     with pytest.raises(ValueError):
         _make_particle(Ds=None)
+
+
+def test_get_sorbed_mass_fraction():
+    """Sorbed mass fraction should have the same shape as pore concentration."""
+
+    time = np.linspace(1e-10, 3600, 50)
+    model = _make_particle(time=time)
+
+    _, _, _, Cp = model.solve()
+    q = model.get_sorbed_mass_fraction(Cp)
+
+    assert q.shape == Cp.shape
+
+
+def test_mass_balance():
+    """Mass should be conserved throughout the PSDM simulation."""
+
+    time = np.linspace(1e-10, 100 * SECONDS_PER_DAY, 50)
+    model = _make_particle(time=time)
+
+    _, _, C, Cp = model.solve()
+
+    mass_balance = reactormodels.postprocess.MassBalance(
+        model=model,
+        liquid_concentration=C,
+        sorbent_mass_fraction=model.get_sorbed_mass_fraction(Cp),
+        pore_concentration=Cp,
+    )
+
+    assert mass_balance.is_balanced(rel_tol=1e-3).all(), mass_balance.summary()

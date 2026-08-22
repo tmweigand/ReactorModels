@@ -3,8 +3,7 @@ import numpy as np
 import pytest
 
 
-def test_mass_balance_class():
-
+def _build_solved_model():
     bulk_density = 1.0
     K = 0.5
     porosity = 0.3
@@ -38,7 +37,7 @@ def test_mass_balance_class():
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
-        domain_length=column.length, n_interior_points=30, add_inlet=True
+        domain_length=column.length, n_elements=5, n_interior_points=10, add_inlet=True
     )
 
     model = reactormodels.models.AdvectionDiffusionAdsorption(
@@ -49,10 +48,51 @@ def test_mass_balance_class():
     )
 
     x, C, q = model.solve()
+    return model, C, q
 
-    balances = reactormodels.postprocess.MassBalance.from_solution(
-        x=x, breakthrough=breakthrough, C_history=C, q_history=q, t_eval=t_eval
+
+@pytest.fixture(scope="module")
+def mass_balance():
+    model, C, q = _build_solved_model()
+    return reactormodels.postprocess.MassBalance(
+        model=model,
+        liquid_concentration=C,
+        sorbent_mass_fraction=q,
     )
 
-    for n, mb in enumerate(balances):
-        assert mb.is_balanced(rel_tol=0.05), mb.summary()
+
+def test_mass_balance_holds_at_every_time(mass_balance):
+    """Core physical check: in - out - stored ~= 0, at every time point."""
+    assert mass_balance.is_balanced(rel_tol=0.05).all(), mass_balance.summary()
+
+
+def test_arrays_are_shaped_like_time(mass_balance):
+    """Every derived quantity should be one value per time step, no more no less."""
+    n_t = mass_balance.time.shape[0]
+    for name in (
+        "mass_in",
+        "mass_out",
+        "mass_fluid",
+        "mass_adsorbed",
+        "mass_stored",
+        "error",
+        "relative_error",
+    ):
+        arr = getattr(mass_balance, name)
+        assert arr.shape == (n_t,), f"{name} has shape {arr.shape}, expected ({n_t},)"
+
+
+def test_mass_in_is_monotonically_increasing(mass_balance):
+    """Constant feed concentration -> cumulative mass in only ever grows."""
+    assert np.all(np.diff(mass_balance.mass_in) >= 0)
+
+
+def test_mass_out_never_exceeds_mass_in(mass_balance):
+    """Can't have exited more mass than has entered the column."""
+    assert np.all(mass_balance.mass_out <= mass_balance.mass_in + 1e-8)
+
+
+def test_stored_mass_is_nonnegative(mass_balance):
+    """Fluid-phase and solid-phase mass are physical quantities, can't be negative."""
+    assert np.all(mass_balance.mass_fluid >= -1e-8)
+    assert np.all(mass_balance.mass_adsorbed >= -1e-8)

@@ -8,7 +8,6 @@ class Media:
 
     def __init__(
         self,
-        mean_diameter: float | None = None,
         bed_density: float | None = None,
         sphericity: float | None = None,
         particle_porosity: float | None = None,
@@ -16,8 +15,6 @@ class Media:
         particle_radius: float | None = None,
         particle_diameter: float | None = None,
     ) -> None:
-
-        self.mean_diameter = mean_diameter
         self.bed_density = bed_density
         self.sphericity = sphericity
         self.particle_porosity = particle_porosity

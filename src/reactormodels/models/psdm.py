@@ -1,4 +1,4 @@
-"""domain_coupling.py"""
+"""psdm.py"""
 
 from __future__ import annotations
 from typing import Type
@@ -312,11 +312,11 @@ class PSDM(NumericModel):
         # result.values.y has shape (n_out, n_vars); skip the t=t_span[0] row
         y_out = result.values.y[1:]  # (n_times, n_vars)
 
-        C_out = y_out[:, : self.N_column]  # (n_times, N)
+        C_out = y_out[:, : self.N_column]  # (n_times, N_column)
 
         Cp_out = y_out[:, self.N_column :].reshape(
             len(self.breakthrough.time), self.N_column, self.N_particle
-        )
+        )  # (n_times, N_column, N_particle)
 
         return (
             self.column_numerics.collocation.nodes,
@@ -324,3 +324,24 @@ class PSDM(NumericModel):
             C_out,
             Cp_out,
         )
+
+    def get_sorbed_mass_fraction(
+        self, pore_concentration: np.ndarray | float
+    ) -> np.ndarray | float:
+        """Calculate the sorbed mass fraction q"""
+        return self.isotherm.q(pore_concentration)
+
+    def get_radial_average(self, data_in: np.ndarray) -> np.ndarray | float:
+        """Return the volume-weighted average over a spherical particle."""
+        assert self.column.media.particle_radius is not None
+
+        if data_in.ndim != 3:
+            raise ValueError(
+                f"get_radial_average expects a 3D array, but got "
+                f"an array with shape {data_in.shape}."
+            )
+
+        numerator = self.particle_numerics.collocation.integrate(
+            data_in * self.particle_numerics.collocation.nodes**2, axis=2
+        )
+        return numerator / (self.column.media.particle_radius**3 / 3.0)

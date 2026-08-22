@@ -60,6 +60,8 @@ class NumericsConfig:
         self.evaluate_gradient = self.collocation.evaluate_gradient
         self.evaluate_second_derivative = self.collocation.evaluate_second_derivative
         self.evaluate_radial_operator = self.collocation.evaluate_radial_operator
+        self.spatial_integrate = self.collocation.integrate
+        self.average = self.collocation.average
 
         self.time_integrator = TimeIntegrator(self.rtol, self.atol, self.max_steps)
 

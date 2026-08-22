@@ -30,12 +30,6 @@ class Breakthrough:
         if time is None and bed_volumes is None:
             raise ValueError("Either time or bed_volumes must be provided.")
 
-        if bed_volumes is not None:
-            assert np.all(np.isfinite(bed_volumes)), "Bed volume data contains NaN"
-
-        if time is not None:
-            assert np.all(np.isfinite(time)), "Time data contains NaN"
-
         assert np.all(
             np.isfinite(feed_concentrations)
         ), "Feed concentration data contains NaN"
@@ -50,8 +44,13 @@ class Breakthrough:
         self.feed_concentrations = np.asarray(feed_concentrations)
         self.initial_concentration = initial_concentration
         self.initial_mass_fraction = initial_mass_fraction
-        self.bed_volumes = None if bed_volumes is None else np.asarray(bed_volumes)
-        self.time = None if time is None else np.asarray(time)
+
+        self._time: np.ndarray | None = None
+        self._bed_volumes: np.ndarray | None = None
+
+        self.bed_volumes = bed_volumes
+        self.time = time
+
         self.effluent_concentrations = (
             None
             if effluent_concentrations is None
@@ -59,6 +58,34 @@ class Breakthrough:
         )
         self.flow_rate = flow_rate
         self._superficial_velocity = superficial_velocity
+
+    @property
+    def time(self) -> np.ndarray | None:
+        """Time data, derived from bed_volumes if not directly supplied."""
+        if self._time is None and self._bed_volumes is not None:
+            self._time = self._bed_volumes * self.empty_bed_contact_time()
+        return self._time
+
+    @time.setter
+    def time(self, value: np.ndarray | None) -> None:
+        if value is not None:
+            value = np.asarray(value, dtype=float)
+            assert np.all(np.isfinite(value)), "Time data contains NaN"
+        self._time = value
+
+    @property
+    def bed_volumes(self) -> np.ndarray | None:
+        """Bed volumes, derived from time if not directly supplied."""
+        if self._bed_volumes is None and self._time is not None:
+            self._bed_volumes = self._time / self.empty_bed_contact_time()
+        return self._bed_volumes
+
+    @bed_volumes.setter
+    def bed_volumes(self, value: np.ndarray | None) -> None:
+        if value is not None:
+            value = np.asarray(value, dtype=float)
+            assert np.all(np.isfinite(value)), "Bed volume data contains NaN"
+        self._bed_volumes = value
 
     def mean_feed_concentration(self) -> float:
         """Determine mean feed concentration."""
@@ -151,14 +178,14 @@ class Breakthrough:
         self,
         column_volume: float | None = None,
     ) -> np.ndarray:
-        """Convert bed volumes to time."""
-        if self.bed_volumes is not None:
-            derived = self.bed_volumes * self.empty_bed_contact_time(column_volume)
+        """Convert bed volumes to time (and cache the result on self.time)."""
+        if self._bed_volumes is not None:
+            derived = self._bed_volumes * self.empty_bed_contact_time(column_volume)
 
-            if self.time is not None:
+            if self._time is not None:
                 assert np.allclose(
                     derived,
-                    self.time,
+                    self._time,
                 ), (
                     "Supplied time is inconsistent with "
                     "bed_volumes * empty_bed_contact_time."
@@ -176,18 +203,20 @@ class Breakthrough:
         self,
         column_volume: float | None = None,
     ) -> np.ndarray:
-        """Convert time to bed volumes."""
-        if self.time is not None:
-            derived = self.time / self.empty_bed_contact_time(column_volume)
+        """Convert time to bed volumes (and cache the result on self.bed_volumes)."""
+        if self._time is not None:
+            derived = self._time / self.empty_bed_contact_time(column_volume)
 
-            if self.bed_volumes is not None:
+            if self._bed_volumes is not None:
                 assert np.allclose(
                     derived,
-                    self.bed_volumes,
+                    self._bed_volumes,
                 ), (
                     "Supplied bed_volumes are inconsistent with "
                     "time / empty_bed_contact_time."
                 )
+
+            self.bed_volumes = derived
             return derived
 
         if self.bed_volumes is not None:
