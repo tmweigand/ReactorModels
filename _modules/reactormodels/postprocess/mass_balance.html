@@ -74,139 +74,262 @@
            <div itemprop="articleBody">
              
   <h1>Source code for reactormodels.postprocess.mass_balance</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;mass_balance.py&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""mass_balance.py"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..properties.breakthrough</span><span class="w"> </span><span class="kn">import</span> <span class="n">Breakthrough</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">scipy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">integrate</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">..models.numeric_model_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumericModel</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"MassBalance"</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="MassBalance">
 <a class="viewcode-back" href="../../../api/reactormodels.postprocess.html#reactormodels.postprocess.MassBalance">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">MassBalance</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute and verify mass balance for a 1D adsorption column.</span>
+<span class="w">    </span><span class="sd">"""Compute and verify mass balance for a 1D adsorption column, over time.</span>
 
 <span class="sd">        mass_in - mass_out = mass_fluid + mass_adsorbed</span>
 
 <span class="sd">    mass_in  = v * eps * C_in * t</span>
-<span class="sd">    mass_out = v * eps * integral_0^t C(L, t&#39;) dt&#39;   ← needs outlet history</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    mass_out = v * eps * integral_0^t C(L, t') dt'</span>
+<span class="sd">    """</span>
 
-    <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
-    <span class="n">C</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># concentration profile at current t (N,)</span>
-    <span class="n">q</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># solid loading profile at current t (N,)</span>
-    <span class="n">t</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">velocity</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">porosity</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">bulk_density</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">C_in</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">t_history</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># all times up to current t (n_times,)</span>
-    <span class="n">C_outlet_history</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># C(x=L) at each time in t_history (n_times,)</span>
+    <span class="n">model</span><span class="p">:</span> <span class="n">NumericModel</span>
+    <span class="n">liquid_concentration</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># shape (n_t, n_x) — column concentration history</span>
+    <span class="n">sorbent_mass_fraction</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># shape (n_t, n_x) — adsorbed-phase history</span>
+    <span class="n">pore_concentration</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># shape (n_t, n_x_particle)</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">mass_in</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mass entered: v * eps * C_in * t.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C_in</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Determine if model simulates pore processes.</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">mass_out</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mass exited via outlet: v * eps * integral C(L, t&#39;) dt&#39;.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span>
-                <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span>
-                <span class="o">*</span> <span class="n">scipy</span><span class="o">.</span><span class="n">integrate</span><span class="o">.</span><span class="n">trapezoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C_outlet_history</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">t_history</span><span class="p">)</span>
+<span class="sd">        If true perform radial averages.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sorbent_mass_fraction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_as_radially_averaged</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sorbent_mass_fraction</span><span class="p">,</span> <span class="s2">"sorbent_mass_fraction"</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_concentration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pore_concentration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_as_radially_averaged</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pore_concentration</span><span class="p">,</span> <span class="s2">"pore_concentration"</span>
             <span class="p">)</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">mass_fluid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mass in the fluid phase&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span> <span class="o">*</span> <span class="n">scipy</span><span class="o">.</span><span class="n">integrate</span><span class="o">.</span><span class="n">trapezoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_as_radially_averaged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Collapse a (n_t, n_x, n_r) radially-resolved field to (n_t, n_x).</span>
+
+<span class="sd">        Some models track a within-particle radial profile, so</span>
+<span class="sd">        `sorbent_mass_fraction`/`pore_concentration` may arrive as 3D</span>
+<span class="sd">        arrays with a trailing radial axis. MassBalance only operates on</span>
+<span class="sd">        column-averaged quantities, so a 3D array is radially averaged</span>
+<span class="sd">        via `model.get_radial_average` automatically; a 2D array is</span>
+<span class="sd">        assumed already averaged and used as-is.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">array</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="s2">"get_radial_average"</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> has shape </span><span class="si">{</span><span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> (3D, radially-resolved) "</span>
+                    <span class="sa">f</span><span class="s2">"but </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> has no get_radial_average "</span>
+                    <span class="s2">"method to collapse it."</span>
+                <span class="p">)</span>
+            <span class="n">array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_radial_average</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">array</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> must be 2D (n_t, n_x) or 3D (n_t, n_x, n_r); "</span>
+                <span class="sa">f</span><span class="s2">"got shape </span><span class="si">{</span><span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">liquid_concentration</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> has </span><span class="si">{</span><span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> time points but "</span>
+                <span class="sa">f</span><span class="s2">"liquid_concentration has </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">liquid_concentration</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">array</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">mass_adsorbed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mass in the solid phase.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bulk_density</span> <span class="o">*</span> <span class="n">scipy</span><span class="o">.</span><span class="n">integrate</span><span class="o">.</span><span class="n">trapezoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""The time of input data."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">time</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">mass_stored</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Total mass in fluid and solid phases.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">breakthrough</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""The Breakthrough backing `model`."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">breakthrough</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Interstitial velocity"""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">interstitial_velocity</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">porosity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Column porosity"""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">particle_porosity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Particle porosity"""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_porosity</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bulk_density</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Bulk density"""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">get_bulk_density</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cross_section_area</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Cross-section area"""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">cross_section_area</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">C_in</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Inlet concentration"""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">mean_feed_concentration</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">column_numerics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Spatial-discretization numerics for the column domain.</span>
+
+<span class="sd">        `DomainCoupling`-style models expose `column_numerics` (distinct</span>
+<span class="sd">        from `particle_numerics`); single-domain models like</span>
+<span class="sd">        `AdvectionDiffusionAdsorption` just expose `numerics`. Prefer the</span>
+<span class="sd">        former when present.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="s2">"column_numerics"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">numerics</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">C_outlet</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Outlet concentration C(x=L) at every time, shape (n_t,)."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">liquid_concentration</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mass_in</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Mass entered at every time: v * eps * C_in * t * A, shape (n_t,)."""</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C_in</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cross_section_area</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mass_out</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Mass exited via outlet at every time, shape (n_t,).</span>
+
+<span class="sd">        Computes the cumulative mass exiting through the outlet:</span>
+
+<span class="sd">            v * eps * A * integral_0^t C(L, t') dt'</span>
+
+<span class="sd">        using a cumulative trapezoidal integral.</span>
+<span class="sd">        """</span>
+        <span class="n">concentration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C_outlet</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+        <span class="n">integral</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">cumulative_trapezoid</span><span class="p">(</span>
+            <span class="n">concentration</span><span class="p">,</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">time</span><span class="p">,</span>
+            <span class="n">initial</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cross_section_area</span> <span class="o">*</span> <span class="n">integral</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_spatial_integrate_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">history</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Apply column_numerics.spatial_integrate to each time row.</span>
+
+<span class="sd">        `history` has shape (n_t, n_x); returns shape (n_t,).</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column_numerics</span><span class="o">.</span><span class="n">spatial_integrate</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">history</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mass_fluid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Mass in the fluid phase at every time, shape (n_t,).</span>
+
+<span class="sd">        Column pore water, plus particle pore water if tracked.</span>
+<span class="sd">        """</span>
+        <span class="n">mass</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cross_section_area</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_integrate_history</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">liquid_concentration</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_porosity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_concentration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mass</span> <span class="o">=</span> <span class="n">mass</span> <span class="o">+</span> <span class="p">(</span>
+                <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span><span class="p">)</span>
+                <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_porosity</span>
+                <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cross_section_area</span>
+                <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_integrate_history</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pore_concentration</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">mass</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mass_adsorbed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Mass in the solid phase at every time, shape (n_t,)."""</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bulk_density</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cross_section_area</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_integrate_history</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sorbent_mass_fraction</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mass_stored</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Total mass in fluid and solid phases, shape (n_t,)."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_fluid</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_adsorbed</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Absolute error: (mass_in - mass_out) - mass_stored.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Absolute error: (mass_in - mass_out) - mass_stored, shape (n_t,)."""</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mass_in</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_out</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_stored</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">relative_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Relative mass balance error.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">relative_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Relative mass balance error at every time, shape (n_t,).</span>
+
+<span class="sd">        Entries where net mass in is ~0 (e.g. t=0) are set to inf.</span>
+<span class="sd">        """</span>
         <span class="n">net</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_in</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_out</span>
-        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">net</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-30</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">)</span> <span class="o">/</span> <span class="n">net</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">net</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-30</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">net</span><span class="p">))</span>
 
 <div class="viewcode-block" id="MassBalance.is_balanced">
 <a class="viewcode-back" href="../../../api/reactormodels.postprocess.html#reactormodels.postprocess.MassBalance.is_balanced">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">is_balanced</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rel_tol</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check for mass balance within specified tolerance.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_balanced</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rel_tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Element-wise mass balance check within specified tolerance, shape (n_t,).</span>
+
+<span class="sd">        Use `.all()` on the result to check that balance holds at every time.</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">relative_error</span> <span class="o">&lt;</span> <span class="n">rel_tol</span></div>
 
 
 <div class="viewcode-block" id="MassBalance.summary">
 <a class="viewcode-back" href="../../../api/reactormodels.postprocess.html#reactormodels.postprocess.MassBalance.summary">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Provide mass balance summary.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Provide a mass balance summary at a single time point.</span>
+
+<span class="sd">        Defaults to the last time in the history; pass an index to</span>
+<span class="sd">        inspect an earlier point.</span>
+<span class="sd">        """</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="n">mass_in</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_in</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="n">mass_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_out</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="n">mass_fluid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_fluid</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="n">mass_adsorbed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_adsorbed</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="n">mass_stored</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_stored</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="n">relative_error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relative_error</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="n">balanced</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_balanced</span><span class="p">()[</span><span class="n">index</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;MassBalance at t=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;  mass_in       = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mass_in</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;  mass_out      = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mass_out</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;  net_in        = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mass_in</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">mass_out</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;  mass_fluid    = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mass_fluid</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;  mass_adsorbed = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mass_adsorbed</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;  mass_stored   = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mass_stored</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;  abs error     = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;  rel error     = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">relative_error</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;  balanced      = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">is_balanced</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">"MassBalance at t=</span><span class="si">{</span><span class="n">t</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="sa">f</span><span class="s2">"  mass_in       = </span><span class="si">{</span><span class="n">mass_in</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="sa">f</span><span class="s2">"  mass_out      = </span><span class="si">{</span><span class="n">mass_out</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="sa">f</span><span class="s2">"  net_in        = </span><span class="si">{</span><span class="n">mass_in</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">mass_out</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="sa">f</span><span class="s2">"  mass_fluid    = </span><span class="si">{</span><span class="n">mass_fluid</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="sa">f</span><span class="s2">"  mass_adsorbed = </span><span class="si">{</span><span class="n">mass_adsorbed</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="sa">f</span><span class="s2">"  mass_stored   = </span><span class="si">{</span><span class="n">mass_stored</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="sa">f</span><span class="s2">"  abs error     = </span><span class="si">{</span><span class="n">error</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="sa">f</span><span class="s2">"  rel error     = </span><span class="si">{</span><span class="n">relative_error</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="sa">f</span><span class="s2">"  balanced      = </span><span class="si">{</span><span class="n">balanced</span><span class="si">}</span><span class="s2">"</span>
         <span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="MassBalance.from_solution">
-<a class="viewcode-back" href="../../../api/reactormodels.postprocess.html#reactormodels.postprocess.MassBalance.from_solution">[docs]</a>
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_solution</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">,</span>
-        <span class="n">breakthrough</span><span class="p">:</span> <span class="n">Breakthrough</span><span class="p">,</span>
-        <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-        <span class="n">t_eval</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-        <span class="n">C_history</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>  <span class="c1"># (n_times, N)</span>
-        <span class="n">q_history</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>  <span class="c1"># (n_times, N)</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;MassBalance&quot;</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a MassBalance for every time in t_eval.</span>
-
-<span class="sd">        Outlet concentration C(x=L) is the last spatial node at each time.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">C_outlet_history</span> <span class="o">=</span> <span class="n">C_history</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># C at x=L for all times</span>
-
-        <span class="k">return</span> <span class="p">[</span>
-            <span class="bp">cls</span><span class="p">(</span>
-                <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
-                <span class="n">C</span><span class="o">=</span><span class="n">C_history</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                <span class="n">q</span><span class="o">=</span><span class="n">q_history</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                <span class="n">t</span><span class="o">=</span><span class="n">t_eval</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                <span class="n">velocity</span><span class="o">=</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">interstitial_velocity</span><span class="p">,</span>
-                <span class="n">porosity</span><span class="o">=</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span><span class="p">,</span>
-                <span class="n">bulk_density</span><span class="o">=</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">get_bulk_density</span><span class="p">(),</span>
-                <span class="n">C_in</span><span class="o">=</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">mean_feed_concentration</span><span class="p">(),</span>
-                <span class="n">t_history</span><span class="o">=</span><span class="n">t_eval</span><span class="p">[:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>  <span class="c1"># times up to current</span>
-                <span class="n">C_outlet_history</span><span class="o">=</span><span class="n">C_outlet_history</span><span class="p">[:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>  <span class="c1"># outlet up to current</span>
-            <span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t_eval</span><span class="p">))</span>
-        <span class="p">]</span></div>
 </div>
 
 </pre></div>

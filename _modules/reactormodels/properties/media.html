@@ -74,42 +74,58 @@
            <div itemprop="articleBody">
              
   <h1>Source code for reactormodels.properties.media</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;media.py&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""media.py"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 
 
 <div class="viewcode-block" id="Media">
 <a class="viewcode-back" href="../../../api/reactormodels.properties.html#reactormodels.Media">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Media</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Adsorbent (media) particle parameters.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Adsorbent (media) particle parameters."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">mean_diameter</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">bed_density</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">sphericity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">particle_porosity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">particle_density</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">particle_radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">particle_diameter</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">mean_diameter</span> <span class="o">=</span> <span class="n">mean_diameter</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bed_density</span> <span class="o">=</span> <span class="n">bed_density</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sphericity</span> <span class="o">=</span> <span class="n">sphericity</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">particle_porosity</span> <span class="o">=</span> <span class="n">particle_porosity</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">particle_density</span> <span class="o">=</span> <span class="n">particle_density</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">particle_radius</span> <span class="o">=</span> <span class="n">particle_radius</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">particle_diameter</span> <span class="o">=</span> <span class="n">particle_diameter</span>
+
+        <span class="c1"># Radius vs diameter support</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_radius</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_diameter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">particle_diameter</span><span class="p">,</span>
+                <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_radius</span><span class="p">,</span>
+                <span class="n">rel_tol</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">,</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"particle_diameter must equal 2 * particle_radius"</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_radius</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">particle_diameter</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_radius</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_diameter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">particle_radius</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_diameter</span>
 
 <div class="viewcode-block" id="Media.get_bed_density">
 <a class="viewcode-back" href="../../../api/reactormodels.properties.html#reactormodels.Media.get_bed_density">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_bed_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">porosity</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return bed density calculated from particle density and porosity.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return bed density calculated from particle density and porosity."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_density</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_density</span>
 
-        <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">porosity</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;porosity must be in (0, 1), got </span><span class="si">{</span><span class="n">porosity</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">porosity</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"porosity must be in (0, 1), got </span><span class="si">{</span><span class="n">porosity</span><span class="si">}</span><span class="s2">"</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_density</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;particle_density is required to calculate bed_density.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"particle_density is required to calculate bed_density."</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">bed_density</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">porosity</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_density</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_density</span></div>
@@ -118,11 +134,11 @@
 <div class="viewcode-block" id="Media.get_particle_density">
 <a class="viewcode-back" href="../../../api/reactormodels.properties.html#reactormodels.Media.get_particle_density">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_particle_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bulk_density</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">porosity</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the particle density with units of&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the particle density with units of"""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_density</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_density</span>
 
-        <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">porosity</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;porosity must be in (0, 1), got </span><span class="si">{</span><span class="n">porosity</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">porosity</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"porosity must be in (0, 1), got </span><span class="si">{</span><span class="n">porosity</span><span class="si">}</span><span class="s2">"</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">particle_density</span> <span class="o">=</span> <span class="n">bulk_density</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">porosity</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_density</span></div>

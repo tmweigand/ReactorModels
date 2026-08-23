@@ -74,7 +74,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for reactormodels.numerics.orthogonal_collocation</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;orthogonal_collocation.py&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""orthogonal_collocation.py"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.special</span><span class="w"> </span><span class="kn">import</span> <span class="n">beta</span> <span class="k">as</span> <span class="n">beta_fn</span>
@@ -83,7 +83,7 @@
 <div class="viewcode-block" id="OrthogonalCollocation">
 <a class="viewcode-back" href="../../../api/reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">OrthogonalCollocation</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate collocation points and differentiation matrices on [0, L].</span>
+<span class="w">    </span><span class="sd">"""Generate collocation points and differentiation matrices on [0, L].</span>
 
 <span class="sd">    Jacobi polynomials, with optional multi-element support.</span>
 
@@ -104,7 +104,7 @@
 <span class="sd">    add_inlet         : bool    Add x=0 as first node</span>
 <span class="sd">    n_elements        : int     Number of elements (default 1)</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -127,7 +127,7 @@
 <div class="viewcode-block" id="OrthogonalCollocation.jacobi_roots_and_weights">
 <a class="viewcode-back" href="../../../api/reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation.jacobi_roots_and_weights">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">jacobi_roots_and_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Roots and quadrature weights of P_n^(alpha,beta), shifted to [0,1].&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Roots and quadrature weights of P_n^(alpha,beta), shifted to [0,1]."""</span>
         <span class="n">a_coef</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_interior_points</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_interior_points</span><span class="p">):</span>
             <span class="n">denom</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
@@ -171,7 +171,7 @@
 <a class="viewcode-back" href="../../../api/reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation.lagrange_basis_and_deriv">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">lagrange_basis_and_deriv</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate first and second derivative matrices.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Generate first and second derivative matrices."""</span>
         <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
@@ -192,7 +192,7 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_build_single_element</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build collocation on [0,1].&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Build collocation on [0,1]."""</span>
         <span class="n">xi</span><span class="p">,</span> <span class="n">wi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jacobi_roots_and_weights</span><span class="p">()</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
         <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wi</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>  <span class="c1"># outlet node gets zero weight (not a quadrature point)</span>
@@ -204,7 +204,7 @@
         <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_build_multi_element</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build collocation for multiple elements on [0,1].&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Build collocation for multiple elements on [0,1]."""</span>
         <span class="n">ne</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_elements</span>
         <span class="n">xi</span><span class="p">,</span> <span class="n">wi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jacobi_roots_and_weights</span><span class="p">()</span>  <span class="c1"># interior roots + weights on [0,1]</span>
         <span class="n">n_local</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_interior_points</span> <span class="o">+</span> <span class="mi">2</span>
@@ -246,9 +246,9 @@
         <span class="k">return</span> <span class="n">x_global</span><span class="p">,</span> <span class="n">A_global</span><span class="p">,</span> <span class="n">B_global</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build elements&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Build elements"""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain_length</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;domain_length must be &gt; 0&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"domain_length must be &gt; 0"</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_elements</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">nodes</span><span class="p">,</span> <span class="n">first_derivative</span><span class="p">,</span> <span class="n">second_derivative</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_single_element</span><span class="p">()</span>
@@ -263,7 +263,7 @@
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_build_radial_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Spherical Laplacian: (1/r^2)*d/dr(r^2*du/dr) = d^2u/dr^2 + (2/r)*du/dr&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Spherical Laplacian: (1/r^2)*d/dr(r^2*du/dr) = d^2u/dr^2 + (2/r)*du/dr"""</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span>
         <span class="n">L</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">second_derivative</span><span class="p">)</span>
 
@@ -280,7 +280,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">evaluate_radial_operator</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate ∇²f = d²f/dr² + (2/r) df/dr.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Evaluate ∇²f = d²f/dr² + (2/r) df/dr."""</span>
         <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial_operator_matrix</span> <span class="o">@</span> <span class="n">f</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial_operator_matrix</span><span class="p">[</span><span class="n">node</span><span class="p">,</span> <span class="p">:]</span> <span class="o">@</span> <span class="n">f</span></div>
@@ -289,10 +289,10 @@
 <div class="viewcode-block" id="OrthogonalCollocation.evaluate_gradient">
 <a class="viewcode-back" href="../../../api/reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation.evaluate_gradient">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">evaluate_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return df/dx at a specific collocation node.</span>
+<span class="w">        </span><span class="sd">"""Return df/dx at a specific collocation node.</span>
 
 <span class="sd">        If node is provided, only return the value at specified node.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_derivative</span> <span class="o">@</span> <span class="n">f</span>
         <span class="k">else</span><span class="p">:</span>
@@ -304,10 +304,10 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">evaluate_second_derivative</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return d²f/dx² at a specific collocation node.</span>
+<span class="w">        </span><span class="sd">"""Return d²f/dx² at a specific collocation node.</span>
 
 <span class="sd">        If node is provided, only return the value at specified node.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">second_derivative</span> <span class="o">@</span> <span class="n">f</span>
         <span class="k">else</span><span class="p">:</span>
@@ -316,9 +316,24 @@
 
 <div class="viewcode-block" id="OrthogonalCollocation.integrate">
 <a class="viewcode-back" href="../../../api/reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation.integrate">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">integrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the weighted integral of f over [0, L] via quadrature weights.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">@</span> <span class="n">f</span></div>
+    <span class="k">def</span><span class="w"> </span><span class="nf">integrate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">f</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the weighted integral along the specified axis."""</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">tensordot</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="OrthogonalCollocation.average">
+<a class="viewcode-back" href="../../../api/reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation.average">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">average</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">f</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the weighted average along the specified axis."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain_length</span></div>
 </div>
 
 </pre></div>

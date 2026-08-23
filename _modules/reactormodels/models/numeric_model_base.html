@@ -1,0 +1,194 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>reactormodels.models.numeric_model_base &mdash; ReactorModels 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=ccde76bc" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            ReactorModels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../model_development/index.html">Model Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmarks.html">Benchmarks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">reactormodels</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ReactorModels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">reactormodels.models.numeric_model_base</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for reactormodels.models.numeric_model_base</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""base.py"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">..properties.breakthrough</span><span class="w"> </span><span class="kn">import</span> <span class="n">Breakthrough</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..numerics.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumericsConfig</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"NumericModel"</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="NumericModel">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.NumericModel">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NumericModel</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Base class for IDA-based numeric transport models.</span>
+
+<span class="sd">    Subclasses are expected to implement the DAE callbacks used by the IDA</span>
+<span class="sd">    solver:</span>
+<span class="sd">        _residual, _jacobian, _initial_conditions, and _algebraic_vars_idx</span>
+
+<span class="sd">    and a `solve` method that drives the time integration. Signatures for</span>
+<span class="sd">    `_initial_conditions` and `solve` differ per model, so they are</span>
+<span class="sd">    intentionally not enforced here.</span>
+
+<span class="sd">    Subclasses should set the class attribute `_param_names` to the tuple of</span>
+<span class="sd">    attribute names that represent the model's required physical inputs, and</span>
+<span class="sd">    call `self.assert_parameters_set()` at the start of `solve()` to fail</span>
+<span class="sd">    fast if any required parameter was not supplied. It's checked in</span>
+<span class="sd">    `solve()` rather than `__init__` so that models can be constructed with</span>
+<span class="sd">    parameters still unset (e.g. while calibrating them) and only need to</span>
+<span class="sd">    be complete once you actually try to run them.</span>
+<span class="sd">    """</span>
+
+    <span class="n">_param_names</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">breakthrough</span><span class="p">:</span> <span class="n">Breakthrough</span>
+    <span class="n">numerics</span><span class="p">:</span> <span class="n">NumericsConfig</span>
+
+<div class="viewcode-block" id="NumericModel.parameters">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.NumericModel.parameters">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Return the model's configured parameters as {name: value}."""</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_names</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="NumericModel.assert_parameters_set">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.NumericModel.assert_parameters_set">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">assert_parameters_set</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Raise ValueError if any required parameter is None."""</span>
+        <span class="n">missing</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">missing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="n">class_name</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+
+            <span class="n">missing</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">sub_name</span><span class="si">}</span><span class="s2">"</span>
+                <span class="k">for</span> <span class="n">sub_name</span> <span class="ow">in</span> <span class="n">_unset_constructor_params</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> is missing required parameter(s): "</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span></div>
+</div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_unset_constructor_params</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Names of obj's __init__ parameters whose current attribute value is None.</span>
+
+<span class="sd">    One level only -- deliberately not recursive, so this stays a plain,</span>
+<span class="sd">    fast check on a model's directly-declared parameters and their</span>
+<span class="sd">    immediate composite objects (isotherm, boundary conditions, etc.),</span>
+<span class="sd">    rather than a general object-graph walk.</span>
+<span class="sd">    """</span>
+    <span class="n">sig</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">n</span>
+        <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">sig</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">!=</span> <span class="s2">"self"</span> <span class="ow">and</span> <span class="n">p</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">KEYWORD_ONLY</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">]</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Timothy M. Weigand.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

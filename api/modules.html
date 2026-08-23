@@ -94,6 +94,8 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="reactormodels.html#reactormodels.Breakthrough"><code class="docutils literal notranslate"><span class="pre">Breakthrough</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.html#reactormodels.Breakthrough.time"><code class="docutils literal notranslate"><span class="pre">Breakthrough.time</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.html#reactormodels.Breakthrough.bed_volumes"><code class="docutils literal notranslate"><span class="pre">Breakthrough.bed_volumes</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="reactormodels.html#reactormodels.Breakthrough.mean_feed_concentration"><code class="docutils literal notranslate"><span class="pre">Breakthrough.mean_feed_concentration()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="reactormodels.html#reactormodels.Breakthrough.normalize_concentration"><code class="docutils literal notranslate"><span class="pre">Breakthrough.normalize_concentration()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="reactormodels.html#reactormodels.Breakthrough.calculate_superficial_velocity"><code class="docutils literal notranslate"><span class="pre">Breakthrough.calculate_superficial_velocity()</span></code></a></li>
@@ -118,14 +120,24 @@
 <li class="toctree-l3"><a class="reference internal" href="reactormodels.html#reactormodels.Media.get_particle_density"><code class="docutils literal notranslate"><span class="pre">Media.get_particle_density()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="reactormodels.html#reactormodels.FilmTransfer"><code class="docutils literal notranslate"><span class="pre">FilmTransfer</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.html#reactormodels.FilmTransfer.reynolds"><code class="docutils literal notranslate"><span class="pre">FilmTransfer.reynolds</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.html#reactormodels.FilmTransfer.schmidt"><code class="docutils literal notranslate"><span class="pre">FilmTransfer.schmidt</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.html#reactormodels.FilmTransfer.sherwood"><code class="docutils literal notranslate"><span class="pre">FilmTransfer.sherwood</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.html#reactormodels.FilmTransfer.k_film"><code class="docutils literal notranslate"><span class="pre">FilmTransfer.k_film</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="reactormodels.html#subpackages">Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html">reactormodels.models package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.NumericModel"><code class="docutils literal notranslate"><span class="pre">NumericModel</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.AdsorptionKinetics"><code class="docutils literal notranslate"><span class="pre">AdsorptionKinetics</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.PSDM"><code class="docutils literal notranslate"><span class="pre">PSDM</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.LinearIsotherm"><code class="docutils literal notranslate"><span class="pre">LinearIsotherm</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.LangmuirIsotherm"><code class="docutils literal notranslate"><span class="pre">LangmuirIsotherm</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.FreundlichIsotherm"><code class="docutils literal notranslate"><span class="pre">FreundlichIsotherm</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.DirichletBC"><code class="docutils literal notranslate"><span class="pre">DirichletBC</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.DanckwertsBC"><code class="docutils literal notranslate"><span class="pre">DanckwertsBC</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.SymmetryBC"><code class="docutils literal notranslate"><span class="pre">SymmetryBC</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.AdvectionDiffusion"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusion</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption"><code class="docutils literal notranslate"><span class="pre">AdvectionDiffusionAdsorption</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.OgataBanks"><code class="docutils literal notranslate"><span class="pre">OgataBanks</span></code></a></li>
@@ -134,13 +146,17 @@
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.BohartAdams"><code class="docutils literal notranslate"><span class="pre">BohartAdams</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.ThomasRectangular"><code class="docutils literal notranslate"><span class="pre">ThomasRectangular</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.ThomasLangmuir"><code class="docutils literal notranslate"><span class="pre">ThomasLangmuir</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.IntraparticleTransport"><code class="docutils literal notranslate"><span class="pre">IntraparticleTransport</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#module-reactormodels.models.adsorption_kinetics">reactormodels.models.adsorption_kinetics module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#module-reactormodels.models.advection_diffusion">reactormodels.models.advection_diffusion module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#module-reactormodels.models.advection_diffusion_adsorption">reactormodels.models.advection_diffusion_adsorption module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#module-reactormodels.models.analytic_models">reactormodels.models.analytic_models module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#module-reactormodels.models.boundary_conditions">reactormodels.models.boundary_conditions module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#module-reactormodels.models.intraparticle_transport">reactormodels.models.intraparticle_transport module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#module-reactormodels.models.isotherm">reactormodels.models.isotherm module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#module-reactormodels.models.numeric_model_base">reactormodels.models.numeric_model_base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#module-reactormodels.models.psdm">reactormodels.models.psdm module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="reactormodels.numerics.html">reactormodels.numerics package</a><ul>
@@ -167,10 +183,12 @@
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.properties.html#reactormodels.properties.Media"><code class="docutils literal notranslate"><span class="pre">Media</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.properties.html#reactormodels.properties.Water"><code class="docutils literal notranslate"><span class="pre">Water</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.properties.html#reactormodels.properties.Chemical"><code class="docutils literal notranslate"><span class="pre">Chemical</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.properties.html#reactormodels.properties.FilmTransfer"><code class="docutils literal notranslate"><span class="pre">FilmTransfer</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.properties.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.properties.html#module-reactormodels.properties.breakthrough">reactormodels.properties.breakthrough module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.properties.html#module-reactormodels.properties.chemical">reactormodels.properties.chemical module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.properties.html#module-reactormodels.properties.column">reactormodels.properties.column module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.properties.html#module-reactormodels.properties.film_transfer">reactormodels.properties.film_transfer module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.properties.html#module-reactormodels.properties.media">reactormodels.properties.media module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.properties.html#module-reactormodels.properties.water">reactormodels.properties.water module</a></li>
 </ul>

@@ -74,7 +74,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for reactormodels.properties.column</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;column.py.&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""column.py."""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
@@ -85,7 +85,7 @@
 <div class="viewcode-block" id="Column">
 <a class="viewcode-back" href="../../../api/reactormodels.properties.html#reactormodels.Column">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Column</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Packed-bed column data and calculations.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Packed-bed column data and calculations."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -97,18 +97,18 @@
         <span class="n">bulk_density</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">sorbent_mass</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize packed-bed column properties.&quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="n">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;length must be positive, got </span><span class="si">{</span><span class="n">length</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="k">assert</span> <span class="n">diameter</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;diameter must be positive, got </span><span class="si">{</span><span class="n">diameter</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">porosity</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;porosity must be in (0, 1), got </span><span class="si">{</span><span class="n">porosity</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize packed-bed column properties."""</span>
+        <span class="k">assert</span> <span class="n">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"length must be positive, got </span><span class="si">{</span><span class="n">length</span><span class="si">}</span><span class="s2">"</span>
+        <span class="k">assert</span> <span class="n">diameter</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"diameter must be positive, got </span><span class="si">{</span><span class="n">diameter</span><span class="si">}</span><span class="s2">"</span>
+        <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">porosity</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"porosity must be in (0, 1), got </span><span class="si">{</span><span class="n">porosity</span><span class="si">}</span><span class="s2">"</span>
         <span class="k">if</span> <span class="n">bulk_density</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">assert</span> <span class="p">(</span>
                 <span class="n">bulk_density</span> <span class="o">&gt;</span> <span class="mi">0</span>
-            <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;bulk_density must be positive, got </span><span class="si">{</span><span class="n">bulk_density</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">),</span> <span class="sa">f</span><span class="s2">"bulk_density must be positive, got </span><span class="si">{</span><span class="n">bulk_density</span><span class="si">}</span><span class="s2">"</span>
         <span class="k">if</span> <span class="n">sorbent_mass</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">assert</span> <span class="p">(</span>
                 <span class="n">sorbent_mass</span> <span class="o">&gt;</span> <span class="mi">0</span>
-            <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;sorbent_mass must be positive, got </span><span class="si">{</span><span class="n">sorbent_mass</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">),</span> <span class="sa">f</span><span class="s2">"sorbent_mass must be positive, got </span><span class="si">{</span><span class="n">sorbent_mass</span><span class="si">}</span><span class="s2">"</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="n">length</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span> <span class="o">=</span> <span class="n">porosity</span>
@@ -121,31 +121,31 @@
 <div class="viewcode-block" id="Column.cross_section_area">
 <a class="viewcode-back" href="../../../api/reactormodels.properties.html#reactormodels.Column.cross_section_area">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">cross_section_area</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the column cross-sectional area.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Calculate the column cross-sectional area."""</span>
         <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="mf">0.25</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">diameter</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Column.column_volume">
 <a class="viewcode-back" href="../../../api/reactormodels.properties.html#reactormodels.Column.column_volume">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">column_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the total column volume.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Calculate the total column volume."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cross_section_area</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span></div>
 
 
 <div class="viewcode-block" id="Column.get_bulk_density">
 <a class="viewcode-back" href="../../../api/reactormodels.properties.html#reactormodels.Column.get_bulk_density">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_bulk_density</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return or calculate the packed-bed bulk density.</span>
+<span class="w">        </span><span class="sd">"""Return or calculate the packed-bed bulk density.</span>
 
 <span class="sd">        Bed density = Mass_solids / Volume_total</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bulk_density</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bulk_density</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Bulk density cannot be determined. &quot;</span>
-                <span class="s2">&quot;Ensure media.particle_density is set.&quot;</span>
+                <span class="s2">"Bulk density cannot be determined. "</span>
+                <span class="s2">"Ensure media.particle_density is set."</span>
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">bulk_density</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span>
@@ -155,13 +155,13 @@
 <div class="viewcode-block" id="Column.get_particle_density">
 <a class="viewcode-back" href="../../../api/reactormodels.properties.html#reactormodels.Column.get_particle_density">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_particle_density</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return or calculate the media particle density.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return or calculate the media particle density."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bulk_density</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Particle density cannot be determined. Ensure bulk_density is set.&quot;</span>
+                <span class="s2">"Particle density cannot be determined. Ensure bulk_density is set."</span>
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">get_particle_density</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bulk_density</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span><span class="p">)</span></div>
@@ -170,13 +170,13 @@
 <div class="viewcode-block" id="Column.get_sorbent_mass">
 <a class="viewcode-back" href="../../../api/reactormodels.properties.html#reactormodels.Column.get_sorbent_mass">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_sorbent_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return or calculate the sorbent mass in the packed bed.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return or calculate the sorbent mass in the packed bed."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorbent_mass</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorbent_mass</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bulk_density</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Particle density cannot be determined. Ensure bulk_density is set.&quot;</span>
+                <span class="s2">"Particle density cannot be determined. Ensure bulk_density is set."</span>
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">sorbent_mass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_bulk_density</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_volume</span><span class="p">()</span>
@@ -186,10 +186,10 @@
 <div class="viewcode-block" id="Column.get_total_porosity">
 <a class="viewcode-back" href="../../../api/reactormodels.properties.html#reactormodels.Column.get_total_porosity">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_total_porosity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the total bed and intraparticle porosity.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Calculate the total bed and intraparticle porosity."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_porosity</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Media.particle_porosity is required to compute total porosity.&quot;</span>
+                <span class="s2">"Media.particle_porosity is required to compute total porosity."</span>
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_porosity</span></div>

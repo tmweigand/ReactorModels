@@ -74,7 +74,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for reactormodels.models.analytic_models</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;analytic_models.py&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""analytic_models.py"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -87,34 +87,34 @@
 <div class="viewcode-block" id="AnalyticModels">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.AnalyticModels">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AnalyticModels</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for analytical solutions to fixed bed adsorption models.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Base class for analytical solutions to fixed bed adsorption models."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">breakthrough</span><span class="p">:</span> <span class="n">Breakthrough</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Import Column and Breakthrough functions.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Import Column and Breakthrough functions."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span> <span class="o">=</span> <span class="n">breakthrough</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">column</span>
 
 <div class="viewcode-block" id="AnalyticModels.model">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.AnalyticModels.model">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Analytic model that return C/C_0&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Analytic model that return C/C_0"""</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
 <div class="viewcode-block" id="AnalyticModels.spatial_profile">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.AnalyticModels.spatial_profile">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">spatial_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return concentration profile with respect to fixed time.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return concentration profile with respect to fixed time."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">time</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AnalyticModels.breakthrough_profile">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.AnalyticModels.breakthrough_profile">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">breakthrough_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return breakthrough profile with respect to time fixed bed length.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return breakthrough profile with respect to time fixed bed length."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">time</span><span class="p">)</span></div>
 </div>
 
@@ -123,11 +123,11 @@
 <div class="viewcode-block" id="OgataBanks">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.OgataBanks">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">OgataBanks</span><span class="p">(</span><span class="n">AnalyticModels</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ogata Banks solution for 1D advection-diffusion with step input.</span>
+<span class="w">    </span><span class="sd">"""Ogata Banks solution for 1D advection-diffusion with step input.</span>
 
 <span class="sd">    D: diffusion</span>
 <span class="sd">    v: interstital velocity</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -154,13 +154,13 @@
         <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">time</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Equation:</span>
+<span class="w">        </span><span class="sd">"""Equation:</span>
 
 <span class="sd">        C/Co =  1/2 * {erfc[(x - v*t)/(2*sqrt(D*t))]</span>
 <span class="sd">                + exp(v*x/D)*erfc[(x + v*t)/(2*sqrt(D*t))]}</span>
 
 <span class="sd">        Divide v and D by R for retardation.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">Pe_local</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interstitial_velocity</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffusion</span>
         <span class="n">arg1</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">interstitial_velocity</span> <span class="o">*</span> <span class="n">time</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
             <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">diffusion</span> <span class="o">*</span> <span class="n">time</span><span class="p">)</span>
@@ -182,11 +182,11 @@
 <div class="viewcode-block" id="YoonNelson">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.YoonNelson">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">YoonNelson</span><span class="p">(</span><span class="n">AnalyticModels</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Yoon-Nelson Model for fixed bed adsorption.</span>
+<span class="w">    </span><span class="sd">"""Yoon-Nelson Model for fixed bed adsorption.</span>
 
 <span class="sd">    t_50: time to 50% breakthrough</span>
 <span class="sd">    k_YN: curve shaping coefficient</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k_YN</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">t_50</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">k_YN</span> <span class="o">=</span> <span class="n">k_YN</span>
@@ -199,28 +199,28 @@
         <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">time</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Equation:</span>
+<span class="w">        </span><span class="sd">"""Equation:</span>
 
 <span class="sd">        C/Co = 1 / (1 + exp[k_YN*(t_50 - t)])</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k_YN</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t_50</span> <span class="o">-</span> <span class="n">time</span><span class="p">)))</span></div>
 
 
 <div class="viewcode-block" id="YoonNelson.breakthrough_profile">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.YoonNelson.breakthrough_profile">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">breakthrough_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Yoon-Nelson has no spatial dependence; x is ignored.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Yoon-Nelson has no spatial dependence; x is ignored."""</span>
         <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Yoon-Nelson has no spatial term; x argument is ignored.&quot;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">"Yoon-Nelson has no spatial term; x argument is ignored."</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">breakthrough_profile</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="YoonNelson.spatial_profile">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.YoonNelson.spatial_profile">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">spatial_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Not defined: Yoon-Nelson has no spatial dependence.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Not defined: Yoon-Nelson has no spatial dependence."""</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-            <span class="s2">&quot;Yoon-Nelson has no spatial term; use breakthrough_profile instead.&quot;</span>
+            <span class="s2">"Yoon-Nelson has no spatial term; use breakthrough_profile instead."</span>
         <span class="p">)</span></div>
 </div>
 
@@ -229,12 +229,12 @@
 <div class="viewcode-block" id="Clark">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.Clark">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Clark</span><span class="p">(</span><span class="n">AnalyticModels</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Clark Model.</span>
+<span class="w">    </span><span class="sd">"""Clark Model.</span>
 
 <span class="sd">    A: capacity-like model coefficient</span>
 <span class="sd">    r: kinetic-like model coefficient</span>
 <span class="sd">    n: curve asymmetry coefficient</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -253,28 +253,28 @@
         <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">time</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Equation:</span>
+<span class="w">        </span><span class="sd">"""Equation:</span>
 
 <span class="sd">        C/Co = 1 / [1 + A*exp(-r*t)]^(1 / (n - 1))</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">*</span> <span class="n">time</span><span class="p">))</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="Clark.breakthrough_profile">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.Clark.breakthrough_profile">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">breakthrough_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clark has no spatial dependence; x is ignored.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Clark has no spatial dependence; x is ignored."""</span>
         <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Yoon-Nelson has no spatial term; x argument is ignored.&quot;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">"Yoon-Nelson has no spatial term; x argument is ignored."</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">breakthrough_profile</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Clark.spatial_profile">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.Clark.spatial_profile">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">spatial_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Not defined: Clark has no spatial dependence.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Not defined: Clark has no spatial dependence."""</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-            <span class="s2">&quot;Clark has no spatial term; use breakthrough_profile instead.&quot;</span>
+            <span class="s2">"Clark has no spatial term; use breakthrough_profile instead."</span>
         <span class="p">)</span></div>
 </div>
 
@@ -283,14 +283,14 @@
 <div class="viewcode-block" id="BohartAdams">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.BohartAdams">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BohartAdams</span><span class="p">(</span><span class="n">AnalyticModels</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Bohart-Adams Model.</span>
+<span class="w">    </span><span class="sd">"""Bohart-Adams Model.</span>
 
 <span class="sd">    bulk_density: dry mass of sorbent per volume bed</span>
 <span class="sd">    k_BA: Bohart-Adams lumped rate constant</span>
 <span class="sd">    sorbent_capacity: removal capacity per mass sorbent</span>
 <span class="sd">    v: interstitial velocity</span>
 <span class="sd">    Z: bed length</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -310,12 +310,12 @@
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_density</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rho_arg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">get_bulk_density</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Porosity is needed to use the Bohart-Adams model.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Porosity is needed to use the Bohart-Adams model."</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bed_void_fraction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Porosity is needed to use the Bohart-Adams model.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Porosity is needed to use the Bohart-Adams model."</span><span class="p">)</span>
 
 <div class="viewcode-block" id="BohartAdams.model">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.BohartAdams.model">[docs]</a>
@@ -324,12 +324,12 @@
         <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">time</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Equation:</span>
+<span class="w">        </span><span class="sd">"""Equation:</span>
 
 <span class="sd">        a = k*Co*(t - Z/v)</span>
 <span class="sd">        b = (k*rho_p*q*Z  / v)*((1-eps) / eps)</span>
 <span class="sd">        C/Co = exp(a) / (exp(a) + exp(b) - 1)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">arg1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_BA</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">inlet_concentration</span> <span class="o">*</span> <span class="p">(</span><span class="n">time</span> <span class="o">-</span> <span class="n">x</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">)</span>
         <span class="n">arg2</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">k_BA</span>
@@ -346,12 +346,12 @@
 <div class="viewcode-block" id="ThomasRectangular">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.ThomasRectangular">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ThomasRectangular</span><span class="p">(</span><span class="n">AnalyticModels</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thomas Model with rectangular isotherm.</span>
+<span class="w">    </span><span class="sd">"""Thomas Model with rectangular isotherm.</span>
 
 <span class="sd">    k_Th: Thomas Model rate constant</span>
 <span class="sd">    sorbent_capacity: removal capacity per mass sorbent</span>
 <span class="sd">    BV: bed volumes treated</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -370,17 +370,17 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bed_void_fraction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Porosity is needed to use the Thomas model.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Porosity is needed to use the Thomas model."</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ThomasRectangular.model">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.ThomasRectangular.model">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Equation:</span>
+<span class="w">        </span><span class="sd">"""Equation:</span>
 
 <span class="sd">        a = k_Th*Co*(BVT - eps)</span>
 <span class="sd">        b = k_Th*q_e*x/Q</span>
 <span class="sd">        C/Co = exp(a) / (exp(a) + exp(b) - 1)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">arg1</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">k_Th</span>
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">inlet_concentration</span>
@@ -393,12 +393,12 @@
 <div class="viewcode-block" id="ThomasRectangular.spatial_profile">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.ThomasRectangular.spatial_profile">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">spatial_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return concentration profile with respect to fixed time.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return concentration profile with respect to fixed time."""</span>
         <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">bed_volumes_to_time</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;Thomas rectangular expresses time in bed volumes; converting.&quot;</span>
+                <span class="s2">"Thomas rectangular expresses time in bed volumes; converting."</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">time</span><span class="p">)</span></div>
 
@@ -406,12 +406,12 @@
 <div class="viewcode-block" id="ThomasRectangular.breakthrough_profile">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.ThomasRectangular.breakthrough_profile">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">breakthrough_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return breakthrough profile with respect to time fixed bed length.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return breakthrough profile with respect to time fixed bed length."""</span>
         <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">bed_volumes_to_time</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;Thomas rectangular expresses time in bed volumes; converting.&quot;</span>
+                <span class="s2">"Thomas rectangular expresses time in bed volumes...converting."</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">time</span><span class="p">)</span></div>
 </div>
@@ -421,7 +421,7 @@
 <div class="viewcode-block" id="ThomasLangmuir">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.ThomasLangmuir">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ThomasLangmuir</span><span class="p">(</span><span class="n">AnalyticModels</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thomas Model with Langmuir isotherm.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Thomas Model with Langmuir isotherm."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -443,18 +443,18 @@
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_density</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rho_arg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">get_bulk_density</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Porosity is needed to use the Thomas model.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Porosity is needed to use the Thomas model."</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bed_void_fraction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Porosity is needed to use the Thomas model.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Porosity is needed to use the Thomas model."</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_J_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Equation:</span>
+<span class="w">        </span><span class="sd">"""Equation:</span>
 
 <span class="sd">        J(x, y) = 1 - int(exp(-y - tau)*I_0*(2*sqrt(y*tau)) dtau) from 0 to x</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">integrand</span><span class="p">(</span><span class="n">tau</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">b</span> <span class="o">+</span> <span class="n">tau</span><span class="p">))</span> <span class="o">*</span> <span class="n">i0</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="n">tau</span><span class="p">))</span>
@@ -465,11 +465,11 @@
 <div class="viewcode-block" id="ThomasLangmuir.model">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.ThomasLangmuir.model">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Equation:</span>
+<span class="w">        </span><span class="sd">"""Equation:</span>
 
 <span class="sd">        C/Co = J((n/r), nT) /</span>
 <span class="sd">            [J((n/r), nT) + [1 - J(n, (nT/r))]exp[(1 - (1/r))(n - nT)]]</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
         <span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
         <span class="n">n_arg1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorbent_capacity</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_Th</span> <span class="o">*</span> <span class="n">x</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho_arg</span>

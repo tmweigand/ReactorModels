@@ -1,0 +1,292 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>reactormodels.models.intraparticle_transport &mdash; ReactorModels 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=ccde76bc" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            ReactorModels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../model_development/index.html">Model Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmarks.html">Benchmarks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">reactormodels</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ReactorModels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">reactormodels.models.intraparticle_transport</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for reactormodels.models.intraparticle_transport</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""intraparticle_transport.py"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Type</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">..properties.breakthrough</span><span class="w"> </span><span class="kn">import</span> <span class="n">Breakthrough</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..numerics.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumericsConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.numeric_model_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumericModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.isotherm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Isotherm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.boundary_conditions</span><span class="w"> </span><span class="kn">import</span> <span class="n">InletBC</span><span class="p">,</span> <span class="n">DirichletBC</span><span class="p">,</span> <span class="n">SymmetryBC</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"IntraparticleTransport"</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="IntraparticleTransport">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.IntraparticleTransport">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">IntraparticleTransport</span><span class="p">(</span><span class="n">NumericModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""1D transport through pore and/or surface diffusion in a spherical particle.</span>
+
+<span class="sd">    The governing equations are:</span>
+
+<span class="sd">        Fluid phase: eps_p*dCp/dt - 1/(r^2)*d/dr[r^2*eps_p*D_p*dC_p/dr]</span>
+<span class="sd">                    + rho_p*dq/dt  - 1/(r^2)*d/dr[r^2*rho_s*D_s*dq/dr] = 0</span>
+
+<span class="sd">        Solid phase: dq_dt = dq*/dc*dc/dt</span>
+
+<span class="sd">    """</span>
+
+    <span class="n">_param_names</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">"pore_diffusion"</span><span class="p">,</span>
+        <span class="s2">"surface_diffusion"</span><span class="p">,</span>
+        <span class="s2">"iso"</span><span class="p">,</span>
+        <span class="s2">"numerics"</span><span class="p">,</span>
+        <span class="s2">"surface_bc"</span><span class="p">,</span>
+        <span class="s2">"center_bc"</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">breakthrough</span><span class="p">:</span> <span class="n">Breakthrough</span><span class="p">,</span>
+        <span class="n">isotherm</span><span class="p">:</span> <span class="n">Isotherm</span><span class="p">,</span>
+        <span class="n">numerics</span><span class="p">:</span> <span class="n">NumericsConfig</span><span class="p">,</span>
+        <span class="n">surface_bc</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">InletBC</span><span class="p">]</span> <span class="o">=</span> <span class="n">DirichletBC</span><span class="p">,</span>
+        <span class="n">center_bc</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">InletBC</span><span class="p">]</span> <span class="o">=</span> <span class="n">SymmetryBC</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span> <span class="o">=</span> <span class="n">breakthrough</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">media</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pore_diffusion</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">chemical</span><span class="o">.</span><span class="n">pore_diffusion</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">surface_diffusion</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">chemical</span><span class="o">.</span><span class="n">surface_diffusion</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iso</span> <span class="o">=</span> <span class="n">isotherm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span> <span class="o">=</span> <span class="n">numerics</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">surface_bc</span> <span class="o">=</span> <span class="n">surface_bc</span><span class="p">(</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">mean_feed_concentration</span><span class="p">(),</span> <span class="n">node</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center_bc</span> <span class="o">=</span> <span class="n">center_bc</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assert_parameters_set</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_n_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Total length of the IDA state vector."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Return (C, q) where q is None for LOCAL_EQUILIBRIUM."""</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">y</span><span class="p">[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">]</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">C</span><span class="p">,</span> <span class="n">q</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_residual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">ydot</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""IDA residual F(t, y, ydot) = 0.  Writes into `result` in-place."""</span>
+        <span class="n">c</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">dcdt</span><span class="p">,</span> <span class="n">dqdt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split</span><span class="p">(</span><span class="n">ydot</span><span class="p">)</span>
+
+        <span class="c1"># Center: symmetry</span>
+        <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_bc</span><span class="o">.</span><span class="n">residual</span><span class="p">(</span>
+            <span class="n">gradient_concentration_0</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">evaluate_gradient</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Surface: dirichlet</span>
+        <span class="n">result</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface_bc</span><span class="o">.</span><span class="n">residual</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="c1"># fluid phase - internal and outlet</span>
+        <span class="n">transport</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_porosity</span> <span class="o">*</span> <span class="n">dcdt</span><span class="p">[</span><span class="mi">1</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_porosity</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_diffusion</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">evaluate_radial_operator</span><span class="p">(</span><span class="n">c</span><span class="p">)[</span><span class="mi">1</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">dqdC</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iso</span><span class="o">.</span><span class="n">dq_dC</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+        <span class="n">lap_q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">evaluate_radial_operator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iso</span><span class="o">.</span><span class="n">q</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+
+        <span class="n">result</span><span class="p">[</span><span class="mi">1</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">transport</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span> <span class="o">*</span> <span class="p">(</span><span class="n">dqdC</span> <span class="o">*</span> <span class="n">dcdt</span><span class="p">)[</span><span class="mi">1</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface_diffusion</span>
+            <span class="o">*</span> <span class="n">lap_q</span><span class="p">[</span><span class="mi">1</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">ydot</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">cj</span><span class="p">,</span> <span class="n">jac</span><span class="p">):</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">y</span><span class="p">[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">]</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_vars</span><span class="p">()</span>
+        <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+
+        <span class="n">J</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_bc</span><span class="o">.</span><span class="n">jacobian_row</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">first_derivative</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="p">)</span>
+
+        <span class="n">J</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface_bc</span><span class="o">.</span><span class="n">jacobian_row</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+
+        <span class="c1"># derivative of transport</span>
+        <span class="n">d_transport</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_porosity</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_diffusion</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">radial_operator_matrix</span>
+        <span class="p">)</span>
+
+        <span class="n">J</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">d_transport</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">dqdC</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iso</span><span class="o">.</span><span class="n">dq_dC</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+
+        <span class="n">J</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface_diffusion</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">radial_operator_matrix</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">dqdC</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">mass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_porosity</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span> <span class="o">*</span> <span class="n">dqdC</span>
+
+        <span class="n">J</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">cj</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">mass</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="n">jac</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">J</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_algebraic_vars_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Create list identifying which equations are algebraic.</span>
+
+<span class="sd">        Only the inlet boundary condition for this model.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_initial_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Return (y0, ydot0) consistent with the algebraic constraint."""</span>
+        <span class="n">C0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">initial_concentration</span><span class="p">)</span>
+
+        <span class="c1"># Surface concentration</span>
+        <span class="n">C0</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface_bc</span><span class="o">.</span><span class="n">apply</span><span class="p">()</span>
+
+        <span class="n">y0</span> <span class="o">=</span> <span class="n">C0</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">ydot0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">y0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">y0</span><span class="p">,</span> <span class="n">ydot0</span>
+
+<div class="viewcode-block" id="IntraparticleTransport.solve">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.IntraparticleTransport.solve">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Integrate from t_span[0] to t_span[1], returning results at t_eval."""</span>
+        <span class="n">y0</span><span class="p">,</span> <span class="n">ydot0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initial_conditions</span><span class="p">()</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span>
+            <span class="n">residual</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_residual</span><span class="p">,</span>
+            <span class="n">jacobian</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_jacobian</span><span class="p">,</span>
+            <span class="n">y0</span><span class="o">=</span><span class="n">y0</span><span class="p">,</span>
+            <span class="n">yp0</span><span class="o">=</span><span class="n">ydot0</span><span class="p">,</span>
+            <span class="n">t_span</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">tolist</span><span class="p">()],</span>
+            <span class="n">t_eval</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+            <span class="n">algebraic_vars_idx</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_algebraic_vars_idx</span><span class="p">(),</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">flag</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"IDA solver failed with flag </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">flag</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span>
+
+        <span class="c1"># result.values.y has shape (n_out, n_vars); skip the t=t_span[0] row</span>
+        <span class="n">y_out</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># (n_times, n_vars)</span>
+
+        <span class="n">C_out</span> <span class="o">=</span> <span class="n">y_out</span><span class="p">[:,</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">]</span>  <span class="c1"># (n_times, N)</span>
+
+        <span class="c1"># Local equilibrium: recover q from C at each time step</span>
+        <span class="n">q_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">iso</span><span class="o">.</span><span class="n">q</span><span class="p">(</span><span class="n">C_out</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">time</span><span class="p">))]</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">nodes</span><span class="p">,</span> <span class="n">C_out</span><span class="p">,</span> <span class="n">q_out</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Timothy M. Weigand.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

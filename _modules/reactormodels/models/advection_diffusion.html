@@ -74,25 +74,31 @@
            <div itemprop="articleBody">
              
   <h1>Source code for reactormodels.models.advection_diffusion</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;advection_diffusion.py&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""advection_diffusion.py"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Type</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..properties.breakthrough</span><span class="w"> </span><span class="kn">import</span> <span class="n">Breakthrough</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..numerics.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumericsConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.numeric_model_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumericModel</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.boundary_conditions</span><span class="w"> </span><span class="kn">import</span> <span class="n">InletBC</span><span class="p">,</span> <span class="n">DirichletBC</span>
 
 
 <div class="viewcode-block" id="AdvectionDiffusion">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.AdvectionDiffusion">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">AdvectionDiffusion</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Advection-diffusion model.</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AdvectionDiffusion</span><span class="p">(</span><span class="n">NumericModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Advection-diffusion model.</span>
 
 <span class="sd">    Governing equation:</span>
 <span class="sd">        dC/dt + v * dC/dx - D * d2C/dx2 = 0</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
+
+    <span class="n">_param_names</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">"velocity"</span><span class="p">,</span>
+        <span class="s2">"axial_diffusion"</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -100,18 +106,34 @@
         <span class="n">numerics</span><span class="p">:</span> <span class="n">NumericsConfig</span><span class="p">,</span>
         <span class="n">inlet_bc</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">InletBC</span><span class="p">]</span> <span class="o">=</span> <span class="n">DirichletBC</span><span class="p">,</span>
     <span class="p">):</span>
+
+        <span class="c1"># Physical parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span> <span class="o">=</span> <span class="n">breakthrough</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">interstitial_velocity</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">diffusion</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">chemical</span><span class="o">.</span><span class="n">diffusion</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">inlet_concentration</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">mean_feed_concentration</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axial_diffusion</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">chemical</span><span class="o">.</span><span class="n">axial_diffusion</span>
+
+        <span class="c1"># Initial conditions</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initial_concentration</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">initial_concentration</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span> <span class="o">=</span> <span class="n">numerics</span>
+
+        <span class="c1"># Boundary conditions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inlet_concentration</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">mean_feed_concentration</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inlet_bc</span> <span class="o">=</span> <span class="n">inlet_bc</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">inlet_concentration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffusion</span>
+            <span class="n">breakthrough</span><span class="o">.</span><span class="n">mean_feed_concentration</span><span class="p">(),</span>
+            <span class="n">node</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">velocity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">,</span>
+            <span class="n">diffusion</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axial_diffusion</span><span class="p">,</span>
         <span class="p">)</span>
+
+        <span class="c1"># Numerics</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span> <span class="o">=</span> <span class="n">numerics</span>
+
+        <span class="c1"># Discretization</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">assert_parameters_set</span><span class="p">()</span>
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_residual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">Cdot</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;IDA residual callback.  Writes into `result` in-place.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""IDA residual callback.  Writes into `result` in-place."""</span>
         <span class="c1"># Inlet boundary condition</span>
         <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inlet_bc</span><span class="o">.</span><span class="n">residual</span><span class="p">(</span>
             <span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">evaluate_gradient</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -120,13 +142,13 @@
         <span class="c1"># Inter nodes and outlet</span>
         <span class="n">rhs</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">evaluate_gradient</span><span class="p">(</span>
             <span class="n">C</span>
-        <span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffusion</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">evaluate_second_derivative</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+        <span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">axial_diffusion</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">evaluate_second_derivative</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
         <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">Cdot</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">rhs</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
 
         <span class="k">return</span> <span class="mi">0</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">Cdot</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">cj</span><span class="p">,</span> <span class="n">jac</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build jacobian of _residual.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Build jacobian of _residual."""</span>
         <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">))</span>
 
         <span class="c1"># Row 0: algebraic constraint, no Cdot term</span>
@@ -137,7 +159,7 @@
         <span class="c1"># Rows 1:: dF/dC = -pde_jac,  dF/dCdot = I  =&gt; full J row = -pde_jac + cj*I</span>
         <span class="n">pde_jac</span> <span class="o">=</span> <span class="p">(</span>
             <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">first_derivative</span>
-            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffusion</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">second_derivative</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">axial_diffusion</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">second_derivative</span>
         <span class="p">)</span>  <span class="c1"># (N,N)</span>
         <span class="n">J</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="o">-</span><span class="n">pde_jac</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span>  <span class="c1"># dF/dC contribution</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">):</span>
@@ -147,36 +169,36 @@
         <span class="k">return</span> <span class="mi">0</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_initial_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the initial concentration and dcdt.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Set the initial concentration and dcdt."""</span>
         <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_concentration</span><span class="p">)</span>
         <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inlet_bc</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">evaluate_gradient</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
         <span class="n">dcdt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">c</span><span class="p">,</span> <span class="n">dcdt</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_algebraic_vars_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create list identifying which equations are algebraic.</span>
+<span class="w">        </span><span class="sd">"""Create list identifying which equations are algebraic.</span>
 
 <span class="sd">        Only the inlet boundary condition for this model.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 <div class="viewcode-block" id="AdvectionDiffusion.solve">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.AdvectionDiffusion.solve">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t_span</span><span class="p">,</span> <span class="n">t_eval</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Integrate from t_span[0] to t_span[1], returning results at t_eval.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Integrate from t_span[0] to t_span[1], returning results at t_eval."""</span>
         <span class="n">c</span><span class="p">,</span> <span class="n">dcdt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initial_conditions</span><span class="p">()</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span>
             <span class="n">residual</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_residual</span><span class="p">,</span>
             <span class="n">jacobian</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_jacobian</span><span class="p">,</span>
             <span class="n">y0</span><span class="o">=</span><span class="n">c</span><span class="p">,</span>
             <span class="n">yp0</span><span class="o">=</span><span class="n">dcdt</span><span class="p">,</span>
-            <span class="n">t_span</span><span class="o">=</span><span class="n">t_span</span><span class="p">,</span>
-            <span class="n">t_eval</span><span class="o">=</span><span class="n">t_eval</span><span class="p">,</span>
+            <span class="n">t_span</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">tolist</span><span class="p">()],</span>
+            <span class="n">t_eval</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
             <span class="n">algebraic_vars_idx</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_algebraic_vars_idx</span><span class="p">(),</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">flag</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;IDA solver failed with flag </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">flag</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">"IDA solver failed with flag </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">flag</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span>
             <span class="p">)</span>
         <span class="n">C_history</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># (n_times, N), skip the t=t_span[0] row</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">nodes</span><span class="p">,</span> <span class="n">C_history</span></div>

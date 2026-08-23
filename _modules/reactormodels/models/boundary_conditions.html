@@ -74,7 +74,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for reactormodels.models.boundary_conditions</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;boundary_conditions.py&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""boundary_conditions.py"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
@@ -82,19 +82,21 @@
 <div class="viewcode-block" id="InletBC">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.InletBC">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InletBC</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for inlet boundary conditions.</span>
+<span class="w">    </span><span class="sd">"""Base class for inlet boundary conditions.</span>
 
 <span class="sd">    All inlet boundary condition classes should inherit from this class</span>
 <span class="sd">    and implement the `residual` and `apply` methods.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inlet_concentration</span><span class="p">,</span> <span class="n">velocity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">diffusion</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">inlet_concentration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">velocity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">diffusion</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 <div class="viewcode-block" id="InletBC.apply">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.InletBC.apply">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradient_concentration_0</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the value on the boundary&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the value on the boundary"""</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
@@ -103,14 +105,14 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">residual</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">concentration_0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">gradient_concentration_0</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the residual at inlet boundary.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Compute the residual at inlet boundary."""</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
 <div class="viewcode-block" id="InletBC.jacobian_row">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.InletBC.jacobian_row">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">jacobian_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A_row</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return dF_inlet/dC, the Jacobian row for the inlet constraint.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return dF_inlet/dC, the Jacobian row for the inlet constraint."""</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 </div>
 
@@ -119,37 +121,42 @@
 <div class="viewcode-block" id="DirichletBC">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.DirichletBC">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DirichletBC</span><span class="p">(</span><span class="n">InletBC</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dirichlet inlet boundary condition.</span>
+<span class="w">    </span><span class="sd">"""Dirichlet inlet boundary condition.</span>
 
 <span class="sd">    Enforces a fixed inlet concentration:</span>
 <span class="sd">        C(0, t) = C_in</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inlet_concentration</span><span class="p">,</span> <span class="n">velocity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">diffusion</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">inlet_concentration</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">velocity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">diffusion</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inlet_concentration</span> <span class="o">=</span> <span class="n">inlet_concentration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node</span> <span class="o">=</span> <span class="n">node</span>
 
 <div class="viewcode-block" id="DirichletBC.apply">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.DirichletBC.apply">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradient_concentration_0</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the value on the boundary&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the value on the boundary"""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inlet_concentration</span></div>
 
 
 <div class="viewcode-block" id="DirichletBC.residual">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.DirichletBC.residual">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">residual</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">concentration_0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">gradient_concentration_0</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">concentration_0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">gradient_concentration_0</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the residual at inlet boundary.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Compute the residual at inlet boundary."""</span>
         <span class="k">return</span> <span class="n">concentration_0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">inlet_concentration</span></div>
 
 
 <div class="viewcode-block" id="DirichletBC.jacobian_row">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.DirichletBC.jacobian_row">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">jacobian_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A_row</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;dF/dC: residual = C[0] - C_in, so only the C[0] entry is non-zero.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""dF/dC: residual = C[0] - C_in, so only the C[0] entry is non-zero."""</span>
         <span class="n">row</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">A_row</span><span class="p">)</span>
-        <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">row</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
         <span class="k">return</span> <span class="n">row</span></div>
 </div>
 
@@ -158,13 +165,13 @@
 <div class="viewcode-block" id="DanckwertsBC">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.DanckwertsBC">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DanckwertsBC</span><span class="p">(</span><span class="n">InletBC</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Danckwerts (flux-conserving) inlet boundary condition.</span>
+<span class="w">    </span><span class="sd">"""Danckwerts (flux-conserving) inlet boundary condition.</span>
 
 <span class="sd">    Governing equation:</span>
 <span class="sd">        v*C_in = v*C(0) - DL*(dC/dx)|_0</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inlet_concentration</span><span class="p">,</span> <span class="n">velocity</span><span class="p">,</span> <span class="n">diffusion</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inlet_concentration</span><span class="p">,</span> <span class="n">velocity</span><span class="p">,</span> <span class="n">diffusion</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inlet_concentration</span> <span class="o">=</span> <span class="n">inlet_concentration</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="n">velocity</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">diffusion</span> <span class="o">=</span> <span class="n">diffusion</span>
@@ -172,7 +179,7 @@
 <div class="viewcode-block" id="DanckwertsBC.apply">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.DanckwertsBC.apply">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradient_concentration_0</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the value on the boundary&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the value on the boundary"""</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">inlet_concentration</span>
             <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">diffusion</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">)</span> <span class="o">*</span> <span class="n">gradient_concentration_0</span>
@@ -184,10 +191,10 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">residual</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">concentration_0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">gradient_concentration_0</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the residual at inlet boundary.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Compute the residual at inlet boundary."""</span>
         <span class="k">if</span> <span class="n">gradient_concentration_0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;gradient_concentration_0 must be provided &quot;</span> <span class="s2">&quot;for DanckwertsBC&quot;</span>
+                <span class="s2">"gradient_concentration_0 must be provided "</span> <span class="s2">"for DanckwertsBC"</span>
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="p">(</span>
@@ -199,10 +206,50 @@
 <div class="viewcode-block" id="DanckwertsBC.jacobian_row">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.DanckwertsBC.jacobian_row">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">jacobian_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A_row</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;dF/dC: residual = v*(C_in - C[0]) + D*(A[0,:] @ C).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""dF/dC: residual = v*(C_in - C[0]) + D*(A[0,:] @ C)."""</span>
         <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffusion</span> <span class="o">*</span> <span class="n">A_row</span>
         <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span>
         <span class="k">return</span> <span class="n">row</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SymmetryBC">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.SymmetryBC">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SymmetryBC</span><span class="p">(</span><span class="n">InletBC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Zero gradient boundary condition at particle center.</span>
+
+<span class="sd">    Enforces dC/dr = 0 at r=0</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">velocity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">diffusion</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node</span> <span class="o">=</span> <span class="n">node</span>
+
+<div class="viewcode-block" id="SymmetryBC.apply">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.SymmetryBC.apply">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradient_concentration_0</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Symmetry does not set a concentration value directly."""</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"SymmetryBC has no direct value; use residual()."</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SymmetryBC.residual">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.SymmetryBC.residual">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">residual</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">concentration_0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">gradient_concentration_0</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Compute the residual: the gradient itself, which must equal zero."""</span>
+        <span class="k">if</span> <span class="n">gradient_concentration_0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"gradient_concentration_0 must be provided for SymmetryBC"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">gradient_concentration_0</span></div>
+
+
+<div class="viewcode-block" id="SymmetryBC.jacobian_row">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.SymmetryBC.jacobian_row">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">jacobian_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A_row</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""dF/dC: residual = A_row @ C, so the Jacobian row is A_row itself."""</span>
+        <span class="k">return</span> <span class="n">A_row</span></div>
 </div>
 
 </pre></div>

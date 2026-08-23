@@ -74,7 +74,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for reactormodels.models.advection_diffusion_adsorption</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;advection_diffusion_adsorption.py&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""advection_diffusion_adsorption.py"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Type</span>
@@ -82,17 +82,18 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..properties.breakthrough</span><span class="w"> </span><span class="kn">import</span> <span class="n">Breakthrough</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..numerics.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumericsConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.numeric_model_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumericModel</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.isotherm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Isotherm</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.adsorption_kinetics</span><span class="w"> </span><span class="kn">import</span> <span class="n">AdsorptionKinetics</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.boundary_conditions</span><span class="w"> </span><span class="kn">import</span> <span class="n">InletBC</span><span class="p">,</span> <span class="n">DanckwertsBC</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;AdvectionDiffusionAdsorption&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"AdvectionDiffusionAdsorption"</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="AdvectionDiffusionAdsorption">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">AdvectionDiffusionAdsorption</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;1D advection-diffusion with adsorption in a packed bed.</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AdvectionDiffusionAdsorption</span><span class="p">(</span><span class="n">NumericModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""1D advection-diffusion with adsorption in a packed bed.</span>
 
 <span class="sd">    The governing equations are:</span>
 
@@ -103,32 +104,49 @@
 
 <span class="sd">        dq_dt = dq*/dc*dc/dt</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
+
+    <span class="n">_param_names</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"velocity"</span><span class="p">,</span> <span class="s2">"axial_diffusion"</span><span class="p">,</span> <span class="s2">"isotherm"</span><span class="p">,</span> <span class="s2">"k_ldf"</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">breakthrough</span><span class="p">:</span> <span class="n">Breakthrough</span><span class="p">,</span>
         <span class="n">isotherm</span><span class="p">:</span> <span class="n">Isotherm</span><span class="p">,</span>
         <span class="n">numerics</span><span class="p">:</span> <span class="n">NumericsConfig</span><span class="p">,</span>
-        <span class="n">mode</span><span class="p">:</span> <span class="n">AdsorptionKinetics</span> <span class="o">=</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">LOCAL_EQUILIBRIUM</span><span class="p">,</span>
+        <span class="n">kinetics</span><span class="p">:</span> <span class="n">AdsorptionKinetics</span> <span class="o">=</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">LOCAL_EQUILIBRIUM</span><span class="p">,</span>
         <span class="n">k_ldf</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">inlet_bc</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">InletBC</span><span class="p">]</span> <span class="o">=</span> <span class="n">DanckwertsBC</span><span class="p">,</span>
     <span class="p">):</span>
+        <span class="c1"># Physical parameters</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">column</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span> <span class="o">=</span> <span class="n">breakthrough</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">interstitial_velocity</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">DL</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">chemical</span><span class="o">.</span><span class="n">diffusion</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">inlet_concentration</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">mean_feed_concentration</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">initial_concentration</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">initial_concentration</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iso</span> <span class="o">=</span> <span class="n">isotherm</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span> <span class="o">=</span> <span class="n">numerics</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axial_diffusion</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">chemical</span><span class="o">.</span><span class="n">axial_diffusion</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span> <span class="o">=</span> <span class="n">isotherm</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">k_ldf</span> <span class="o">=</span> <span class="n">k_ldf</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">inlet_bc</span> <span class="o">=</span> <span class="n">inlet_bc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inlet_concentration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">DL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kinetics</span> <span class="o">=</span> <span class="n">kinetics</span>
+
+        <span class="c1"># Initial conditions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_concentration</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">initial_concentration</span>
+
+        <span class="c1"># Boundary conditions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inlet_concentration</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">mean_feed_concentration</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inlet_bc</span> <span class="o">=</span> <span class="n">inlet_bc</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inlet_concentration</span><span class="p">,</span>
+            <span class="n">node</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">velocity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">,</span>
+            <span class="n">diffusion</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axial_diffusion</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Numerics</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span> <span class="o">=</span> <span class="n">numerics</span>
+
+        <span class="c1"># Discretization</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
 
+        <span class="c1"># Checks</span>
         <span class="k">if</span> <span class="p">(</span>
-            <span class="n">mode</span>
+            <span class="n">kinetics</span>
             <span class="ow">in</span> <span class="p">(</span>
                 <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">LINEAR_DRIVING_FORCE</span><span class="p">,</span>
                 <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">SECOND_ORDER</span><span class="p">,</span>
@@ -136,24 +154,26 @@
             <span class="ow">and</span> <span class="n">k_ldf</span> <span class="o">&lt;=</span> <span class="mi">0</span>
         <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;k_ldf must be &gt; 0 for LINEAR_DRIVING_FORCE or SECOND_ORDER mode&quot;</span>
+                <span class="s2">"k_ldf must be &gt; 0 for LINEAR_DRIVING_FORCE or SECOND_ORDER mode"</span>
             <span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">assert_parameters_set</span><span class="p">()</span>
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_n_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Total length of the IDA state vector.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Total length of the IDA state vector."""</span>
         <span class="k">if</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">LINEAR_DRIVING_FORCE</span>
-            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">SECOND_ORDER</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">kinetics</span> <span class="o">==</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">LINEAR_DRIVING_FORCE</span>
+            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">kinetics</span> <span class="o">==</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">SECOND_ORDER</span>
         <span class="p">):</span>
             <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return (C, q) where q is None for LOCAL_EQUILIBRIUM.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return (C, q) where q is None for LOCAL_EQUILIBRIUM."""</span>
         <span class="n">C</span> <span class="o">=</span> <span class="n">y</span><span class="p">[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">]</span>
         <span class="k">if</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">LINEAR_DRIVING_FORCE</span>
-            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">SECOND_ORDER</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">kinetics</span> <span class="o">==</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">LINEAR_DRIVING_FORCE</span>
+            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">kinetics</span> <span class="o">==</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">SECOND_ORDER</span>
         <span class="p">):</span>
             <span class="n">q</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="p">:]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -161,7 +181,7 @@
         <span class="k">return</span> <span class="n">C</span><span class="p">,</span> <span class="n">q</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_residual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">ydot</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;IDA residual F(t, y, ydot) = 0.  Writes into `result` in-place.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""IDA residual F(t, y, ydot) = 0.  Writes into `result` in-place."""</span>
         <span class="n">c</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
         <span class="n">dcdt</span><span class="p">,</span> <span class="n">dqdt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split</span><span class="p">(</span><span class="n">ydot</span><span class="p">)</span>
 
@@ -177,28 +197,30 @@
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span>
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">evaluate_gradient</span><span class="p">(</span><span class="n">c</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
             <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span>
-            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">DL</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">axial_diffusion</span>
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">evaluate_second_derivative</span><span class="p">(</span><span class="n">c</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
         <span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">LOCAL_EQUILIBRIUM</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">kinetics</span> <span class="o">==</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">LOCAL_EQUILIBRIUM</span><span class="p">:</span>
             <span class="n">result</span><span class="p">[</span><span class="mi">1</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">transport</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">bulk_density</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iso</span><span class="o">.</span><span class="n">dq_dC</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">*</span> <span class="n">dcdt</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+                <span class="n">transport</span>
+                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">bulk_density</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">dq_dC</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">*</span> <span class="n">dcdt</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">result</span><span class="p">[</span><span class="mi">1</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="n">transport</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">bulk_density</span> <span class="o">*</span> <span class="n">dqdt</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
 
         <span class="c1"># solid phase</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">LOCAL_EQUILIBRIUM</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">kinetics</span> <span class="o">==</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">LOCAL_EQUILIBRIUM</span><span class="p">:</span>
             <span class="k">pass</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">LINEAR_DRIVING_FORCE</span><span class="p">:</span>
-            <span class="n">result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">dqdt</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_ldf</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iso</span><span class="o">.</span><span class="n">q</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">-</span> <span class="n">q</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">kinetics</span> <span class="o">==</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">LINEAR_DRIVING_FORCE</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">dqdt</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_ldf</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">q</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">-</span> <span class="n">q</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">dqdt</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_ldf</span> <span class="o">*</span> <span class="n">c</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iso</span><span class="o">.</span><span class="n">q</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">-</span> <span class="n">q</span><span class="p">)</span>
+            <span class="n">result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">dqdt</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_ldf</span> <span class="o">*</span> <span class="n">c</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">q</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">-</span> <span class="n">q</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="mi">0</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">ydot</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">cj</span><span class="p">,</span> <span class="n">jac</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build jacobian of _residual.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Build jacobian of _residual."""</span>
         <span class="n">C</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
         <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_vars</span><span class="p">()</span>
         <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
@@ -214,25 +236,25 @@
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span>
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">first_derivative</span>
             <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span>
-            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">DL</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">axial_diffusion</span>
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">second_derivative</span>
         <span class="p">)</span>
         <span class="n">J</span><span class="p">[</span><span class="mi">1</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">d_transport</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">LOCAL_EQUILIBRIUM</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">kinetics</span> <span class="o">==</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">LOCAL_EQUILIBRIUM</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">):</span>
                 <span class="n">J</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">cj</span> <span class="o">*</span> <span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span>
-                    <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">get_bulk_density</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">iso</span><span class="o">.</span><span class="n">dq_dC</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">get_bulk_density</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">dq_dC</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
                 <span class="p">)</span>
 
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">LINEAR_DRIVING_FORCE</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">kinetics</span> <span class="o">==</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">LINEAR_DRIVING_FORCE</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">):</span>
                 <span class="n">J</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">cj</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span>
                 <span class="n">J</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">cj</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">get_bulk_density</span><span class="p">()</span>
 
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">):</span>
-                <span class="n">J</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">k_ldf</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">iso</span><span class="o">.</span><span class="n">dq_dC</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">J</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">k_ldf</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">dq_dC</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
                 <span class="n">J</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_ldf</span> <span class="o">+</span> <span class="n">cj</span>
 
         <span class="k">else</span><span class="p">:</span>
@@ -242,7 +264,8 @@
 
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">):</span>
                 <span class="n">J</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">k_ldf</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iso</span><span class="o">.</span><span class="n">q</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">iso</span><span class="o">.</span><span class="n">dq_dC</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+                    <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">k_ldf</span>
+                    <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">q</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">dq_dC</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
                     <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_ldf</span> <span class="o">*</span> <span class="n">q</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
                 <span class="p">)</span>
                 <span class="n">J</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_ldf</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">cj</span>
@@ -252,22 +275,22 @@
         <span class="k">return</span> <span class="mi">0</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_algebraic_vars_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create list identifying which equations are algebraic.</span>
+<span class="w">        </span><span class="sd">"""Create list identifying which equations are algebraic.</span>
 
 <span class="sd">        Only the inlet boundary condition for this model.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_initial_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C_init</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">C_in</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">q_init</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return (y0, ydot0) consistent with the algebraic constraint.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_initial_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Return (y0, ydot0) consistent with the algebraic constraint."""</span>
         <span class="n">C0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_concentration</span><span class="p">)</span>
         <span class="n">C0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inlet_bc</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">evaluate_gradient</span><span class="p">(</span><span class="n">C0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
         <span class="k">if</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">LINEAR_DRIVING_FORCE</span>
-            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">SECOND_ORDER</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">kinetics</span> <span class="o">==</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">LINEAR_DRIVING_FORCE</span>
+            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">kinetics</span> <span class="o">==</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">SECOND_ORDER</span>
         <span class="p">):</span>
-            <span class="n">q0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="n">q_init</span><span class="p">)</span>
-            <span class="n">q0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iso</span><span class="o">.</span><span class="n">q</span><span class="p">(</span>
+            <span class="n">q0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">initial_mass_fraction</span><span class="p">)</span>
+            <span class="n">q0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">q</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">inlet_concentration</span>
             <span class="p">)</span>  <span class="c1"># inlet node at equilibrium with feed</span>
             <span class="n">y0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">C0</span><span class="p">,</span> <span class="n">q0</span><span class="p">])</span>
@@ -279,23 +302,23 @@
 
 <div class="viewcode-block" id="AdvectionDiffusionAdsorption.solve">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.AdvectionDiffusionAdsorption.solve">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t_span</span><span class="p">,</span> <span class="n">t_eval</span><span class="p">,</span> <span class="n">C_in</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">C_init</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">q_init</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Integrate from t_span[0] to t_span[1], returning results at t_eval.&quot;&quot;&quot;</span>
-        <span class="n">y0</span><span class="p">,</span> <span class="n">ydot0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initial_conditions</span><span class="p">(</span><span class="n">C_init</span><span class="p">,</span> <span class="n">C_in</span><span class="p">,</span> <span class="n">q_init</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Integrate from t_span[0] to t_span[1], returning results at t_eval."""</span>
+        <span class="n">y0</span><span class="p">,</span> <span class="n">ydot0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initial_conditions</span><span class="p">()</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span>
             <span class="n">residual</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_residual</span><span class="p">,</span>
             <span class="n">jacobian</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_jacobian</span><span class="p">,</span>
             <span class="n">y0</span><span class="o">=</span><span class="n">y0</span><span class="p">,</span>
             <span class="n">yp0</span><span class="o">=</span><span class="n">ydot0</span><span class="p">,</span>
-            <span class="n">t_span</span><span class="o">=</span><span class="n">t_span</span><span class="p">,</span>
-            <span class="n">t_eval</span><span class="o">=</span><span class="n">t_eval</span><span class="p">,</span>
+            <span class="n">t_span</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">tolist</span><span class="p">()],</span>
+            <span class="n">t_eval</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
             <span class="n">algebraic_vars_idx</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_algebraic_vars_idx</span><span class="p">(),</span>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">flag</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;IDA solver failed with flag </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">flag</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">"IDA solver failed with flag </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">flag</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span>
             <span class="p">)</span>
 
         <span class="c1"># result.values.y has shape (n_out, n_vars); skip the t=t_span[0] row</span>
@@ -304,13 +327,15 @@
         <span class="n">C_out</span> <span class="o">=</span> <span class="n">y_out</span><span class="p">[:,</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">]</span>  <span class="c1"># (n_times, N)</span>
 
         <span class="k">if</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">LINEAR_DRIVING_FORCE</span>
-            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">SECOND_ORDER</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">kinetics</span> <span class="o">==</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">LINEAR_DRIVING_FORCE</span>
+            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">kinetics</span> <span class="o">==</span> <span class="n">AdsorptionKinetics</span><span class="o">.</span><span class="n">SECOND_ORDER</span>
         <span class="p">):</span>
             <span class="n">q_out</span> <span class="o">=</span> <span class="n">y_out</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="p">:]</span>  <span class="c1"># (n_times, N)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Local equilibrium: recover q from C at each time step</span>
-            <span class="n">q_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">iso</span><span class="o">.</span><span class="n">q</span><span class="p">(</span><span class="n">C_out</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t_eval</span><span class="p">))])</span>
+            <span class="n">q_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">q</span><span class="p">(</span><span class="n">C_out</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">time</span><span class="p">))]</span>
+            <span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">nodes</span><span class="p">,</span> <span class="n">C_out</span><span class="p">,</span> <span class="n">q_out</span></div>
 </div>

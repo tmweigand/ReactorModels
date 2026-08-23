@@ -74,26 +74,47 @@
            <div itemprop="articleBody">
              
   <h1>Source code for reactormodels.numerics.helpers</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;helpers.py&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""helpers.py"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayLike</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;convergence_order&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"convergence_order"</span><span class="p">,</span> <span class="s2">"compute_rmse"</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="convergence_order">
 <a class="viewcode-back" href="../../../api/reactormodels.numerics.html#reactormodels.numerics.convergence_order">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">convergence_order</span><span class="p">(</span><span class="n">h</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">error</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Estimate observed order of convergence from grid spacing and error arrays.</span>
+<span class="w">    </span><span class="sd">"""Estimate observed order of convergence from grid spacing and error arrays.</span>
 
 <span class="sd">    Both arrays must be ordered the same way (e.g. by decreasing h).</span>
 <span class="sd">    Returns an array the same length as the inputs, with NaN for the first entry.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
     <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
     <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">h</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
     <span class="n">order</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">error</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">error</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">h</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">h</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
     <span class="k">return</span> <span class="n">order</span></div>
+
+
+
+<div class="viewcode-block" id="compute_rmse">
+<a class="viewcode-back" href="../../../api/reactormodels.numerics.html#reactormodels.numerics.compute_rmse">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_rmse</span><span class="p">(</span>
+    <span class="n">numerical</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">reference</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Compute the root mean square error between numerical and reference values."""</span>
+    <span class="n">numerical_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">numerical</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">reference_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">numerical_array</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">reference_array</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"numerical and reference must have the same shape, "</span>
+            <span class="sa">f</span><span class="s2">"got </span><span class="si">{</span><span class="n">numerical_array</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">reference_array</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">."</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">numerical_array</span> <span class="o">-</span> <span class="n">reference_array</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)))</span></div>
 
 </pre></div>
 

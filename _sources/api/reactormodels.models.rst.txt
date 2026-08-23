@@ -49,10 +49,34 @@ reactormodels.models.boundary\_conditions module
    :show-inheritance:
    :undoc-members:
 
+reactormodels.models.intraparticle\_transport module
+----------------------------------------------------
+
+.. automodule:: reactormodels.models.intraparticle_transport
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 reactormodels.models.isotherm module
 ------------------------------------
 
 .. automodule:: reactormodels.models.isotherm
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+reactormodels.models.numeric\_model\_base module
+------------------------------------------------
+
+.. automodule:: reactormodels.models.numeric_model_base
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+reactormodels.models.psdm module
+--------------------------------
+
+.. automodule:: reactormodels.models.psdm
    :members:
    :show-inheritance:
    :undoc-members:
