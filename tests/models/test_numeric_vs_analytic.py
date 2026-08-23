@@ -18,7 +18,7 @@ def test_thomas():
     k = 1
     K = 5000
     initial_concentration = 0
-    diffusion = 1e-20
+    axial_diffusion = 1e-20
 
     isotherm = reactormodels.models.LangmuirIsotherm(K=K, q_m=q_m)
 
@@ -33,7 +33,7 @@ def test_thomas():
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
-        chemical=reactormodels.Chemical(diffusion=diffusion),
+        chemical=reactormodels.Chemical(axial_diffusion=axial_diffusion),
         feed_concentrations=feed_concentrations,
         initial_concentration=initial_concentration,
         flow_rate=flow_rate,
@@ -41,17 +41,17 @@ def test_thomas():
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
-        column=column, n_interior_points=5, n_elements=10, add_inlet=True
+        domain_length=column.length, n_interior_points=5, n_elements=10, add_inlet=True
     )
 
     model = reactormodels.models.AdvectionDiffusionAdsorption(
         breakthrough=breakthrough,
         isotherm=isotherm,
         numerics=numerics,
-        mode=reactormodels.models.AdsorptionKinetics.SECOND_ORDER,
+        kinetics=reactormodels.models.AdsorptionKinetics.SECOND_ORDER,
         k_ldf=k,
     )
-    x, C, q = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
+    x, C, _ = model.solve()
 
     thomas = reactormodels.models.ThomasLangmuir(
         breakthrough=breakthrough, langmuir_constant=K, sorbent_capacity=q_m, k_Th=k

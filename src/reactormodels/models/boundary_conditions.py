@@ -10,7 +10,9 @@ class InletBC:
     and implement the `residual` and `apply` methods.
     """
 
-    def __init__(self, inlet_concentration, velocity=None, diffusion=None):
+    def __init__(
+        self, inlet_concentration=None, node: int = 0, velocity=None, diffusion=None
+    ):
         raise NotImplementedError
 
     def apply(self, gradient_concentration_0: None | float = None):
@@ -35,15 +37,20 @@ class DirichletBC(InletBC):
         C(0, t) = C_in
     """
 
-    def __init__(self, inlet_concentration, velocity=None, diffusion=None):
+    def __init__(
+        self, inlet_concentration, node: int = 0, velocity=None, diffusion=None
+    ):
         self.inlet_concentration = inlet_concentration
+        self.node = node
 
     def apply(self, gradient_concentration_0: None | float = None):
         """Return the value on the boundary"""
         return self.inlet_concentration
 
     def residual(
-        self, concentration_0: float, gradient_concentration_0: None | float = None
+        self,
+        concentration_0: float,
+        gradient_concentration_0: None | float = None,
     ):
         """Compute the residual at inlet boundary."""
         return concentration_0 - self.inlet_concentration
@@ -51,7 +58,7 @@ class DirichletBC(InletBC):
     def jacobian_row(self, A_row: np.ndarray) -> np.ndarray:
         """dF/dC: residual = C[0] - C_in, so only the C[0] entry is non-zero."""
         row = np.zeros_like(A_row)
-        row[0] = 1.0
+        row[self.node] = 1.0
         return row
 
 
@@ -62,7 +69,7 @@ class DanckwertsBC(InletBC):
         v*C_in = v*C(0) - DL*(dC/dx)|_0
     """
 
-    def __init__(self, inlet_concentration, velocity, diffusion):
+    def __init__(self, inlet_concentration, velocity, diffusion, node: int = 0):
         self.inlet_concentration = inlet_concentration
         self.velocity = velocity
         self.diffusion = diffusion
@@ -93,3 +100,31 @@ class DanckwertsBC(InletBC):
         row = self.diffusion * A_row
         row[0] -= self.velocity
         return row
+
+
+class SymmetryBC(InletBC):
+    """Zero gradient boundary condition at particle center.
+
+    Enforces dC/dr = 0 at r=0
+    """
+
+    def __init__(self, node: int = 0, velocity=None, diffusion=None):
+        self.node = node
+
+    def apply(self, gradient_concentration_0: None | float = None):
+        """Symmetry does not set a concentration value directly."""
+        raise NotImplementedError("SymmetryBC has no direct value; use residual().")
+
+    def residual(
+        self,
+        concentration_0: float | None = None,
+        gradient_concentration_0: None | float = None,
+    ):
+        """Compute the residual: the gradient itself, which must equal zero."""
+        if gradient_concentration_0 is None:
+            raise ValueError("gradient_concentration_0 must be provided for SymmetryBC")
+        return gradient_concentration_0
+
+    def jacobian_row(self, A_row: np.ndarray) -> np.ndarray:
+        """dF/dC: residual = A_row @ C, so the Jacobian row is A_row itself."""
+        return A_row

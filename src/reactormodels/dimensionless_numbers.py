@@ -176,7 +176,7 @@ def _gnielinski(reynolds: float, schmidt: float, bed_porosity: float | None) -> 
     peclet = reynolds * schmidt
 
     if peclet <= 500:
-        raise ValueError("Gnielinski requires Reynolds * Schmidt > 500.")
+        raise ValueError("Gnielinski requires Peclet > 500.")
     if schmidt >= 12000:
         raise ValueError("Gnielinski requires Schmidt < 12000.")
 

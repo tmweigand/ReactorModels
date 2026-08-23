@@ -6,7 +6,7 @@ import numpy as np
 
 
 def run_demo(
-    show: bool = True, save_path: str | Path = "data_out/analytic_models_demo.png"
+    show: bool = False, save_path: str | Path = "data_out/analytic_models_demo.png"
 ):
     """Plot breakthrough curves from analytical solutions."""
     time = np.linspace(1e-10, 10, 200)
@@ -24,7 +24,8 @@ def run_demo(
         diameter=diameter,
         porosity=porosity,
         bulk_density=bulk_density,
-        particle_density=particle_density,
+        media=reactormodels.Media(particle_density=particle_density),
+        water=reactormodels.Water(),
     )
 
     breakthrough = reactormodels.Breakthrough(
@@ -32,6 +33,7 @@ def run_demo(
         flow_rate=flow_rate,
         feed_concentrations=feed_concentrations,
         time=time,
+        chemical=reactormodels.Chemical(axial_diffusion=diffusion),
     )
 
     ogata_banks = reactormodels.models.OgataBanks(
@@ -59,7 +61,7 @@ def run_demo(
 
     thomas_rectangular = reactormodels.models.ThomasRectangular(
         breakthrough=breakthrough,
-        k_Th=k_BA * length / breakthrough.get_superficial_velocity(),
+        k_Th=k_BA * length / breakthrough.superficial_velocity,
         sorbent_capacity=15,
     )
 
