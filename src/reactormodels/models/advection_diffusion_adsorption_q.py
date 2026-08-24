@@ -32,25 +32,30 @@ class AdvectionDiffusionAdsorptionSolid:
         breakthrough: Breakthrough,
         isotherm: Isotherm,
         numerics: NumericsConfig,
-        mode: AdsorptionKinetics = AdsorptionKinetics.LOCAL_EQUILIBRIUM,
+        kinetics: AdsorptionKinetics = AdsorptionKinetics.LOCAL_EQUILIBRIUM,
         k_ldf: float = 0,
         inlet_bc: Type[InletBC] = DanckwertsBC,
     ):
         self.column = breakthrough.column
         self.breakthrough = breakthrough
         self.velocity = breakthrough.interstitial_velocity
-        self.DL = breakthrough.chemical.diffusion
+        self.axial_diffusion = breakthrough.chemical.axial_diffusion
         self.inlet_concentration = breakthrough.mean_feed_concentration()
         self.initial_concentration = breakthrough.initial_concentration
         self.iso = isotherm
         self.numerics = numerics
-        self.mode = mode
+        self.kinetics = kinetics
         self.k_ldf = k_ldf
-        self.inlet_bc = inlet_bc(self.inlet_concentration, self.velocity, self.DL)
+        self.inlet_bc = inlet_bc(
+            self.inlet_concentration,
+            node=0,
+            velocity=self.velocity,
+            diffusion=self.axial_diffusion,
+        )
         self.N = len(self.numerics.collocation.nodes)
 
         if (
-            mode
+            kinetics
             in (
                 AdsorptionKinetics.LINEAR_DRIVING_FORCE,
                 AdsorptionKinetics.SECOND_ORDER,
@@ -64,15 +69,15 @@ class AdvectionDiffusionAdsorptionSolid:
     def _n_vars(self) -> int:
         """Total length of the IDA state vector."""
         if (
-            self.mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE
-            or self.mode == AdsorptionKinetics.SECOND_ORDER
+            self.kinetics == AdsorptionKinetics.LINEAR_DRIVING_FORCE
+            or self.kinetics == AdsorptionKinetics.SECOND_ORDER
         ):
             return 2 * self.N
         return self.N
 
     def _split(self, y: np.ndarray):
         """Return (C, q) where q is None for LOCAL_EQUILIBRIUM."""
-        if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
+        if self.kinetics == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
             C = np.empty(self.N)
             C[0] = y[0]
 
@@ -87,7 +92,7 @@ class AdvectionDiffusionAdsorptionSolid:
         c, q = self._split(y)
         dcdt, dqdt = self._split(ydot)
 
-        if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
+        if self.kinetics == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
             c[1:] = self.iso.C(q)
             dcdt[1:] = self.iso.dC_dq(q) * dqdt
 
@@ -103,18 +108,18 @@ class AdvectionDiffusionAdsorptionSolid:
             * self.velocity
             * self.numerics.evaluate_gradient(c)[1:]
             - self.column.porosity
-            * self.DL
+            * self.axial_diffusion
             * self.numerics.evaluate_second_derivative(c)[1:]
         )
-        if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
+        if self.kinetics == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
             result[1 : self.N] = transport + self.column.bulk_density * dqdt
         else:
             result[1 : self.N] = transport + self.column.bulk_density * dqdt[1:]
 
         # solid phase
-        if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
+        if self.kinetics == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
             pass
-        elif self.mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE:
+        elif self.kinetics == AdsorptionKinetics.LINEAR_DRIVING_FORCE:
             result[self.N :] = dqdt - self.k_ldf * (self.iso.q(c) - q)
         else:
             result[self.N :] = dqdt - self.k_ldf * c * (self.iso.q(c) - q)
@@ -138,19 +143,19 @@ class AdvectionDiffusionAdsorptionSolid:
             * self.velocity
             * self.numerics.collocation.first_derivative
             + self.column.porosity
-            * self.DL
+            * self.axial_diffusion
             * self.numerics.collocation.second_derivative
         )
         J[1 : self.N, : self.N] = -d_transport[1:, :]
 
-        if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
+        if self.kinetics == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
             for i in range(1, self.N):
                 J[i, i] += cj * (
                     self.column.porosity
                     + self.column.get_bulk_density() * self.iso.dq_dC(C[i])
                 )
 
-        elif self.mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE:
+        elif self.kinetics == AdsorptionKinetics.LINEAR_DRIVING_FORCE:
             for i in range(1, self.N):
                 J[i, i] += cj * self.column.porosity
                 J[i, self.N + i] += cj * self.column.get_bulk_density()
@@ -182,16 +187,16 @@ class AdvectionDiffusionAdsorptionSolid:
         """
         return [0]
 
-    def _initial_conditions(self, C_init: float, q_init: float):
+    def _initial_conditions(self):
         """Return (y0, ydot0) consistent with the algebraic constraint."""
-        C0 = np.full(self.N, C_init)
+        C0 = np.full(self.N, self.initial_concentration)
         C0[0] = self.inlet_bc.apply(self.numerics.collocation.evaluate_gradient(C0, 0))
 
-        if self.mode == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
-            q0 = np.full(self.N - 1, q_init)
+        if self.kinetics == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
+            q0 = np.full(self.N - 1, self.breakthrough.initial_mass_fraction)
             y0 = np.concatenate(([C0[0]], q0))
         else:
-            q0 = np.full(self.N, q_init)
+            q0 = np.full(self.N, self.breakthrough.initial_mass_fraction)
             q0[0] = self.iso.q(
                 self.inlet_concentration
             )  # inlet node at equilibrium with feed
@@ -200,17 +205,17 @@ class AdvectionDiffusionAdsorptionSolid:
         ydot0 = np.zeros_like(y0)
         return y0, ydot0
 
-    def solve(self, t_span, t_eval, C_init=0.0, q_init=0.0):
+    def solve(self):
         """Integrate from t_span[0] to t_span[1], returning results at t_eval."""
-        y0, ydot0 = self._initial_conditions(C_init, q_init)
+        y0, ydot0 = self._initial_conditions()
 
         result = self.numerics.integrate(
             residual=self._residual,
             # jacobian=self._jacobian,
             y0=y0,
             yp0=ydot0,
-            t_span=t_span,
-            t_eval=t_eval,
+            t_span=[0, self.breakthrough.time.tolist()],
+            t_eval=self.breakthrough.time,
             algebraic_vars_idx=self._algebraic_vars_idx(),
         )
 
@@ -223,8 +228,8 @@ class AdvectionDiffusionAdsorptionSolid:
         y_out = result.values.y[1:]  # (n_times, n_vars)
 
         if (
-            self.mode == AdsorptionKinetics.LINEAR_DRIVING_FORCE
-            or self.mode == AdsorptionKinetics.SECOND_ORDER
+            self.kinetics == AdsorptionKinetics.LINEAR_DRIVING_FORCE
+            or self.kinetics == AdsorptionKinetics.SECOND_ORDER
         ):
             q_out = y_out[:, self.N :]  # (n_times, N)
             C_out = y_out[:, : self.N]

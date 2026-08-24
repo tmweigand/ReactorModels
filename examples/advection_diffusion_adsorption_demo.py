@@ -7,7 +7,7 @@ import numpy as np
 
 
 def run_demo(
-    show: bool = True,
+    show: bool = False,
     save_path: str | Path = "data_out/advection_diffusion_adsorption_demo.png",
 ):
     """Plot the numerical collocation solution against the Ogata-Banks solution."""
@@ -27,7 +27,7 @@ def run_demo(
 
     media = reactormodels.Media()
     water = reactormodels.Water()
-    chemical = reactormodels.Chemical(diffusion=diffusion)
+    chemical = reactormodels.Chemical(axial_diffusion=diffusion)
 
     column = reactormodels.Column(
         media=media,
@@ -47,16 +47,16 @@ def run_demo(
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
-        column=column, n_interior_points=5, n_elements=20, add_inlet=True
+        domain_length=column.length, n_interior_points=5, n_elements=20, add_inlet=True
     )
 
     model = reactormodels.models.AdvectionDiffusionAdsorptionSolid(
         breakthrough=breakthrough,
         isotherm=isotherm,
         numerics=numerics,
-        mode=reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
+        kinetics=reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
     )
-    x, C, q = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
+    x, C, q = model.solve()
 
     ogata_banks = reactormodels.models.OgataBanks(
         breakthrough=breakthrough, diffusion=diffusion, retardation=R

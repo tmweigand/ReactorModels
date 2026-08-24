@@ -6,7 +6,7 @@ import numpy as np
 
 
 def run_demo(
-    show: bool = True, save_path: str | Path = "data_out/advection_diffusion_demo.png"
+    show: bool = False, save_path: str | Path = "data_out/advection_diffusion_demo.png"
 ):
     """Plot the numerical collocation solution against the Ogata-Banks solution."""
     superficial_velocity = 1.0  # m/s
@@ -19,28 +19,31 @@ def run_demo(
     initial_concentration = 0
 
     column = reactormodels.Column(
-        diameter=diameter, length=domain_length, porosity=porosity
+        diameter=diameter,
+        length=domain_length,
+        porosity=porosity,
+        media=reactormodels.Media(),
+        water=reactormodels.Water(),
     )
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
+        initial_concentration=initial_concentration,
         feed_concentrations=C_in,
         superficial_velocity=superficial_velocity,
         time=t_eval,
+        chemical=reactormodels.Chemical(axial_diffusion=diffusion),
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
-        column=column, n_interior_points=5, n_elements=20, add_inlet=True
+        domain_length=column.length, n_interior_points=5, n_elements=20, add_inlet=True
     )
 
     model = reactormodels.models.AdvectionDiffusion(
-        column=column,
         breakthrough=breakthrough,
-        diffusion=diffusion,
         numerics=numerics,
-        initial_concentration=initial_concentration,
     )
-    x, C = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
+    x, C = model.solve()
 
     ogata_banks = reactormodels.models.OgataBanks(
         breakthrough=breakthrough, diffusion=diffusion

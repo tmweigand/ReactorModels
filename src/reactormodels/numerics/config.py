@@ -4,7 +4,6 @@ import numpy as np
 
 from .orthogonal_collocation import OrthogonalCollocation
 from .time_integrator import TimeIntegrator
-from ..properties.column import Column
 
 
 class NumericsConfig:
@@ -19,7 +18,7 @@ class NumericsConfig:
 
     def __init__(
         self,
-        column: Column,
+        domain_length: float,
         n_interior_points: int = 5,
         alpha: float = 0.0,
         beta: float = 0.0,
@@ -37,6 +36,7 @@ class NumericsConfig:
         self.rtol = rtol
         self.atol = atol
         self.max_steps = max_steps
+        self.domain_length = domain_length
 
         if self.n_interior_points < 1:
             raise ValueError("n_interior_points must be >= 1")
@@ -50,7 +50,7 @@ class NumericsConfig:
             raise ValueError("max_steps must be >= 1")
 
         self.collocation = OrthogonalCollocation(
-            domain_length=column.length,
+            domain_length=self.domain_length,
             n_interior_points=self.n_interior_points,
             alpha=self.alpha,
             beta=self.beta,
@@ -59,6 +59,9 @@ class NumericsConfig:
         )
         self.evaluate_gradient = self.collocation.evaluate_gradient
         self.evaluate_second_derivative = self.collocation.evaluate_second_derivative
+        self.evaluate_radial_operator = self.collocation.evaluate_radial_operator
+        self.spatial_integrate = self.collocation.integrate
+        self.average = self.collocation.average
 
         self.time_integrator = TimeIntegrator(self.rtol, self.atol, self.max_steps)
 

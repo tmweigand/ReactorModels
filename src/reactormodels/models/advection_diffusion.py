@@ -5,10 +5,11 @@ import numpy as np
 
 from ..properties.breakthrough import Breakthrough
 from ..numerics.config import NumericsConfig
+from .numeric_model_base import NumericModel
 from .boundary_conditions import InletBC, DirichletBC
 
 
-class AdvectionDiffusion:
+class AdvectionDiffusion(NumericModel):
     """Advection-diffusion model.
 
     Governing equation:
@@ -16,21 +17,42 @@ class AdvectionDiffusion:
 
     """
 
+    _param_names = (
+        "velocity",
+        "axial_diffusion",
+    )
+
     def __init__(
         self,
         breakthrough: Breakthrough,
         numerics: NumericsConfig,
         inlet_bc: Type[InletBC] = DirichletBC,
     ):
+
+        # Physical parameters
+        self.breakthrough = breakthrough
         self.velocity = breakthrough.interstitial_velocity
-        self.diffusion = breakthrough.chemical.diffusion
-        self.inlet_concentration = breakthrough.mean_feed_concentration()
+        self.axial_diffusion = breakthrough.chemical.axial_diffusion
+
+        # Initial conditions
         self.initial_concentration = breakthrough.initial_concentration
-        self.numerics = numerics
+
+        # Boundary conditions
+        self.inlet_concentration = breakthrough.mean_feed_concentration()
         self.inlet_bc = inlet_bc(
-            self.inlet_concentration, self.velocity, self.diffusion
+            breakthrough.mean_feed_concentration(),
+            node=0,
+            velocity=self.velocity,
+            diffusion=self.axial_diffusion,
         )
+
+        # Numerics
+        self.numerics = numerics
+
+        # Discretization
         self.N = len(self.numerics.collocation.nodes)
+
+        self.assert_parameters_set()
 
     def _residual(self, t, C, Cdot, result):
         """IDA residual callback.  Writes into `result` in-place."""
@@ -42,7 +64,7 @@ class AdvectionDiffusion:
         # Inter nodes and outlet
         rhs = -self.velocity * self.numerics.evaluate_gradient(
             C
-        ) + self.diffusion * self.numerics.evaluate_second_derivative(C)
+        ) + self.axial_diffusion * self.numerics.evaluate_second_derivative(C)
         result[1:] = Cdot[1:] - rhs[1:]
 
         return 0
@@ -59,7 +81,7 @@ class AdvectionDiffusion:
         # Rows 1:: dF/dC = -pde_jac,  dF/dCdot = I  => full J row = -pde_jac + cj*I
         pde_jac = (
             -self.velocity * self.numerics.collocation.first_derivative
-            + self.diffusion * self.numerics.collocation.second_derivative
+            + self.axial_diffusion * self.numerics.collocation.second_derivative
         )  # (N,N)
         J[1:, :] = -pde_jac[1:, :]  # dF/dC contribution
         for i in range(1, self.N):
@@ -82,7 +104,7 @@ class AdvectionDiffusion:
         """
         return [0]
 
-    def solve(self, t_span, t_eval):
+    def solve(self):
         """Integrate from t_span[0] to t_span[1], returning results at t_eval."""
         c, dcdt = self._initial_conditions()
         result = self.numerics.integrate(
@@ -90,8 +112,8 @@ class AdvectionDiffusion:
             jacobian=self._jacobian,
             y0=c,
             yp0=dcdt,
-            t_span=t_span,
-            t_eval=t_eval,
+            t_span=[0, self.breakthrough.time.tolist()],
+            t_eval=self.breakthrough.time,
             algebraic_vars_idx=self._algebraic_vars_idx(),
         )
         if result.flag < 0:

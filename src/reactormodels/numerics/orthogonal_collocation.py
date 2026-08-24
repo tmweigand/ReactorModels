@@ -221,6 +221,18 @@ class OrthogonalCollocation:
         else:
             return self.second_derivative[node, :] @ f
 
-    def integrate(self, f: np.ndarray) -> float:
-        """Return the weighted integral of f over [0, L] via quadrature weights."""
-        return self.weights @ f
+    def integrate(
+        self,
+        f: np.ndarray,
+        axis: int = -1,
+    ) -> np.ndarray | float:
+        """Return the weighted integral along the specified axis."""
+        return np.tensordot(f, self.weights, axes=(axis, 0))
+
+    def average(
+        self,
+        f: np.ndarray,
+        axis: int = -1,
+    ) -> np.ndarray | float:
+        """Return the weighted average along the specified axis."""
+        return self.integrate(f, axis=axis) / self.domain_length

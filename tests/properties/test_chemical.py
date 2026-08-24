@@ -14,7 +14,7 @@ def test_chemical_stores_properties():
         solubility=10.0,
         vapor_pressure=0.5,
         boiling_point=100.0,
-        diffusion=2.0,
+        axial_diffusion=2.0,
     )
 
     assert chem.name == "Example chemical"
@@ -24,7 +24,7 @@ def test_chemical_stores_properties():
     assert chem.solubility == 10.0
     assert chem.vapor_pressure == 0.5
     assert chem.boiling_point == 100.0
-    assert chem.diffusion == 2.0
+    assert chem.axial_diffusion == 2.0
 
 
 def test_liquid_diffusion_coefficient():

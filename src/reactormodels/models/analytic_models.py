@@ -277,7 +277,7 @@ class ThomasRectangular(AnalyticModels):
             time = self.breakthrough.bed_volumes_to_time()
         elif time is not None:
             warnings.warn(
-                "Thomas rectangular expresses time in bed volumes; converting."
+                "Thomas rectangular expresses time in bed volumes...converting."
             )
         return self.model(x, time)
 

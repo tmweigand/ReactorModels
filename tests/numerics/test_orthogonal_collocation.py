@@ -268,3 +268,8 @@ def test_radial_deriv_linear(oc5):
     """Gradient of a linear function x should be 2/x."""
     result = oc5.evaluate_radial_operator(oc5.nodes)
     np.testing.assert_allclose(result, 2 / oc5.nodes, atol=1e-10)
+
+
+def test_average(oc5):
+    """Average of sin x"""
+    assert oc5.integrate(np.sin(oc5.nodes)) == pytest.approx(0.4597, abs=1e-5)

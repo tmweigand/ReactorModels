@@ -15,26 +15,23 @@ from reactormodels.fixtures import make_breakthrough
 
 def _run_case(n_interior_points: int, n_elements: int, t_end: float) -> dict:
     """Solve one case and compare against the Ogata-Banks analytical solution."""
-    breakthrough = make_breakthrough(t_end=t_end)
+    breakthrough = make_breakthrough(time=np.array([t_end]))
     numerics = NumericsConfig(
-        column=breakthrough.column,
+        domain_length=breakthrough.column.length,
         n_interior_points=n_interior_points,
         n_elements=n_elements,
-        add_inlet=True,
     )
     model = reactormodels.models.AdvectionDiffusion(
         breakthrough=breakthrough, numerics=numerics
     )
 
     start = perf_counter()
-    x, concentration_history = model.solve(
-        t_span=(0.0, t_end), t_eval=np.array([t_end])
-    )
+    x, concentration_history = model.solve()
     cpu_time_seconds = perf_counter() - start
     concentration_numerical = concentration_history[-1]
 
     ogata_banks = reactormodels.models.OgataBanks(
-        breakthrough=breakthrough, diffusion=breakthrough.chemical.diffusion
+        breakthrough=breakthrough, diffusion=breakthrough.chemical.axial_diffusion
     )
 
     error = concentration_numerical - ogata_banks.spatial_profile(x=x, time=t_end)
@@ -54,14 +51,16 @@ def _run_case(n_interior_points: int, n_elements: int, t_end: float) -> dict:
 
 
 def run_demo(
-    show: bool = True,
+    show: bool = False,
     save_path: str | Path = "data_out/ogata_banks_convergence_demo.png",
 ):
     """Sweep numerical settings and plot error/work-precision vs Ogata-Banks."""
     t_end = 1.0
-    interior_points_sweep = (1, 3, 5, 7)
+    interior_points_sweep = (1, 3, 5, 7, 10)
     elements_sweep = (5, 10, 20, 40)
-    colors = {1: "#386cb0", 3: "#f27f0c", 5: "#4daf4a", 7: "#c83737"}
+
+    cmap = plt.get_cmap("tab10")
+    colors = {value: cmap(i) for i, value in enumerate(interior_points_sweep)}
 
     results = [
         _run_case(n_interior_points, n_elements, t_end)
@@ -81,10 +80,10 @@ def run_demo(
             for r, order in zip(group, orders):
                 r[f"order_{key.split('_')[0]}"] = order
 
-    breakthrough = make_breakthrough(t_end=t_end)
+    breakthrough = make_breakthrough(time=t_end)
     x_analytic = np.linspace(0.0, breakthrough.column.length, 500)
     ogata_banks = reactormodels.models.OgataBanks(
-        breakthrough=breakthrough, diffusion=breakthrough.chemical.diffusion
+        breakthrough=breakthrough, diffusion=breakthrough.chemical.axial_diffusion
     )
     concentration_analytic = ogata_banks.spatial_profile(x=x_analytic, time=t_end)
 

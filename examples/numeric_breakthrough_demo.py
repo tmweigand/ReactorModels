@@ -7,7 +7,7 @@ import numpy as np
 
 
 def run_demo(
-    show: bool = True,
+    show: bool = False,
     save_path: str | Path = "data_out/numeric_breakthrough_demo.png",
 ):
     """Plot the numerical collocation solution against the Bohart-Adams solution."""
@@ -29,35 +29,35 @@ def run_demo(
     isotherm = reactormodels.models.LangmuirIsotherm(K=K, q_m=q_m)
 
     column = reactormodels.Column(
+        diameter=diameter,
         length=length,
         porosity=porosity,
         bulk_density=bulk_density,
-        diameter=diameter,
-        particle_density=particle_density,
+        media=reactormodels.Media(particle_density=particle_density),
+        water=reactormodels.Water(),
     )
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
+        initial_concentration=initial_concentration,
         feed_concentrations=feed_concentrations,
         flow_rate=flow_rate,
         time=t_eval,
+        chemical=reactormodels.Chemical(axial_diffusion=diffusion),
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
-        column=column, n_interior_points=5, n_elements=20, add_inlet=True
+        domain_length=column.length, n_interior_points=5, n_elements=20, add_inlet=True
     )
 
     model = reactormodels.models.AdvectionDiffusionAdsorption(
-        column=column,
         breakthrough=breakthrough,
-        diffusion=diffusion,
-        initial_concentration=initial_concentration,
         isotherm=isotherm,
         numerics=numerics,
-        mode=reactormodels.models.AdsorptionKinetics.SECOND_ORDER,
+        kinetics=reactormodels.models.AdsorptionKinetics.SECOND_ORDER,
         k_ldf=k,
     )
-    x, C, q = model.solve(t_span=(0, t_eval[-1]), t_eval=t_eval)
+    x, C, q = model.solve()
 
     bohart_adams = reactormodels.models.BohartAdams(
         breakthrough=breakthrough, k_BA=k, sorbent_capacity=q_m
