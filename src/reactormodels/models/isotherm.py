@@ -29,6 +29,10 @@ class Isotherm:
         """Calculate derivative of liquid concentration by sorbed mass concentration."""
         raise NotImplementedError
 
+    def d2C_dq2(self, q: float | np.ndarray) -> np.ndarray:
+        """Calculate the second derivative."""
+        raise NotImplementedError
+
 
 class LangmuirIsotherm(Isotherm):
     """Langmuir isotherm:
@@ -76,6 +80,11 @@ class LangmuirIsotherm(Isotherm):
         """Calculate derivative of liquid concentration by sorbed mass concentration."""
         q = np.asarray(q, dtype=float)
         return self.q_m / (self.K * (self.q_m - q) ** 2)
+
+    def d2C_dq2(self, q: float | np.ndarray) -> np.ndarray:
+        """Calculate the second derivative."""
+        q = np.asarray(q, dtype=float)
+        return 2 * self.q_m / (self.K * (self.q_m - q) ** 3)
 
 
 class FreundlichIsotherm(Isotherm):
@@ -126,6 +135,12 @@ class FreundlichIsotherm(Isotherm):
 
         return self.n * (1 / self.K) ** self.n * q ** (self.n - 1)
 
+    def d2C_dq2(self, q: float | np.ndarray) -> np.ndarray:
+        """Calculate the second derivative."""
+        q = np.asarray(q, dtype=float)
+        q = np.maximum(q, 0.0)
+        return self.n * (self.n - 1) * (1 / self.K) ** self.n * q ** (self.n - 2)
+
 
 class LinearIsotherm(Isotherm):
     """Linear isotherm: q* = K * C
@@ -161,6 +176,10 @@ class LinearIsotherm(Isotherm):
     def dC_dq(self, q: float | np.ndarray) -> np.ndarray:
         """Calculate derivative of liquid concentration by sorbed mass concentration."""
         return np.ones_like(np.asarray(q, dtype=float)) / self.K
+
+    def d2C_dq2(self, q: float | np.ndarray) -> np.ndarray:
+        """Calculate the second derivative."""
+        return np.zeros_like(np.asarray(q, dtype=float))
 
 
 class CompetitiveFreundlichIsotherm(Isotherm):
@@ -233,6 +252,49 @@ class CompetitiveFreundlichIsotherm(Isotherm):
 
         return J
 
+    def d2C_dq2(self, q: float | np.ndarray) -> np.ndarray:
+        """Calculate the second derivative."""
+        q_arr: np.ndarray = np.asarray(q, dtype=float)
+        q_arr = np.maximum(q_arr, 0.0)
+
+        Q = np.sum(q_arr)
+        S = np.sum(self.n * q_arr)
+
+        H = np.zeros((self.n_species, self.n_species, self.n_species))
+
+        if Q == 0 or S == 0:
+            return H
+
+        C = self.C(q_arr)
+
+        for i in range(self.n_species):
+            for j in range(self.n_species):
+                for k in range(self.n_species):
+                    delta_ij = 1.0 if i == j else 0.0
+                    delta_ik = 1.0 if i == k else 0.0
+
+                    if q_arr[i] == 0:
+                        d_ij_over_q = 0
+                        d_ik_over_q = 0
+                        d_ijk_over_q = 0
+                    else:
+                        d_ij_over_q = delta_ij / q_arr[i]
+                        d_ik_over_q = delta_ik / q_arr[i]
+                        d_ijk_over_q = delta_ij * delta_ik / q_arr[i] ** 2
+
+                    L_ij = d_ij_over_q + self.n[i] * self.n[j] / S - 1.0 / Q
+
+                    L_ik = d_ik_over_q + self.n[i] * self.n[k] / S - 1.0 / Q
+
+                    H[i, j, k] = C[i] * (
+                        L_ij * L_ik
+                        - d_ijk_over_q
+                        - self.n[i] * self.n[j] * self.n[k] / S**2
+                        + 1.0 / Q**2
+                    )
+
+        return H
+
 
 class CompetitiveLangmuirIsotherm(Isotherm):
     """Competitive Langmuir isotherm:
@@ -289,6 +351,34 @@ class CompetitiveLangmuirIsotherm(Isotherm):
                 )
 
         return J
+
+    def d2q_dC2(self, C: float | np.ndarray) -> np.ndarray:
+        """Calculate the second derivative."""
+        C_arr: np.ndarray = np.asarray(C, dtype=float)
+        C_arr = np.maximum(C_arr, 0.0)
+
+        D = 1.0 + np.sum(self.K * C_arr)
+
+        H = np.zeros((self.n_species, self.n_species, self.n_species))
+
+        for i in range(self.n_species):
+            for j in range(self.n_species):
+                for k in range(self.n_species):
+                    delta_ij = 1.0 if i == j else 0.0
+                    delta_ik = 1.0 if i == k else 0.0
+
+                    H[i, j, k] = (
+                        self.q_m
+                        * self.K[i]
+                        / D**2
+                        * (
+                            -delta_ij * self.K[k]
+                            - delta_ik * self.K[j]
+                            + 2.0 * C_arr[i] * self.K[j] * self.K[k] / D
+                        )
+                    )
+
+        return H
 
 
 class CompetitiveIonIsotherm(Isotherm):
@@ -412,6 +502,113 @@ class CompetitiveIonIsotherm(Isotherm):
 
         return J * q_scale
 
+    def d2C_dq2(self, q: float | np.ndarray) -> np.ndarray:
+        """Calculate the second derivative."""
+        q = np.asarray(q, dtype=float)
+        q = np.maximum(q, 0.0)
+
+        q_scale, q_eq, q_A, C_A = self._state_quantities(q)
+
+        C = self.C(q)
+
+        # Monovalent and divalent sums
+        M = np.sum(q_eq[self.mono_mask] / self.K[self.mono_mask])
+        N = np.sum(q_eq[self.di_mask] / self.K[self.di_mask])
+
+        a = N / q_A**2
+        b = 1.0 + M / q_A
+
+        # First derivatives of M and N
+        dM = np.zeros(self.n_species)
+        dN = np.zeros(self.n_species)
+
+        dM[self.mono_mask] = q_scale[self.mono_mask] / self.K[self.mono_mask]
+
+        dN[self.di_mask] = q_scale[self.di_mask] / self.K[self.di_mask]
+
+        # First derivatives of a and b
+        da = dN / q_A**2 + 2.0 * N * q_scale / q_A**3
+
+        db = dM / q_A + M * q_scale / q_A**2
+
+        # First derivative of C_A
+        denom = 2.0 * a * C_A + b
+
+        dCA = -(da * C_A**2 + db * C_A) / denom
+
+        # Second derivatives of a and b
+        d2a = np.zeros((self.n_species, self.n_species))
+        d2b = np.zeros((self.n_species, self.n_species))
+
+        for j in range(self.n_species):
+            for k in range(self.n_species):
+                d2a[j, k] = (
+                    6.0 * N * q_scale[j] * q_scale[k] / q_A**4
+                    + 2.0 * dN[j] * q_scale[k] / q_A**3
+                    + 2.0 * dN[k] * q_scale[j] / q_A**3
+                )
+
+                d2b[j, k] = (
+                    dM[j] * q_scale[k] / q_A**2
+                    + dM[k] * q_scale[j] / q_A**2
+                    + 2.0 * M * q_scale[j] * q_scale[k] / q_A**3
+                )
+
+        # Second derivative of C_A
+        d2CA = np.zeros((self.n_species, self.n_species))
+
+        for j in range(self.n_species):
+            for k in range(self.n_species):
+                d2CA[j, k] = (
+                    -(
+                        2.0 * a * dCA[j] * dCA[k]
+                        + (2.0 * da[j] * C_A + db[j]) * dCA[k]
+                        + (2.0 * da[k] * C_A + db[k]) * dCA[j]
+                        + d2a[j, k] * C_A**2
+                        + d2b[j, k] * C_A
+                    )
+                    / denom
+                )
+
+        # Hessian of C
+        H = np.zeros((self.n_species, self.n_species, self.n_species))
+
+        for i in range(self.n_species):
+            for j in range(self.n_species):
+                for k in range(self.n_species):
+
+                    delta_ij = 1.0 if i == j else 0.0
+                    delta_ik = 1.0 if i == k else 0.0
+
+                    if q_eq[i] == 0:
+                        d_ij_over_q = 0
+                        d_ik_over_q = 0
+                        d_ijk_over_q = 0
+                    else:
+                        d_ij_over_q = delta_ij / q_eq[i]
+                        d_ik_over_q = delta_ik / q_eq[i]
+                        d_ijk_over_q = delta_ij * delta_ik / q_eq[i] ** 2
+
+                    # First logarithmic derivatives
+                    L_ij = d_ij_over_q * q_scale[j] + self.z[i] * (
+                        dCA[j] / C_A + q_scale[j] / q_A
+                    )
+
+                    L_ik = d_ik_over_q * q_scale[k] + self.z[i] * (
+                        dCA[k] / C_A + q_scale[k] / q_A
+                    )
+
+                    # Second logarithmic derivative
+                    L_ijk = -d_ijk_over_q * q_scale[j] * q_scale[k] + self.z[i] * (
+                        d2CA[j, k] / C_A
+                        - dCA[j] * dCA[k] / C_A**2
+                        + q_scale[j] * q_scale[k] / q_A**2
+                    )
+
+                    H[i, j, k] = C[i] * (L_ij * L_ik + L_ijk)
+
+        return H
+
 
 class CompetitiveLangmuirFreundlichIsotherm(Isotherm):
     """Competitive Langmuir isotherm:
@@ -487,6 +684,36 @@ class CompetitiveLangmuirFreundlichIsotherm(Isotherm):
                 )
 
         return J
+
+    def d2q_dC2(self, C: float | np.ndarray) -> np.ndarray:
+        """Calculate the second derivative."""
+        C = np.asarray(C, dtype=float)
+        C = np.maximum(C, 0.0)
+
+        D = 1.0 + np.sum(self.K * C**self.n)
+
+        A = self.K * C**self.n
+        B = self.K * self.n * C ** (self.n - 1)
+        E = self.K * self.n * (self.n - 1) * C ** (self.n - 2)
+
+        H = np.zeros((self.n_species, self.n_species, self.n_species))
+
+        for i in range(self.n_species):
+            for j in range(self.n_species):
+                for k in range(self.n_species):
+                    delta_ij = 1.0 if i == j else 0.0
+                    delta_ik = 1.0 if i == k else 0.0
+                    delta_jk = 1.0 if j == k else 0.0
+
+                    H[i, j, k] = self.q_m * (
+                        delta_ij * delta_ik * E[i] / D
+                        - delta_ij * B[i] * B[k] / D**2
+                        - delta_ik * B[i] * B[j] / D**2
+                        - A[i] * delta_jk * E[j] / D**2
+                        + 2.0 * A[i] * B[j] * B[k] / D**3
+                    )
+
+        return H
 
 
 class CompetitiveStoichiometricIsotherm(Isotherm):
@@ -566,6 +793,40 @@ class CompetitiveStoichiometricIsotherm(Isotherm):
                 )
 
         return J
+
+    def d2q_dC2(self, C: float | np.ndarray) -> np.ndarray:
+        """Calculate the second derivative."""
+        C = np.asarray(C, dtype=float)
+        C = np.maximum(C, 0.0)
+
+        D = 1.0 + np.sum(self.K * C**self.n)
+
+        A = self.K * C**self.n
+        B = self.K * self.n * C ** (self.n - 1)
+        E = self.K * self.n * (self.n - 1) * C ** (self.n - 2)
+
+        H = np.zeros((self.n_species, self.n_species, self.n_species))
+
+        for i in range(self.n_species):
+            for j in range(self.n_species):
+                for k in range(self.n_species):
+                    delta_ij = 1.0 if i == j else 0.0
+                    delta_ik = 1.0 if i == k else 0.0
+                    delta_jk = 1.0 if j == k else 0.0
+
+                    H[i, j, k] = (
+                        self.n[i]
+                        * self.q_m
+                        * (
+                            delta_ij * delta_ik * E[i] / D
+                            - delta_ij * B[i] * B[k] / D**2
+                            - delta_ik * B[i] * B[j] / D**2
+                            - A[i] * delta_jk * E[j] / D**2
+                            + 2.0 * A[i] * B[j] * B[k] / D**3
+                        )
+                    )
+
+        return H
 
 
 class MultiCapacityIsotherm(Isotherm):
@@ -656,6 +917,53 @@ class MultiCapacityIsotherm(Isotherm):
 
         return J
 
+    def d2q_dC2(self, C: float | np.ndarray) -> np.ndarray:
+        """Calculate the second derivative."""
+        C_arr: np.ndarray = np.asarray(C, dtype=float)
+        C_arr = np.maximum(C_arr, 0.0)
+
+        # Sort species by descending q_m
+        order = np.argsort(-self.q_m)
+
+        qm = self.q_m[order]
+        K = self.K[order]
+        C_sorted = C_arr[order]
+
+        D = 1 + np.sum(K * C_sorted)
+        E = 1 + K[0] * C_sorted[0]
+
+        H_sorted = np.zeros((2, 2, 2))
+
+        # Hessian of q_1
+        H_sorted[0, 0, 0] = (
+            -2 * qm[1] * K[0] ** 2 * (1 + K[1] * C_sorted[1]) / D**3
+            - 2 * (qm[0] - qm[1]) * K[0] ** 2 / E**3
+        )
+
+        H_sorted[0, 0, 1] = (
+            qm[1] * K[0] * K[1] * (K[0] * C_sorted[0] - K[1] * C_sorted[1] - 1) / D**3
+        )
+
+        H_sorted[0, 1, 0] = H_sorted[0, 0, 1]
+
+        H_sorted[0, 1, 1] = 2 * qm[1] * K[0] * C_sorted[0] * K[1] ** 2 / D**3
+
+        # Hessian of q_2
+        H_sorted[1, 0, 0] = 2 * qm[1] * K[1] * C_sorted[1] * K[0] ** 2 / D**3
+
+        H_sorted[1, 0, 1] = (
+            qm[1] * K[0] * K[1] * (K[1] * C_sorted[1] - K[0] * C_sorted[0] - 1) / D**3
+        )
+
+        H_sorted[1, 1, 0] = H_sorted[1, 0, 1]
+
+        H_sorted[1, 1, 1] = -2 * qm[1] * K[1] ** 2 * (1 + K[0] * C_sorted[0]) / D**3
+
+        # Transform Hessian back to original species ordering
+        H = H_sorted[np.ix_(order, order, order)]
+
+        return H
+
 
 class AdsorbateComplexIsotherm(Isotherm):
     """Adsorbate-complex Langmuir-type Isotherm:
@@ -745,6 +1053,84 @@ class AdsorbateComplexIsotherm(Isotherm):
         )
 
         return J
+
+    def d2q_dC2(self, C: float | np.ndarray) -> np.ndarray:
+        """Calculate the second derivative."""
+        C_arr: np.ndarray = np.asarray(C, dtype=float)
+        C_arr = np.maximum(C_arr, 0.0)
+
+        C1, C2 = C_arr
+        K1, K2 = self.K
+
+        qm = self.q_m
+        Kx = self.K_x
+
+        # Denominator
+        D = 1 + K1 * C1 + K2 * C2 + 2 * Kx * C1 * C2
+
+        D_j = np.array(
+            [
+                K1 + 2 * Kx * C2,
+                K2 + 2 * Kx * C1,
+            ]
+        )
+
+        D_jk = np.array(
+            [
+                [0.0, 2 * Kx],
+                [2 * Kx, 0.0],
+            ]
+        )
+
+        # Numerators
+        N = np.array(
+            [
+                qm * (K1 * C1 + Kx * C1 * C2),
+                qm * (K2 * C2 + Kx * C1 * C2),
+            ]
+        )
+
+        # First derivatives of numerators
+        N_j = np.array(
+            [
+                [
+                    qm * (K1 + Kx * C2),
+                    qm * Kx * C1,
+                ],
+                [
+                    qm * Kx * C2,
+                    qm * (K2 + Kx * C1),
+                ],
+            ]
+        )
+
+        # Second derivatives of numerators
+        N_jk = np.array(
+            [
+                [
+                    [0.0, qm * Kx],
+                    [qm * Kx, 0.0],
+                ],
+                [
+                    [0.0, qm * Kx],
+                    [qm * Kx, 0.0],
+                ],
+            ]
+        )
+
+        H = np.zeros((2, 2, 2))
+
+        for i in range(2):
+            for j in range(2):
+                for k in range(2):
+                    H[i, j, k] = (
+                        N_jk[i, j, k] / D
+                        - (N_j[i, j] * D_j[k] + N_j[i, k] * D_j[j] + N[i] * D_jk[j, k])
+                        / D**2
+                        + 2 * N[i] * D_j[j] * D_j[k] / D**3
+                    )
+
+        return H
 
 
 def flatten_parameters(parameters):

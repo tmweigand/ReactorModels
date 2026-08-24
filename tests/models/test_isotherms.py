@@ -490,3 +490,181 @@ def test_multi_capacity_fit():
     assert_multi_species_fit_recovers_params(
         model, params, guess, fit_indices, fit_names
     )
+
+
+def assert_hessian_matches_numerical(
+    isotherm,
+    var,
+    eps=1e-4,
+    rtol=1e-4,
+    atol=1e-7,
+):
+    if var == "q":
+        x = np.array([0.3, 0.5])
+        function = isotherm.C
+        hessian = isotherm.d2C_dq2
+
+    else:
+        x = np.array([0.3, 0.5])
+        function = isotherm.q
+        hessian = isotherm.d2q_dC2
+
+    analytical = hessian(x)
+
+    n = len(x)
+    numerical = np.zeros((n, n, n))
+
+    for j in range(n):
+        for k in range(n):
+            ej = np.zeros(n)
+            ek = np.zeros(n)
+
+            ej[j] = eps
+            ek[k] = eps
+
+            if j == k:
+                numerical[:, j, k] = (
+                    function(x + ej) - 2.0 * function(x) + function(x - ej)
+                ) / eps**2
+
+            else:
+                numerical[:, j, k] = (
+                    function(x + ej + ek)
+                    - function(x + ej - ek)
+                    - function(x - ej + ek)
+                    + function(x - ej - ek)
+                ) / (4.0 * eps**2)
+
+    np.testing.assert_allclose(
+        analytical,
+        numerical,
+        rtol=rtol,
+        atol=atol,
+    )
+
+
+def assert_hessian_chain_rule_matches_numerical(
+    isotherm,
+    var,
+    eps=1e-4,
+    rtol=1e-4,
+    atol=1e-7,
+):
+    x = np.array([0.3, 0.5])
+    dxdt = np.array([0.12, -0.07])
+
+    if var == "q":
+        function = isotherm.C
+        hessian = isotherm.d2C_dq2
+    else:
+        function = isotherm.q
+        hessian = isotherm.d2q_dC2
+
+    H = hessian(x)
+
+    # H[i,j,k] * dxdt[j] * dxdt[k]
+    analytical = np.einsum(
+        "ijk,j,k->i",
+        H,
+        dxdt,
+        dxdt,
+    )
+
+    numerical = (
+        -function(x + 2 * eps * dxdt)
+        + 16 * function(x + eps * dxdt)
+        - 30 * function(x)
+        + 16 * function(x - eps * dxdt)
+        - function(x - 2 * eps * dxdt)
+    ) / (12 * eps**2)
+
+    np.testing.assert_allclose(
+        analytical,
+        numerical,
+        rtol=rtol,
+        atol=atol,
+    )
+
+
+def test_competitive_freundlich_hessian():
+    n = np.array([0.7, 0.9])
+    K = np.array([0.5, 0.8])
+
+    isotherm = CompetitiveFreundlichIsotherm(n=n, K=K)
+
+    assert_hessian_matches_numerical(isotherm, "q")
+    assert_hessian_chain_rule_matches_numerical(isotherm, "q")
+
+
+def test_iexcm_hessian():
+    K = np.array([1.2, 0.8])
+    MW = np.array([35.45, 40.08])
+    valence = np.array([1, 2])
+    inlet_concentrations = np.array([100.0, 50.0])
+    q_m = 2.0
+    bulk_density = 1.0
+
+    isotherm = CompetitiveIonIsotherm(
+        K=K,
+        MW=MW,
+        valence=valence,
+        inlet_concentrations=inlet_concentrations,
+        q_m=q_m,
+        bulk_density=bulk_density,
+    )
+
+    assert_hessian_matches_numerical(isotherm, "q")
+    assert_hessian_chain_rule_matches_numerical(isotherm, "q")
+
+
+def test_competitive_langmuir_hessian():
+    q_m = 20
+    K = np.array([0.5, 0.8])
+
+    isotherm = CompetitiveLangmuirIsotherm(q_m=q_m, K=K)
+
+    assert_hessian_matches_numerical(isotherm, "C")
+    assert_hessian_chain_rule_matches_numerical(isotherm, "C")
+
+
+def test_competitive_langmuir_freundlich_hessian():
+    q_m = 20
+    K = np.array([0.5, 0.8])
+    n = np.array([0.7, 0.9])
+
+    isotherm = CompetitiveLangmuirFreundlichIsotherm(q_m=q_m, K=K, n=n)
+
+    assert_hessian_matches_numerical(isotherm, "C")
+    assert_hessian_chain_rule_matches_numerical(isotherm, "C")
+
+
+def test_competitive_stoichiometric_hessian():
+    q_m = 20
+    K = np.array([0.5, 0.8])
+    n = np.array([0.7, 0.9])
+
+    isotherm = CompetitiveStoichiometricIsotherm(q_m=q_m, K=K, n=n)
+
+    assert_hessian_matches_numerical(isotherm, "C")
+    assert_hessian_chain_rule_matches_numerical(isotherm, "C")
+
+
+def test_multi_capacity_hessian():
+    q_m = np.array([5, 10])
+    K = np.array([0.5, 0.8])
+
+    isotherm = MultiCapacityIsotherm(q_m=q_m, K=K)
+
+    assert_hessian_matches_numerical(isotherm, "C")
+    assert_hessian_chain_rule_matches_numerical(isotherm, "C")
+
+
+def test_adsorbate_complex_hessian():
+    q_m = 10
+    K = np.array([0.5, 0.8])
+    K_x = 5
+
+    isotherm = AdsorbateComplexIsotherm(q_m=q_m, K=K, K_x=K_x)
+
+    assert_hessian_matches_numerical(isotherm, "C")
+    assert_hessian_chain_rule_matches_numerical(isotherm, "C")
