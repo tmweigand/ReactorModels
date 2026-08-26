@@ -163,6 +163,7 @@ MODEL_BUILDERS = {
     "AdvectionDiffusionAdsorptionSolid": _build_advection_diffusion_adsorption,
     "IntraparticleTransport": _build_intraparticle_transport,
     "PSDM": _build_psdm,
+    "PSDMSolid": _build_psdm,
 }
 
 

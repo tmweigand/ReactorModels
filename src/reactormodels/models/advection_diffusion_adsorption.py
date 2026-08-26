@@ -228,7 +228,7 @@ class AdvectionDiffusionAdsorption(NumericModel):
 
         result = self.numerics.integrate(
             residual=self._residual,
-            # jacobian=self._jacobian,
+            jacobian=self._jacobian,
             y0=y0,
             yp0=ydot0,
             t_span=[0, self.breakthrough.time.tolist()],

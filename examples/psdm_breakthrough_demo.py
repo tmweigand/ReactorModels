@@ -77,14 +77,14 @@ def run_demo(
         add_inlet=True,
     )
 
-    model = reactormodels.models.PSDM(
+    model = reactormodels.models.PSDMSolid(
         breakthrough=breakthrough,
         isotherm=isotherm,
         column_numerics=column_numerics,
         particle_numerics=particle_numerics,
         k_film=k_film,
     )
-    z, r, C, Cp = model.solve()
+    z, r, C, q = model.solve()
 
     fig, ax = plt.subplots(figsize=(8, 5))
     C_numerical = C[:, -1]

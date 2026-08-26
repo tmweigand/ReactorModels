@@ -27,6 +27,10 @@ class Isotherm:
         """Calculate derivative of liquid concentration by sorbed mass concentration."""
         raise NotImplementedError
 
+    def d2C_dq2(self, q: float | np.ndarray) -> np.ndarray:
+        """Calculate the second derivative."""
+        raise NotImplementedError
+
 
 class LangmuirIsotherm(Isotherm):
     """Langmuir isotherm: q* = q_m * K * C / (1 + K * C)
@@ -127,6 +131,10 @@ class LinearIsotherm(Isotherm):
     def dC_dq(self, q: float | np.ndarray) -> np.ndarray:
         """Calculate derivative of liquid concentration by sorbed mass concentration."""
         return np.ones_like(np.asarray(q, dtype=float)) / self.K
+
+    def d2C_dq2(self, q: float | np.ndarray) -> np.ndarray:
+        """Calculate the second derivative."""
+        return np.zeros_like(np.asarray(q, dtype=float))
 
 
 def fit_isotherm(

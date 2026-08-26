@@ -164,6 +164,6 @@ def test_ldf_q_tracks_equilibrium():
 
     x, C, q = q_model.solve()
 
-    q_eq = q_model.iso.q(C[0])
+    q_eq = q_model.isotherm.q(C[0])
     # q should be close to q*(C) at long times
     assert q[0] == pytest.approx(q_eq, rel=0.05)

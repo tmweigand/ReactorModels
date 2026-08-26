@@ -4,6 +4,7 @@ __all__ = [
     "NumericModel",
     "AdsorptionKinetics",
     "PSDM",
+    "PSDMSolid",
     "LinearIsotherm",
     "LangmuirIsotherm",
     "FreundlichIsotherm",
@@ -25,6 +26,7 @@ __all__ = [
 from .numeric_model_base import NumericModel
 from .adsorption_kinetics import AdsorptionKinetics
 from .psdm import PSDM
+from .psdm_q import PSDMSolid
 from .isotherm import LinearIsotherm, FreundlichIsotherm, LangmuirIsotherm
 from .boundary_conditions import DirichletBC, DanckwertsBC, SymmetryBC
 from .analytic_models import (

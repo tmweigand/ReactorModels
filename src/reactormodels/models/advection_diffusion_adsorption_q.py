@@ -42,7 +42,7 @@ class AdvectionDiffusionAdsorptionSolid:
         self.axial_diffusion = breakthrough.chemical.axial_diffusion
         self.inlet_concentration = breakthrough.mean_feed_concentration()
         self.initial_concentration = breakthrough.initial_concentration
-        self.iso = isotherm
+        self.isotherm = isotherm
         self.numerics = numerics
         self.kinetics = kinetics
         self.k_ldf = k_ldf
@@ -93,8 +93,8 @@ class AdvectionDiffusionAdsorptionSolid:
         dcdt, dqdt = self._split(ydot)
 
         if self.kinetics == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
-            c[1:] = self.iso.C(q)
-            dcdt[1:] = self.iso.dC_dq(q) * dqdt
+            c[1:] = self.isotherm.C(q)
+            dcdt[1:] = self.isotherm.dC_dq(q) * dqdt
 
         # fluid phase - inlet
         result[0] = self.inlet_bc.residual(
@@ -120,9 +120,9 @@ class AdvectionDiffusionAdsorptionSolid:
         if self.kinetics == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
             pass
         elif self.kinetics == AdsorptionKinetics.LINEAR_DRIVING_FORCE:
-            result[self.N :] = dqdt - self.k_ldf * (self.iso.q(c) - q)
+            result[self.N :] = dqdt - self.k_ldf * (self.isotherm.q(c) - q)
         else:
-            result[self.N :] = dqdt - self.k_ldf * c * (self.iso.q(c) - q)
+            result[self.N :] = dqdt - self.k_ldf * c * (self.isotherm.q(c) - q)
 
         return 0
 
@@ -149,19 +149,19 @@ class AdvectionDiffusionAdsorptionSolid:
         J[1 : self.N, : self.N] = -d_transport[1:, :]
 
         if self.kinetics == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
+            J[1 : self.N, 0] = -d_transport[1:, 0]
             for i in range(1, self.N):
                 J[i, i] += cj * (
-                    self.column.porosity
-                    + self.column.get_bulk_density() * self.iso.dq_dC(C[i])
+                    self.column.porosity * self.isotherm.dC_dq(q[i - 1])
+                    + self.column.get_bulk_density()
                 )
-
         elif self.kinetics == AdsorptionKinetics.LINEAR_DRIVING_FORCE:
             for i in range(1, self.N):
                 J[i, i] += cj * self.column.porosity
                 J[i, self.N + i] += cj * self.column.get_bulk_density()
 
             for i in range(self.N):
-                J[self.N + i, i] = -self.k_ldf * self.iso.dq_dC(C[i])
+                J[self.N + i, i] = -self.k_ldf * self.isotherm.dq_dC(C[i])
                 J[self.N + i, self.N + i] = self.k_ldf + cj
 
         else:
@@ -171,7 +171,8 @@ class AdvectionDiffusionAdsorptionSolid:
 
             for i in range(self.N):
                 J[self.N + i, i] = (
-                    -self.k_ldf * (self.iso.q(C[i]) + C[i] * self.iso.dq_dC(C[i]))
+                    -self.k_ldf
+                    * (self.isotherm.q(C[i]) + C[i] * self.isotherm.dq_dC(C[i]))
                     + self.k_ldf * q[i]
                 )
                 J[self.N + i, self.N + i] = self.k_ldf * C[i] + cj
@@ -197,7 +198,7 @@ class AdvectionDiffusionAdsorptionSolid:
             y0 = np.concatenate(([C0[0]], q0))
         else:
             q0 = np.full(self.N, self.breakthrough.initial_mass_fraction)
-            q0[0] = self.iso.q(
+            q0[0] = self.isotherm.q(
                 self.inlet_concentration
             )  # inlet node at equilibrium with feed
             y0 = np.concatenate([C0, q0])
@@ -211,7 +212,7 @@ class AdvectionDiffusionAdsorptionSolid:
 
         result = self.numerics.integrate(
             residual=self._residual,
-            # jacobian=self._jacobian,
+            jacobian=self._jacobian,
             y0=y0,
             yp0=ydot0,
             t_span=[0, self.breakthrough.time.tolist()],
@@ -237,9 +238,9 @@ class AdvectionDiffusionAdsorptionSolid:
             # Local equilibrium: recover q from C at each time step
             q_out = np.empty_like(y_out)
 
-            q_out[:, 0] = self.iso.q(y_out[:, 0])
+            q_out[:, 0] = self.isotherm.q(y_out[:, 0])
             q_out[:, 1:] = y_out[:, 1:]
 
-            C_out = self.iso.C(q_out)
+            C_out = self.isotherm.C(q_out)
 
         return self.numerics.collocation.nodes, C_out, q_out

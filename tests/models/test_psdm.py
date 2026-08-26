@@ -10,7 +10,8 @@ def _make_particle(
     Ds: float = 5e-9,
     C_in: float = 1,
     time: np.ndarray | None = None,
-) -> reactormodels.models.PSDM:
+    state_var: str = "C",
+) -> reactormodels.models.PSDMSolid | reactormodels.models.PSDM:
     """Create a PSDM model for testing."""
 
     # Particle properties
@@ -76,7 +77,12 @@ def _make_particle(
         add_inlet=True,
     )
 
-    return reactormodels.models.PSDM(
+    if state_var == "C":
+        state = reactormodels.models.PSDM
+    else:
+        state = reactormodels.models.PSDMSolid
+
+    return state(
         isotherm=isotherm,
         breakthrough=breakthrough,
         column_numerics=column_numerics,
@@ -214,3 +220,16 @@ def test_mass_balance():
     )
 
     assert mass_balance.is_balanced(rel_tol=1e-3).all(), mass_balance.summary()
+
+
+def test_different_states_are_equal():
+    """q version and C version should be equal."""
+    time = np.linspace(1e-10, 100 * SECONDS_PER_DAY, 50)
+    model = _make_particle(time=time)
+    q_model = _make_particle(time=time, state_var="q")
+
+    _, _, C, Cp = model.solve()
+    _, _, C, q = q_model.solve()
+    Cp_q = q_model.get_pore_concentration(q)
+
+    np.testing.assert_allclose(Cp, Cp_q, atol=1e-5)
