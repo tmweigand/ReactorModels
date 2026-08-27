@@ -32,10 +32,9 @@ from .numeric_model_base import NumericModel
 from .adsorption_kinetics import AdsorptionKinetics
 from .psdm import PSDM
 from .boundary_conditions import DirichletBC, DanckwertsBC, SymmetryBC
-from .isotherm import (
-    LinearIsotherm,
-    FreundlichIsotherm,
-    LangmuirIsotherm,
+
+from .isotherm import LinearIsotherm, FreundlichIsotherm, LangmuirIsotherm
+from .multi_species_isotherm import (
     CompetitiveFreundlichIsotherm,
     CompetitiveIonIsotherm,
     CompetitiveLangmuirIsotherm,
