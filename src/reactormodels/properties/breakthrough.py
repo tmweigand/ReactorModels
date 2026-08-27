@@ -25,6 +25,7 @@ class Breakthrough:
         bed_volumes: np.ndarray | None = None,
         time: np.ndarray | None = None,
         superficial_velocity: float | None = None,
+        initial_mass_fraction: float | None = None,
     ) -> None:
 
         if time is None and bed_volumes is None:
@@ -58,6 +59,7 @@ class Breakthrough:
         )
         self.flow_rate = flow_rate
         self._superficial_velocity = superficial_velocity
+        self.initial_mass_fraction = initial_mass_fraction
 
     @property
     def time(self) -> np.ndarray | None:

@@ -1,4 +1,4 @@
-"""Input_output.py."""
+"""Input.py."""
 
 from pathlib import Path
 
@@ -77,10 +77,16 @@ def _load_chemicals(sheet, compound_names):
 
     normalized_compounds = {normalize_name(name) for name in compound_names}
 
-    for column_number in range(2, sheet.max_column + 1):
+    parameter_names = {
+        column_number: str(sheet.cell(row=1, column=column_number).value).strip()
+        for column_number in range(2, sheet.max_column + 1)
+        if sheet.cell(row=1, column=column_number).value is not None
+    }
+
+    for row in range(2, sheet.max_row + 1):
         chemical_name = sheet.cell(
-            row=1,
-            column=column_number,
+            row=row,
+            column=1,
         ).value
 
         if chemical_name is None:
@@ -93,21 +99,14 @@ def _load_chemicals(sheet, compound_names):
 
         chemical_parameters = {}
 
-        for row in range(2, sheet.max_row + 1):
-            parameter_name = sheet.cell(
-                row=row,
-                column=1,
-            ).value
-
+        for column_number, parameter_name in parameter_names.items():
             value = sheet.cell(
                 row=row,
                 column=column_number,
             ).value
 
-            if parameter_name is None or value is None:
-                continue
-
-            chemical_parameters[str(parameter_name).strip()] = value
+            if value is not None:
+                chemical_parameters[parameter_name] = value
 
         chemicals[normalized_name] = Chemical(
             name=str(chemical_name).strip(),
@@ -271,10 +270,10 @@ def _load_isotherms(
 
     normalized_compounds = {normalize_name(name) for name in compound_names}
 
-    for column_number in range(2, sheet.max_column + 1):
+    for row in range(4, sheet.max_row + 1):
         chemical_name = sheet.cell(
-            row=2,
-            column=column_number,
+            row=row,
+            column=1,
         ).value
 
         if chemical_name is None:
@@ -287,24 +286,24 @@ def _load_isotherms(
 
         chemical_isotherms = {}
 
-        # Linear
+        # Linear: column B
         linear_k = sheet.cell(
-            row=4,
-            column=column_number,
+            row=row,
+            column=2,
         ).value
 
         if linear_k is not None:
             chemical_isotherms["linear"] = LinearIsotherm(K=linear_k)
 
-        # Freundlich
+        # Freundlich: columns C-D
         freundlich_k = sheet.cell(
-            row=6,
-            column=column_number,
+            row=row,
+            column=3,
         ).value
 
         one_over_n = sheet.cell(
-            row=7,
-            column=column_number,
+            row=row,
+            column=4,
         ).value
 
         if freundlich_k is not None and one_over_n is not None:
@@ -313,15 +312,15 @@ def _load_isotherms(
                 n=1 / one_over_n,
             )
 
-        # Langmuir
+        # Langmuir: columns E-F
         langmuir_k = sheet.cell(
-            row=9,
-            column=column_number,
+            row=row,
+            column=5,
         ).value
 
         q_m = sheet.cell(
-            row=10,
-            column=column_number,
+            row=row,
+            column=6,
         ).value
 
         if langmuir_k is not None and q_m is not None:
