@@ -25,7 +25,6 @@ class Breakthrough:
         bed_volumes: np.ndarray | None = None,
         time: np.ndarray | None = None,
         superficial_velocity: float | None = None,
-        initial_mass_fraction: float | None = None,
     ) -> None:
 
         if time is None and bed_volumes is None:

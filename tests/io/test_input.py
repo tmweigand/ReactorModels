@@ -6,7 +6,7 @@ import pytest
 import reactormodels
 from reactormodels.Input.Input import load_input_file
 
-DATA_DIRECTORY = Path(__file__).resolve().parents[1] / "tests" / "Input_data_test"
+DATA_DIRECTORY = Path(__file__).resolve().parents[1] / "io" / "Input_data_test"
 PARAMETER_FILE = DATA_DIRECTORY / "input_parameter_test.xlsx"
 BREAKTHROUGH_FILE = DATA_DIRECTORY / "input_breakthrough_test.xlsx"
 ISOTHERM_FILE = DATA_DIRECTORY / "input_isotherm_test.xlsx"
@@ -61,7 +61,7 @@ def test_load_input_file():
         reactormodels.Chemical,
     )
     assert chemical.name == "chemical 1"
-    assert chemical.diffusion is None
+    assert chemical.axial_diffusion is None
     assert chemical.molecular_weight == pytest.approx(200.0)
     assert chemical.molar_volume == pytest.approx(133.33333333333334)
     assert chemical.density == pytest.approx(1.5)
