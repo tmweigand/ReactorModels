@@ -1,0 +1,1179 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>reactormodels.models.multi_species_isotherm &mdash; ReactorModels 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=ccde76bc" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            ReactorModels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../model_development/index.html">Model Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmarks.html">Benchmarks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">reactormodels</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ReactorModels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">reactormodels.models.multi_species_isotherm</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for reactormodels.models.multi_species_isotherm</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""isotherm.py"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+
+<div class="viewcode-block" id="MultiSpeciesIsotherm">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.MultiSpeciesIsotherm">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MultiSpeciesIsotherm</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Base class for multi-species adsorption isotherms."""</span>
+
+<div class="viewcode-block" id="MultiSpeciesIsotherm.q">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.MultiSpeciesIsotherm.q">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">q</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return sorbed mass concentration"""</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="MultiSpeciesIsotherm.dq_dC">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.MultiSpeciesIsotherm.dq_dC">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dq_dC</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calculate the derivative of sorbed mass concentration by concentration."""</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="MultiSpeciesIsotherm.d2q_dC2">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.MultiSpeciesIsotherm.d2q_dC2">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">d2q_dC2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calculate the second derivative."""</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="MultiSpeciesIsotherm.C">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.MultiSpeciesIsotherm.C">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">C</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return liquid phase concentration"""</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="MultiSpeciesIsotherm.dC_dq">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.MultiSpeciesIsotherm.dC_dq">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dC_dq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calculate derivative of liquid concentration by sorbed mass concentration."""</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="MultiSpeciesIsotherm.d2C_dq2">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.MultiSpeciesIsotherm.d2C_dq2">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">d2C_dq2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calculate the second derivative."""</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CompetitiveFreundlichIsotherm">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.CompetitiveFreundlichIsotherm">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CompetitiveFreundlichIsotherm</span><span class="p">(</span><span class="n">MultiSpeciesIsotherm</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Competitive Freundlich isotherm:</span>
+
+<span class="sd">    C_i = q_i / sum(q_j) * [sum(n_j*q_j) / (n_i*K_i)]^n_i</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    K : float</span>
+<span class="sd">        Freundlich capacity factor</span>
+<span class="sd">    n : float</span>
+<span class="sd">        Freundlich intensity factor.</span>
+
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">K</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"K and n must have the same shape."</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"K must be greater than zero."</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"n must be greater than zero."</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_species</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CompetitiveFreundlichIsotherm.C">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.CompetitiveFreundlichIsotherm.C">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">C</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Return liquid phase concentration."""</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">*</span> <span class="n">q</span><span class="p">)</span>
+
+        <span class="c1"># prevent C from blowing up</span>
+        <span class="k">if</span> <span class="n">Q</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">q</span> <span class="o">/</span> <span class="n">Q</span> <span class="o">*</span> <span class="p">(</span><span class="n">S</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">))</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span></div>
+
+
+<div class="viewcode-block" id="CompetitiveFreundlichIsotherm.dC_dq">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.CompetitiveFreundlichIsotherm.dC_dq">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dC_dq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Calculate derivative of liquid concentration by sorbed mass concentration."""</span>
+        <span class="n">q_arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">q_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">q_arr</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">q_arr</span><span class="p">)</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">*</span> <span class="n">q_arr</span><span class="p">)</span>
+
+        <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">Q</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">S</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">J</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+            <span class="n">A_i</span> <span class="o">=</span> <span class="p">(</span><span class="n">S</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+                <span class="n">delta_ij</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+                <span class="n">J</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">A_i</span> <span class="o">*</span> <span class="p">(</span>
+                    <span class="n">delta_ij</span> <span class="o">/</span> <span class="n">Q</span> <span class="o">+</span> <span class="n">q_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">Q</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">/</span> <span class="n">S</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">Q</span><span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">J</span></div>
+
+
+<div class="viewcode-block" id="CompetitiveFreundlichIsotherm.d2C_dq2">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.CompetitiveFreundlichIsotherm.d2C_dq2">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">d2C_dq2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calculate the second derivative."""</span>
+        <span class="n">q_arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">q_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">q_arr</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">q_arr</span><span class="p">)</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">*</span> <span class="n">q_arr</span><span class="p">)</span>
+
+        <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">Q</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">S</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">H</span>
+
+        <span class="n">C</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">(</span><span class="n">q_arr</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+                    <span class="n">delta_ij</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span> <span class="k">else</span> <span class="mf">0.0</span>
+                    <span class="n">delta_ik</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">k</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+                    <span class="k">if</span> <span class="n">q_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">d_ij_over_q</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="n">d_ik_over_q</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="n">d_ijk_over_q</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">d_ij_over_q</span> <span class="o">=</span> <span class="n">delta_ij</span> <span class="o">/</span> <span class="n">q_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                        <span class="n">d_ik_over_q</span> <span class="o">=</span> <span class="n">delta_ik</span> <span class="o">/</span> <span class="n">q_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                        <span class="n">d_ijk_over_q</span> <span class="o">=</span> <span class="n">delta_ij</span> <span class="o">*</span> <span class="n">delta_ik</span> <span class="o">/</span> <span class="n">q_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span>
+
+                    <span class="n">L_ij</span> <span class="o">=</span> <span class="n">d_ij_over_q</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">/</span> <span class="n">S</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">Q</span>
+
+                    <span class="n">L_ik</span> <span class="o">=</span> <span class="n">d_ik_over_q</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">S</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">Q</span>
+
+                    <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span>
+                        <span class="n">L_ij</span> <span class="o">*</span> <span class="n">L_ik</span>
+                        <span class="o">-</span> <span class="n">d_ijk_over_q</span>
+                        <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">S</span><span class="o">**</span><span class="mi">2</span>
+                        <span class="o">+</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">Q</span><span class="o">**</span><span class="mi">2</span>
+                    <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">H</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CompetitiveLangmuirIsotherm">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.CompetitiveLangmuirIsotherm">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CompetitiveLangmuirIsotherm</span><span class="p">(</span><span class="n">MultiSpeciesIsotherm</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Competitive Langmuir isotherm:</span>
+
+<span class="sd">    q_i = q_m * K_i * C_i / (1 + sum(K_j*C_j))</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    K: float</span>
+<span class="sd">        Langmuir dissociation constant</span>
+<span class="sd">    q_m: float</span>
+<span class="sd">        Maximum sorbent capacity.</span>
+
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">K</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">q_m</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span> <span class="o">=</span> <span class="n">q_m</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"K must be greater than zero."</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"q_m must be greater than zero."</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_species</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CompetitiveLangmuirIsotherm.q">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.CompetitiveLangmuirIsotherm.q">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">q</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return sorbed mass concentration"""</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="n">D</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="n">C</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="n">C</span> <span class="o">/</span> <span class="n">D</span></div>
+
+
+<div class="viewcode-block" id="CompetitiveLangmuirIsotherm.dq_dC">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.CompetitiveLangmuirIsotherm.dq_dC">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dq_dC</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calculate the derivative of sorbed mass concentration by concentration."""</span>
+        <span class="n">C_arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">C_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">C_arr</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="n">D</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="n">C_arr</span><span class="p">)</span>
+
+        <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+                <span class="n">delta_ij</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+                <span class="n">J</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">delta_ij</span> <span class="o">/</span> <span class="n">D</span> <span class="o">-</span> <span class="n">C_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">/</span> <span class="n">D</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">J</span></div>
+
+
+<div class="viewcode-block" id="CompetitiveLangmuirIsotherm.d2q_dC2">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.CompetitiveLangmuirIsotherm.d2q_dC2">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">d2q_dC2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calculate the second derivative."""</span>
+        <span class="n">C_arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">C_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">C_arr</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="n">D</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="n">C_arr</span><span class="p">)</span>
+
+        <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+                    <span class="n">delta_ij</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span> <span class="k">else</span> <span class="mf">0.0</span>
+                    <span class="n">delta_ik</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">k</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+                    <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span>
+                        <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                        <span class="o">/</span> <span class="n">D</span><span class="o">**</span><span class="mi">2</span>
+                        <span class="o">*</span> <span class="p">(</span>
+                            <span class="o">-</span><span class="n">delta_ij</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                            <span class="o">-</span> <span class="n">delta_ik</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                            <span class="o">+</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">C_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">D</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">H</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CompetitiveIonIsotherm">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.CompetitiveIonIsotherm">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CompetitiveIonIsotherm</span><span class="p">(</span><span class="n">MultiSpeciesIsotherm</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Isotherm used by EPA's IX-ECM.</span>
+
+<span class="sd">    Equation:</span>
+<span class="sd">        C_i = (C_T * q_i) / sum(K_ij * q_j)</span>
+
+<span class="sd">        K_ij = (q_i / C_i)^z_j * (C_j / q_j)^z_i</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    K : float</span>
+<span class="sd">        Binary separation factor</span>
+
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">K</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">MW</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">valence</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">inlet_concentrations</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">q_m</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">bulk_density</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">reference_concentration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">reference_mw</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">35.45</span><span class="p">,</span>  <span class="c1"># chloride default</span>
+        <span class="n">reference_z</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MW</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">MW</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">valence</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">C_o</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">inlet_concentrations</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span> <span class="o">=</span> <span class="n">q_m</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">C_Ao</span> <span class="o">=</span> <span class="n">reference_concentration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MW_A</span> <span class="o">=</span> <span class="n">reference_mw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_A</span> <span class="o">=</span> <span class="n">reference_z</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rho_b</span> <span class="o">=</span> <span class="n">bulk_density</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MW</span><span class="o">.</span><span class="n">shape</span>
+            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span>
+            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">C_o</span><span class="o">.</span><span class="n">shape</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"K, n, MW, and z must have the same shape."</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"K must be greater than zero."</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MW</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"MW must be greater than zero."</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C_o</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Inlet concentrations must be greater than zero."</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Only monovalent and divalent ions are supported."</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_A</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Only monovalent reference ions are supported."</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Capacity must be greater than zero."</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_species</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mono_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">di_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">==</span> <span class="mi">2</span>
+
+        <span class="c1"># calculate total charge equivalent concentration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">C_o</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">MW</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">C_Ao</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_A</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">MW_A</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_state_quantities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="n">q_scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho_b</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">MW</span>
+        <span class="n">q_eq</span> <span class="o">=</span> <span class="n">q</span> <span class="o">*</span> <span class="n">q_scale</span>
+        <span class="n">q_A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">q_eq</span><span class="p">)</span>
+
+        <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">q_eq</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">di_mask</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">di_mask</span><span class="p">])</span> <span class="o">/</span> <span class="n">q_A</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">q_eq</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mono_mask</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mono_mask</span><span class="p">])</span> <span class="o">/</span> <span class="n">q_A</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">CT</span>
+
+        <span class="n">C_A</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">c</span> <span class="o">/</span> <span class="p">(</span><span class="o">-</span><span class="n">b</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">b</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">c</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">q_scale</span><span class="p">,</span> <span class="n">q_eq</span><span class="p">,</span> <span class="n">q_A</span><span class="p">,</span> <span class="n">C_A</span>
+
+<div class="viewcode-block" id="CompetitiveIonIsotherm.C">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.CompetitiveIonIsotherm.C">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">C</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return liquid phase concentration."""</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">q_eq</span><span class="p">,</span> <span class="n">q_A</span><span class="p">,</span> <span class="n">C_A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state_quantities</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">C_A</span> <span class="o">/</span> <span class="n">q_A</span><span class="p">)</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">*</span> <span class="n">q_eq</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span></div>
+
+
+<div class="viewcode-block" id="CompetitiveIonIsotherm.dC_dq">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.CompetitiveIonIsotherm.dC_dq">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dC_dq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calculate derivative of liquid concentration by sorbed mass concentration."""</span>
+        <span class="n">q_scale</span><span class="p">,</span> <span class="n">q_eq</span><span class="p">,</span> <span class="n">q_A</span><span class="p">,</span> <span class="n">C_A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state_quantities</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+
+        <span class="n">C</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+        <span class="n">Z_c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">*</span> <span class="n">C</span><span class="p">)</span>
+
+        <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+                <span class="n">delta_ij</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+                <span class="k">if</span> <span class="n">q_eq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">d_over_q</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">d_over_q</span> <span class="o">=</span> <span class="n">delta_ij</span> <span class="o">/</span> <span class="n">q_eq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+                <span class="n">Cj_over_qj</span> <span class="o">=</span> <span class="p">(</span><span class="n">C_A</span> <span class="o">/</span> <span class="n">q_A</span><span class="p">)</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+
+                <span class="n">J</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span>
+                    <span class="n">d_over_q</span>
+                    <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">q_A</span>
+                    <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">Cj_over_qj</span> <span class="o">+</span> <span class="n">Z_c</span> <span class="o">/</span> <span class="n">q_A</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">C_A</span> <span class="o">+</span> <span class="n">Z_c</span><span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">J</span> <span class="o">*</span> <span class="n">q_scale</span></div>
+
+
+<div class="viewcode-block" id="CompetitiveIonIsotherm.d2C_dq2">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.CompetitiveIonIsotherm.d2C_dq2">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">d2C_dq2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calculate the second derivative."""</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="n">q_scale</span><span class="p">,</span> <span class="n">q_eq</span><span class="p">,</span> <span class="n">q_A</span><span class="p">,</span> <span class="n">C_A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state_quantities</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+
+        <span class="n">C</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+
+        <span class="c1"># Monovalent and divalent sums</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">q_eq</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mono_mask</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mono_mask</span><span class="p">])</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">q_eq</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">di_mask</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">di_mask</span><span class="p">])</span>
+
+        <span class="n">a</span> <span class="o">=</span> <span class="n">N</span> <span class="o">/</span> <span class="n">q_A</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">M</span> <span class="o">/</span> <span class="n">q_A</span>
+
+        <span class="c1"># First derivatives of M and N</span>
+        <span class="n">dM</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">)</span>
+        <span class="n">dN</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">)</span>
+
+        <span class="n">dM</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mono_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">q_scale</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mono_mask</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mono_mask</span><span class="p">]</span>
+
+        <span class="n">dN</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">di_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">q_scale</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">di_mask</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">di_mask</span><span class="p">]</span>
+
+        <span class="c1"># First derivatives of a and b</span>
+        <span class="n">da</span> <span class="o">=</span> <span class="n">dN</span> <span class="o">/</span> <span class="n">q_A</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">N</span> <span class="o">*</span> <span class="n">q_scale</span> <span class="o">/</span> <span class="n">q_A</span><span class="o">**</span><span class="mi">3</span>
+
+        <span class="n">db</span> <span class="o">=</span> <span class="n">dM</span> <span class="o">/</span> <span class="n">q_A</span> <span class="o">+</span> <span class="n">M</span> <span class="o">*</span> <span class="n">q_scale</span> <span class="o">/</span> <span class="n">q_A</span><span class="o">**</span><span class="mi">2</span>
+
+        <span class="c1"># First derivative of C_A</span>
+        <span class="n">denom</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">C_A</span> <span class="o">+</span> <span class="n">b</span>
+
+        <span class="n">dCA</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">da</span> <span class="o">*</span> <span class="n">C_A</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">db</span> <span class="o">*</span> <span class="n">C_A</span><span class="p">)</span> <span class="o">/</span> <span class="n">denom</span>
+
+        <span class="c1"># Second derivatives of a and b</span>
+        <span class="n">d2a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">))</span>
+        <span class="n">d2b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+                <span class="n">d2a</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="mf">6.0</span> <span class="o">*</span> <span class="n">N</span> <span class="o">*</span> <span class="n">q_scale</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">q_scale</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">q_A</span><span class="o">**</span><span class="mi">4</span>
+                    <span class="o">+</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">dN</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">q_scale</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">q_A</span><span class="o">**</span><span class="mi">3</span>
+                    <span class="o">+</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">dN</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">q_scale</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">/</span> <span class="n">q_A</span><span class="o">**</span><span class="mi">3</span>
+                <span class="p">)</span>
+
+                <span class="n">d2b</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">dM</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">q_scale</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">q_A</span><span class="o">**</span><span class="mi">2</span>
+                    <span class="o">+</span> <span class="n">dM</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">q_scale</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">/</span> <span class="n">q_A</span><span class="o">**</span><span class="mi">2</span>
+                    <span class="o">+</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">M</span> <span class="o">*</span> <span class="n">q_scale</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">q_scale</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">q_A</span><span class="o">**</span><span class="mi">3</span>
+                <span class="p">)</span>
+
+        <span class="c1"># Second derivative of C_A</span>
+        <span class="n">d2CA</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+                <span class="n">d2CA</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="o">-</span><span class="p">(</span>
+                        <span class="mf">2.0</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">dCA</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">dCA</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                        <span class="o">+</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">da</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_A</span> <span class="o">+</span> <span class="n">db</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">*</span> <span class="n">dCA</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                        <span class="o">+</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">da</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_A</span> <span class="o">+</span> <span class="n">db</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">*</span> <span class="n">dCA</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                        <span class="o">+</span> <span class="n">d2a</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_A</span><span class="o">**</span><span class="mi">2</span>
+                        <span class="o">+</span> <span class="n">d2b</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_A</span>
+                    <span class="p">)</span>
+                    <span class="o">/</span> <span class="n">denom</span>
+                <span class="p">)</span>
+
+        <span class="c1"># Hessian of C</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+
+                    <span class="n">delta_ij</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span> <span class="k">else</span> <span class="mf">0.0</span>
+                    <span class="n">delta_ik</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">k</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+                    <span class="k">if</span> <span class="n">q_eq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">d_ij_over_q</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="n">d_ik_over_q</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="n">d_ijk_over_q</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">d_ij_over_q</span> <span class="o">=</span> <span class="n">delta_ij</span> <span class="o">/</span> <span class="n">q_eq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                        <span class="n">d_ik_over_q</span> <span class="o">=</span> <span class="n">delta_ik</span> <span class="o">/</span> <span class="n">q_eq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                        <span class="n">d_ijk_over_q</span> <span class="o">=</span> <span class="n">delta_ij</span> <span class="o">*</span> <span class="n">delta_ik</span> <span class="o">/</span> <span class="n">q_eq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span>
+
+                    <span class="c1"># First logarithmic derivatives</span>
+                    <span class="n">L_ij</span> <span class="o">=</span> <span class="n">d_ij_over_q</span> <span class="o">*</span> <span class="n">q_scale</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span>
+                        <span class="n">dCA</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">/</span> <span class="n">C_A</span> <span class="o">+</span> <span class="n">q_scale</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">/</span> <span class="n">q_A</span>
+                    <span class="p">)</span>
+
+                    <span class="n">L_ik</span> <span class="o">=</span> <span class="n">d_ik_over_q</span> <span class="o">*</span> <span class="n">q_scale</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span>
+                        <span class="n">dCA</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">C_A</span> <span class="o">+</span> <span class="n">q_scale</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">q_A</span>
+                    <span class="p">)</span>
+
+                    <span class="c1"># Second logarithmic derivative</span>
+                    <span class="n">L_ijk</span> <span class="o">=</span> <span class="o">-</span><span class="n">d_ijk_over_q</span> <span class="o">*</span> <span class="n">q_scale</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">q_scale</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span>
+                        <span class="n">d2CA</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">C_A</span>
+                        <span class="o">-</span> <span class="n">dCA</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">dCA</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">C_A</span><span class="o">**</span><span class="mi">2</span>
+                        <span class="o">+</span> <span class="n">q_scale</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">q_scale</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">q_A</span><span class="o">**</span><span class="mi">2</span>
+                    <span class="p">)</span>
+
+                    <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">L_ij</span> <span class="o">*</span> <span class="n">L_ik</span> <span class="o">+</span> <span class="n">L_ijk</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">H</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CompetitiveLangmuirFreundlichIsotherm">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.CompetitiveLangmuirFreundlichIsotherm">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CompetitiveLangmuirFreundlichIsotherm</span><span class="p">(</span><span class="n">MultiSpeciesIsotherm</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Competitive Langmuir isotherm:</span>
+
+<span class="sd">    q_i = q_m * K_i * C_i^n_i / (1 + sum(K_j*(C_j)^n_j))</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    K: float</span>
+<span class="sd">        Langmuir dissociation constant</span>
+<span class="sd">    q_m: float</span>
+<span class="sd">        Maximum sorbent capacity.</span>
+<span class="sd">    n : float</span>
+<span class="sd">        Freundlich intensity factor.</span>
+
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">K</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">q_m</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span> <span class="o">=</span> <span class="n">q_m</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"K and n must be the same shape."</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"K must be greater than zero."</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"n must be greater than zero."</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"q_m must be greater than zero."</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_species</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CompetitiveLangmuirFreundlichIsotherm.q">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.CompetitiveLangmuirFreundlichIsotherm.q">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">q</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return sorbed mass concentration"""</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="n">D</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="n">C</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="n">C</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">/</span> <span class="n">D</span></div>
+
+
+<div class="viewcode-block" id="CompetitiveLangmuirFreundlichIsotherm.dq_dC">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.CompetitiveLangmuirFreundlichIsotherm.dq_dC">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dq_dC</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calculate the derivative of sorbed mass concentration by concentration."""</span>
+        <span class="n">C_arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">C_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">C_arr</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="n">D</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="n">C_arr</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+
+        <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+                <span class="n">delta_ij</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+                <span class="n">J</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span>
+                    <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="o">/</span> <span class="n">D</span>
+                    <span class="o">*</span> <span class="p">(</span>
+                        <span class="n">delta_ij</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">**</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                        <span class="o">-</span> <span class="n">C_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="n">C_arr</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">**</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                        <span class="o">/</span> <span class="n">D</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">J</span></div>
+
+
+<div class="viewcode-block" id="CompetitiveLangmuirFreundlichIsotherm.d2q_dC2">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.CompetitiveLangmuirFreundlichIsotherm.d2q_dC2">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">d2q_dC2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calculate the second derivative."""</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="n">D</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="n">C</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+
+        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="n">C</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">*</span> <span class="n">C</span> <span class="o">**</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">C</span> <span class="o">**</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+                    <span class="n">delta_ij</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span> <span class="k">else</span> <span class="mf">0.0</span>
+                    <span class="n">delta_ik</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">k</span> <span class="k">else</span> <span class="mf">0.0</span>
+                    <span class="n">delta_jk</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="n">k</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+                    <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span> <span class="o">*</span> <span class="p">(</span>
+                        <span class="n">delta_ij</span> <span class="o">*</span> <span class="n">delta_ik</span> <span class="o">*</span> <span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">D</span>
+                        <span class="o">-</span> <span class="n">delta_ij</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">D</span><span class="o">**</span><span class="mi">2</span>
+                        <span class="o">-</span> <span class="n">delta_ik</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">/</span> <span class="n">D</span><span class="o">**</span><span class="mi">2</span>
+                        <span class="o">-</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">delta_jk</span> <span class="o">*</span> <span class="n">E</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">/</span> <span class="n">D</span><span class="o">**</span><span class="mi">2</span>
+                        <span class="o">+</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">D</span><span class="o">**</span><span class="mi">3</span>
+                    <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">H</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CompetitiveStoichiometricIsotherm">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.CompetitiveStoichiometricIsotherm">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CompetitiveStoichiometricIsotherm</span><span class="p">(</span><span class="n">MultiSpeciesIsotherm</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Competitive Adsorption Isothermal Model:</span>
+
+<span class="sd">    q_i = q_m * K_i * n_i * C_i^n_i / (1 + sum(K_j*(C_j)^n_j))</span>
+
+<span class="sd">    n_iM_i + R_s &lt;=&gt; R_sM_i,n_i</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    K: float</span>
+<span class="sd">        Langmuir dissociation constant</span>
+<span class="sd">    q_m: float</span>
+<span class="sd">        Maximum sorbent capacity.</span>
+<span class="sd">    n : float</span>
+<span class="sd">        Adsorption stoichiometric factor.</span>
+
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">K</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">q_m</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span> <span class="o">=</span> <span class="n">q_m</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"K and n must be the same shape."</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"K must be greater than zero."</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"n must be greater than zero."</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"q_m must be greater than zero."</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_species</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CompetitiveStoichiometricIsotherm.q">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.CompetitiveStoichiometricIsotherm.q">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">q</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return sorbed mass concentration"""</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="n">D</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="n">C</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">*</span> <span class="n">C</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">/</span> <span class="n">D</span></div>
+
+
+<div class="viewcode-block" id="CompetitiveStoichiometricIsotherm.dq_dC">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.CompetitiveStoichiometricIsotherm.dq_dC">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dq_dC</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calculate the derivative of sorbed mass concentration by concentration."""</span>
+        <span class="n">C_arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">C_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">C_arr</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="n">D</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="n">C_arr</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+
+        <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+                <span class="n">delta_ij</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+                <span class="n">J</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span>
+                    <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="o">/</span> <span class="n">D</span>
+                    <span class="o">*</span> <span class="p">(</span>
+                        <span class="n">delta_ij</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">**</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                        <span class="o">-</span> <span class="n">C_arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="n">C_arr</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">**</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                        <span class="o">/</span> <span class="n">D</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">J</span></div>
+
+
+<div class="viewcode-block" id="CompetitiveStoichiometricIsotherm.d2q_dC2">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.CompetitiveStoichiometricIsotherm.d2q_dC2">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">d2q_dC2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calculate the second derivative."""</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="n">D</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="n">C</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+
+        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="n">C</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">*</span> <span class="n">C</span> <span class="o">**</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">C</span> <span class="o">**</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_species</span><span class="p">):</span>
+                    <span class="n">delta_ij</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span> <span class="k">else</span> <span class="mf">0.0</span>
+                    <span class="n">delta_ik</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">k</span> <span class="k">else</span> <span class="mf">0.0</span>
+                    <span class="n">delta_jk</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="n">k</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+                    <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span>
+                        <span class="o">*</span> <span class="p">(</span>
+                            <span class="n">delta_ij</span> <span class="o">*</span> <span class="n">delta_ik</span> <span class="o">*</span> <span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">D</span>
+                            <span class="o">-</span> <span class="n">delta_ij</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">D</span><span class="o">**</span><span class="mi">2</span>
+                            <span class="o">-</span> <span class="n">delta_ik</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">/</span> <span class="n">D</span><span class="o">**</span><span class="mi">2</span>
+                            <span class="o">-</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">delta_jk</span> <span class="o">*</span> <span class="n">E</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">/</span> <span class="n">D</span><span class="o">**</span><span class="mi">2</span>
+                            <span class="o">+</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">D</span><span class="o">**</span><span class="mi">3</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">H</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MultiCapacityIsotherm">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.MultiCapacityIsotherm">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MultiCapacityIsotherm</span><span class="p">(</span><span class="n">MultiSpeciesIsotherm</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Multi-Capacity Langmuir-type Isotherm:</span>
+
+<span class="sd">    q_1 = q_m,2*K_1*C_1 / (1+K_1C_1+K_2C_2) + (q_m,1-q_m,2)K_1C_1 / (1+K_1C_1)</span>
+<span class="sd">    q_2 = q_m,2*K_2*C_2 / (1+K_1C_1+K_2C_2)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    K: float</span>
+<span class="sd">        Langmuir dissociation constant</span>
+<span class="sd">    q_m: float</span>
+<span class="sd">        Maximum sorbent capacity.</span>
+
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">K</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">q_m</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">q_m</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Only binary systems are supported."</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"K must be greater than zero."</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q_m</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"q_m must be greater than zero."</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MultiCapacityIsotherm.q">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.MultiCapacityIsotherm.q">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">q</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return sorbed mass concentration"""</span>
+        <span class="n">C_arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">C_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">C_arr</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="c1"># Sort species by descending q_m</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">q_m</span><span class="p">)</span>
+
+        <span class="n">qm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+        <span class="n">C_sorted</span> <span class="o">=</span> <span class="n">C_arr</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+
+        <span class="c1"># Calculate q in sorted order</span>
+        <span class="n">q_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">D</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="n">C</span><span class="p">)</span>
+
+        <span class="n">q_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">qm</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">D</span> <span class="o">+</span> <span class="p">(</span><span class="n">qm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">qm</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">K</span><span class="p">[</span>
+            <span class="mi">0</span>
+        <span class="p">]</span> <span class="o">*</span> <span class="n">C_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="n">q_sorted</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">qm</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">K</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_sorted</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">D</span>
+
+        <span class="c1"># Return to original species ordering</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">q_sorted</span><span class="p">)</span>
+        <span class="n">q</span><span class="p">[</span><span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="n">q_sorted</span>
+
+        <span class="k">return</span> <span class="n">q</span></div>
+
+
+<div class="viewcode-block" id="MultiCapacityIsotherm.dq_dC">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.MultiCapacityIsotherm.dq_dC">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dq_dC</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calculate the derivative of sorbed mass concentration by concentration."""</span>
+        <span class="n">C_arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">C_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">C_arr</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="c1"># Sort species by descending q_m</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">q_m</span><span class="p">)</span>
+
+        <span class="n">qm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+        <span class="n">C_sorted</span> <span class="o">=</span> <span class="n">C_arr</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+
+        <span class="n">D</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="n">C_arr</span><span class="p">)</span>
+
+        <span class="n">J_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+        <span class="n">J_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">qm</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">K</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_sorted</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">D</span><span class="o">**</span><span class="mi">2</span>
+            <span class="o">+</span> <span class="p">(</span><span class="n">qm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">qm</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="p">)</span>
+        <span class="n">J_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">qm</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">K</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">D</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">J_sorted</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">qm</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">K</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_sorted</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">D</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">J_sorted</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">qm</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">K</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">D</span><span class="o">**</span><span class="mi">2</span>
+
+        <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">J_sorted</span><span class="p">)</span>
+        <span class="n">J</span> <span class="o">=</span> <span class="n">J_sorted</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ix_</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">order</span><span class="p">)]</span>
+
+        <span class="k">return</span> <span class="n">J</span></div>
+
+
+<div class="viewcode-block" id="MultiCapacityIsotherm.d2q_dC2">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.MultiCapacityIsotherm.d2q_dC2">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">d2q_dC2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calculate the second derivative."""</span>
+        <span class="n">C_arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">C_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">C_arr</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="c1"># Sort species by descending q_m</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">q_m</span><span class="p">)</span>
+
+        <span class="n">qm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+        <span class="n">C_sorted</span> <span class="o">=</span> <span class="n">C_arr</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+
+        <span class="n">D</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">K</span> <span class="o">*</span> <span class="n">C_sorted</span><span class="p">)</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">H_sorted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+        <span class="c1"># Hessian of q_1</span>
+        <span class="n">H_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">qm</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">K</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_sorted</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">D</span><span class="o">**</span><span class="mi">3</span>
+            <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">qm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">qm</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">E</span><span class="o">**</span><span class="mi">3</span>
+        <span class="p">)</span>
+
+        <span class="n">H_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">qm</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">K</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">K</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_sorted</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">D</span><span class="o">**</span><span class="mi">3</span>
+        <span class="p">)</span>
+
+        <span class="n">H_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">H_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">H_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">qm</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">K</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">D</span><span class="o">**</span><span class="mi">3</span>
+
+        <span class="c1"># Hessian of q_2</span>
+        <span class="n">H_sorted</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">qm</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">K</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_sorted</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">D</span><span class="o">**</span><span class="mi">3</span>
+
+        <span class="n">H_sorted</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">qm</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">K</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">K</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_sorted</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">D</span><span class="o">**</span><span class="mi">3</span>
+        <span class="p">)</span>
+
+        <span class="n">H_sorted</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">H_sorted</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">H_sorted</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">qm</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">K</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_sorted</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">D</span><span class="o">**</span><span class="mi">3</span>
+
+        <span class="c1"># Transform Hessian back to original species ordering</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="n">H_sorted</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ix_</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">order</span><span class="p">)]</span>
+
+        <span class="k">return</span> <span class="n">H</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AdsorbateComplexIsotherm">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.AdsorbateComplexIsotherm">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AdsorbateComplexIsotherm</span><span class="p">(</span><span class="n">MultiSpeciesIsotherm</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Adsorbate-complex Langmuir-type Isotherm:</span>
+
+<span class="sd">    q_1 = q_m*K_1*C_1 (1 + (K/K_1)C_2) / (1+K_1C_1+K_2C_2 + 2*KC_1C_2)</span>
+<span class="sd">    q_2 = q_m*K_2*C_2 (1 + (K/K_2)C_1) / (1+K_1C_1+K_2C_2 + 2*KC_1C_2)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    K: float</span>
+<span class="sd">        Langmuir dissociation constant</span>
+<span class="sd">    q_m: float</span>
+<span class="sd">        Maximum sorbent capacity.</span>
+
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">K</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">q_m</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">K_x</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span> <span class="o">=</span> <span class="n">q_m</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">K_x</span> <span class="o">=</span> <span class="n">K_x</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Only binary systems are supported."</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"K must be greater than zero."</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"q_m must be greater than zero."</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">K_x</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"K_x must be greater than zero."</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AdsorbateComplexIsotherm.q">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.AdsorbateComplexIsotherm.q">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">q</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return sorbed mass concentration"""</span>
+        <span class="n">C_arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">C_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">C_arr</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="n">D</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="n">C_arr</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">K_x</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">C_arr</span><span class="p">)</span>
+
+        <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">K_x</span> <span class="o">*</span> <span class="n">C_arr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">D</span>
+        <span class="p">)</span>
+        <span class="n">q</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_arr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">K_x</span> <span class="o">*</span> <span class="n">C_arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">D</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">q</span></div>
+
+
+<div class="viewcode-block" id="AdsorbateComplexIsotherm.dq_dC">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.AdsorbateComplexIsotherm.dq_dC">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dq_dC</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calculate the derivative of sorbed mass concentration by concentration."""</span>
+        <span class="n">C_arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">C_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">C_arr</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="n">D</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="n">C_arr</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">K_x</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">C_arr</span><span class="p">)</span>
+
+        <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+        <span class="n">J</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">K_x</span> <span class="o">*</span> <span class="n">C_arr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_arr</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="o">/</span> <span class="n">D</span><span class="o">**</span><span class="mi">2</span>
+        <span class="p">)</span>
+        <span class="n">J</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span>
+            <span class="o">*</span> <span class="n">C_arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K_x</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_arr</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="o">/</span> <span class="n">D</span><span class="o">**</span><span class="mi">2</span>
+        <span class="p">)</span>
+        <span class="n">J</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span>
+            <span class="o">*</span> <span class="n">C_arr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K_x</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_arr</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="o">/</span> <span class="n">D</span><span class="o">**</span><span class="mi">2</span>
+        <span class="p">)</span>
+        <span class="n">J</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">K_x</span> <span class="o">*</span> <span class="n">C_arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">C_arr</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="o">/</span> <span class="n">D</span><span class="o">**</span><span class="mi">2</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">J</span></div>
+
+
+<div class="viewcode-block" id="AdsorbateComplexIsotherm.d2q_dC2">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.AdsorbateComplexIsotherm.d2q_dC2">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">d2q_dC2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calculate the second derivative."""</span>
+        <span class="n">C_arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">C_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">C_arr</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="n">C1</span><span class="p">,</span> <span class="n">C2</span> <span class="o">=</span> <span class="n">C_arr</span>
+        <span class="n">K1</span><span class="p">,</span> <span class="n">K2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span>
+
+        <span class="n">qm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span>
+        <span class="n">Kx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">K_x</span>
+
+        <span class="c1"># Denominator</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">K1</span> <span class="o">*</span> <span class="n">C1</span> <span class="o">+</span> <span class="n">K2</span> <span class="o">*</span> <span class="n">C2</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">Kx</span> <span class="o">*</span> <span class="n">C1</span> <span class="o">*</span> <span class="n">C2</span>
+
+        <span class="n">D_j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">K1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">Kx</span> <span class="o">*</span> <span class="n">C2</span><span class="p">,</span>
+                <span class="n">K2</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">Kx</span> <span class="o">*</span> <span class="n">C1</span><span class="p">,</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="n">D_jk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">Kx</span><span class="p">],</span>
+                <span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">Kx</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Numerators</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">qm</span> <span class="o">*</span> <span class="p">(</span><span class="n">K1</span> <span class="o">*</span> <span class="n">C1</span> <span class="o">+</span> <span class="n">Kx</span> <span class="o">*</span> <span class="n">C1</span> <span class="o">*</span> <span class="n">C2</span><span class="p">),</span>
+                <span class="n">qm</span> <span class="o">*</span> <span class="p">(</span><span class="n">K2</span> <span class="o">*</span> <span class="n">C2</span> <span class="o">+</span> <span class="n">Kx</span> <span class="o">*</span> <span class="n">C1</span> <span class="o">*</span> <span class="n">C2</span><span class="p">),</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="c1"># First derivatives of numerators</span>
+        <span class="n">N_j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">[</span>
+                    <span class="n">qm</span> <span class="o">*</span> <span class="p">(</span><span class="n">K1</span> <span class="o">+</span> <span class="n">Kx</span> <span class="o">*</span> <span class="n">C2</span><span class="p">),</span>
+                    <span class="n">qm</span> <span class="o">*</span> <span class="n">Kx</span> <span class="o">*</span> <span class="n">C1</span><span class="p">,</span>
+                <span class="p">],</span>
+                <span class="p">[</span>
+                    <span class="n">qm</span> <span class="o">*</span> <span class="n">Kx</span> <span class="o">*</span> <span class="n">C2</span><span class="p">,</span>
+                    <span class="n">qm</span> <span class="o">*</span> <span class="p">(</span><span class="n">K2</span> <span class="o">+</span> <span class="n">Kx</span> <span class="o">*</span> <span class="n">C1</span><span class="p">),</span>
+                <span class="p">],</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Second derivatives of numerators</span>
+        <span class="n">N_jk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">[</span>
+                    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">qm</span> <span class="o">*</span> <span class="n">Kx</span><span class="p">],</span>
+                    <span class="p">[</span><span class="n">qm</span> <span class="o">*</span> <span class="n">Kx</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+                <span class="p">],</span>
+                <span class="p">[</span>
+                    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">qm</span> <span class="o">*</span> <span class="n">Kx</span><span class="p">],</span>
+                    <span class="p">[</span><span class="n">qm</span> <span class="o">*</span> <span class="n">Kx</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+                <span class="p">],</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+                    <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">N_jk</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">D</span>
+                        <span class="o">-</span> <span class="p">(</span><span class="n">N_j</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">D_j</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+</span> <span class="n">N_j</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">D_j</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">N</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">D_jk</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">])</span>
+                        <span class="o">/</span> <span class="n">D</span><span class="o">**</span><span class="mi">2</span>
+                        <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">N</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">D_j</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">D_j</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">/</span> <span class="n">D</span><span class="o">**</span><span class="mi">3</span>
+                    <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">H</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Timothy M. Weigand.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

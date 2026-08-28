@@ -222,13 +222,32 @@ be complete once you actually try to run them.</p>
 <dd><p>Calculate the second derivative.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.LinearIsotherm.C">
+<span class="sig-name descname"><span class="pre">C</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LinearIsotherm.C"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.LinearIsotherm.C" title="Link to this definition"></a></dt>
+<dd><p>Return liquid phase concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.LinearIsotherm.dC_dq">
+<span class="sig-name descname"><span class="pre">dC_dq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LinearIsotherm.dC_dq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.LinearIsotherm.dC_dq" title="Link to this definition"></a></dt>
+<dd><p>Calculate derivative of liquid concentration by sorbed mass concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.LinearIsotherm.d2C_dq2">
+<span class="sig-name descname"><span class="pre">d2C_dq2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LinearIsotherm.d2C_dq2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.LinearIsotherm.d2C_dq2" title="Link to this definition"></a></dt>
+<dd><p>Calculate the second derivative.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="reactormodels.models.LangmuirIsotherm">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.</span></span><span class="sig-name descname"><span class="pre">LangmuirIsotherm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">K</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LangmuirIsotherm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.LangmuirIsotherm" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#reactormodels.models.isotherm.Isotherm" title="reactormodels.models.isotherm.Isotherm"><code class="xref py py-class docutils literal notranslate"><span class="pre">Isotherm</span></code></a></p>
-<p>Langmuir isotherm: q* = q_m * K * C / (1 + K * C)</p>
+<p>Langmuir isotherm:</p>
+<p>q* = q_m * K * C / (1 + K * C) or C* = q / (K (q_m - q))</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -252,6 +271,24 @@ be complete once you actually try to run them.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="reactormodels.models.LangmuirIsotherm.d2q_dC2">
 <span class="sig-name descname"><span class="pre">d2q_dC2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LangmuirIsotherm.d2q_dC2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.LangmuirIsotherm.d2q_dC2" title="Link to this definition"></a></dt>
+<dd><p>Calculate the second derivative.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.LangmuirIsotherm.C">
+<span class="sig-name descname"><span class="pre">C</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LangmuirIsotherm.C"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.LangmuirIsotherm.C" title="Link to this definition"></a></dt>
+<dd><p>Return liquid phase concentration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.LangmuirIsotherm.dC_dq">
+<span class="sig-name descname"><span class="pre">dC_dq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LangmuirIsotherm.dC_dq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.LangmuirIsotherm.dC_dq" title="Link to this definition"></a></dt>
+<dd><p>Calculate derivative of liquid concentration by sorbed mass concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.LangmuirIsotherm.d2C_dq2">
+<span class="sig-name descname"><span class="pre">d2C_dq2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LangmuirIsotherm.d2C_dq2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.LangmuirIsotherm.d2C_dq2" title="Link to this definition"></a></dt>
 <dd><p>Calculate the second derivative.</p>
 </dd></dl>
 
@@ -285,6 +322,268 @@ be complete once you actually try to run them.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="reactormodels.models.FreundlichIsotherm.d2q_dC2">
 <span class="sig-name descname"><span class="pre">d2q_dC2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#FreundlichIsotherm.d2q_dC2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.FreundlichIsotherm.d2q_dC2" title="Link to this definition"></a></dt>
+<dd><p>Calculate the second derivative.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.FreundlichIsotherm.C">
+<span class="sig-name descname"><span class="pre">C</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#FreundlichIsotherm.C"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.FreundlichIsotherm.C" title="Link to this definition"></a></dt>
+<dd><p>Return liquid phase concentration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.FreundlichIsotherm.dC_dq">
+<span class="sig-name descname"><span class="pre">dC_dq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#FreundlichIsotherm.dC_dq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.FreundlichIsotherm.dC_dq" title="Link to this definition"></a></dt>
+<dd><p>Calculate derivative of liquid concentration by sorbed mass concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.FreundlichIsotherm.d2C_dq2">
+<span class="sig-name descname"><span class="pre">d2C_dq2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#FreundlichIsotherm.d2C_dq2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.FreundlichIsotherm.d2C_dq2" title="Link to this definition"></a></dt>
+<dd><p>Calculate the second derivative.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.models.CompetitiveFreundlichIsotherm">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.</span></span><span class="sig-name descname"><span class="pre">CompetitiveFreundlichIsotherm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">K</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveFreundlichIsotherm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.CompetitiveFreundlichIsotherm" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm" title="reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiSpeciesIsotherm</span></code></a></p>
+<p>Competitive Freundlich isotherm:</p>
+<p>C_i = q_i / sum(q_j) * [sum(n_j*q_j) / (n_i*K_i)]^n_i</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>K</strong> (<em>float</em>) – Freundlich capacity factor</p></li>
+<li><p><strong>n</strong> (<em>float</em>) – Freundlich intensity factor.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.CompetitiveFreundlichIsotherm.C">
+<span class="sig-name descname"><span class="pre">C</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveFreundlichIsotherm.C"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.CompetitiveFreundlichIsotherm.C" title="Link to this definition"></a></dt>
+<dd><p>Return liquid phase concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.CompetitiveFreundlichIsotherm.dC_dq">
+<span class="sig-name descname"><span class="pre">dC_dq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveFreundlichIsotherm.dC_dq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.CompetitiveFreundlichIsotherm.dC_dq" title="Link to this definition"></a></dt>
+<dd><p>Calculate derivative of liquid concentration by sorbed mass concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.CompetitiveFreundlichIsotherm.d2C_dq2">
+<span class="sig-name descname"><span class="pre">d2C_dq2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveFreundlichIsotherm.d2C_dq2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.CompetitiveFreundlichIsotherm.d2C_dq2" title="Link to this definition"></a></dt>
+<dd><p>Calculate the second derivative.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.models.CompetitiveIonIsotherm">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.</span></span><span class="sig-name descname"><span class="pre">CompetitiveIonIsotherm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">K</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MW</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inlet_concentrations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bulk_density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_concentration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_mw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">35.45</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveIonIsotherm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.CompetitiveIonIsotherm" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm" title="reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiSpeciesIsotherm</span></code></a></p>
+<p>Isotherm used by EPA’s IX-ECM.</p>
+<dl>
+<dt>Equation:</dt><dd><p>C_i = (C_T * q_i) / sum(K_ij * q_j)</p>
+<p>K_ij = (q_i / C_i)^z_j * (C_j / q_j)^z_i</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>K</strong> (<em>float</em>) – Binary separation factor</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.CompetitiveIonIsotherm.C">
+<span class="sig-name descname"><span class="pre">C</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveIonIsotherm.C"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.CompetitiveIonIsotherm.C" title="Link to this definition"></a></dt>
+<dd><p>Return liquid phase concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.CompetitiveIonIsotherm.dC_dq">
+<span class="sig-name descname"><span class="pre">dC_dq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveIonIsotherm.dC_dq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.CompetitiveIonIsotherm.dC_dq" title="Link to this definition"></a></dt>
+<dd><p>Calculate derivative of liquid concentration by sorbed mass concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.CompetitiveIonIsotherm.d2C_dq2">
+<span class="sig-name descname"><span class="pre">d2C_dq2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveIonIsotherm.d2C_dq2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.CompetitiveIonIsotherm.d2C_dq2" title="Link to this definition"></a></dt>
+<dd><p>Calculate the second derivative.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.models.CompetitiveLangmuirIsotherm">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.</span></span><span class="sig-name descname"><span class="pre">CompetitiveLangmuirIsotherm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">K</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveLangmuirIsotherm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.CompetitiveLangmuirIsotherm" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm" title="reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiSpeciesIsotherm</span></code></a></p>
+<p>Competitive Langmuir isotherm:</p>
+<p>q_i = q_m * K_i * C_i / (1 + sum(K_j*C_j))</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>K</strong> (<em>float</em>) – Langmuir dissociation constant</p></li>
+<li><p><strong>q_m</strong> (<em>float</em>) – Maximum sorbent capacity.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.CompetitiveLangmuirIsotherm.q">
+<span class="sig-name descname"><span class="pre">q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveLangmuirIsotherm.q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.CompetitiveLangmuirIsotherm.q" title="Link to this definition"></a></dt>
+<dd><p>Return sorbed mass concentration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.CompetitiveLangmuirIsotherm.dq_dC">
+<span class="sig-name descname"><span class="pre">dq_dC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveLangmuirIsotherm.dq_dC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.CompetitiveLangmuirIsotherm.dq_dC" title="Link to this definition"></a></dt>
+<dd><p>Calculate the derivative of sorbed mass concentration by concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.CompetitiveLangmuirIsotherm.d2q_dC2">
+<span class="sig-name descname"><span class="pre">d2q_dC2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveLangmuirIsotherm.d2q_dC2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.CompetitiveLangmuirIsotherm.d2q_dC2" title="Link to this definition"></a></dt>
+<dd><p>Calculate the second derivative.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.models.CompetitiveLangmuirFreundlichIsotherm">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.</span></span><span class="sig-name descname"><span class="pre">CompetitiveLangmuirFreundlichIsotherm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">K</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveLangmuirFreundlichIsotherm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.CompetitiveLangmuirFreundlichIsotherm" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm" title="reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiSpeciesIsotherm</span></code></a></p>
+<p>Competitive Langmuir isotherm:</p>
+<p>q_i = q_m * K_i * C_i^n_i / (1 + sum(K_j*(C_j)^n_j))</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>K</strong> (<em>float</em>) – Langmuir dissociation constant</p></li>
+<li><p><strong>q_m</strong> (<em>float</em>) – Maximum sorbent capacity.</p></li>
+<li><p><strong>n</strong> (<em>float</em>) – Freundlich intensity factor.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.CompetitiveLangmuirFreundlichIsotherm.q">
+<span class="sig-name descname"><span class="pre">q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveLangmuirFreundlichIsotherm.q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.CompetitiveLangmuirFreundlichIsotherm.q" title="Link to this definition"></a></dt>
+<dd><p>Return sorbed mass concentration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.CompetitiveLangmuirFreundlichIsotherm.dq_dC">
+<span class="sig-name descname"><span class="pre">dq_dC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveLangmuirFreundlichIsotherm.dq_dC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.CompetitiveLangmuirFreundlichIsotherm.dq_dC" title="Link to this definition"></a></dt>
+<dd><p>Calculate the derivative of sorbed mass concentration by concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.CompetitiveLangmuirFreundlichIsotherm.d2q_dC2">
+<span class="sig-name descname"><span class="pre">d2q_dC2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveLangmuirFreundlichIsotherm.d2q_dC2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.CompetitiveLangmuirFreundlichIsotherm.d2q_dC2" title="Link to this definition"></a></dt>
+<dd><p>Calculate the second derivative.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.models.CompetitiveStoichiometricIsotherm">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.</span></span><span class="sig-name descname"><span class="pre">CompetitiveStoichiometricIsotherm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">K</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveStoichiometricIsotherm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.CompetitiveStoichiometricIsotherm" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm" title="reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiSpeciesIsotherm</span></code></a></p>
+<p>Competitive Adsorption Isothermal Model:</p>
+<p>q_i = q_m * K_i * n_i * C_i^n_i / (1 + sum(K_j*(C_j)^n_j))</p>
+<p>n_iM_i + R_s &lt;=&gt; R_sM_i,n_i</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>K</strong> (<em>float</em>) – Langmuir dissociation constant</p></li>
+<li><p><strong>q_m</strong> (<em>float</em>) – Maximum sorbent capacity.</p></li>
+<li><p><strong>n</strong> (<em>float</em>) – Adsorption stoichiometric factor.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.CompetitiveStoichiometricIsotherm.q">
+<span class="sig-name descname"><span class="pre">q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveStoichiometricIsotherm.q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.CompetitiveStoichiometricIsotherm.q" title="Link to this definition"></a></dt>
+<dd><p>Return sorbed mass concentration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.CompetitiveStoichiometricIsotherm.dq_dC">
+<span class="sig-name descname"><span class="pre">dq_dC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveStoichiometricIsotherm.dq_dC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.CompetitiveStoichiometricIsotherm.dq_dC" title="Link to this definition"></a></dt>
+<dd><p>Calculate the derivative of sorbed mass concentration by concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.CompetitiveStoichiometricIsotherm.d2q_dC2">
+<span class="sig-name descname"><span class="pre">d2q_dC2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveStoichiometricIsotherm.d2q_dC2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.CompetitiveStoichiometricIsotherm.d2q_dC2" title="Link to this definition"></a></dt>
+<dd><p>Calculate the second derivative.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.models.MultiCapacityIsotherm">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.</span></span><span class="sig-name descname"><span class="pre">MultiCapacityIsotherm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">K</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#MultiCapacityIsotherm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.MultiCapacityIsotherm" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm" title="reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiSpeciesIsotherm</span></code></a></p>
+<p>Multi-Capacity Langmuir-type Isotherm:</p>
+<p>q_1 = q_m,2*K_1*C_1 / (1+K_1C_1+K_2C_2) + (q_m,1-q_m,2)K_1C_1 / (1+K_1C_1)
+q_2 = q_m,2*K_2*C_2 / (1+K_1C_1+K_2C_2)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>K</strong> (<em>float</em>) – Langmuir dissociation constant</p></li>
+<li><p><strong>q_m</strong> (<em>float</em>) – Maximum sorbent capacity.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.MultiCapacityIsotherm.q">
+<span class="sig-name descname"><span class="pre">q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#MultiCapacityIsotherm.q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.MultiCapacityIsotherm.q" title="Link to this definition"></a></dt>
+<dd><p>Return sorbed mass concentration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.MultiCapacityIsotherm.dq_dC">
+<span class="sig-name descname"><span class="pre">dq_dC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#MultiCapacityIsotherm.dq_dC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.MultiCapacityIsotherm.dq_dC" title="Link to this definition"></a></dt>
+<dd><p>Calculate the derivative of sorbed mass concentration by concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.MultiCapacityIsotherm.d2q_dC2">
+<span class="sig-name descname"><span class="pre">d2q_dC2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#MultiCapacityIsotherm.d2q_dC2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.MultiCapacityIsotherm.d2q_dC2" title="Link to this definition"></a></dt>
+<dd><p>Calculate the second derivative.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.models.AdsorbateComplexIsotherm">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.</span></span><span class="sig-name descname"><span class="pre">AdsorbateComplexIsotherm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">K</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">K_x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#AdsorbateComplexIsotherm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.AdsorbateComplexIsotherm" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm" title="reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiSpeciesIsotherm</span></code></a></p>
+<p>Adsorbate-complex Langmuir-type Isotherm:</p>
+<p>q_1 = q_m*K_1*C_1 (1 + (K/K_1)C_2) / (1+K_1C_1+K_2C_2 + 2*KC_1C_2)
+q_2 = q_m*K_2*C_2 (1 + (K/K_2)C_1) / (1+K_1C_1+K_2C_2 + 2*KC_1C_2)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>K</strong> (<em>float</em>) – Langmuir dissociation constant</p></li>
+<li><p><strong>q_m</strong> (<em>float</em>) – Maximum sorbent capacity.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.AdsorbateComplexIsotherm.q">
+<span class="sig-name descname"><span class="pre">q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#AdsorbateComplexIsotherm.q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.AdsorbateComplexIsotherm.q" title="Link to this definition"></a></dt>
+<dd><p>Return sorbed mass concentration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.AdsorbateComplexIsotherm.dq_dC">
+<span class="sig-name descname"><span class="pre">dq_dC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#AdsorbateComplexIsotherm.dq_dC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.AdsorbateComplexIsotherm.dq_dC" title="Link to this definition"></a></dt>
+<dd><p>Calculate the derivative of sorbed mass concentration by concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.AdsorbateComplexIsotherm.d2q_dC2">
+<span class="sig-name descname"><span class="pre">d2q_dC2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#AdsorbateComplexIsotherm.d2q_dC2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.AdsorbateComplexIsotherm.d2q_dC2" title="Link to this definition"></a></dt>
 <dd><p>Calculate the second derivative.</p>
 </dd></dl>
 
@@ -1005,13 +1304,32 @@ and implement the <cite>residual</cite> and <cite>apply</cite> methods.</p>
 <dd><p>Calculate the second derivative.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.isotherm.Isotherm.C">
+<span class="sig-name descname"><span class="pre">C</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#Isotherm.C"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.Isotherm.C" title="Link to this definition"></a></dt>
+<dd><p>Return liquid phase concentration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.isotherm.Isotherm.dC_dq">
+<span class="sig-name descname"><span class="pre">dC_dq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#Isotherm.dC_dq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.Isotherm.dC_dq" title="Link to this definition"></a></dt>
+<dd><p>Calculate derivative of liquid concentration by sorbed mass concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.isotherm.Isotherm.d2C_dq2">
+<span class="sig-name descname"><span class="pre">d2C_dq2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#Isotherm.d2C_dq2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.Isotherm.d2C_dq2" title="Link to this definition"></a></dt>
+<dd><p>Calculate the second derivative.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="reactormodels.models.isotherm.LangmuirIsotherm">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.isotherm.</span></span><span class="sig-name descname"><span class="pre">LangmuirIsotherm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">K</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LangmuirIsotherm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.LangmuirIsotherm" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#reactormodels.models.isotherm.Isotherm" title="reactormodels.models.isotherm.Isotherm"><code class="xref py py-class docutils literal notranslate"><span class="pre">Isotherm</span></code></a></p>
-<p>Langmuir isotherm: q* = q_m * K * C / (1 + K * C)</p>
+<p>Langmuir isotherm:</p>
+<p>q* = q_m * K * C / (1 + K * C) or C* = q / (K (q_m - q))</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1035,6 +1353,24 @@ and implement the <cite>residual</cite> and <cite>apply</cite> methods.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="reactormodels.models.isotherm.LangmuirIsotherm.d2q_dC2">
 <span class="sig-name descname"><span class="pre">d2q_dC2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LangmuirIsotherm.d2q_dC2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.LangmuirIsotherm.d2q_dC2" title="Link to this definition"></a></dt>
+<dd><p>Calculate the second derivative.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.isotherm.LangmuirIsotherm.C">
+<span class="sig-name descname"><span class="pre">C</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LangmuirIsotherm.C"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.LangmuirIsotherm.C" title="Link to this definition"></a></dt>
+<dd><p>Return liquid phase concentration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.isotherm.LangmuirIsotherm.dC_dq">
+<span class="sig-name descname"><span class="pre">dC_dq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LangmuirIsotherm.dC_dq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.LangmuirIsotherm.dC_dq" title="Link to this definition"></a></dt>
+<dd><p>Calculate derivative of liquid concentration by sorbed mass concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.isotherm.LangmuirIsotherm.d2C_dq2">
+<span class="sig-name descname"><span class="pre">d2C_dq2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LangmuirIsotherm.d2C_dq2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.LangmuirIsotherm.d2C_dq2" title="Link to this definition"></a></dt>
 <dd><p>Calculate the second derivative.</p>
 </dd></dl>
 
@@ -1071,6 +1407,24 @@ and implement the <cite>residual</cite> and <cite>apply</cite> methods.</p>
 <dd><p>Calculate the second derivative.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.isotherm.FreundlichIsotherm.C">
+<span class="sig-name descname"><span class="pre">C</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#FreundlichIsotherm.C"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.FreundlichIsotherm.C" title="Link to this definition"></a></dt>
+<dd><p>Return liquid phase concentration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.isotherm.FreundlichIsotherm.dC_dq">
+<span class="sig-name descname"><span class="pre">dC_dq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#FreundlichIsotherm.dC_dq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.FreundlichIsotherm.dC_dq" title="Link to this definition"></a></dt>
+<dd><p>Calculate derivative of liquid concentration by sorbed mass concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.isotherm.FreundlichIsotherm.d2C_dq2">
+<span class="sig-name descname"><span class="pre">d2C_dq2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#FreundlichIsotherm.d2C_dq2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.FreundlichIsotherm.d2C_dq2" title="Link to this definition"></a></dt>
+<dd><p>Calculate the second derivative.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -1101,23 +1455,351 @@ and implement the <cite>residual</cite> and <cite>apply</cite> methods.</p>
 <dd><p>Calculate the second derivative.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.isotherm.LinearIsotherm.C">
+<span class="sig-name descname"><span class="pre">C</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LinearIsotherm.C"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.LinearIsotherm.C" title="Link to this definition"></a></dt>
+<dd><p>Return liquid phase concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.isotherm.LinearIsotherm.dC_dq">
+<span class="sig-name descname"><span class="pre">dC_dq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LinearIsotherm.dC_dq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.LinearIsotherm.dC_dq" title="Link to this definition"></a></dt>
+<dd><p>Calculate derivative of liquid concentration by sorbed mass concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.isotherm.LinearIsotherm.d2C_dq2">
+<span class="sig-name descname"><span class="pre">d2C_dq2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#LinearIsotherm.d2C_dq2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.LinearIsotherm.d2C_dq2" title="Link to this definition"></a></dt>
+<dd><p>Calculate the second derivative.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="reactormodels.models.isotherm.flatten_parameters">
+<span class="sig-prename descclassname"><span class="pre">reactormodels.models.isotherm.</span></span><span class="sig-name descname"><span class="pre">flatten_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#flatten_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.flatten_parameters" title="Link to this definition"></a></dt>
+<dd><p>Flatten multi-species isotherm parameters for fitting.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="reactormodels.models.isotherm.unflatten_parameters">
+<span class="sig-prename descclassname"><span class="pre">reactormodels.models.isotherm.</span></span><span class="sig-name descname"><span class="pre">unflatten_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#unflatten_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.unflatten_parameters" title="Link to this definition"></a></dt>
+<dd><p>Return fitting parameters to shape of initial guesses.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="reactormodels.models.isotherm.fit_isotherm">
-<span class="sig-prename descclassname"><span class="pre">reactormodels.models.isotherm.</span></span><span class="sig-name descname"><span class="pre">fit_isotherm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">isotherm_class</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#reactormodels.models.isotherm.Isotherm" title="reactormodels.models.isotherm.Isotherm"><span class="pre">Isotherm</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_guess</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#reactormodels.models.isotherm.Isotherm" title="reactormodels.models.isotherm.Isotherm"><span class="pre">Isotherm</span></a></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#fit_isotherm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.fit_isotherm" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">reactormodels.models.isotherm.</span></span><span class="sig-name descname"><span class="pre">fit_isotherm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">isotherm_class</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#reactormodels.models.isotherm.Isotherm" title="reactormodels.models.isotherm.Isotherm"><span class="pre">Isotherm</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xdata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ydata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_guess</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_template</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">object</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#reactormodels.models.isotherm.Isotherm" title="reactormodels.models.isotherm.Isotherm"><span class="pre">Isotherm</span></a></span></span><a class="reference internal" href="../_modules/reactormodels/models/isotherm.html#fit_isotherm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.isotherm.fit_isotherm" title="Link to this definition"></a></dt>
 <dd><p>Fit an isotherm to equilibrium concentration data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>isotherm_class</strong> (<em>type</em><em>[</em><a class="reference internal" href="#reactormodels.models.isotherm.Isotherm" title="reactormodels.models.isotherm.Isotherm"><em>Isotherm</em></a><em>]</em>) – Isotherm class to fit.</p></li>
-<li><p><strong>C</strong> (<em>float</em><em> | </em><em>np.ndarray</em>) – Equilibrium fluid concentrations.</p></li>
-<li><p><strong>q</strong> (<em>float</em><em> | </em><em>np.ndarray</em>) – Equilibrium sorbed concentrations.</p></li>
-<li><p><strong>initial_guess</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>...</em><em>]</em>) – Initial guess for the isotherm parameters.</p></li>
+<li><p><strong>xdata</strong> (<em>float</em><em> | </em><em>np.ndarray</em>) – Independent equilibrium concentration data.</p></li>
+<li><p><strong>ydata</strong> (<em>float</em><em> | </em><em>np.ndarray</em>) – Dependent equilibrium concentration data.</p></li>
+<li><p><strong>initial_guess</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>...</em><em>]</em>) – Initial guess for fitting parameters.</p></li>
+<li><p><strong>fit_indices</strong> (<em>tuple</em><em>[</em><em>int</em><em>, </em><em>...</em><em>]</em>) – Indices of the constructor parameters to be fitted.</p></li>
+<li><p><strong>parameter_template</strong> (<em>tuple</em><em>[</em><em>object</em><em>, </em><em>...</em><em>]</em>) – Complete set of isotherm constructor parameters, in the same
+order as the isotherm constructor. Values corresponding to
+<code class="docutils literal notranslate"><span class="pre">fit_indices</span></code> are replaced during fitting.</p></li>
+<li><p><strong>output</strong> (<em>str</em><em>, </em><em>optional</em>) – Variable being fitted. If <code class="docutils literal notranslate"><span class="pre">&quot;q&quot;</span></code>, fit q as a function of C.
+If <code class="docutils literal notranslate"><span class="pre">&quot;C&quot;</span></code>, fit C as a function of q. If None, use the
+default output specified by the isotherm class.</p></li>
 <li><p><strong>Isotherm</strong> – Fitted isotherm instance.</p></li>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+</section>
+<section id="module-reactormodels.models.multi_species_isotherm">
+<span id="reactormodels-models-multi-species-isotherm-module"></span><h2>reactormodels.models.multi_species_isotherm module<a class="headerlink" href="#module-reactormodels.models.multi_species_isotherm" title="Link to this heading"></a></h2>
+<p>isotherm.py</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.multi_species_isotherm.</span></span><span class="sig-name descname"><span class="pre">MultiSpeciesIsotherm</span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#MultiSpeciesIsotherm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for multi-species adsorption isotherms.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm.q">
+<span class="sig-name descname"><span class="pre">q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#MultiSpeciesIsotherm.q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm.q" title="Link to this definition"></a></dt>
+<dd><p>Return sorbed mass concentration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm.dq_dC">
+<span class="sig-name descname"><span class="pre">dq_dC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#MultiSpeciesIsotherm.dq_dC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm.dq_dC" title="Link to this definition"></a></dt>
+<dd><p>Calculate the derivative of sorbed mass concentration by concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm.d2q_dC2">
+<span class="sig-name descname"><span class="pre">d2q_dC2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#MultiSpeciesIsotherm.d2q_dC2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm.d2q_dC2" title="Link to this definition"></a></dt>
+<dd><p>Calculate the second derivative.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm.C">
+<span class="sig-name descname"><span class="pre">C</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#MultiSpeciesIsotherm.C"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm.C" title="Link to this definition"></a></dt>
+<dd><p>Return liquid phase concentration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm.dC_dq">
+<span class="sig-name descname"><span class="pre">dC_dq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#MultiSpeciesIsotherm.dC_dq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm.dC_dq" title="Link to this definition"></a></dt>
+<dd><p>Calculate derivative of liquid concentration by sorbed mass concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm.d2C_dq2">
+<span class="sig-name descname"><span class="pre">d2C_dq2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#MultiSpeciesIsotherm.d2C_dq2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm.d2C_dq2" title="Link to this definition"></a></dt>
+<dd><p>Calculate the second derivative.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.CompetitiveFreundlichIsotherm">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.multi_species_isotherm.</span></span><span class="sig-name descname"><span class="pre">CompetitiveFreundlichIsotherm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">K</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveFreundlichIsotherm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.CompetitiveFreundlichIsotherm" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm" title="reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiSpeciesIsotherm</span></code></a></p>
+<p>Competitive Freundlich isotherm:</p>
+<p>C_i = q_i / sum(q_j) * [sum(n_j*q_j) / (n_i*K_i)]^n_i</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>K</strong> (<em>float</em>) – Freundlich capacity factor</p></li>
+<li><p><strong>n</strong> (<em>float</em>) – Freundlich intensity factor.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.CompetitiveFreundlichIsotherm.C">
+<span class="sig-name descname"><span class="pre">C</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveFreundlichIsotherm.C"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.CompetitiveFreundlichIsotherm.C" title="Link to this definition"></a></dt>
+<dd><p>Return liquid phase concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.CompetitiveFreundlichIsotherm.dC_dq">
+<span class="sig-name descname"><span class="pre">dC_dq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveFreundlichIsotherm.dC_dq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.CompetitiveFreundlichIsotherm.dC_dq" title="Link to this definition"></a></dt>
+<dd><p>Calculate derivative of liquid concentration by sorbed mass concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.CompetitiveFreundlichIsotherm.d2C_dq2">
+<span class="sig-name descname"><span class="pre">d2C_dq2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveFreundlichIsotherm.d2C_dq2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.CompetitiveFreundlichIsotherm.d2C_dq2" title="Link to this definition"></a></dt>
+<dd><p>Calculate the second derivative.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.CompetitiveLangmuirIsotherm">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.multi_species_isotherm.</span></span><span class="sig-name descname"><span class="pre">CompetitiveLangmuirIsotherm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">K</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveLangmuirIsotherm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.CompetitiveLangmuirIsotherm" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm" title="reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiSpeciesIsotherm</span></code></a></p>
+<p>Competitive Langmuir isotherm:</p>
+<p>q_i = q_m * K_i * C_i / (1 + sum(K_j*C_j))</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>K</strong> (<em>float</em>) – Langmuir dissociation constant</p></li>
+<li><p><strong>q_m</strong> (<em>float</em>) – Maximum sorbent capacity.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.CompetitiveLangmuirIsotherm.q">
+<span class="sig-name descname"><span class="pre">q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveLangmuirIsotherm.q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.CompetitiveLangmuirIsotherm.q" title="Link to this definition"></a></dt>
+<dd><p>Return sorbed mass concentration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.CompetitiveLangmuirIsotherm.dq_dC">
+<span class="sig-name descname"><span class="pre">dq_dC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveLangmuirIsotherm.dq_dC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.CompetitiveLangmuirIsotherm.dq_dC" title="Link to this definition"></a></dt>
+<dd><p>Calculate the derivative of sorbed mass concentration by concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.CompetitiveLangmuirIsotherm.d2q_dC2">
+<span class="sig-name descname"><span class="pre">d2q_dC2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveLangmuirIsotherm.d2q_dC2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.CompetitiveLangmuirIsotherm.d2q_dC2" title="Link to this definition"></a></dt>
+<dd><p>Calculate the second derivative.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.CompetitiveIonIsotherm">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.multi_species_isotherm.</span></span><span class="sig-name descname"><span class="pre">CompetitiveIonIsotherm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">K</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MW</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inlet_concentrations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bulk_density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_concentration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_mw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">35.45</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveIonIsotherm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.CompetitiveIonIsotherm" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm" title="reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiSpeciesIsotherm</span></code></a></p>
+<p>Isotherm used by EPA’s IX-ECM.</p>
+<dl>
+<dt>Equation:</dt><dd><p>C_i = (C_T * q_i) / sum(K_ij * q_j)</p>
+<p>K_ij = (q_i / C_i)^z_j * (C_j / q_j)^z_i</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>K</strong> (<em>float</em>) – Binary separation factor</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.CompetitiveIonIsotherm.C">
+<span class="sig-name descname"><span class="pre">C</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveIonIsotherm.C"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.CompetitiveIonIsotherm.C" title="Link to this definition"></a></dt>
+<dd><p>Return liquid phase concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.CompetitiveIonIsotherm.dC_dq">
+<span class="sig-name descname"><span class="pre">dC_dq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveIonIsotherm.dC_dq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.CompetitiveIonIsotherm.dC_dq" title="Link to this definition"></a></dt>
+<dd><p>Calculate derivative of liquid concentration by sorbed mass concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.CompetitiveIonIsotherm.d2C_dq2">
+<span class="sig-name descname"><span class="pre">d2C_dq2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveIonIsotherm.d2C_dq2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.CompetitiveIonIsotherm.d2C_dq2" title="Link to this definition"></a></dt>
+<dd><p>Calculate the second derivative.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.CompetitiveLangmuirFreundlichIsotherm">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.multi_species_isotherm.</span></span><span class="sig-name descname"><span class="pre">CompetitiveLangmuirFreundlichIsotherm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">K</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveLangmuirFreundlichIsotherm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.CompetitiveLangmuirFreundlichIsotherm" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm" title="reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiSpeciesIsotherm</span></code></a></p>
+<p>Competitive Langmuir isotherm:</p>
+<p>q_i = q_m * K_i * C_i^n_i / (1 + sum(K_j*(C_j)^n_j))</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>K</strong> (<em>float</em>) – Langmuir dissociation constant</p></li>
+<li><p><strong>q_m</strong> (<em>float</em>) – Maximum sorbent capacity.</p></li>
+<li><p><strong>n</strong> (<em>float</em>) – Freundlich intensity factor.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.CompetitiveLangmuirFreundlichIsotherm.q">
+<span class="sig-name descname"><span class="pre">q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveLangmuirFreundlichIsotherm.q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.CompetitiveLangmuirFreundlichIsotherm.q" title="Link to this definition"></a></dt>
+<dd><p>Return sorbed mass concentration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.CompetitiveLangmuirFreundlichIsotherm.dq_dC">
+<span class="sig-name descname"><span class="pre">dq_dC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveLangmuirFreundlichIsotherm.dq_dC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.CompetitiveLangmuirFreundlichIsotherm.dq_dC" title="Link to this definition"></a></dt>
+<dd><p>Calculate the derivative of sorbed mass concentration by concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.CompetitiveLangmuirFreundlichIsotherm.d2q_dC2">
+<span class="sig-name descname"><span class="pre">d2q_dC2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveLangmuirFreundlichIsotherm.d2q_dC2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.CompetitiveLangmuirFreundlichIsotherm.d2q_dC2" title="Link to this definition"></a></dt>
+<dd><p>Calculate the second derivative.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.CompetitiveStoichiometricIsotherm">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.multi_species_isotherm.</span></span><span class="sig-name descname"><span class="pre">CompetitiveStoichiometricIsotherm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">K</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveStoichiometricIsotherm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.CompetitiveStoichiometricIsotherm" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm" title="reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiSpeciesIsotherm</span></code></a></p>
+<p>Competitive Adsorption Isothermal Model:</p>
+<p>q_i = q_m * K_i * n_i * C_i^n_i / (1 + sum(K_j*(C_j)^n_j))</p>
+<p>n_iM_i + R_s &lt;=&gt; R_sM_i,n_i</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>K</strong> (<em>float</em>) – Langmuir dissociation constant</p></li>
+<li><p><strong>q_m</strong> (<em>float</em>) – Maximum sorbent capacity.</p></li>
+<li><p><strong>n</strong> (<em>float</em>) – Adsorption stoichiometric factor.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.CompetitiveStoichiometricIsotherm.q">
+<span class="sig-name descname"><span class="pre">q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveStoichiometricIsotherm.q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.CompetitiveStoichiometricIsotherm.q" title="Link to this definition"></a></dt>
+<dd><p>Return sorbed mass concentration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.CompetitiveStoichiometricIsotherm.dq_dC">
+<span class="sig-name descname"><span class="pre">dq_dC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveStoichiometricIsotherm.dq_dC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.CompetitiveStoichiometricIsotherm.dq_dC" title="Link to this definition"></a></dt>
+<dd><p>Calculate the derivative of sorbed mass concentration by concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.CompetitiveStoichiometricIsotherm.d2q_dC2">
+<span class="sig-name descname"><span class="pre">d2q_dC2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#CompetitiveStoichiometricIsotherm.d2q_dC2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.CompetitiveStoichiometricIsotherm.d2q_dC2" title="Link to this definition"></a></dt>
+<dd><p>Calculate the second derivative.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.MultiCapacityIsotherm">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.multi_species_isotherm.</span></span><span class="sig-name descname"><span class="pre">MultiCapacityIsotherm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">K</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#MultiCapacityIsotherm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.MultiCapacityIsotherm" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm" title="reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiSpeciesIsotherm</span></code></a></p>
+<p>Multi-Capacity Langmuir-type Isotherm:</p>
+<p>q_1 = q_m,2*K_1*C_1 / (1+K_1C_1+K_2C_2) + (q_m,1-q_m,2)K_1C_1 / (1+K_1C_1)
+q_2 = q_m,2*K_2*C_2 / (1+K_1C_1+K_2C_2)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>K</strong> (<em>float</em>) – Langmuir dissociation constant</p></li>
+<li><p><strong>q_m</strong> (<em>float</em>) – Maximum sorbent capacity.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.MultiCapacityIsotherm.q">
+<span class="sig-name descname"><span class="pre">q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#MultiCapacityIsotherm.q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.MultiCapacityIsotherm.q" title="Link to this definition"></a></dt>
+<dd><p>Return sorbed mass concentration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.MultiCapacityIsotherm.dq_dC">
+<span class="sig-name descname"><span class="pre">dq_dC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#MultiCapacityIsotherm.dq_dC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.MultiCapacityIsotherm.dq_dC" title="Link to this definition"></a></dt>
+<dd><p>Calculate the derivative of sorbed mass concentration by concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.MultiCapacityIsotherm.d2q_dC2">
+<span class="sig-name descname"><span class="pre">d2q_dC2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#MultiCapacityIsotherm.d2q_dC2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.MultiCapacityIsotherm.d2q_dC2" title="Link to this definition"></a></dt>
+<dd><p>Calculate the second derivative.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.AdsorbateComplexIsotherm">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.models.multi_species_isotherm.</span></span><span class="sig-name descname"><span class="pre">AdsorbateComplexIsotherm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">K</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">K_x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#AdsorbateComplexIsotherm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.AdsorbateComplexIsotherm" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm" title="reactormodels.models.multi_species_isotherm.MultiSpeciesIsotherm"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiSpeciesIsotherm</span></code></a></p>
+<p>Adsorbate-complex Langmuir-type Isotherm:</p>
+<p>q_1 = q_m*K_1*C_1 (1 + (K/K_1)C_2) / (1+K_1C_1+K_2C_2 + 2*KC_1C_2)
+q_2 = q_m*K_2*C_2 (1 + (K/K_2)C_1) / (1+K_1C_1+K_2C_2 + 2*KC_1C_2)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>K</strong> (<em>float</em>) – Langmuir dissociation constant</p></li>
+<li><p><strong>q_m</strong> (<em>float</em>) – Maximum sorbent capacity.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.AdsorbateComplexIsotherm.q">
+<span class="sig-name descname"><span class="pre">q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#AdsorbateComplexIsotherm.q"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.AdsorbateComplexIsotherm.q" title="Link to this definition"></a></dt>
+<dd><p>Return sorbed mass concentration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.AdsorbateComplexIsotherm.dq_dC">
+<span class="sig-name descname"><span class="pre">dq_dC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#AdsorbateComplexIsotherm.dq_dC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.AdsorbateComplexIsotherm.dq_dC" title="Link to this definition"></a></dt>
+<dd><p>Calculate the derivative of sorbed mass concentration by concentration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="reactormodels.models.multi_species_isotherm.AdsorbateComplexIsotherm.d2q_dC2">
+<span class="sig-name descname"><span class="pre">d2q_dC2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/reactormodels/models/multi_species_isotherm.html#AdsorbateComplexIsotherm.d2q_dC2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.models.multi_species_isotherm.AdsorbateComplexIsotherm.d2q_dC2" title="Link to this definition"></a></dt>
+<dd><p>Calculate the second derivative.</p>
+</dd></dl>
+
 </dd></dl>
 
 </section>

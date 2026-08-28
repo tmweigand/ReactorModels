@@ -104,6 +104,27 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">d2q_dC2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Calculate the second derivative."""</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="Isotherm.C">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.Isotherm.C">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">C</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return liquid phase concentration"""</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="Isotherm.dC_dq">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.Isotherm.dC_dq">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dC_dq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calculate derivative of liquid concentration by sorbed mass concentration."""</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="Isotherm.d2C_dq2">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.Isotherm.d2C_dq2">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">d2C_dq2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calculate the second derivative."""</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 </div>
 
 
@@ -111,7 +132,9 @@
 <div class="viewcode-block" id="LangmuirIsotherm">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.LangmuirIsotherm">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LangmuirIsotherm</span><span class="p">(</span><span class="n">Isotherm</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Langmuir isotherm: q* = q_m * K * C / (1 + K * C)</span>
+<span class="w">    </span><span class="sd">"""Langmuir isotherm:</span>
+
+<span class="sd">    q* = q_m * K * C / (1 + K * C) or C* = q / (K (q_m - q))</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -150,6 +173,30 @@
 <span class="w">        </span><span class="sd">"""Calculate the second derivative."""</span>
         <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
         <span class="k">return</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span> <span class="o">**</span> <span class="mi">3</span></div>
+
+
+<div class="viewcode-block" id="LangmuirIsotherm.C">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.LangmuirIsotherm.C">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">C</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return liquid phase concentration"""</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">q</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q_m</span> <span class="o">-</span> <span class="n">q</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="LangmuirIsotherm.dC_dq">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.LangmuirIsotherm.dC_dq">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dC_dq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calculate derivative of liquid concentration by sorbed mass concentration."""</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q_m</span> <span class="o">-</span> <span class="n">q</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LangmuirIsotherm.d2C_dq2">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.LangmuirIsotherm.d2C_dq2">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">d2C_dq2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calculate the second derivative."""</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_m</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q_m</span> <span class="o">-</span> <span class="n">q</span><span class="p">)</span> <span class="o">**</span> <span class="mi">3</span><span class="p">)</span></div>
 </div>
 
 
@@ -195,6 +242,35 @@
 <span class="w">        </span><span class="sd">"""Calculate the second derivative."""</span>
         <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span> <span class="mf">1e-30</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">C</span> <span class="o">**</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mf">2.0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FreundlichIsotherm.C">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.FreundlichIsotherm.C">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">C</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Return liquid phase concentration"""</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">q</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">)</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span></div>
+
+
+<div class="viewcode-block" id="FreundlichIsotherm.dC_dq">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.FreundlichIsotherm.dC_dq">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dC_dq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calculate derivative of liquid concentration by sorbed mass concentration."""</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">)</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">*</span> <span class="n">q</span> <span class="o">**</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FreundlichIsotherm.d2C_dq2">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.FreundlichIsotherm.d2C_dq2">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">d2C_dq2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calculate the second derivative."""</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">)</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">*</span> <span class="n">q</span> <span class="o">**</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span></div>
 </div>
 
 
@@ -233,7 +309,67 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">d2q_dC2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Calculate the second derivative."""</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="LinearIsotherm.C">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.LinearIsotherm.C">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">C</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return liquid phase concentration."""</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span></div>
+
+
+<div class="viewcode-block" id="LinearIsotherm.dC_dq">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.LinearIsotherm.dC_dq">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dC_dq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calculate derivative of liquid concentration by sorbed mass concentration."""</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span></div>
+
+
+<div class="viewcode-block" id="LinearIsotherm.d2C_dq2">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.LinearIsotherm.d2C_dq2">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">d2C_dq2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Calculate the second derivative."""</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">))</span></div>
 </div>
+
+
+
+<div class="viewcode-block" id="flatten_parameters">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.flatten_parameters">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">flatten_parameters</span><span class="p">(</span><span class="n">parameters</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Flatten multi-species isotherm parameters for fitting."""</span>
+    <span class="n">flat</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+        <span class="n">flat</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">flat</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="unflatten_parameters">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.unflatten_parameters">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">unflatten_parameters</span><span class="p">(</span><span class="n">flat</span><span class="p">,</span> <span class="n">template</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Return fitting parameters to shape of initial guesses."""</span>
+    <span class="n">flat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">flat</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="n">parameters</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">template</span><span class="p">:</span>
+        <span class="n">parameter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span>
+
+        <span class="n">n</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">size</span>
+
+        <span class="n">values</span> <span class="o">=</span> <span class="n">flat</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">n</span><span class="p">]</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="n">n</span>
+
+        <span class="k">if</span> <span class="n">parameter</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">parameter</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span></div>
 
 
 
@@ -241,9 +377,11 @@
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.fit_isotherm">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">fit_isotherm</span><span class="p">(</span>
     <span class="n">isotherm_class</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">Isotherm</span><span class="p">],</span>
-    <span class="n">C</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-    <span class="n">q</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">xdata</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">ydata</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
     <span class="n">initial_guess</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+    <span class="n">fit_indices</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+    <span class="n">parameter_template</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">object</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Isotherm</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Fit an isotherm to equilibrium concentration data.</span>
 
@@ -251,40 +389,90 @@
 <span class="sd">    ----------</span>
 <span class="sd">    isotherm_class : type[Isotherm]</span>
 <span class="sd">        Isotherm class to fit.</span>
-<span class="sd">    C : float | np.ndarray</span>
-<span class="sd">        Equilibrium fluid concentrations.</span>
-<span class="sd">    q : float | np.ndarray</span>
-<span class="sd">        Equilibrium sorbed concentrations.</span>
+<span class="sd">    xdata : float | np.ndarray</span>
+<span class="sd">        Independent equilibrium concentration data.</span>
+<span class="sd">    ydata : float | np.ndarray</span>
+<span class="sd">        Dependent equilibrium concentration data.</span>
 <span class="sd">    initial_guess : tuple[float, ...]</span>
-<span class="sd">        Initial guess for the isotherm parameters.</span>
+<span class="sd">        Initial guess for fitting parameters.</span>
+<span class="sd">    fit_indices : tuple[int, ...]</span>
+<span class="sd">        Indices of the constructor parameters to be fitted.</span>
+<span class="sd">    parameter_template : tuple[object, ...]</span>
+<span class="sd">        Complete set of isotherm constructor parameters, in the same</span>
+<span class="sd">        order as the isotherm constructor. Values corresponding to</span>
+<span class="sd">        ``fit_indices`` are replaced during fitting.</span>
+<span class="sd">    output : str, optional</span>
+<span class="sd">        Variable being fitted. If ``"q"``, fit q as a function of C.</span>
+<span class="sd">        If ``"C"``, fit C as a function of q. If None, use the</span>
+<span class="sd">        default output specified by the isotherm class.</span>
 
 <span class="sd">    Isotherm</span>
 <span class="sd">        Fitted isotherm instance.</span>
 
 <span class="sd">    """</span>
-    <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-    <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">xdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">ydata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ydata</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">C</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">q</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">xdata</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">ydata</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"C and q must have the same shape."</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">C</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">q</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">xdata</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">ydata</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"C and q values must be nonnegative."</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">model</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="o">*</span><span class="n">parameters</span><span class="p">):</span>
-        <span class="n">isotherm</span> <span class="o">=</span> <span class="n">isotherm_class</span><span class="p">(</span><span class="o">*</span><span class="n">parameters</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">isotherm</span><span class="o">.</span><span class="n">q</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">parameter_template</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">fit_indices</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"All fit_indices must correspond to parameters in "</span> <span class="s2">"parameter_template."</span>
+        <span class="p">)</span>
 
-    <span class="n">bounds</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">initial_guess</span><span class="p">),</span> <span class="mf">1e-30</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">initial_guess</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">initial_guess</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fit_indices</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">"initial_guess must contain one value for each "</span> <span class="s2">"parameter in fit_indices."</span>
+        <span class="p">)</span>
+
+    <span class="n">template</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">parameter</span>
+        <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">initial_guess</span>
+    <span class="p">)</span>
+
+    <span class="n">p0</span> <span class="o">=</span> <span class="n">flatten_parameters</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">flat_parameters</span><span class="p">):</span>
+        <span class="n">fitted_parameters</span> <span class="o">=</span> <span class="n">unflatten_parameters</span><span class="p">(</span>
+            <span class="n">flat_parameters</span><span class="p">,</span>
+            <span class="n">template</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">parameters</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">parameter_template</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">fit_indices</span><span class="p">,</span> <span class="n">fitted_parameters</span><span class="p">):</span>
+            <span class="n">parameters</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="n">isotherm</span> <span class="o">=</span> <span class="n">isotherm_class</span><span class="p">(</span><span class="o">*</span><span class="n">parameters</span><span class="p">)</span>
+
+        <span class="n">function</span> <span class="o">=</span> <span class="n">isotherm</span><span class="o">.</span><span class="n">q</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">function</span><span class="p">(</span><span class="n">x_i</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">])</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+    <span class="n">bounds</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p0</span><span class="p">),</span> <span class="mf">1e-30</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">))</span>
 
     <span class="n">popt</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span>
         <span class="n">model</span><span class="p">,</span>
-        <span class="n">C</span><span class="p">,</span>
-        <span class="n">q</span><span class="p">,</span>
-        <span class="n">p0</span><span class="o">=</span><span class="n">initial_guess</span><span class="p">,</span>
+        <span class="n">xdata</span><span class="p">,</span>
+        <span class="n">ydata</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span>
+        <span class="n">p0</span><span class="o">=</span><span class="n">p0</span><span class="p">,</span>
         <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">isotherm_class</span><span class="p">(</span><span class="o">*</span><span class="n">popt</span><span class="p">)</span></div>
+    <span class="n">fitted_parameters</span> <span class="o">=</span> <span class="n">unflatten_parameters</span><span class="p">(</span>
+        <span class="n">popt</span><span class="p">,</span>
+        <span class="n">template</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">parameters</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">parameter_template</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">fit_indices</span><span class="p">,</span> <span class="n">fitted_parameters</span><span class="p">):</span>
+        <span class="n">parameters</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">return</span> <span class="n">isotherm_class</span><span class="p">(</span><span class="o">*</span><span class="n">parameters</span><span class="p">)</span></div>
 
 </pre></div>
 

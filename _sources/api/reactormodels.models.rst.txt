@@ -65,6 +65,14 @@ reactormodels.models.isotherm module
    :show-inheritance:
    :undoc-members:
 
+reactormodels.models.multi\_species\_isotherm module
+----------------------------------------------------
+
+.. automodule:: reactormodels.models.multi_species_isotherm
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 reactormodels.models.numeric\_model\_base module
 ------------------------------------------------
 
