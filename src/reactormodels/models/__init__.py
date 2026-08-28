@@ -43,7 +43,7 @@ from .multi_species_isotherm import (
     MultiCapacityIsotherm,
     AdsorbateComplexIsotherm,
 )
-from .boundary_conditions import DirichletBC, DanckwertsBC
+
 from .analytic_models import (
     OgataBanks,
     YoonNelson,

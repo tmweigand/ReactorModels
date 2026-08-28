@@ -214,7 +214,6 @@ def fit_isotherm(
     initial_guess: tuple[float, ...],
     fit_indices: tuple[int, ...],
     parameter_template: tuple[object, ...],
-    output=None,
 ) -> Isotherm:
     """Fit an isotherm to equilibrium concentration data.
 
@@ -251,9 +250,6 @@ def fit_isotherm(
     if np.any(xdata < 0) or np.any(ydata < 0):
         raise ValueError("C and q values must be nonnegative.")
 
-    if output is None:
-        output = isotherm_class.output
-
     if any(i < 0 or i >= len(parameter_template) for i in fit_indices):
         raise ValueError(
             "All fit_indices must correspond to parameters in " "parameter_template."
@@ -284,7 +280,7 @@ def fit_isotherm(
 
         isotherm = isotherm_class(*parameters)
 
-        function = isotherm.q if output == "q" else isotherm.C
+        function = isotherm.q
 
         return np.array([function(x_i) for x_i in x]).ravel()
 
