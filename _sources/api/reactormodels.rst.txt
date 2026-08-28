@@ -12,6 +12,7 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   reactormodels.Input
    reactormodels.models
    reactormodels.numerics
    reactormodels.postprocess
