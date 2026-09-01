@@ -185,28 +185,48 @@ def test_first_derivatives_cancel():
     np.testing.assert_allclose(langmuir.dC_dq(q) * langmuir.dq_dC(langmuir.C(q)), 1)
 
 
-def assert_jacobian_matches_numerical(isotherm, var, eps=1e-7, rtol=1e-5, atol=1e-7):
+def assert_jacobian_matches_numerical(
+    isotherm,
+    var,
+    eps=1e-7,
+    rtol=1e-5,
+    atol=1e-7,
+):
+    x = np.array(
+        [
+            [0.3, 0.5],
+            [0.1, 0.4],
+        ]
+    )
+
     if var == "q":
-        x = np.array([0.3, 0.5])
         function = isotherm.C
         jacobian = isotherm.dC_dq
-
     else:
-        x = np.array([0.3, 0.5])
         function = isotherm.q
         jacobian = isotherm.dq_dC
 
     analytical = jacobian(x)
-    numerical = np.zeros_like(analytical)
 
-    for j in range(len(x)):
-        x_plus = x.copy()
-        x_minus = x.copy()
+    n_species, n_nodes = x.shape
 
-        x_plus[j] += eps
-        x_minus[j] -= eps
+    numerical = np.zeros(
+        (n_species, n_species, n_nodes),
+        dtype=float,
+    )
 
-        numerical[:, j] = (function(x_plus) - function(x_minus)) / (2 * eps)
+    for j in range(n_species):
+        for k in range(n_nodes):
+            x_plus = x.copy()
+            x_minus = x.copy()
+
+            # Perturb species j at node k
+            x_plus[j, k] += eps
+            x_minus[j, k] -= eps
+
+            numerical[:, j, k] = (function(x_plus)[:, k] - function(x_minus)[:, k]) / (
+                2 * eps
+            )
 
     np.testing.assert_allclose(
         analytical,
@@ -216,31 +236,60 @@ def assert_jacobian_matches_numerical(isotherm, var, eps=1e-7, rtol=1e-5, atol=1
     )
 
 
-def assert_chain_rule_matches_numerical(isotherm, var, eps=1e-7, rtol=1e-5, atol=1e-7):
+def assert_chain_rule_matches_numerical(
+    isotherm,
+    var,
+    eps=1e-7,
+    rtol=1e-5,
+    atol=1e-7,
+):
+    x = np.array(
+        [
+            [0.3, 0.5],
+            [0.1, 0.4],
+        ]
+    )
+
+    dxdt = np.array(
+        [
+            [0.12, -0.07],
+            [0.08, -0.05],
+        ]
+    )
+
     if var == "q":
-        q = np.array([0.3, 0.5])
-        dqdt = np.array([0.12, -0.07])
+        J = isotherm.dC_dq(x)
 
-        J = isotherm.dC_dq(q)
+        # J[i, j, k] = dC_i(k) / dq_j(k)
+        # dxdt[j, k] = dq_j(k) / dt
+        #
+        # analytical[i, k] =
+        #     sum_j J[i, j, k] * dxdt[j, k]
+        analytical = np.einsum(
+            "ijk,jk->ik",
+            J,
+            dxdt,
+        )
 
-        analytical = J @ dqdt
+        x_plus = x + eps * dxdt
+        x_minus = x - eps * dxdt
 
-        C_plus = isotherm.C(q + eps * dqdt)
-        C_minus = isotherm.C(q - eps * dqdt)
-
-        numerical = (C_plus - C_minus) / (2 * eps)
+        numerical = (isotherm.C(x_plus) - isotherm.C(x_minus)) / (2 * eps)
 
     else:
-        C = np.array([0.3, 0.5])
-        dCdt = np.array([0.12, -0.07])
-        J = isotherm.dq_dC(C)
+        J = isotherm.dq_dC(x)
 
-        analytical = J @ dCdt
+        # J[i, j, k] = dq_i(k) / dC_j(k)
+        analytical = np.einsum(
+            "ijk,jk->ik",
+            J,
+            dxdt,
+        )
 
-        q_plus = isotherm.q(C + eps * dCdt)
-        q_minus = isotherm.q(C - eps * dCdt)
+        x_plus = x + eps * dxdt
+        x_minus = x - eps * dxdt
 
-        numerical = (q_plus - q_minus) / (2 * eps)
+        numerical = (isotherm.q(x_plus) - isotherm.q(x_minus)) / (2 * eps)
 
     np.testing.assert_allclose(
         analytical,
