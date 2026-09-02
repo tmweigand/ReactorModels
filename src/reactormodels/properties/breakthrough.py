@@ -17,7 +17,7 @@ class Breakthrough:
         self,
         column: Column,
         chemical: Chemical,
-        feed_concentrations: float | np.ndarray,
+        feed_concentrations: np.ndarray,
         initial_concentration: float = 0.0,
         initial_mass_fraction: float = 0.0,
         flow_rate: float | None = None,
@@ -35,9 +35,29 @@ class Breakthrough:
         ), "Feed concentration data contains NaN"
 
         if effluent_concentrations is not None:
-            assert np.all(
-                np.isfinite(effluent_concentrations)
-            ), "Effluent concentration data contains NaN"
+            effluent_concentrations = np.asarray(
+                effluent_concentrations,
+                dtype=float,
+            )
+
+            if effluent_concentrations.ndim == 1:
+                effluent_concentrations = effluent_concentrations[np.newaxis, :]
+
+            if effluent_concentrations.ndim != 2:
+                raise ValueError("effluent_concentrations must be a 1-D or 2-D array.")
+
+            if time is not None and effluent_concentrations.shape[0] != len(time):
+                raise ValueError(
+                    "The number of concentration measurements must match "
+                    "the number of time points."
+                )
+
+            if feed_concentrations.shape[1] != effluent_concentrations.shape[1]:
+                raise ValueError(
+                    "Different number of species feed and effluent concentrations."
+                )
+
+            self.n_species = effluent_concentrations.shape[1]
 
         self.column = column
         self.chemical = chemical
@@ -56,6 +76,7 @@ class Breakthrough:
             if effluent_concentrations is None
             else np.asarray(effluent_concentrations)
         )
+
         self.flow_rate = flow_rate
         self._superficial_velocity = superficial_velocity
         self.initial_mass_fraction = initial_mass_fraction
@@ -88,9 +109,20 @@ class Breakthrough:
             assert np.all(np.isfinite(value)), "Bed volume data contains NaN"
         self._bed_volumes = value
 
-    def mean_feed_concentration(self) -> float:
+    def valid_data(self):
+        """Return time and effluent concentration values without NaNs."""
+        valid_data = []
+
+        for species in range(self.n_species):
+            concentration = self.effluent_concentrations[:, species]
+            mask = np.isfinite(self.time) & np.isfinite(concentration)
+            valid_data.append((self.time[mask], concentration[mask]))
+
+        return valid_data
+
+    def mean_feed_concentration(self) -> np.ndarray:
         """Determine mean feed concentration."""
-        return float(np.mean(self.feed_concentrations))
+        return np.mean(self.feed_concentrations, axis=0)
 
     def normalize_concentration(self) -> np.ndarray:
         """Normalize effluent concentration by mean feed concentration."""
@@ -227,10 +259,14 @@ class Breakthrough:
 
     def has_breakthrough(
         self,
-        breakthrough_fraction: float = 0.01,
-    ) -> bool:
-        """Return True if C/C0 reaches the breakthrough fraction."""
-        return bool(np.any(self.normalize_concentration() >= breakthrough_fraction))
+        n_points=3,
+        breakthrough_fraction: float = 0.2,
+    ) -> np.ndarray:
+        """Return True if C/C0 exceeds breakthrough threshold at end or run."""
+        return np.any(
+            self.normalize_concentration()[-n_points:, :] >= breakthrough_fraction,
+            axis=0,
+        )
 
     def breakthrough_threshold(
         self,
