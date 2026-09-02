@@ -24,7 +24,7 @@ def make_breakthrough(
     bulk_density: float = 1.0,
     superficial_velocity: float = 1.0,
     axial_diffusion: float = 0.01,
-    inlet_concentration: float = 1.0,
+    inlet_concentration: np.ndarray = np.array([1.0]),
     initial_concentration: float = 0.0,
     time: np.ndarray = np.array([1.0]),
     water: Water | None = None,

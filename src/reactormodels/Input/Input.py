@@ -410,3 +410,160 @@ def load_input_file(
         "breakthroughs": breakthroughs,
         "isotherms": isotherms,
     }
+
+
+def identify_curve_outliers(
+    time,
+    values,
+    absolute_tolerance=0.02,
+    relative_tolerance=0.2,
+    window_size=5,
+    max_outliers=10,
+):
+    """Identify outliers using iterative local linear fits.
+
+    1. Select a local window around each candidate point.
+    2. Remove the candidate point individually and fit a linear trend
+       to the remaining points.
+    3. Calculate the candidate's deviation from the local trend.
+    4. Calculate both an absolute and relative deviation.
+    5. A point is considered an outlier if it exceeds either tolerance.
+    6. Remove the point with the largest normalized deviation.
+    7. Repeat using the reduced dataset.
+    """
+    time = np.asarray(time, dtype=float)
+    values = np.asarray(values, dtype=float)
+
+    if len(time) != len(values):
+        raise ValueError("time and values must have the same length.")
+
+    if window_size < 3:
+        raise ValueError("window_size must be at least 3.")
+
+    if absolute_tolerance < 0:
+        raise ValueError("absolute_tolerance must be non-negative.")
+
+    if relative_tolerance < 0:
+        raise ValueError("relative_tolerance must be non-negative.")
+
+    # Work with original indices so that the final outlier mask
+    # corresponds to the original input arrays.
+    remaining = list(range(len(time)))
+
+    removed = []
+    iteration_results = []
+
+    for iteration in range(max_outliers):
+        iteration_results = []
+
+        half_window = window_size // 2
+
+        # Evaluate every point as a potential outlier.
+        for position, original_index in enumerate(remaining):
+
+            # Determine the local window around the candidate.
+            start = max(
+                0,
+                position - half_window,
+            )
+            end = start + window_size
+
+            # Shift the window toward the beginning at end of the dataset.
+            if end > len(remaining):
+                end = len(remaining)
+                start = end - window_size
+
+            window_indices = remaining[start:end]
+
+            # Remove the candidate from the points used to establish
+            # the local trend.
+            fit_indices = [index for index in window_indices if index != original_index]
+
+            t_fit = time[fit_indices]
+            y_fit = values[fit_indices]
+
+            # Fit the local linear trend.
+            slope, intercept = np.polyfit(
+                t_fit,
+                y_fit,
+                1,
+            )
+
+            # Predict the candidate using the local trend.
+            predicted = np.maximum(
+                slope * time[original_index] + intercept,
+                0,
+            )
+
+            # Calculate the candidate's residual.
+            residual = values[original_index] - predicted
+            absolute_error = abs(residual)
+
+            # Points below the detection threshold are not considered outliers.
+            below_detection_threshold = values[original_index] < 0.01
+
+            # Mixed absolute + relative tolerance.
+            tolerance = absolute_tolerance + relative_tolerance * abs(predicted)
+
+            is_outlier = not below_detection_threshold and absolute_error > tolerance
+
+            iteration_results.append(
+                {
+                    "index": original_index,
+                    "time": time[original_index],
+                    "value": values[original_index],
+                    "predicted": predicted,
+                    "residual": residual,
+                    "absolute_error": absolute_error,
+                    "tolerance": tolerance,
+                    "is_outlier": is_outlier,
+                }
+            )
+
+        # Keep only points that exceed the mixed tolerance.
+        candidates = [result for result in iteration_results if result["is_outlier"]]
+
+        # Stop if no points exceed the tolerance.
+        if not candidates:
+            break
+
+        # Determine how severely each candidate exceeds its tolerance.
+        for result in candidates:
+            result["violation_ratio"] = result["absolute_error"] / max(
+                result["tolerance"],
+                np.finfo(float).eps,
+            )
+
+        # Remove the point with the greatest violation.
+        worst = max(
+            candidates,
+            key=lambda r: r["violation_ratio"],
+        )
+
+        removed.append(
+            {
+                "iteration": iteration + 1,
+                "index": worst["index"],
+                "time": worst["time"],
+                "value": worst["value"],
+                "predicted": worst["predicted"],
+                "residual": worst["residual"],
+                "absolute_error": worst["absolute_error"],
+                "tolerance": worst["tolerance"],
+                "violation_ratio": worst["violation_ratio"],
+            }
+        )
+
+        # Remove the point using its original index.
+        remaining.remove(worst["index"])
+
+    # Construct the final outlier mask using the original indices.
+    outlier = np.zeros(
+        len(values),
+        dtype=bool,
+    )
+
+    for result in removed:
+        outlier[result["index"]] = True
+
+    return outlier, iteration_results, removed
