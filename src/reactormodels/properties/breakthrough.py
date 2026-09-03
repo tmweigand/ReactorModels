@@ -35,13 +35,28 @@ class Breakthrough:
         ), "Feed concentration data contains NaN"
 
         if effluent_concentrations is not None:
-            assert np.all(
-                np.isfinite(effluent_concentrations)
-            ), "Effluent concentration data contains NaN"
+            effluent_concentrations = np.asarray(
+                effluent_concentrations,
+                dtype=float,
+            )
+
+            self.effluent_concentrations = effluent_concentrations
+
+            if time is not None and len(effluent_concentrations) != len(time):
+                raise ValueError(
+                    "The number of concentration measurements must match "
+                    "the number of time points."
+                )
+
+        if feed_concentrations is not None:
+            feed_concentrations = np.asarray(
+                feed_concentrations,
+                dtype=float,
+            )
 
         self.column = column
         self.chemical = chemical
-        self.feed_concentrations = np.asarray(feed_concentrations)
+        self.feed_concentrations = feed_concentrations
         self.initial_concentration = initial_concentration
         self.initial_mass_fraction = initial_mass_fraction
 
@@ -50,12 +65,6 @@ class Breakthrough:
 
         self.bed_volumes = bed_volumes
         self.time = time
-
-        self.effluent_concentrations = (
-            None
-            if effluent_concentrations is None
-            else np.asarray(effluent_concentrations)
-        )
         self.flow_rate = flow_rate
         self._superficial_velocity = superficial_velocity
         self.initial_mass_fraction = initial_mass_fraction
@@ -87,6 +96,16 @@ class Breakthrough:
             value = np.asarray(value, dtype=float)
             assert np.all(np.isfinite(value)), "Bed volume data contains NaN"
         self._bed_volumes = value
+
+    def valid_data(self):
+        """Return time and effluent concentration values without NaNs."""
+        if self.effluent_concentrations is None:
+            raise ValueError("Must supply effluent concentration data.")
+        mask = np.isfinite(self.time) & np.isfinite(self.effluent_concentrations)
+        return (
+            self.time[mask],
+            self.effluent_concentrations[mask],
+        )
 
     def mean_feed_concentration(self) -> float:
         """Determine mean feed concentration."""
@@ -227,10 +246,13 @@ class Breakthrough:
 
     def has_breakthrough(
         self,
-        breakthrough_fraction: float = 0.01,
+        n_points,
+        breakthrough_fraction: float = 0.2,
     ) -> bool:
-        """Return True if C/C0 reaches the breakthrough fraction."""
-        return bool(np.any(self.normalize_concentration() >= breakthrough_fraction))
+        """Return True if C/C0 exceeds breakthrough threshold at end or run."""
+        return bool(
+            np.any(self.normalize_concentration()[-n_points:] >= breakthrough_fraction)
+        )
 
     def breakthrough_threshold(
         self,

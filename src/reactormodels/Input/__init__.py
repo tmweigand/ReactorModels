@@ -1,7 +1,5 @@
-"""Initialize the numerics subpackage"""
+"""Initialize the input subpackage"""
 
-__all__ = [
-    "load_input_file",
-]
+__all__ = ["load_input_file", "identify_curve_outliers"]
 
-from .Input import load_input_file
+from .Input import load_input_file, identify_curve_outliers
