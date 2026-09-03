@@ -413,12 +413,7 @@ def load_input_file(
 
 
 def identify_curve_outliers(
-    time,
-    values,
-    absolute_tolerance=0.02,
-    relative_tolerance=0.2,
-    window_size=5,
-    max_outliers=10,
+    time, values, absolute_tolerance, relative_tolerance, window_size, max_outliers
 ):
     """Identify outliers using iterative local linear fits.
 
@@ -475,8 +470,7 @@ def identify_curve_outliers(
 
             window_indices = remaining[start:end]
 
-            # Remove the candidate from the points used to establish
-            # the local trend.
+            # Remove the candidate from the points used to establish the local trend.
             fit_indices = [index for index in window_indices if index != original_index]
 
             t_fit = time[fit_indices]

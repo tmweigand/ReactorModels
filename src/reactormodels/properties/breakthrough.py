@@ -17,7 +17,7 @@ class Breakthrough:
         self,
         column: Column,
         chemical: Chemical,
-        feed_concentrations: np.ndarray,
+        feed_concentrations: float | np.ndarray,
         initial_concentration: float = 0.0,
         initial_mass_fraction: float = 0.0,
         flow_rate: float | None = None,
@@ -40,28 +40,23 @@ class Breakthrough:
                 dtype=float,
             )
 
-            if effluent_concentrations.ndim == 1:
-                effluent_concentrations = effluent_concentrations[np.newaxis, :]
+            self.effluent_concentrations = effluent_concentrations
 
-            if effluent_concentrations.ndim != 2:
-                raise ValueError("effluent_concentrations must be a 1-D or 2-D array.")
-
-            if time is not None and effluent_concentrations.shape[0] != len(time):
+            if time is not None and len(effluent_concentrations) != len(time):
                 raise ValueError(
                     "The number of concentration measurements must match "
                     "the number of time points."
                 )
 
-            if feed_concentrations.shape[1] != effluent_concentrations.shape[1]:
-                raise ValueError(
-                    "Different number of species feed and effluent concentrations."
-                )
-
-            self.n_species = effluent_concentrations.shape[1]
+        if feed_concentrations is not None:
+            feed_concentrations = np.asarray(
+                feed_concentrations,
+                dtype=float,
+            )
 
         self.column = column
         self.chemical = chemical
-        self.feed_concentrations = np.asarray(feed_concentrations)
+        self.feed_concentrations = feed_concentrations
         self.initial_concentration = initial_concentration
         self.initial_mass_fraction = initial_mass_fraction
 
@@ -70,13 +65,6 @@ class Breakthrough:
 
         self.bed_volumes = bed_volumes
         self.time = time
-
-        self.effluent_concentrations = (
-            None
-            if effluent_concentrations is None
-            else np.asarray(effluent_concentrations)
-        )
-
         self.flow_rate = flow_rate
         self._superficial_velocity = superficial_velocity
         self.initial_mass_fraction = initial_mass_fraction
@@ -111,18 +99,17 @@ class Breakthrough:
 
     def valid_data(self):
         """Return time and effluent concentration values without NaNs."""
-        valid_data = []
+        if self.effluent_concentrations is None:
+            raise ValueError("Must supply effluent concentration data.")
+        mask = np.isfinite(self.time) & np.isfinite(self.effluent_concentrations)
+        return (
+            self.time[mask],
+            self.effluent_concentrations[mask],
+        )
 
-        for species in range(self.n_species):
-            concentration = self.effluent_concentrations[:, species]
-            mask = np.isfinite(self.time) & np.isfinite(concentration)
-            valid_data.append((self.time[mask], concentration[mask]))
-
-        return valid_data
-
-    def mean_feed_concentration(self) -> np.ndarray:
+    def mean_feed_concentration(self) -> float:
         """Determine mean feed concentration."""
-        return np.mean(self.feed_concentrations, axis=0)
+        return float(np.mean(self.feed_concentrations))
 
     def normalize_concentration(self) -> np.ndarray:
         """Normalize effluent concentration by mean feed concentration."""
@@ -259,13 +246,12 @@ class Breakthrough:
 
     def has_breakthrough(
         self,
-        n_points=3,
+        n_points,
         breakthrough_fraction: float = 0.2,
-    ) -> np.ndarray:
+    ) -> bool:
         """Return True if C/C0 exceeds breakthrough threshold at end or run."""
-        return np.any(
-            self.normalize_concentration()[-n_points:, :] >= breakthrough_fraction,
-            axis=0,
+        return bool(
+            np.any(self.normalize_concentration()[-n_points:] >= breakthrough_fraction)
         )
 
     def breakthrough_threshold(
