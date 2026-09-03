@@ -55,7 +55,7 @@ def test_breakthrough_class():
     assert threshold == pytest.approx(300, abs=1e-5)
     assert index == 4
 
-    assert breakthrough.has_breakthrough(0.01)
+    assert breakthrough.has_breakthrough(5, 0.01)
 
 
 def test_breakthough_time():
