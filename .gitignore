@@ -2,6 +2,7 @@
 .DS_Store
 .tox/
 .asv/
+.coverage
 src/reactormodels.egg-info/
 data_out/
 docs/_build/
