@@ -15,33 +15,34 @@ def run_demo(
     diffusion = 0.01  # m^2/s
     domain_length = 5.0  # m
     porosity = 0.4
-    bulk_density = 500.0  # kg/m^3
+    bed_density = 500.0  # kg/m^3
     diameter = 0.1
     K = 0.5
     C_in = 1.0
-    initial_concentration = 0
 
     isotherm = reactormodels.models.LinearIsotherm(K=K)
-    R = 1.0 + (bulk_density * K) / porosity  # retardation factor
+    R = 1.0 + (bed_density * K) / porosity  # retardation factor
 
     t_eval = np.array([100.0, 200.0, 500.0, 1000.0])
 
+    media = reactormodels.Media(bed_density=bed_density)
+    water = reactormodels.Water()
+    chemical = reactormodels.Chemical(axial_diffusion=diffusion)
+
     column = reactormodels.Column(
-        diameter=diameter,
+        media=media,
+        water=water,
         length=domain_length,
         porosity=porosity,
-        bulk_density=bulk_density,
-        media=reactormodels.Media(),
-        water=reactormodels.Water(),
+        diameter=diameter,
     )
 
     breakthrough = reactormodels.Breakthrough(
+        chemical=chemical,
         column=column,
-        initial_concentration=initial_concentration,
         feed_concentrations=C_in,
         superficial_velocity=superficial_velocity,
         time=t_eval,
-        chemical=reactormodels.Chemical(axial_diffusion=diffusion),
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
@@ -52,9 +53,9 @@ def run_demo(
         breakthrough=breakthrough,
         isotherm=isotherm,
         numerics=numerics,
-        kinetics=reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
     )
-    x, C, _ = model.solve()
+
+    x, C, q = model.solve()
 
     ogata_banks = reactormodels.models.OgataBanks(
         breakthrough=breakthrough, diffusion=diffusion, retardation=R

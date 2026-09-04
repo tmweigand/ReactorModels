@@ -160,8 +160,10 @@ def _build_psdm():
 MODEL_BUILDERS = {
     "AdvectionDiffusion": _build_advection_diffusion,
     "AdvectionDiffusionAdsorption": _build_advection_diffusion_adsorption,
+    "AdvectionDiffusionAdsorptionSolid": _build_advection_diffusion_adsorption,
     "IntraparticleTransport": _build_intraparticle_transport,
     "PSDM": _build_psdm,
+    "PSDMSolid": _build_psdm,
 }
 
 

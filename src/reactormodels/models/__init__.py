@@ -4,6 +4,7 @@ __all__ = [
     "NumericModel",
     "AdsorptionKinetics",
     "PSDM",
+    "PSDMSolid",
     "LinearIsotherm",
     "LangmuirIsotherm",
     "FreundlichIsotherm",
@@ -26,10 +27,13 @@ __all__ = [
     "ThomasRectangular",
     "ThomasLangmuir",
     "IntraparticleTransport",
+    "LocalEquilibrium",
+    "LinearDrivingForce",
+    "SecondOrder",
 ]
 
 from .numeric_model_base import NumericModel
-from .adsorption_kinetics import AdsorptionKinetics
+from .adsorption_kinetics import LocalEquilibrium, LinearDrivingForce, SecondOrder
 from .psdm import PSDM
 from .boundary_conditions import DirichletBC, DanckwertsBC, SymmetryBC
 
