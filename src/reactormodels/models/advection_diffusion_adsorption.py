@@ -8,7 +8,7 @@ from ..properties.breakthrough import Breakthrough
 from ..numerics.config import NumericsConfig
 from .numeric_model_base import NumericModel
 from .isotherm import Isotherm
-from .adsorption_kinetics import AdsorptionKinetics
+from .adsorption_kinetics import AdsorptionKinetics, LocalEquilibrium
 from .boundary_conditions import InletBC, DanckwertsBC
 
 __all__ = ["AdvectionDiffusionAdsorption"]
@@ -20,7 +20,9 @@ class AdvectionDiffusionAdsorption(NumericModel):
     The governing equations are:
 
         Fluid phase: eps*dC/dt + eps * v * dC/dx - eps* D * d2C/dx2 - rho_b * dq/dt = 0
-        Solid phase: dq/dt = k_l *(q*(C) - q) where q* is provided isotherm.
+        Solid phase: dq/dt = rate_constant *(q*(C) - q) for ldf
+                     dq/dt = rate_constant * C *(q*(C) - q) for second order
+                     where q* is provided isotherm.
 
     If local_equilibirium is assumed, the solid phase equation is ignored and:
 
@@ -28,15 +30,14 @@ class AdvectionDiffusionAdsorption(NumericModel):
 
     """
 
-    _param_names = ("velocity", "axial_diffusion", "isotherm", "k_ldf")
+    _param_names = ("velocity", "axial_diffusion", "isotherm")
 
     def __init__(
         self,
         breakthrough: Breakthrough,
         isotherm: Isotherm,
         numerics: NumericsConfig,
-        kinetics: AdsorptionKinetics = AdsorptionKinetics.LOCAL_EQUILIBRIUM,
-        k_ldf: float = 0,
+        kinetics: AdsorptionKinetics | None = None,
         inlet_bc: Type[InletBC] = DanckwertsBC,
     ):
         # Physical parameters
@@ -45,7 +46,17 @@ class AdvectionDiffusionAdsorption(NumericModel):
         self.velocity = breakthrough.interstitial_velocity
         self.axial_diffusion = breakthrough.chemical.axial_diffusion
         self.isotherm = isotherm
-        self.k_ldf = k_ldf
+
+        if kinetics is None:
+            kinetics = LocalEquilibrium()
+
+        kinetics.bind(
+            column=breakthrough.column,
+            breakthrough=breakthrough,
+            numerics=numerics,
+            isotherm=isotherm,
+        )
+
         self.kinetics = kinetics
 
         # Initial conditions
@@ -66,46 +77,12 @@ class AdvectionDiffusionAdsorption(NumericModel):
         # Discretization
         self.N = len(self.numerics.collocation.nodes)
 
-        # Checks
-        if (
-            kinetics
-            in (
-                AdsorptionKinetics.LINEAR_DRIVING_FORCE,
-                AdsorptionKinetics.SECOND_ORDER,
-            )
-            and k_ldf <= 0
-        ):
-            raise ValueError(
-                "k_ldf must be > 0 for LINEAR_DRIVING_FORCE or SECOND_ORDER mode"
-            )
-
         self.assert_parameters_set()
-
-    def _n_vars(self) -> int:
-        """Total length of the IDA state vector."""
-        if (
-            self.kinetics == AdsorptionKinetics.LINEAR_DRIVING_FORCE
-            or self.kinetics == AdsorptionKinetics.SECOND_ORDER
-        ):
-            return 2 * self.N
-        return self.N
-
-    def _split(self, y: np.ndarray):
-        """Return (C, q) where q is None for LOCAL_EQUILIBRIUM."""
-        C = y[: self.N]
-        if (
-            self.kinetics == AdsorptionKinetics.LINEAR_DRIVING_FORCE
-            or self.kinetics == AdsorptionKinetics.SECOND_ORDER
-        ):
-            q = y[self.N :]
-        else:
-            q = None
-        return C, q
 
     def _residual(self, t, y, ydot, result):
         """IDA residual F(t, y, ydot) = 0.  Writes into `result` in-place."""
-        c, q = self._split(y)
-        dcdt, dqdt = self._split(ydot)
+        c, q = self.kinetics._split(y)
+        dcdt, dqdt = self.kinetics._split(ydot)
 
         # fluid phase - inlet
         result[0] = self.inlet_bc.residual(
@@ -123,28 +100,14 @@ class AdvectionDiffusionAdsorption(NumericModel):
             * self.numerics.evaluate_second_derivative(c)[1:]
         )
 
-        if self.kinetics == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
-            result[1 : self.N] = (
-                transport
-                + self.column.bulk_density * (self.isotherm.dq_dC(c) * dcdt)[1:]
-            )
-        else:
-            result[1 : self.N] = transport + self.column.bulk_density * dqdt[1:]
-
-        # solid phase
-        if self.kinetics == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
-            pass
-        elif self.kinetics == AdsorptionKinetics.LINEAR_DRIVING_FORCE:
-            result[self.N :] = dqdt - self.k_ldf * (self.isotherm.q(c) - q)
-        else:
-            result[self.N :] = dqdt - self.k_ldf * c * (self.isotherm.q(c) - q)
+        self.kinetics._residual_kinetics(result, c, q, dcdt, dqdt, transport)
 
         return 0
 
     def _jacobian(self, t, y, ydot, result, cj, jac):
         """Build jacobian of _residual."""
-        C, q = self._split(y)
-        n = self._n_vars()
+        C, q = self.kinetics._split(y)
+        n = self.kinetics._n_vars()
         J = np.zeros((n, n))
 
         # Row 0: algebraic constraint
@@ -163,34 +126,7 @@ class AdvectionDiffusionAdsorption(NumericModel):
         )
         J[1 : self.N, : self.N] = -d_transport[1:, :]
 
-        if self.kinetics == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
-            for i in range(1, self.N):
-                J[i, i] += cj * (
-                    self.column.porosity
-                    + self.column.get_bulk_density() * self.isotherm.dq_dC(C[i])
-                )
-
-        elif self.kinetics == AdsorptionKinetics.LINEAR_DRIVING_FORCE:
-            for i in range(1, self.N):
-                J[i, i] += cj * self.column.porosity
-                J[i, self.N + i] += cj * self.column.get_bulk_density()
-
-            for i in range(self.N):
-                J[self.N + i, i] = -self.k_ldf * self.isotherm.dq_dC(C[i])
-                J[self.N + i, self.N + i] = self.k_ldf + cj
-
-        else:
-            for i in range(1, self.N):
-                J[i, i] += cj * self.column.porosity
-                J[i, self.N + i] += cj * self.column.get_bulk_density()
-
-            for i in range(self.N):
-                J[self.N + i, i] = (
-                    -self.k_ldf
-                    * (self.isotherm.q(C[i]) + C[i] * self.isotherm.dq_dC(C[i]))
-                    + self.k_ldf * q[i]
-                )
-                J[self.N + i, self.N + i] = self.k_ldf * C[i] + cj
+        self.kinetics._jacobian_kinetics(C, q, J, cj)
 
         jac[:, :] = J
 
@@ -207,18 +143,8 @@ class AdvectionDiffusionAdsorption(NumericModel):
         """Return (y0, ydot0) consistent with the algebraic constraint."""
         C0 = np.full(self.N, self.initial_concentration)
         C0[0] = self.inlet_bc.apply(self.numerics.collocation.evaluate_gradient(C0, 0))
-        if (
-            self.kinetics == AdsorptionKinetics.LINEAR_DRIVING_FORCE
-            or self.kinetics == AdsorptionKinetics.SECOND_ORDER
-        ):
-            q0 = np.full(self.N, self.breakthrough.initial_mass_fraction)
-            q0[0] = self.isotherm.q(
-                self.inlet_concentration
-            )  # inlet node at equilibrium with feed
-            y0 = np.concatenate([C0, q0])
-        else:
-            y0 = C0.copy()
 
+        y0 = self.kinetics._y0(C0)
         ydot0 = np.zeros_like(y0)
         return y0, ydot0
 
@@ -244,17 +170,5 @@ class AdvectionDiffusionAdsorption(NumericModel):
         # result.values.y has shape (n_out, n_vars); skip the t=t_span[0] row
         y_out = result.values.y[1:]  # (n_times, n_vars)
 
-        C_out = y_out[:, : self.N]  # (n_times, N)
-
-        if (
-            self.kinetics == AdsorptionKinetics.LINEAR_DRIVING_FORCE
-            or self.kinetics == AdsorptionKinetics.SECOND_ORDER
-        ):
-            q_out = y_out[:, self.N :]  # (n_times, N)
-        else:
-            # Local equilibrium: recover q from C at each time step
-            q_out = np.array(
-                [self.isotherm.q(C_out[i]) for i in range(len(self.breakthrough.time))]
-            )
-
+        C_out, q_out = self.kinetics._solve_kinetics(y_out)
         return self.numerics.collocation.nodes, C_out, q_out

@@ -13,7 +13,6 @@ __all__ = [
     "SymmetryBC",
     "AdvectionDiffusion",
     "AdvectionDiffusionAdsorption",
-    "AdvectionDiffusionAdsorptionSolid",
     "OgataBanks",
     "YoonNelson",
     "Clark",
@@ -21,10 +20,13 @@ __all__ = [
     "ThomasRectangular",
     "ThomasLangmuir",
     "IntraparticleTransport",
+    "LocalEquilibrium",
+    "LinearDrivingForce",
+    "SecondOrder",
 ]
 
 from .numeric_model_base import NumericModel
-from .adsorption_kinetics import AdsorptionKinetics
+from .adsorption_kinetics import LocalEquilibrium, LinearDrivingForce, SecondOrder
 from .psdm import PSDM
 from .psdm_q import PSDMSolid
 from .isotherm import LinearIsotherm, FreundlichIsotherm, LangmuirIsotherm
@@ -39,5 +41,4 @@ from .analytic_models import (
 )
 from .advection_diffusion import AdvectionDiffusion
 from .advection_diffusion_adsorption import AdvectionDiffusionAdsorption
-from .advection_diffusion_adsorption_q import AdvectionDiffusionAdsorptionSolid
 from .intraparticle_transport import IntraparticleTransport

@@ -15,17 +15,17 @@ def run_demo(
     diffusion = 0.01  # m^2/s
     domain_length = 5.0  # m
     porosity = 0.4
-    bulk_density = 500.0  # kg/m^3
+    bed_density = 500.0  # kg/m^3
     diameter = 0.1
     K = 0.5
     C_in = 1.0
 
     isotherm = reactormodels.models.LinearIsotherm(K=K)
-    R = 1.0 + (bulk_density * K) / porosity  # retardation factor
+    R = 1.0 + (bed_density * K) / porosity  # retardation factor
 
     t_eval = np.array([100.0, 200.0, 500.0, 1000.0])
 
-    media = reactormodels.Media()
+    media = reactormodels.Media(bed_density=bed_density)
     water = reactormodels.Water()
     chemical = reactormodels.Chemical(axial_diffusion=diffusion)
 
@@ -34,7 +34,6 @@ def run_demo(
         water=water,
         length=domain_length,
         porosity=porosity,
-        bulk_density=bulk_density,
         diameter=diameter,
     )
 
@@ -50,12 +49,12 @@ def run_demo(
         domain_length=column.length, n_interior_points=5, n_elements=20, add_inlet=True
     )
 
-    model = reactormodels.models.AdvectionDiffusionAdsorptionSolid(
+    model = reactormodels.models.AdvectionDiffusionAdsorption(
         breakthrough=breakthrough,
         isotherm=isotherm,
         numerics=numerics,
-        kinetics=reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
     )
+
     x, C, q = model.solve()
 
     ogata_banks = reactormodels.models.OgataBanks(
