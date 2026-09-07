@@ -48,6 +48,8 @@ class Breakthrough:
         self._time: np.ndarray | None = None
         self._bed_volumes: np.ndarray | None = None
 
+        self._time_was_provided = time is not None
+
         self.bed_volumes = bed_volumes
         self.time = time
 
@@ -73,6 +75,11 @@ class Breakthrough:
             value = np.asarray(value, dtype=float)
             assert np.all(np.isfinite(value)), "Time data contains NaN"
         self._time = value
+
+    @property
+    def time_is_derived(self) -> bool:
+        """Return True if time was derived from bed volumes."""
+        return self._time_was_provided is False
 
     @property
     def bed_volumes(self) -> np.ndarray | None:
