@@ -77,3 +77,8 @@ jobs:
           tox --override "testenv.basepython=$(which python)"
         env:
           SUNDIALS_INST: ${{ runner.os == 'macOS' && '/opt/homebrew' || '/usr' }}
+
+      - name: Debug - find Chrome for Testing path
+        run: |
+          plotly_get_chrome -y
+          find "$HOME/Library/Application Support/choreographer" -type d -name "*.app"
