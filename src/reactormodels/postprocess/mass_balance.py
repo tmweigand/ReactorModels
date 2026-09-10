@@ -96,9 +96,9 @@ class MassBalance:
         return self.breakthrough.column.media.particle_porosity
 
     @property
-    def bulk_density(self) -> float:
-        """Bulk density"""
-        return self.breakthrough.column.get_bulk_density()
+    def bed_density(self) -> float:
+        """Bed density"""
+        return self.breakthrough.column.media.bed_density
 
     @property
     def cross_section_area(self) -> float:
@@ -189,7 +189,7 @@ class MassBalance:
     def mass_adsorbed(self) -> np.ndarray:
         """Mass in the solid phase at every time, shape (n_t,)."""
         return (
-            self.bulk_density
+            self.bed_density
             * self.cross_section_area
             * self._spatial_integrate_history(self.sorbent_mass_fraction)
         )

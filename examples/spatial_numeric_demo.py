@@ -12,7 +12,7 @@ def run_demo(
 ):
     """Plot the numerical collocation solution against the Bohart-Adams solution."""
 
-    k_ldf = 0.002
+    rate_constant = 0.002
     diffusion = 0.01
     K = 0.5
     initial_concentration = 0
@@ -21,7 +21,7 @@ def run_demo(
     length = 6
     diameter = 2
     porosity = 0.4
-    bulk_density = 500
+    bed_density = 500
     feed_concentrations = 1
     superficial_velocity = 1
 
@@ -30,9 +30,9 @@ def run_demo(
     column = reactormodels.Column(
         length=length,
         porosity=porosity,
-        bulk_density=bulk_density,
         diameter=diameter,
-        media=reactormodels.Media(),
+        bulk_density=bed_density,
+        media=reactormodels.Media(bed_density=bed_density),
         water=reactormodels.Water(),
     )
 
@@ -53,13 +53,13 @@ def run_demo(
         breakthrough=breakthrough,
         isotherm=isotherm,
         numerics=numerics,
-        kinetics=reactormodels.models.AdsorptionKinetics.SECOND_ORDER,
-        k_ldf=k_ldf,
+        kinetics=reactormodels.models.SecondOrder,
+        rate_constant=rate_constant,
     )
     x, C, q = model.solve()
 
     bohart_adams = reactormodels.models.BohartAdams(
-        breakthrough=breakthrough, k_BA=k_ldf, sorbent_capacity=q_m
+        breakthrough=breakthrough, k_BA=rate_constant, sorbent_capacity=q_m
     )
 
     fig, ax = plt.subplots(figsize=(8, 5))

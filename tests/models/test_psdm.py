@@ -28,7 +28,7 @@ def _make_particle(
     length = 100  # cm
     diameter = 10  # cm
     porosity = 0.334
-    bulk_density = 399.8  # g/mL
+    bed_density = 399.8  # g/mL
     flow_rate = 40  # cm³/s
 
     isotherm = reactormodels.models.LinearIsotherm(K=K)
@@ -37,13 +37,13 @@ def _make_particle(
         particle_porosity=particle_porosity,
         particle_diameter=particle_diameter,
         particle_density=particle_density,
+        bed_density=bed_density,
     )
 
     column = reactormodels.Column(
         length=length,
         porosity=porosity,
         diameter=diameter,
-        bulk_density=bulk_density,
         media=media,
         water=reactormodels.Water(),
     )

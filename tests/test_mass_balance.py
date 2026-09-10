@@ -4,7 +4,7 @@ import pytest
 
 
 def _build_solved_model():
-    bulk_density = 1.0
+    bed_density = 1.0
     K = 0.5
     porosity = 0.3
     velocity = 1.0
@@ -14,16 +14,15 @@ def _build_solved_model():
     diameter = 1
     axial_diffusion = 0.1
 
-    R = 1.0 + (bulk_density * K) / porosity
+    R = 1.0 + (bed_density * K) / porosity
     v_eff = velocity / (porosity * R)
     t_eval = np.linspace(0.1 * column_length / v_eff, 1.5 * column_length / v_eff, 8)
 
     column = reactormodels.Column(
         length=column_length,
         porosity=porosity,
-        bulk_density=bulk_density,
         diameter=diameter,
-        media=reactormodels.Media(),
+        media=reactormodels.Media(bed_density=bed_density, particle_density=1),
         water=reactormodels.Water(),
     )
 
@@ -44,7 +43,7 @@ def _build_solved_model():
         breakthrough=breakthrough,
         isotherm=reactormodels.models.LinearIsotherm(K=K),
         numerics=numerics,
-        kinetics=reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
+        kinetics=reactormodels.models.LocalEquilibrium,
     )
 
     x, C, q = model.solve()

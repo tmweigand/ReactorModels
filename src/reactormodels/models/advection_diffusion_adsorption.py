@@ -37,7 +37,8 @@ class AdvectionDiffusionAdsorption(NumericModel):
         breakthrough: Breakthrough,
         isotherm: Isotherm,
         numerics: NumericsConfig,
-        kinetics: AdsorptionKinetics | None = None,
+        kinetics: Type[AdsorptionKinetics] = LocalEquilibrium,
+        rate_constant: float | None = 0,
         inlet_bc: Type[InletBC] = DanckwertsBC,
     ):
         # Physical parameters
@@ -47,17 +48,7 @@ class AdvectionDiffusionAdsorption(NumericModel):
         self.axial_diffusion = breakthrough.chemical.axial_diffusion
         self.isotherm = isotherm
 
-        if kinetics is None:
-            kinetics = LocalEquilibrium()
-
-        kinetics.bind(
-            column=breakthrough.column,
-            breakthrough=breakthrough,
-            numerics=numerics,
-            isotherm=isotherm,
-        )
-
-        self.kinetics = kinetics
+        self.kinetics = kinetics(breakthrough, numerics, isotherm, rate_constant)
 
         # Initial conditions
         self.initial_concentration = breakthrough.initial_concentration

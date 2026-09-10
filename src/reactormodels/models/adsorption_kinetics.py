@@ -6,14 +6,15 @@ import numpy as np
 class AdsorptionKinetics:
     """Set the form of the adsorption kinetics."""
 
-    def bind(self, column, breakthrough, numerics, isotherm):
+    def __init__(self, breakthrough, numerics, isotherm, rate_constant):
         """Initialize convenient classes/quantities."""
-        self.column = column
+        self.column = breakthrough.column
         self.breakthrough = breakthrough
         self.numerics = numerics
         self.isotherm = isotherm
         self.N = len(numerics.collocation.nodes)
         self.inlet_concentration = breakthrough.mean_feed_concentration()
+        self.rate_constant = rate_constant
 
     def _n_vars(self):
         """Total length of the IDA state vector."""
@@ -46,6 +47,16 @@ class LocalEquilibrium(AdsorptionKinetics):
     dq/dt = dq/dC * dC/dt
 
     """
+
+    def __init__(self, breakthrough, numerics, isotherm, rate_constant):
+        if rate_constant:
+            raise ValueError("Rate constant is not used in local equilibrium mode.")
+        self.column = breakthrough.column
+        self.breakthrough = breakthrough
+        self.numerics = numerics
+        self.isotherm = isotherm
+        self.N = len(numerics.collocation.nodes)
+        self.inlet_concentration = breakthrough.mean_feed_concentration()
 
     def _n_vars(self):
         """Total length of the IDA state vector."""
@@ -88,9 +99,15 @@ class LocalEquilibrium(AdsorptionKinetics):
 class DynamicAdsorptionKinetics(AdsorptionKinetics):
     """Methods for non-local equilibrium assumption."""
 
-    def __init__(self, rate_constant: float):
-        if rate_constant <= 0:
-            raise ValueError("Rate constant must be greater than zero.")
+    def __init__(self, breakthrough, numerics, isotherm, rate_constant):
+        if rate_constant is None or rate_constant <= 0:
+            raise ValueError("Rate constant must be a value greater than zero.")
+        self.column = breakthrough.column
+        self.breakthrough = breakthrough
+        self.numerics = numerics
+        self.isotherm = isotherm
+        self.N = len(numerics.collocation.nodes)
+        self.inlet_concentration = breakthrough.mean_feed_concentration()
         self.rate_constant = rate_constant
 
     def _n_vars(self):
@@ -145,9 +162,6 @@ class LinearDrivingForce(DynamicAdsorptionKinetics):
 
     """
 
-    def __init__(self, rate_constant: float):
-        super().__init__(rate_constant)
-
     def _kinetic_expression(self, c, q):
         return self.rate_constant * (self.isotherm.q(c) - q)
 
@@ -163,9 +177,6 @@ class SecondOrder(DynamicAdsorptionKinetics):
     dq/dt = rate_constant * C * (q_e - q)
 
     """
-
-    def __init__(self, rate_constant: float):
-        super().__init__(rate_constant)
 
     def _kinetic_expression(self, c, q):
         return self.rate_constant * c * (self.isotherm.q(c) - q)

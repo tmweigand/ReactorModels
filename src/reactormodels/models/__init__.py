@@ -2,7 +2,6 @@
 
 __all__ = [
     "NumericModel",
-    "AdsorptionKinetics",
     "PSDM",
     "PSDMSolid",
     "LinearIsotherm",

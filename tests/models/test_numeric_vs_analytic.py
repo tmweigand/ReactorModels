@@ -10,12 +10,12 @@ def test_thomas():
     length = 1 / np.pi
     diameter = 2
     porosity = 0.4
-    bulk_density = 0.36
+    bed_density = 0.36
     particle_density = 0.6
     feed_concentrations = 1
     flow_rate = 1
     q_m = 20
-    k = 1
+    rate_constant = 1
     K = 5000
     initial_concentration = 0
     axial_diffusion = 1e-20
@@ -25,9 +25,10 @@ def test_thomas():
     column = reactormodels.Column(
         length=length,
         porosity=porosity,
-        bulk_density=bulk_density,
         diameter=diameter,
-        media=reactormodels.Media(particle_density=particle_density),
+        media=reactormodels.Media(
+            particle_density=particle_density, bed_density=bed_density
+        ),
         water=reactormodels.Water(),
     )
 
@@ -48,13 +49,16 @@ def test_thomas():
         breakthrough=breakthrough,
         isotherm=isotherm,
         numerics=numerics,
-        kinetics=reactormodels.models.AdsorptionKinetics.SECOND_ORDER,
-        k_ldf=k,
+        kinetics=reactormodels.models.SecondOrder,
+        rate_constant=rate_constant,
     )
     x, C, _ = model.solve()
 
     thomas = reactormodels.models.ThomasLangmuir(
-        breakthrough=breakthrough, langmuir_constant=K, sorbent_capacity=q_m, k_Th=k
+        breakthrough=breakthrough,
+        langmuir_constant=K,
+        sorbent_capacity=q_m,
+        k_Th=rate_constant,
     )
 
     C_thomas = thomas.breakthrough_profile(time=t_eval, x=length)
