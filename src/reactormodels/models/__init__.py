@@ -34,6 +34,7 @@ __all__ = [
 from .numeric_model_base import NumericModel
 from .adsorption_kinetics import LocalEquilibrium, LinearDrivingForce, SecondOrder
 from .psdm import PSDM
+from .psdm_q import PSDMSolid
 from .boundary_conditions import DirichletBC, DanckwertsBC, SymmetryBC
 
 from .isotherm import LinearIsotherm, FreundlichIsotherm, LangmuirIsotherm
