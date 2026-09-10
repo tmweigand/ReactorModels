@@ -80,7 +80,7 @@ class Plotting:
         y_data: Sequence[np.ndarray],
     ) -> tuple[float, float, float, float]:
         """Return axis ranges for breakthrough data."""
-        x_min, x_max = -np.min(x_data) * 0.05, np.max(x_data) * 1.05
+        x_min, x_max = 0, np.max(x_data)
         y_min, y_max = -np.min(y_data) * 0.05, np.max(y_data) * 1.05
 
         return x_min, x_max, y_min, y_max
@@ -94,6 +94,11 @@ class Plotting:
         x_max: float,
         y_min: float,
         y_max: float,
+        orientation: str | None = "v",
+        xanchor: str | None = "left",
+        yanchor: str | None = "bottom",
+        x_loc: float | None = 1.01,
+        y_loc: float | None = 0,
     ) -> None:
         """Apply common formatting to figures."""
         fig.update_layout(
@@ -129,11 +134,11 @@ class Plotting:
                 "title": "",
                 "font": {"size": 24},
                 "bgcolor": "rgba(255, 255, 255, 0)",
-                "x": 1.01,
-                "y": 0,
-                "xanchor": "left",
-                "yanchor": "bottom",
-                "orientation": "v",
+                "x": x_loc,
+                "y": y_loc,
+                "xanchor": xanchor,
+                "yanchor": yanchor,
+                "orientation": orientation,
             },
             showlegend=True,
             width=1000,
