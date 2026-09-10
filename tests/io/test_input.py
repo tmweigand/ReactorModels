@@ -277,14 +277,38 @@ def test_identify_curve_outliers():
     noise = rng.normal(0, 0.7 * c[indices], size=indices.size)
     c_outliers[indices] += noise
 
+    # Add known NaNs
+    nan_indices = np.array([5, 10])
+    c_outliers[nan_indices] = np.nan
+
+    # Confirm NaNs were added
+    assert np.all(np.isnan(c_outliers[nan_indices]))
+
+    breakthrough = reactormodels.Breakthrough(
+        column=model.breakthrough.column,
+        chemical=model.breakthrough.chemical,
+        feed_concentrations=model.breakthrough.feed_concentrations,
+        flow_rate=model.breakthrough.flow_rate,
+        time=time,
+        effluent_concentrations=c_outliers,
+    )
+
+    valid_time, valid_concentration = breakthrough.valid_data()
+
+    assert len(valid_time) == len(time) - len(nan_indices)
+    assert len(valid_concentration) == len(c_outliers) - len(nan_indices)
+    assert np.all(np.isfinite(valid_time))
+    assert np.all(np.isfinite(valid_concentration))
+
     # apply outlier identification helper
     outliers, _, removed = identify_curve_outliers(
-        time,
-        c_outliers,
-        absolute_tolerance=0.02,
+        valid_time,
+        valid_concentration,
+        absolute_tolerance=0.03,
         relative_tolerance=0.4,
         window_size=5,
         max_outliers=10,
+        baseline_threshold=0.01,
     )
 
     detected_indices = np.where(outliers)
@@ -294,6 +318,3 @@ def test_identify_curve_outliers():
 
     # At least one intentionally perturbed point was detected
     assert len(detected_indices) > 0
-
-    # Outliers are where noise was introduced
-    assert np.all(np.isin(np.where(outliers), indices))

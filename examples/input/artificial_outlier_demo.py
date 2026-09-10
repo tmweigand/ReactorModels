@@ -19,7 +19,7 @@ def run_demo(
     pore_diffusion = 5e-6  # cm2/s
     surface_diffusion = 5e-10  # cm2/s
     k_film = 0.075  # cm/s
-    K = 100
+    K = [100, 1000]
 
     # column
     axial_diffusion = 0  # cm2/s
@@ -28,12 +28,12 @@ def run_demo(
     porosity = 0.334
     bulk_density = 399.8  # g/L
     flow_rate = 40  # cm3/s
-    feed_concentrations = np.array([[1]])
+    feed_concentrations = 1
     time = np.array(np.loadtxt("examples/ads_time.txt", skiprows=0))
     t_eval = time * 60  # s
     t_eval = t_eval[::5]
 
-    isotherm = reactormodels.models.LinearIsotherm(K=K)
+    species = ["PFOA", "PFOS"]
 
     media = reactormodels.Media(
         particle_porosity=particle_porosity,
@@ -56,14 +56,6 @@ def run_demo(
         surface_diffusion=surface_diffusion,
     )
 
-    breakthrough = reactormodels.Breakthrough(
-        column=column,
-        chemical=chemical,
-        feed_concentrations=feed_concentrations,
-        flow_rate=flow_rate,
-        time=t_eval,
-    )
-
     column_numerics = reactormodels.numerics.NumericsConfig(
         domain_length=column.length,
         n_interior_points=3,
@@ -78,75 +70,106 @@ def run_demo(
         add_inlet=True,
     )
 
-    model = reactormodels.models.PSDM(
-        breakthrough=breakthrough,
-        isotherm=isotherm,
-        column_numerics=column_numerics,
-        particle_numerics=particle_numerics,
-        k_film=k_film,
-    )
-    z, r, C, Cp = model.solve()
-
-    # add noise every third point
-    rng = np.random.default_rng(0)
-    c = C[:, -1]
-    c_outliers = c.copy()
-
-    indices = np.arange(0, c.size, 3)
-
-    # make proportional to concentration
-    noise = rng.normal(0, 0.7 * c[indices], size=indices.size)
-    c_outliers[indices] += noise
-
-    fig, ax = plt.subplots(figsize=(8, 5))
-
-    # apply outlier identification helper
-    outliers, _, removed = identify_curve_outliers(
-        t_eval,
-        c_outliers,
-        absolute_tolerance=0.02,
-        relative_tolerance=0.4,
-        window_size=5,
-        max_outliers=10,
-    )
-
-    # Plot non-outliers
-    ax.plot(
-        t_eval[~outliers],
-        c_outliers[~outliers],
-        marker="o",
-        label="Data",
-        linestyle="None",
-        markersize=7.5,
-    )[0]
-
-    # Plot identified outliers
-    if np.any(outliers):
-        ax.scatter(
-            t_eval[outliers],
-            c_outliers[outliers],
-            marker="x",
-            s=60,
-            color="tab:red",
-            label="Outlier",
-            zorder=3,
+    for i, name in enumerate(species):
+        breakthrough = reactormodels.Breakthrough(
+            column=column,
+            chemical=chemical,
+            feed_concentrations=feed_concentrations,
+            flow_rate=flow_rate,
+            time=t_eval,
         )
-        ax.scatter(
-            t_eval[outliers],
-            c_outliers[outliers],
+
+        isotherm = reactormodels.models.LinearIsotherm(K=K[i])
+
+        model = reactormodels.models.PSDM(
+            breakthrough=breakthrough,
+            isotherm=isotherm,
+            column_numerics=column_numerics,
+            particle_numerics=particle_numerics,
+            k_film=k_film,
+        )
+        z, r, C, Cp = model.solve()
+
+        # add noise every third point
+        rng = np.random.default_rng(0)
+        c = np.maximum(C[:, -1], 0)
+        c_outliers = c.copy()
+
+        indices = np.arange(0, c.size, 3)
+
+        # make proportional to concentration
+        noise = rng.normal(0, 0.7 * c[indices], size=indices.size)
+        c_outliers[indices] += noise
+
+        # Add NaNs at selected points
+        nan_indices = np.array([5, 10])
+
+        c_outliers[nan_indices] = np.nan
+
+        psdm_breakthrough = reactormodels.Breakthrough(
+            column=column,
+            chemical=chemical,
+            feed_concentrations=feed_concentrations,
+            flow_rate=flow_rate,
+            time=t_eval,
+            effluent_concentrations=c_outliers,
+        )
+
+        if not psdm_breakthrough.has_breakthrough(n_points=3):
+            print(f"{name}: no significant breakthrough.")
+            continue
+
+        # clean data of NaNs
+        valid_time, valid_concentration = psdm_breakthrough.valid_data()
+
+        outliers, _, removed = identify_curve_outliers(
+            valid_time,
+            valid_concentration,
+            absolute_tolerance=0.03,
+            relative_tolerance=0.4,
+            window_size=5,
+            max_outliers=10,
+            baseline_threshold=0.01,
+        )
+
+        # Normalize by mean feed concentration
+        normalized_concentration = (
+            valid_concentration / psdm_breakthrough.mean_feed_concentration()
+        )
+
+        # Create a new plot for this PFAS
+        fig, ax = plt.subplots(figsize=(8, 5))
+
+        # Plot non-outliers
+        ax.plot(
+            valid_time[~outliers],
+            normalized_concentration[~outliers],
+            label=name,
             marker="o",
-            s=60,
-            color="tab:blue",
-            alpha=0.5,
+            linestyle="None",
+            markersize=7.5,
             zorder=2,
         )
 
-        for result in removed:
-            print(
-                f"removed time={result['time']:.0f}, "
-                f"value={result['value']:.5f}, "
-                f"predicted={result['predicted']:.5f}, "
-                f"absolute error={result['absolute_error']:.5f}"
+        # Plot identified outliers
+        if np.any(outliers):
+            ax.scatter(
+                valid_time[outliers],
+                normalized_concentration[outliers],
+                marker="o",
+                s=60,
+                color="tab:blue",
+                zorder=2,
+                alpha=0.5,
+            )
+            ax.scatter(
+                valid_time[outliers],
+                normalized_concentration[outliers],
+                marker="x",
+                s=60,
+                color="tab:red",
+                label=f"{name} outlier",
+                zorder=3,
             )
 
         # Format this PFAS plot
@@ -157,10 +180,23 @@ def run_demo(
         ax.legend(fontsize=8, ncols=1)
         fig.tight_layout()
 
+        # Save one file for each PFAS
         save_path = Path(save_path)
-        save_path.parent.mkdir(parents=True, exist_ok=True)
-        fig.savefig(save_path, dpi=150)
-        print(f"Saved plot to {save_path}")
+
+        # Add the PFAS name to the filename
+        pfas_save_path = save_path.parent / f"{name}_outliers{save_path.suffix}"
+
+        pfas_save_path.parent.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        fig.savefig(
+            pfas_save_path,
+            dpi=150,
+        )
+
+        print(f"Saved plot to {pfas_save_path}")
 
         if show:
             plt.show()

@@ -413,7 +413,13 @@ def load_input_file(
 
 
 def identify_curve_outliers(
-    time, values, absolute_tolerance, relative_tolerance, window_size, max_outliers
+    time,
+    values,
+    absolute_tolerance,
+    relative_tolerance,
+    window_size,
+    max_outliers,
+    baseline_threshold,
 ):
     """Identify outliers using iterative local linear fits.
 
@@ -494,12 +500,12 @@ def identify_curve_outliers(
             absolute_error = abs(residual)
 
             # Points below the detection threshold are not considered outliers.
-            below_detection_threshold = values[original_index] < 0.01
+            baseline_threshold = values[original_index] < 0.01
 
             # Mixed absolute + relative tolerance.
             tolerance = absolute_tolerance + relative_tolerance * abs(predicted)
 
-            is_outlier = not below_detection_threshold and absolute_error > tolerance
+            is_outlier = not baseline_threshold and absolute_error > tolerance
 
             iteration_results.append(
                 {
@@ -546,6 +552,13 @@ def identify_curve_outliers(
                 "tolerance": worst["tolerance"],
                 "violation_ratio": worst["violation_ratio"],
             }
+        )
+
+        print(
+            f"removed time={worst['time']:.0f}, "
+            f"value={worst['value']:.5f}, "
+            f"tolerance={worst['tolerance']:.5f}, "
+            f"absolute error={worst['absolute_error']:.5f}"
         )
 
         # Remove the point using its original index.

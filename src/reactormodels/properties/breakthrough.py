@@ -246,13 +246,16 @@ class Breakthrough:
 
     def has_breakthrough(
         self,
-        n_points,
+        n_points: int | None = None,
         breakthrough_fraction: float = 0.2,
     ) -> bool:
         """Return True if C/C0 exceeds breakthrough threshold at end or run."""
-        return bool(
-            np.any(self.normalize_concentration()[-n_points:] >= breakthrough_fraction)
-        )
+        normalized_c = self.normalize_concentration()
+        if n_points is None:
+            n_points = len(normalized_c)
+        elif not isinstance(n_points, int):
+            raise TypeError("n_points must be an integer or None")
+        return bool(np.any(normalized_c[-n_points:] >= breakthrough_fraction))
 
     def breakthrough_threshold(
         self,
