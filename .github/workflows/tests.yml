@@ -77,8 +77,3 @@ jobs:
           tox --override "testenv.basepython=$(which python)"
         env:
           SUNDIALS_INST: ${{ runner.os == 'macOS' && '/opt/homebrew' || '/usr' }}
-
-      - name: Diagnose choreographer/Chrome
-        if: runner.os == 'macOS'
-        run: |
-          .tox/py${{ matrix.python-version }}/bin/choreo_diagnose
