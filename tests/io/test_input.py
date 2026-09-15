@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 import reactormodels
-from reactormodels.Input.Input import load_input_file
+from reactormodels.io.data_input import load_input_file
 
 DATA_DIRECTORY = Path(__file__).resolve().parents[1] / "io" / "input_data_test"
 PARAMETER_FILE = DATA_DIRECTORY / "input_parameter_test.xlsx"

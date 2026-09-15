@@ -4,4 +4,4 @@ __all__ = [
     "load_input_file",
 ]
 
-from .Input import load_input_file
+from .data_input import load_input_file
