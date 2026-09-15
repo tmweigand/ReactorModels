@@ -1,4 +1,3 @@
-from reactormodels.Input import identify_curve_outliers
 import reactormodels
 
 from pathlib import Path
@@ -17,8 +16,8 @@ def run_demo(
     particle_density = 600  # g/L
     particle_diameter = 0.07 * 2  # cm
     pore_diffusion = 5e-6  # cm2/s
-    surface_diffusion = 5e-10  # cm2/s
-    k_film = 0.075  # cm/s
+    surface_diffusion = 5e-9  # cm2/s
+    k_film = 0.1  # cm/s
     K = [100, 1000]
 
     # column
@@ -122,12 +121,11 @@ def run_demo(
         # clean data of NaNs
         valid_time, valid_concentration = psdm_breakthrough.valid_data()
 
-        outliers, _, removed = identify_curve_outliers(
+        outliers, _, _ = psdm_breakthrough.identify_curve_outliers(
             valid_time,
             valid_concentration,
-            absolute_tolerance=0.03,
-            relative_tolerance=0.4,
-            window_size=5,
+            n_mad=1.5,
+            window_size=3,
             max_outliers=10,
             baseline_threshold=0.01,
         )

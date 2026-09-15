@@ -246,8 +246,8 @@ class Breakthrough:
 
     def has_breakthrough(
         self,
-        n_points: int | None = None,
         breakthrough_fraction: float = 0.2,
+        n_points: int | None = None,
     ) -> bool:
         """Return True if C/C0 exceeds breakthrough threshold at end or run."""
         normalized_c = self.normalize_concentration()
@@ -256,6 +256,156 @@ class Breakthrough:
         elif not isinstance(n_points, int):
             raise TypeError("n_points must be an integer or None")
         return bool(np.any(normalized_c[-n_points:] >= breakthrough_fraction))
+
+    @staticmethod
+    def identify_curve_outliers(
+        x_values,
+        y_values,
+        n_mad,
+        window_size,
+        max_outliers,
+        baseline_threshold,
+    ):
+        """Identify outliers using iterative local moving median fits.
+
+        1. Select a local window around each candidate point.
+        2. Remove the candidate point individually and fit a moving median
+        trend to the remaining points.
+        3. Calculate the scaled median absolute deviation (MAD) from the window.
+        4. Calculate the candidates's deviation from the local median.
+        5. A point is considered an outlier if the deviation exceeds the specified
+        number of scaled MADs.
+        6. Remove the point with the largest normalized deviation.
+        7. Repeat using the reduced dataset.
+        """
+        x_values = np.asarray(x_values, dtype=float)
+        y_values = np.asarray(y_values, dtype=float)
+
+        if len(x_values) != len(y_values):
+            raise ValueError("time and values must have the same length.")
+
+        if window_size < 3:
+            raise ValueError("window_size must be at least 3.")
+
+        if n_mad < 0:
+            raise ValueError(" must be non-negative.")
+
+        # Work with original indices so that the final outlier mask
+        # corresponds to the original input arrays.
+        remaining = list(range(len(x_values)))
+
+        removed = []
+        iteration_results = []
+
+        for iteration in range(max_outliers):
+            iteration_results = []
+
+            half_window = window_size // 2
+
+            # Evaluate every point as a potential outlier.
+            for position, original_index in enumerate(remaining):
+
+                # Determine the local window around the candidate.
+                start = max(0, position - half_window)
+                end = min(len(remaining), position + half_window + 1)
+
+                window_indices = remaining[start:end]
+
+                # Exclude the candidate from the local statistics.
+                fit_indices = [
+                    index for index in window_indices if index != original_index
+                ]
+
+                # Calculate the local median.
+                predicted = np.median(y_values[fit_indices])
+
+                # Calculate the local median absolute deviation.
+                mad = np.median(np.abs(y_values[fit_indices] - predicted))
+
+                # Scale MAD to be comparable to standard deviation.
+                scaled_mad = 1.4826 * mad
+
+                # Exclude tightly clustered values from outlier check
+                minimum_mad = 0.05 * predicted
+                effective_mad = max(scaled_mad, minimum_mad)
+
+                # Calculate how far the candidate is from the local median.
+                deviation = abs(y_values[original_index] - predicted)
+
+                # Points below the detection threshold are not considered outliers.
+                baseline_value = y_values[original_index] < baseline_threshold
+
+                # Determine whether the candidate is an outlier.
+                is_outlier = not baseline_value and deviation > n_mad * effective_mad
+
+                # Calculate how many scaled MADs away the candidate is.
+                violation_ratio = deviation / effective_mad
+
+                iteration_results.append(
+                    {
+                        "index": original_index,
+                        "time": x_values[original_index],
+                        "value": y_values[original_index],
+                        "predicted": predicted,
+                        "mad": mad,
+                        "scaled_mad": effective_mad,
+                        "deviation": deviation,
+                        "violation_ratio": violation_ratio,
+                        "is_outlier": is_outlier,
+                    }
+                )
+
+            # Keep only points that exceed the MAD threshold.
+            candidates = [
+                result for result in iteration_results if result["is_outlier"]
+            ]
+
+            # Stop if no points exceed the threshold.
+            if not candidates:
+                break
+
+            # Remove the point with the greatest MAD violation.
+            worst = max(
+                candidates,
+                key=lambda r: r["violation_ratio"],
+            )
+
+            removed.append(
+                {
+                    "iteration": iteration + 1,
+                    "index": worst["index"],
+                    "time": worst["time"],
+                    "value": worst["value"],
+                    "predicted": worst["predicted"],
+                    "mad": worst["mad"],
+                    "scaled_mad": worst["scaled_mad"],
+                    "deviation": worst["deviation"],
+                    "violation_ratio": worst["violation_ratio"],
+                }
+            )
+
+            print(
+                f"removed time={worst['time']:.0f}, "
+                f"value={worst['value']:.5f}, "
+                f"predicted={worst['predicted']:.5f}, "
+                f"scaled MAD={worst['scaled_mad']:.5f}, "
+                f"deviation={worst['deviation']:.5f}, "
+                f"threshold={n_mad * worst['scaled_mad']:.5f}"
+            )
+
+            # Remove the point using its original index.
+            remaining.remove(worst["index"])
+
+        # Construct the final outlier mask using the original indices.
+        outlier = np.zeros(
+            len(y_values),
+            dtype=bool,
+        )
+
+        for result in removed:
+            outlier[result["index"]] = True
+
+        return outlier, iteration_results, removed
 
     def breakthrough_threshold(
         self,
