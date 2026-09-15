@@ -45,7 +45,7 @@ class DirichletBC(InletBC):
 
     def apply(self, gradient_concentration_0: None | float = None):
         """Return the value on the boundary"""
-        return self.inlet_concentration
+        return self.inlet_concentration.copy()
 
     def residual(
         self,
@@ -97,7 +97,7 @@ class DanckwertsBC(InletBC):
 
     def jacobian_row(self, A_row: np.ndarray) -> np.ndarray:
         """dF/dC: residual = v*(C_in - C[0]) + D*(A[0,:] @ C)."""
-        row = self.diffusion * A_row
+        row = self.diffusion * A_row.copy()
         row[0] -= self.velocity
         return row
 

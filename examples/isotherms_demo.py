@@ -19,16 +19,16 @@ def run_demo(
     n = np.array([1.5, 1.2])
 
     # langmuir
-    q_m = 50
+    q_m = 500
     K_l = np.array([0.001, 0.001])
 
     # EPA charge equivalent
-    K_ix = np.array([0.001, 0.003])
+    K_ix = np.array([20, 15])
     MW = np.array([100.0, 50.0])
     z = np.array([2.0, 1.0])
     C_o = np.array([1.0, 1.0])
 
-    q_ix = 0.5
+    q_ix = 0.01
     rho_b = 0.5
 
     q_values = np.linspace(0.01, 10, 100)
