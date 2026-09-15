@@ -1,4 +1,5 @@
 import reactormodels
+from reactormodels.postprocess import plot_breakthrough_and_model, plot_breakthrough
 
 from pathlib import Path
 
@@ -113,9 +114,8 @@ def run_demo():
             ]
         )
 
-    plot = reactormodels.postprocess.Plotting(breakthroughs)
-
-    plot.plot_breakthrough_and_model(
+    plot_breakthrough_and_model(
+        breakthroughs,
         model_names=model_names,
         model_outs=model_outs,
         save_path=f"data_out/plotting/multiple_models.png",
