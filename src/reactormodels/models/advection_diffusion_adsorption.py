@@ -37,8 +37,7 @@ class AdvectionDiffusionAdsorption(NumericModel):
         breakthrough: Breakthrough,
         isotherm: Isotherm,
         numerics: NumericsConfig,
-        kinetics: Type[AdsorptionKinetics] = LocalEquilibrium,
-        rate_constant: float | None = 0,
+        kinetics: AdsorptionKinetics = LocalEquilibrium(),
         inlet_bc: Type[InletBC] = DanckwertsBC,
     ):
         # Physical parameters
@@ -47,8 +46,6 @@ class AdvectionDiffusionAdsorption(NumericModel):
         self.velocity = breakthrough.interstitial_velocity
         self.axial_diffusion = breakthrough.chemical.axial_diffusion
         self.isotherm = isotherm
-
-        self.kinetics = kinetics(breakthrough, numerics, isotherm, rate_constant)
 
         # Initial conditions
         self.initial_concentration = breakthrough.initial_concentration
@@ -67,6 +64,12 @@ class AdvectionDiffusionAdsorption(NumericModel):
 
         # Discretization
         self.N = len(self.numerics.collocation.nodes)
+
+        # Kinetics
+        kinetics.configure(
+            breakthrough, numerics, isotherm, self.N, self.inlet_concentration
+        )
+        self.kinetics = kinetics
 
         self.assert_parameters_set()
 
@@ -135,7 +138,7 @@ class AdvectionDiffusionAdsorption(NumericModel):
         C0 = np.full(self.N, self.initial_concentration)
         C0[0] = self.inlet_bc.apply(self.numerics.collocation.evaluate_gradient(C0, 0))
 
-        y0 = self.kinetics._y0(C0)
+        y0 = self.kinetics._set_initial_conditions(C0)
         ydot0 = np.zeros_like(y0)
         return y0, ydot0
 
@@ -161,5 +164,5 @@ class AdvectionDiffusionAdsorption(NumericModel):
         # result.values.y has shape (n_out, n_vars); skip the t=t_span[0] row
         y_out = result.values.y[1:]  # (n_times, n_vars)
 
-        C_out, q_out = self.kinetics._solve_kinetics(y_out)
+        C_out, q_out = self.kinetics._parse_variables(y_out)
         return self.numerics.collocation.nodes, C_out, q_out

@@ -49,8 +49,7 @@ def test_thomas():
         breakthrough=breakthrough,
         isotherm=isotherm,
         numerics=numerics,
-        kinetics=reactormodels.models.SecondOrder,
-        rate_constant=rate_constant,
+        kinetics=reactormodels.models.SecondOrder(rate_constant),
     )
     x, C, _ = model.solve()
 

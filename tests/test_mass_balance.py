@@ -43,7 +43,6 @@ def _build_solved_model():
         breakthrough=breakthrough,
         isotherm=reactormodels.models.LinearIsotherm(K=K),
         numerics=numerics,
-        kinetics=reactormodels.models.LocalEquilibrium,
     )
 
     x, C, q = model.solve()

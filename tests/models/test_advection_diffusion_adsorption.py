@@ -4,7 +4,9 @@ import numpy as np
 import pytest
 
 
-def _base_model(kinetics, rate_constant=0.0, n_col=30, dummy_time=[0, 1, 2]):
+def _base_model(
+    kinetics=reactormodels.models.LocalEquilibrium(), n_col=30, dummy_time=[0, 1, 2]
+):
     """Shared setup for all adsorption tests."""
     column_length = 5.0
     diameter = 1
@@ -34,7 +36,6 @@ def _base_model(kinetics, rate_constant=0.0, n_col=30, dummy_time=[0, 1, 2]):
             isotherm=reactormodels.models.LinearIsotherm(K=K),
             numerics=numerics,
             kinetics=kinetics,
-            rate_constant=rate_constant,
             inlet_bc=reactormodels.models.DirichletBC,
         ),
         axial_diffusion,
@@ -47,9 +48,7 @@ def _base_model(kinetics, rate_constant=0.0, n_col=30, dummy_time=[0, 1, 2]):
 
 def test_local_equilibrium_vs_ogata_banks():
     """Linear isotherm + local equilibrium = retarded Ogata-Banks."""
-    model, D, column_length, eps, rho_b, K = _base_model(
-        reactormodels.models.adsorption_kinetics.LocalEquilibrium,
-    )
+    model, D, column_length, eps, rho_b, K = _base_model()
 
     R = 1.0 + (rho_b * K) / eps
 
@@ -72,10 +71,9 @@ def test_local_equilibrium_vs_ogata_banks():
 
 def test_ldf_converges_to_equilibrium_at_high_kldf():
     """At very high k_ldf, LDF solution should match local equilibrium."""
-    eq_model, *params = _base_model(reactormodels.models.LocalEquilibrium)
+    eq_model, *params = _base_model()
     ldf_model, *_ = _base_model(
-        reactormodels.models.LinearDrivingForce,
-        rate_constant=1000.0,
+        reactormodels.models.LinearDrivingForce(rate_constant=1000.0),
     )
 
     D, L, eps, rho_b, K = params
@@ -98,7 +96,7 @@ def test_ldf_converges_to_equilibrium_at_high_kldf():
 def test_ldf_q_tracks_equilibrium():
     """q should approach q*(C) over time."""
     model, D, L, eps, rho_b, K = _base_model(
-        reactormodels.models.LinearDrivingForce, rate_constant=0.5
+        reactormodels.models.LinearDrivingForce(rate_constant=0.5)
     )
     R = 1.0 + (rho_b * K) / eps
     v_eff = model.breakthrough.interstitial_velocity / (eps * R)

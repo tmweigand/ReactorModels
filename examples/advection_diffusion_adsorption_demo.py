@@ -50,9 +50,7 @@ def run_demo(
     )
 
     model = reactormodels.models.AdvectionDiffusionAdsorption(
-        breakthrough=breakthrough,
-        isotherm=isotherm,
-        numerics=numerics,
+        breakthrough=breakthrough, isotherm=isotherm, numerics=numerics
     )
 
     x, C, q = model.solve()
