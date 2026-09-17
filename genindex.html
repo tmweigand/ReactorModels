@@ -819,10 +819,10 @@
         <li><a href="api/reactormodels.properties.html#reactormodels.properties.chemical.Chemical.liquid_diffusion_coefficient">(reactormodels.properties.chemical.Chemical method)</a>
 </li>
       </ul></li>
-      <li><a href="api/reactormodels.Input.html#reactormodels.Input.load_input_file">load_input_file() (in module reactormodels.Input)</a>
+      <li><a href="api/reactormodels.io.html#reactormodels.io.load_input_file">load_input_file() (in module reactormodels.io)</a>
 
       <ul>
-        <li><a href="api/reactormodels.Input.html#reactormodels.Input.Input.load_input_file">(in module reactormodels.Input.Input)</a>
+        <li><a href="api/reactormodels.io.html#reactormodels.io.data_input.load_input_file">(in module reactormodels.io.data_input)</a>
 </li>
       </ul></li>
       <li><a href="api/reactormodels.models.html#reactormodels.models.adsorption_kinetics.AdsorptionKinetics.LOCAL_EQUILIBRIUM">LOCAL_EQUILIBRIUM (reactormodels.models.adsorption_kinetics.AdsorptionKinetics attribute)</a>
@@ -937,9 +937,9 @@
 </li>
         <li><a href="api/reactormodels.html#module-reactormodels.fixtures">reactormodels.fixtures</a>
 </li>
-        <li><a href="api/reactormodels.Input.html#module-reactormodels.Input">reactormodels.Input</a>
+        <li><a href="api/reactormodels.io.html#module-reactormodels.io">reactormodels.io</a>
 </li>
-        <li><a href="api/reactormodels.Input.html#module-reactormodels.Input.Input">reactormodels.Input.Input</a>
+        <li><a href="api/reactormodels.io.html#module-reactormodels.io.data_input">reactormodels.io.data_input</a>
 </li>
         <li><a href="api/reactormodels.models.html#module-reactormodels.models">reactormodels.models</a>
 </li>
@@ -976,6 +976,8 @@
         <li><a href="api/reactormodels.postprocess.html#module-reactormodels.postprocess">reactormodels.postprocess</a>
 </li>
         <li><a href="api/reactormodels.postprocess.html#module-reactormodels.postprocess.mass_balance">reactormodels.postprocess.mass_balance</a>
+</li>
+        <li><a href="api/reactormodels.postprocess.html#module-reactormodels.postprocess.plotting">reactormodels.postprocess.plotting</a>
 </li>
         <li><a href="api/reactormodels.properties.html#module-reactormodels.properties">reactormodels.properties</a>
 </li>
@@ -1014,7 +1016,7 @@
         <li><a href="api/reactormodels.properties.html#reactormodels.properties.breakthrough.Breakthrough.normalize_concentration">(reactormodels.properties.breakthrough.Breakthrough method)</a>
 </li>
       </ul></li>
-      <li><a href="api/reactormodels.Input.html#reactormodels.Input.Input.normalize_name">normalize_name() (in module reactormodels.Input.Input)</a>
+      <li><a href="api/reactormodels.io.html#reactormodels.io.data_input.normalize_name">normalize_name() (in module reactormodels.io.data_input)</a>
 </li>
       <li><a href="api/reactormodels.models.html#reactormodels.models.NumericModel">NumericModel (class in reactormodels.models)</a>
 
@@ -1076,8 +1078,20 @@
       </ul></li>
       <li><a href="api/reactormodels.html#reactormodels.dimensionless_numbers.peclet_number">peclet_number() (in module reactormodels.dimensionless_numbers)</a>
 </li>
+      <li><a href="api/reactormodels.postprocess.html#reactormodels.postprocess.plot_breakthrough">plot_breakthrough() (in module reactormodels.postprocess)</a>
+
+      <ul>
+        <li><a href="api/reactormodels.postprocess.html#reactormodels.postprocess.plotting.plot_breakthrough">(in module reactormodels.postprocess.plotting)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/reactormodels.postprocess.html#reactormodels.postprocess.plot_breakthrough_and_model">plot_breakthrough_and_model() (in module reactormodels.postprocess)</a>
+
+      <ul>
+        <li><a href="api/reactormodels.postprocess.html#reactormodels.postprocess.plotting.plot_breakthrough_and_model">(in module reactormodels.postprocess.plotting)</a>
+</li>
+      </ul></li>
       <li><a href="api/reactormodels.postprocess.html#reactormodels.postprocess.mass_balance.MassBalance.pore_concentration">pore_concentration (reactormodels.postprocess.mass_balance.MassBalance attribute)</a>
 
       <ul>
@@ -1168,17 +1182,17 @@
 </li>
       </ul></li>
       <li>
-    reactormodels.Input
+    reactormodels.io
 
       <ul>
-        <li><a href="api/reactormodels.Input.html#module-reactormodels.Input">module</a>
+        <li><a href="api/reactormodels.io.html#module-reactormodels.io">module</a>
 </li>
       </ul></li>
       <li>
-    reactormodels.Input.Input
+    reactormodels.io.data_input
 
       <ul>
-        <li><a href="api/reactormodels.Input.html#module-reactormodels.Input.Input">module</a>
+        <li><a href="api/reactormodels.io.html#module-reactormodels.io.data_input">module</a>
 </li>
       </ul></li>
       <li>
@@ -1272,8 +1286,6 @@
         <li><a href="api/reactormodels.numerics.html#module-reactormodels.numerics.config">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     reactormodels.numerics.helpers
 
@@ -1281,6 +1293,8 @@
         <li><a href="api/reactormodels.numerics.html#module-reactormodels.numerics.helpers">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     reactormodels.numerics.orthogonal_collocation
 
@@ -1307,6 +1321,13 @@
 
       <ul>
         <li><a href="api/reactormodels.postprocess.html#module-reactormodels.postprocess.mass_balance">module</a>
+</li>
+      </ul></li>
+      <li>
+    reactormodels.postprocess.plotting
+
+      <ul>
+        <li><a href="api/reactormodels.postprocess.html#module-reactormodels.postprocess.plotting">module</a>
 </li>
       </ul></li>
       <li>

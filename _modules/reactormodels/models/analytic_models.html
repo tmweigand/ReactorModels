@@ -328,7 +328,7 @@
 
 <span class="sd">        a = k*Co*(t - Z/v)</span>
 <span class="sd">        b = (k*rho_p*q*Z  / v)*((1-eps) / eps)</span>
-<span class="sd">        C/Co = exp(a) / (exp(a) + exp(b) - 1)</span>
+<span class="sd">        C/Co = 1 / (1 + exp(b - a) - exp(-a))</span>
 <span class="sd">        """</span>
         <span class="n">arg1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_BA</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">inlet_concentration</span> <span class="o">*</span> <span class="p">(</span><span class="n">time</span> <span class="o">-</span> <span class="n">x</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">)</span>
         <span class="n">arg2</span> <span class="o">=</span> <span class="p">(</span>
@@ -338,7 +338,7 @@
             <span class="o">*</span> <span class="n">x</span>
             <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_void_fraction</span><span class="p">)</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">arg1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">arg1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">arg2</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">arg2</span> <span class="o">-</span> <span class="n">arg1</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">arg1</span><span class="p">))</span></div>
 </div>
 
 
@@ -379,7 +379,7 @@
 
 <span class="sd">        a = k_Th*Co*(BVT - eps)</span>
 <span class="sd">        b = k_Th*q_e*x/Q</span>
-<span class="sd">        C/Co = exp(a) / (exp(a) + exp(b) - 1)</span>
+<span class="sd">        C/Co = 1 / (1 + exp(b - a) - exp(-a))</span>
 <span class="sd">        """</span>
         <span class="n">arg1</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">k_Th</span>
@@ -387,7 +387,7 @@
             <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bed_volumes_treated</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span><span class="p">)</span>
         <span class="p">)</span>
         <span class="n">arg2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_Th</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorbent_capacity</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorbent_mass</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_volume</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">arg1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">arg1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">arg2</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">arg2</span> <span class="o">-</span> <span class="n">arg1</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">arg1</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="ThomasRectangular.spatial_profile">

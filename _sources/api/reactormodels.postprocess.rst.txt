@@ -16,3 +16,11 @@ reactormodels.postprocess.mass\_balance module
    :members:
    :show-inheritance:
    :undoc-members:
+
+reactormodels.postprocess.plotting module
+-----------------------------------------
+
+.. automodule:: reactormodels.postprocess.plotting
+   :members:
+   :show-inheritance:
+   :undoc-members:
