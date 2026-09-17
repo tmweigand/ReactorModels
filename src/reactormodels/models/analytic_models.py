@@ -206,7 +206,7 @@ class BohartAdams(AnalyticModels):
 
         a = k*Co*(t - Z/v)
         b = (k*rho_p*q*Z  / v)*((1-eps) / eps)
-        C/Co = exp(a) / (exp(a) + exp(b) - 1)
+        C/Co = 1 / (1 + exp(b - a) - exp(-a))
         """
         arg1 = self.k_BA * self.inlet_concentration * (time - x / self.velocity)
         arg2 = (
@@ -216,7 +216,7 @@ class BohartAdams(AnalyticModels):
             * x
             / (self.velocity * self.bed_void_fraction)
         )
-        return np.exp(arg1) / (np.exp(arg1) + np.exp(arg2) - 1)
+        return 1 / (1 + np.exp(arg2 - arg1) - np.exp(-arg1))
 
 
 class ThomasRectangular(AnalyticModels):
@@ -251,7 +251,7 @@ class ThomasRectangular(AnalyticModels):
 
         a = k_Th*Co*(BVT - eps)
         b = k_Th*q_e*x/Q
-        C/Co = exp(a) / (exp(a) + exp(b) - 1)
+        C/Co = 1 / (1 + exp(b - a) - exp(-a))
         """
         arg1 = (
             self.k_Th
@@ -259,7 +259,7 @@ class ThomasRectangular(AnalyticModels):
             * (self.bed_volumes_treated - self.column.porosity)
         )
         arg2 = self.k_Th * self.sorbent_capacity * self.sorbent_mass / self.bed_volume
-        return np.exp(arg1) / (np.exp(arg1) + np.exp(arg2) - 1)
+        return 1 / (1 + np.exp(arg2 - arg1) - np.exp(-arg1))
 
     def spatial_profile(self, x: np.ndarray, time: float) -> np.ndarray:
         """Return concentration profile with respect to fixed time."""

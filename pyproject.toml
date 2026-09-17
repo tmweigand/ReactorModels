@@ -9,7 +9,9 @@ dependencies = [
     "scipy>=1.13",
     "scikits.odes",
     "matplotlib>=3.0",
-    "openpyxl>=3.0"
+    "openpyxl>=3.0", 
+    "plotly>=7.0.0",
+    "kaleido>=1.4.0"
 ]
 
 
