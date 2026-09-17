@@ -96,7 +96,18 @@ class AdvectionDiffusionAdsorption(NumericModel):
 
         self.kinetics._residual_kinetics(result, c, q, dcdt, dqdt, transport)
 
-        return 0
+            # solid phase
+            if self.kinetics == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
+                pass
+            elif self.kinetics == AdsorptionKinetics.LINEAR_DRIVING_FORCE:
+                result[:, 1, :] = dqdt - self.k_ldf * (self.isotherm.q(c) - q)
+            else:
+                result[:, 1, :] = dqdt - self.k_ldf * c * (self.isotherm.q(c) - q)
+
+            return 0
+        finally:
+            self._residual_time += time.perf_counter() - start
+            self._residual_calls += 1
 
     def _jacobian(self, t, y, ydot, result, cj, jac):
         """Build jacobian of _residual."""
@@ -122,9 +133,88 @@ class AdvectionDiffusionAdsorption(NumericModel):
 
         self.kinetics._jacobian_kinetics(C, q, J, cj)
 
-        jac[:, :] = J
+                # Inlet boundary conditions
+                for i in range(self.n_species):
+                    row = idx_C(i, 0)
 
-        return 0
+                    bc_row = self.inlet_bc.jacobian_row(
+                        D1[0, :],
+                        species=i,
+                    )
+                    for k in range(self.N):
+                        J[row, idx_C(i, k)] = bc_row[k]
+
+                # Liquid-phase equations
+                for i in range(self.n_species):
+                    for k in range(1, self.N):
+                        row = idx_C(i, k)
+
+                        # dF_C / dC
+                        for m in range(self.N):
+                            J[row, idx_C(i, m)] += (
+                                self.column.porosity * self.velocity * D1[k, m]
+                                - self.column.porosity * self.DL[i] * D2[k, m]
+                            )
+
+                        # eps*dC/dt
+                        J[row, idx_C(i, k)] += cj * self.column.porosity
+
+                        # rho_b*dq/dt
+                        J[row, idx_q(i, k)] += cj * self.column.media.bed_density
+
+                # Solid-phase equations
+                for i in range(self.n_species):
+                    for k in range(self.N):
+                        row = idx_q(i, k)
+                        C = c[i, k]
+                        q_i = q[i, k]
+
+                        # LDF
+                        # F_q = dq/dt - k_ldf * (q_eq(C) - q)
+                        # dF/dC = -k * dq_eq/dC
+                        # dF/dq = cj + k
+                        if self.kinetics == AdsorptionKinetics.LINEAR_DRIVING_FORCE:
+                            for k in range(self.N):
+                                row = idx_q(i, k)
+                                dq_dC = self.isotherm.K[i]
+
+                                # dF_q / dC
+                                J[row, idx_C(i, k)] = -self.k_ldf * dq_dC
+
+                                # dF_q / dq
+                                J[row, idx_q(i, k)] = self.k_ldf + cj
+
+                        # SECOND ORDER
+                        # F_q =
+                        #   dq/dt - k*C*(q_eq(C) - q)
+                        # dF/dC =
+                        #   -k*(q_eq + C*dq_eq/dC) + k*q
+                        # dF/dq =
+                        #   k*C + cj
+                        elif self.kinetics == AdsorptionKinetics.SECOND_ORDER:
+                            for k in range(self.N):
+                                row = idx_q(i, k)
+
+                                C = c[i, k]
+                                q_i = q[i, k]
+
+                                q_eq = self.isotherm.K[i] * C
+                                dq_dC = self.isotherm.K[i]
+
+                                # dF_q / dC
+                                J[row, idx_C(i, k)] = -self.k_ldf * (
+                                    q_eq - q_i + C * dq_dC
+                                )
+
+                                # dF_q / dq
+                                J[row, idx_q(i, k)] = self.k_ldf * C + cj
+
+            jac[:, :] = J
+
+            return 0
+        finally:
+            self._jacobian_time += time.perf_counter() - start_time
+            self._jacobian_calls += 1
 
     def _algebraic_vars_idx(self):
         """Create list identifying which equations are algebraic.

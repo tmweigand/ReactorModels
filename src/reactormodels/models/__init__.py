@@ -19,6 +19,7 @@ __all__ = [
     "SymmetryBC",
     "AdvectionDiffusion",
     "AdvectionDiffusionAdsorption",
+    "AdvectionDiffusionAdsorptionC",
     "OgataBanks",
     "YoonNelson",
     "Clark",
@@ -58,4 +59,5 @@ from .analytic_models import (
 )
 from .advection_diffusion import AdvectionDiffusion
 from .advection_diffusion_adsorption import AdvectionDiffusionAdsorption
+from .adv_diff_ads_c import AdvectionDiffusionAdsorptionC
 from .intraparticle_transport import IntraparticleTransport

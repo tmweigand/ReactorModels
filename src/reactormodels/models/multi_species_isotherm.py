@@ -1,6 +1,7 @@
 """isotherm.py"""
 
 import numpy as np
+import time
 
 
 class MultiSpeciesIsotherm:
@@ -62,40 +63,62 @@ class CompetitiveFreundlichIsotherm(MultiSpeciesIsotherm):
 
     def C(self, q: np.ndarray):
         """Return liquid phase concentration."""
-        q = np.asarray(q, dtype=float)
-        q = np.maximum(q, 0.0)
+        q_arr: np.ndarray = np.asarray(q, dtype=float)
+        q_arr = np.maximum(q_arr, 0.0)
 
-        Q = np.sum(q)
-        S = np.sum(self.n * q)
+        Q = np.sum(q_arr, axis=0)
+        S = np.sum(self.n[:, None] * q_arr, axis=0)
 
-        # prevent C from blowing up
-        if Q == 0:
-            return np.zeros_like(q)
+        C = np.zeros_like(q_arr, dtype=float)
 
-        return q / Q * (S / (self.n * self.K)) ** self.n
+        valid = (Q > 0) & (S > 0)
+
+        if not np.any(valid):
+            return C
+
+        Qv = Q[valid]
+        Sv = S[valid]
+        qv = q_arr[:, valid]
+
+        A = (Sv[None, :] / (self.n[:, None] * self.K[:, None])) ** self.n[:, None]
+
+        C[:, valid] = qv / Qv[None, :] * A
+
+        return C
 
     def dC_dq(self, q: np.ndarray):
         """Calculate derivative of liquid concentration by sorbed mass concentration."""
         q_arr: np.ndarray = np.asarray(q, dtype=float)
         q_arr = np.maximum(q_arr, 0.0)
 
-        Q = np.sum(q_arr)
-        S = np.sum(self.n * q_arr)
+        Q = np.sum(q_arr, axis=0)
+        S = np.sum(self.n[:, None] * q_arr, axis=0)
 
-        J = np.zeros((self.n_species, self.n_species))
+        n_nodes = q_arr.shape[1]
 
-        if Q == 0 or S == 0:
+        J = np.zeros((self.n_species, self.n_species, n_nodes), dtype=float)
+
+        valid = (Q > 0) & (S > 0)
+
+        if not np.any(valid):
             return J
 
-        for i in range(self.n_species):
-            A_i = (S / (self.n[i] * self.K[i])) ** self.n[i]
+        Qv = Q[valid]
+        Sv = S[valid]
+        qv = q_arr[:, valid]
 
-            for j in range(self.n_species):
-                delta_ij = 1.0 if i == j else 0.0
+        A = (Sv[None, :] / (self.n[:, None] * self.K[:, None])) ** self.n[:, None]
 
-                J[i, j] = A_i * (
-                    delta_ij / Q + q_arr[i] / Q * (self.n[i] * self.n[j] / S - 1 / Q)
-                )
+        n_i = self.n[:, None, None]
+        n_j = self.n[None, :, None]
+
+        q_i = qv[:, None, :]
+
+        J[:, :, valid] = A[:, None, :] * (
+            np.eye(self.n_species)[:, :, None] / Qv[None, None, :]
+            + (q_i / Qv[None, None, :])
+            * (n_i * n_j / Sv[None, None, :] - 1 / Qv[None, None, :])
+        )
 
         return J
 
@@ -174,26 +197,29 @@ class CompetitiveLangmuirIsotherm(MultiSpeciesIsotherm):
         C = np.asarray(C, dtype=float)
         C = np.maximum(C, 0.0)
 
-        D = 1 + np.sum(self.K * C)
+        D = 1 + np.sum(self.K[:, None] * C, axis=0)
 
-        return self.q_m * self.K * C / D
+        return self.q_m * self.K[:, None] * C / D[None, :]
 
     def dq_dC(self, C: np.ndarray) -> np.ndarray:
         """Calculate the derivative of sorbed mass concentration by concentration."""
-        C_arr: np.ndarray = np.asarray(C, dtype=float)
-        C_arr = np.maximum(C_arr, 0.0)
+        C = np.asarray(C, dtype=float)
+        C = np.maximum(C, 0.0)
 
-        D = 1 + np.sum(self.K * C_arr)
+        D = 1.0 + np.sum(self.K[:, None] * C, axis=0)
 
-        J = np.zeros((self.n_species, self.n_species))
+        # -q_m * K_i * C_i * K_j / D^2
+        J = (
+            -self.q_m
+            * self.K[:, None, None]
+            * C[:, None, :]
+            * self.K[None, :, None]
+            / D[None, None, :] ** 2
+        )
 
-        for i in range(self.n_species):
-            for j in range(self.n_species):
-                delta_ij = 1.0 if i == j else 0.0
-
-                J[i, j] = (
-                    self.q_m * self.K[i] * (delta_ij / D - C_arr[i] * self.K[j] / D**2)
-                )
+        # Add q_m * K_i / D to the diagonal terms
+        indices = np.arange(self.n_species)
+        J[indices, indices, :] += self.q_m * self.K[:, None] / D[None, :]
 
         return J
 
@@ -301,49 +327,68 @@ class CompetitiveIonIsotherm(MultiSpeciesIsotherm):
         q = np.maximum(q, 0.0)
 
         q_scale = self.rho_b * self.z / self.MW
-        q_eq = q * q_scale
-        q_A = self.q_m - np.sum(q_eq)
+        q_eq = q * q_scale[:, None]
+        q_A = self.q_m - np.sum(q_eq, axis=0, keepdims=True)
 
-        a = np.sum(q_eq[self.di_mask] / self.K[self.di_mask]) / q_A**2
-        b = 1.0 + np.sum(q_eq[self.mono_mask] / self.K[self.mono_mask]) / q_A
+        q_di, K_di = q_eq[self.di_mask], self.K[self.di_mask]
+        q_mono, K_mono = q_eq[self.mono_mask], self.K[self.mono_mask]
+
+        a = np.sum(q_di / K_di[:, None], axis=0) / q_A[0] ** 2
+        b = 1.0 + np.sum(q_mono / K_mono[:, None], axis=0) / q_A[0]
         c = -self.CT
 
         C_A = 2.0 * c / (-b - np.sqrt(b**2 - 4.0 * a * c))
+        C_A = C_A[None, :]
 
         return q_scale, q_eq, q_A, C_A
 
     def C(self, q: np.ndarray) -> np.ndarray:
         """Return liquid phase concentration."""
         _, q_eq, q_A, C_A = self._state_quantities(q)
-        return (C_A / q_A) ** self.z * q_eq / self.K
+        C = (C_A / q_A) ** self.z[:, None] * q_eq / self.K[:, None]
+        return C  # / self.z[:, None] * self.MW[:, None]
 
     def dC_dq(self, q: np.ndarray) -> np.ndarray:
         """Calculate derivative of liquid concentration by sorbed mass concentration."""
-        q_scale, q_eq, q_A, C_A = self._state_quantities(q)
+        q_arr: np.ndarray = np.asarray(q, dtype=float)
+        q_arr = np.maximum(q_arr, 0.0)
 
-        C = self.C(q)
-        Z_c = np.sum(self.z * C)
+        q_scale, q_eq, q_A, C_A = self._state_quantities(q_arr)
 
-        J = np.zeros((self.n_species, self.n_species))
+        C = self.C(q_arr)
+        Z_c = np.sum(self.z[:, None] * C, axis=0)
 
-        for i in range(self.n_species):
-            for j in range(self.n_species):
-                delta_ij = 1.0 if i == j else 0.0
+        n_nodes = q_arr.shape[1]
+        J = np.zeros((self.n_species, self.n_species, n_nodes))
 
-                if q_eq[i] == 0:
-                    d_over_q = 0
-                else:
-                    d_over_q = delta_ij / q_eq[i]
+        for k in range(n_nodes):
+            q_eq_k = q_eq[:, k]
+            q_A_k = q_A[0, k]
+            C_A_k = C_A[0, k]
+            C_k = C[:, k]
+            Z_c_k = Z_c[k]
 
-                Cj_over_qj = (C_A / q_A) ** self.z[j] / self.K[j]
+            for i in range(self.n_species):
+                for j in range(self.n_species):
+                    delta_ij = 1.0 if i == j else 0.0
 
-                J[i, j] = C[i] * (
-                    d_over_q
-                    + self.z[i] / q_A
-                    - self.z[i] * (Cj_over_qj + Z_c / q_A) / (C_A + Z_c)
-                )
+                    if q_eq_k[i] == 0:
+                        d_over_q = 0.0
+                    else:
+                        d_over_q = delta_ij / q_eq_k[i]
 
-        return J * q_scale
+                    Cj_over_qj = (C_A_k / q_A_k) ** self.z[j] / self.K[j]
+
+                    J[i, j, k] = C_k[i] * (
+                        delta_ij * q_scale[i] * d_over_q
+                        + self.z[i] * q_scale[j] / q_A_k
+                        - self.z[i]
+                        * q_scale[j]
+                        * (Cj_over_qj + Z_c_k / q_A_k)
+                        / (C_A_k + Z_c_k)
+                    )
+
+        return J
 
     def d2C_dq2(self, q: np.ndarray) -> np.ndarray:
         """Calculate the second derivative."""
@@ -493,36 +538,41 @@ class CompetitiveLangmuirFreundlichIsotherm(MultiSpeciesIsotherm):
         C = np.asarray(C, dtype=float)
         C = np.maximum(C, 0.0)
 
-        D = 1 + np.sum(self.K * C**self.n)
+        D = 1 + np.sum(self.K[:, None] * C ** self.n[:, None], axis=0)
 
-        return self.q_m * self.K * C**self.n / D
+        return self.q_m * self.K[:, None] * C ** self.n[:, None] / D[None, :]
 
     def dq_dC(self, C: np.ndarray) -> np.ndarray:
         """Calculate the derivative of sorbed mass concentration by concentration."""
-        C_arr: np.ndarray = np.asarray(C, dtype=float)
-        C_arr = np.maximum(C_arr, 0.0)
+        C = np.asarray(C, dtype=float)
+        C = np.maximum(C, 0.0)
 
-        D = 1 + np.sum(self.K * C_arr**self.n)
+        C_safe = np.maximum(C, 1e-12)
 
-        J = np.zeros((self.n_species, self.n_species))
+        C_n = C ** self.n[:, None]
+        C_n_minus_1 = C_safe ** (self.n[:, None] - 1.0)
 
-        for i in range(self.n_species):
-            for j in range(self.n_species):
-                delta_ij = 1.0 if i == j else 0.0
+        D = 1.0 + np.sum(
+            self.K[:, None] * C_n,
+            axis=0,
+        )
 
-                J[i, j] = (
-                    self.q_m
-                    * self.K[i]
-                    / D
-                    * (
-                        delta_ij * self.n[i] * C_arr[i] ** (self.n[i] - 1)
-                        - C_arr[i] ** self.n[i]
-                        * self.K[j]
-                        * self.n[j]
-                        * C_arr[j] ** (self.n[j] - 1)
-                        / D
-                    )
-                )
+        diagonal = (
+            self.q_m * self.K[:, None] * self.n[:, None] * C_n_minus_1 / D[None, :]
+        )
+
+        numerator = self.q_m * self.K[:, None] * C_n
+
+        denominator_derivative = self.K[:, None] * self.n[:, None] * C_n_minus_1
+
+        J = (
+            -numerator[:, None, :]
+            * denominator_derivative[None, :, :]
+            / D[None, None, :] ** 2
+        )
+
+        indices = np.arange(self.n_species)
+        J[indices, indices, :] += diagonal
 
         return J
 
@@ -599,37 +649,47 @@ class CompetitiveStoichiometricIsotherm(MultiSpeciesIsotherm):
         C = np.asarray(C, dtype=float)
         C = np.maximum(C, 0.0)
 
-        D = 1 + np.sum(self.K * C**self.n)
+        D = 1 + np.sum(self.K[:, None] * C ** self.n[:, None], axis=0)
 
-        return self.q_m * self.K * self.n * C**self.n / D
+        return (
+            self.q_m
+            * self.K[:, None]
+            * self.n[:, None]
+            * C ** self.n[:, None]
+            / D[None, :]
+        )
 
     def dq_dC(self, C: np.ndarray) -> np.ndarray:
         """Calculate the derivative of sorbed mass concentration by concentration."""
         C_arr: np.ndarray = np.asarray(C, dtype=float)
         C_arr = np.maximum(C_arr, 0.0)
 
-        D = 1 + np.sum(self.K * C_arr**self.n)
+        n_nodes = C_arr.shape[1]
+        J = np.zeros((self.n_species, self.n_species, n_nodes))
 
-        J = np.zeros((self.n_species, self.n_species))
+        for k in range(n_nodes):
+            C_k = C_arr[:, k]
 
-        for i in range(self.n_species):
-            for j in range(self.n_species):
-                delta_ij = 1.0 if i == j else 0.0
+            D = 1 + np.sum(self.K * C_k**self.n)
 
-                J[i, j] = (
-                    self.q_m
-                    * self.K[i]
-                    * self.n[i]
-                    / D
-                    * (
-                        delta_ij * self.n[i] * C_arr[i] ** (self.n[i] - 1)
-                        - C_arr[i] ** self.n[i]
-                        * self.K[j]
-                        * self.n[j]
-                        * C_arr[j] ** (self.n[j] - 1)
+            for i in range(self.n_species):
+                for j in range(self.n_species):
+                    delta_ij = 1.0 if i == j else 0.0
+
+                    J[i, j, k] = (
+                        self.q_m
+                        * self.K[i]
+                        * self.n[i]
                         / D
+                        * (
+                            delta_ij * self.n[i] * C_k[i] ** (self.n[i] - 1)
+                            - C_k[i] ** self.n[i]
+                            * self.K[j]
+                            * self.n[j]
+                            * C_k[j] ** (self.n[j] - 1)
+                            / D
+                        )
                     )
-                )
 
         return J
 
@@ -709,14 +769,15 @@ class MultiCapacityIsotherm(MultiSpeciesIsotherm):
         C_sorted = C_arr[order]
 
         # Calculate q in sorted order
-        q_sorted = np.zeros(2)
+        q_sorted = np.empty_like(C_arr)
 
-        D = 1 + np.sum(self.K * C)
+        D = 1 + np.sum(K[:, None] * C_sorted, axis=0)
 
         q_sorted[0] = qm[1] * K[0] * C_sorted[0] / D + (qm[0] - qm[1]) * K[
             0
-        ] * C_sorted[0] / (1 + K[0] * C_sorted[0])
+        ] * C_sorted[0] / (1.0 + K[0] * C_sorted[0])
 
+        # Species with smaller capacity
         q_sorted[1] = qm[1] * K[1] * C_sorted[1] / D
 
         # Return to original species ordering
@@ -730,6 +791,9 @@ class MultiCapacityIsotherm(MultiSpeciesIsotherm):
         C_arr: np.ndarray = np.asarray(C, dtype=float)
         C_arr = np.maximum(C_arr, 0.0)
 
+        n_nodes = C_arr.shape[1]
+        J = np.zeros((2, 2, n_nodes))
+
         # Sort species by descending q_m
         order = np.argsort(-self.q_m)
 
@@ -737,20 +801,26 @@ class MultiCapacityIsotherm(MultiSpeciesIsotherm):
         K = self.K[order]
         C_sorted = C_arr[order]
 
-        D = 1 + np.sum(self.K * C_arr)
+        for k in range(n_nodes):
+            C_k = C_sorted[:, k]
 
-        J_sorted = np.zeros((2, 2))
+            D = 1 + np.sum(K * C_k)
 
-        J_sorted[0, 0] = (
-            qm[1] * K[0] * (1 + K[1] * C_sorted[1]) / D**2
-            + (qm[0] - qm[1]) * K[0] / (1 + K[0] * C_sorted[0]) ** 2
-        )
-        J_sorted[0, 1] = -qm[1] * K[0] * K[1] * C_sorted[0] / D**2
-        J_sorted[1, 0] = -qm[1] * K[0] * K[1] * C_sorted[1] / D**2
-        J_sorted[1, 1] = qm[1] * K[1] * (1 + K[0] * C_sorted[0]) / D**2
+            J_sorted = np.zeros((2, 2))
 
-        J = np.empty_like(J_sorted)
-        J = J_sorted[np.ix_(order, order)]
+            J_sorted[0, 0] = (
+                qm[1] * K[0] * (1 + K[1] * C_k[1]) / D**2
+                + (qm[0] - qm[1]) * K[0] / (1 + K[0] * C_k[0]) ** 2
+            )
+
+            J_sorted[0, 1] = -qm[1] * K[0] * K[1] * C_k[0] / D**2
+
+            J_sorted[1, 0] = -qm[1] * K[0] * K[1] * C_k[1] / D**2
+
+            J_sorted[1, 1] = qm[1] * K[1] * (1 + K[0] * C_k[0]) / D**2
+
+            # Return Jacobian to original species ordering
+            J[:, :, k] = J_sorted[np.ix_(order, order)]
 
         return J
 
@@ -839,9 +909,13 @@ class AdsorbateComplexIsotherm(MultiSpeciesIsotherm):
         C_arr: np.ndarray = np.asarray(C, dtype=float)
         C_arr = np.maximum(C_arr, 0.0)
 
-        D = 1 + np.sum(self.K * C_arr) + 2 * self.K_x * np.prod(C_arr)
+        D = (
+            1
+            + np.sum(self.K[:, None] * C_arr, axis=0)
+            + 2 * self.K_x * np.prod(C_arr, axis=0)
+        )
 
-        q = np.zeros(2)
+        q = np.empty_like(C_arr)
         q[0] = (
             self.q_m * self.K[0] * C_arr[0] * (1 + self.K_x * C_arr[1] / self.K[0]) / D
         )
@@ -856,36 +930,43 @@ class AdsorbateComplexIsotherm(MultiSpeciesIsotherm):
         C_arr: np.ndarray = np.asarray(C, dtype=float)
         C_arr = np.maximum(C_arr, 0.0)
 
-        D = 1 + np.sum(self.K * C_arr) + 2 * self.K_x * np.prod(C_arr)
+        n_nodes = C_arr.shape[1]
+        J = np.zeros((2, 2, n_nodes))
 
-        J = np.zeros((2, 2))
+        for k in range(n_nodes):
+            C_k = C_arr[:, k]
 
-        J[0, 0] = (
-            self.q_m
-            * self.K[0]
-            * (1 + self.K_x * C_arr[1] / self.K[0])
-            * (1 + self.K[1] * C_arr[1])
-            / D**2
-        )
-        J[0, 1] = (
-            self.q_m
-            * C_arr[0]
-            * (self.K_x * (1 - self.K[0] * C_arr[0]) - self.K[0] * self.K[1])
-            / D**2
-        )
-        J[1, 0] = (
-            self.q_m
-            * C_arr[1]
-            * (self.K_x * (1 - self.K[1] * C_arr[1]) - self.K[0] * self.K[1])
-            / D**2
-        )
-        J[1, 1] = (
-            self.q_m
-            * self.K[1]
-            * (1 + self.K_x * C_arr[0] / self.K[1])
-            * (1 + self.K[0] * C_arr[0])
-            / D**2
-        )
+            D = 1 + np.sum(self.K * C_k) + 2 * self.K_x * np.prod(C_k)
+
+            J[0, 0, k] = (
+                self.q_m
+                * self.K[0]
+                * (1 + self.K_x * C_k[1] / self.K[0])
+                * (1 + self.K[1] * C_k[1])
+                / D**2
+            )
+
+            J[0, 1, k] = (
+                self.q_m
+                * C_k[0]
+                * (self.K_x * (1 - self.K[0] * C_k[0]) - self.K[0] * self.K[1])
+                / D**2
+            )
+
+            J[1, 0, k] = (
+                self.q_m
+                * C_k[1]
+                * (self.K_x * (1 - self.K[1] * C_k[1]) - self.K[0] * self.K[1])
+                / D**2
+            )
+
+            J[1, 1, k] = (
+                self.q_m
+                * self.K[1]
+                * (1 + self.K_x * C_k[0] / self.K[1])
+                * (1 + self.K[0] * C_k[0])
+                / D**2
+            )
 
         return J
 
