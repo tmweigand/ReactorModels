@@ -33,6 +33,14 @@ reactormodels.models.advection\_diffusion\_adsorption module
    :show-inheritance:
    :undoc-members:
 
+reactormodels.models.advection\_diffusion\_adsorption\_q module
+---------------------------------------------------------------
+
+.. automodule:: reactormodels.models.advection_diffusion_adsorption_q
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 reactormodels.models.analytic\_models module
 --------------------------------------------
 
@@ -85,6 +93,14 @@ reactormodels.models.psdm module
 --------------------------------
 
 .. automodule:: reactormodels.models.psdm
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+reactormodels.models.psdm\_q module
+-----------------------------------
+
+.. automodule:: reactormodels.models.psdm_q
    :members:
    :show-inheritance:
    :undoc-members:

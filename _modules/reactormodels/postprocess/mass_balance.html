@@ -174,9 +174,9 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_porosity</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">bulk_density</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Bulk density"""</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">get_bulk_density</span><span class="p">()</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bed_density</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Bed density"""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">bed_density</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">cross_section_area</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
@@ -267,7 +267,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">mass_adsorbed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Mass in the solid phase at every time, shape (n_t,)."""</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">bulk_density</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bed_density</span>
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cross_section_area</span>
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_integrate_history</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sorbent_mass_fraction</span><span class="p">)</span>
         <span class="p">)</span>

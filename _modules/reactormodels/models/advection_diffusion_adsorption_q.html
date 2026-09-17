@@ -1,0 +1,358 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>reactormodels.models.advection_diffusion_adsorption_q &mdash; ReactorModels 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=ccde76bc" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            ReactorModels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../model_development/index.html">Model Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmarks.html">Benchmarks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">reactormodels</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ReactorModels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">reactormodels.models.advection_diffusion_adsorption_q</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for reactormodels.models.advection_diffusion_adsorption_q</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""advection_diffusion_adsorption_q.py"""</span>
+
+<span class="c1"># from __future__ import annotations</span>
+<span class="c1"># from typing import Type</span>
+<span class="c1"># import numpy as np</span>
+
+<span class="c1"># from ..properties.breakthrough import Breakthrough</span>
+<span class="c1"># from ..numerics.config import NumericsConfig</span>
+<span class="c1"># from .isotherm import Isotherm</span>
+<span class="c1"># from .adsorption_kinetics import AdsorptionKinetics</span>
+<span class="c1"># from .boundary_conditions import InletBC, DanckwertsBC</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"AdvectionDiffusionAdsorptionSolid"</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="AdvectionDiffusionAdsorptionSolid">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.advection_diffusion_adsorption_q.AdvectionDiffusionAdsorptionSolid">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AdvectionDiffusionAdsorptionSolid</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""1D advection-diffusion with adsorption in a packed bed.</span>
+
+<span class="sd">    The governing equations are:</span>
+
+<span class="sd">    Fluid phase: eps*dC/dt + eps * v * dC/dx - eps* D * d2C/dx2 - rho_b * dq/dt = 0</span>
+<span class="sd">        Solid phase: dq/dt = k_l *(q*(C) - q) where q* is provided isotherm.</span>
+
+<span class="sd">    If local_equilibirium is assumed, the solid phase equation is ignored and:</span>
+
+<span class="sd">        dq_dt = dq*/dc*dc/dt</span>
+
+<span class="sd">    """</span></div>
+
+
+
+<span class="c1">#     def __init__(</span>
+<span class="c1">#         self,</span>
+<span class="c1">#         breakthrough: Breakthrough,</span>
+<span class="c1">#         isotherm: Isotherm,</span>
+<span class="c1">#         numerics: NumericsConfig,</span>
+<span class="c1">#         kinetics: AdsorptionKinetics = AdsorptionKinetics.LOCAL_EQUILIBRIUM,</span>
+<span class="c1">#         rate_constant: float = 0,</span>
+<span class="c1">#         inlet_bc: Type[InletBC] = DanckwertsBC,</span>
+<span class="c1">#     ):</span>
+<span class="c1">#         self.column = breakthrough.column</span>
+<span class="c1">#         self.breakthrough = breakthrough</span>
+<span class="c1">#         self.velocity = breakthrough.interstitial_velocity</span>
+<span class="c1">#         self.axial_diffusion = breakthrough.chemical.axial_diffusion</span>
+<span class="c1">#         self.inlet_concentration = breakthrough.mean_feed_concentration()</span>
+<span class="c1">#         self.initial_concentration = breakthrough.initial_concentration</span>
+<span class="c1">#         self.isotherm = isotherm</span>
+<span class="c1">#         self.numerics = numerics</span>
+<span class="c1">#         self.kinetics = kinetics</span>
+<span class="c1">#         self.rate_constant = rate_constant</span>
+<span class="c1">#         self.inlet_bc = inlet_bc(</span>
+<span class="c1">#             self.inlet_concentration,</span>
+<span class="c1">#             node=0,</span>
+<span class="c1">#             velocity=self.velocity,</span>
+<span class="c1">#             diffusion=self.axial_diffusion,</span>
+<span class="c1">#         )</span>
+<span class="c1">#         self.N = len(self.numerics.collocation.nodes)</span>
+
+<span class="c1">#         if (</span>
+<span class="c1">#             kinetics</span>
+<span class="c1">#             in (</span>
+<span class="c1">#                 AdsorptionKinetics.LINEAR_DRIVING_FORCE,</span>
+<span class="c1">#                 AdsorptionKinetics.SECOND_ORDER,</span>
+<span class="c1">#             )</span>
+<span class="c1">#             and rate_constant &lt;= 0</span>
+<span class="c1">#         ):</span>
+<span class="c1">#             raise ValueError(</span>
+<span class="c1">#                 "k_ldf must be &gt; 0 for LINEAR_DRIVING_FORCE or SECOND_ORDER mode"</span>
+<span class="c1">#             )</span>
+
+<span class="c1">#     def _n_vars(self) -&gt; int:</span>
+<span class="c1">#         """Total length of the IDA state vector."""</span>
+<span class="c1">#         if (</span>
+<span class="c1">#             self.kinetics == AdsorptionKinetics.LINEAR_DRIVING_FORCE</span>
+<span class="c1">#             or self.kinetics == AdsorptionKinetics.SECOND_ORDER</span>
+<span class="c1">#         ):</span>
+<span class="c1">#             return 2 * self.N</span>
+<span class="c1">#         return self.N</span>
+
+<span class="c1">#     def _split(self, y: np.ndarray):</span>
+<span class="c1">#         """Return (C, q) where q is None for LOCAL_EQUILIBRIUM."""</span>
+<span class="c1">#         if self.kinetics == AdsorptionKinetics.LOCAL_EQUILIBRIUM:</span>
+<span class="c1">#             C = np.empty(self.N)</span>
+<span class="c1">#             C[0] = y[0]</span>
+
+<span class="c1">#             q = y[1:]</span>
+<span class="c1">#         else:</span>
+<span class="c1">#             q = y[self.N :]</span>
+<span class="c1">#             C = y[: self.N]</span>
+<span class="c1">#         return C, q</span>
+
+<span class="c1">#     def _residual(self, t, y, ydot, result):</span>
+<span class="c1">#         """IDA residual F(t, y, ydot) = 0.  Writes into `result` in-place."""</span>
+<span class="c1">#         c, q = self._split(y)</span>
+<span class="c1">#         dcdt, dqdt = self._split(ydot)</span>
+
+<span class="c1">#         if self.kinetics == AdsorptionKinetics.LOCAL_EQUILIBRIUM:</span>
+<span class="c1">#             c[1:] = self.isotherm.C(q)</span>
+<span class="c1">#             dcdt[1:] = self.isotherm.dC_dq(q) * dqdt</span>
+
+<span class="c1">#         # fluid phase - inlet</span>
+<span class="c1">#         result[0] = self.inlet_bc.residual(</span>
+<span class="c1">#             c[0], self.numerics.collocation.evaluate_gradient(c, 0)</span>
+<span class="c1">#         )</span>
+
+<span class="c1">#         # fluid phase - internal and outlet</span>
+<span class="c1">#         transport = (</span>
+<span class="c1">#             self.column.porosity * dcdt[1:]</span>
+<span class="c1">#             + self.column.porosity</span>
+<span class="c1">#             * self.velocity</span>
+<span class="c1">#             * self.numerics.evaluate_gradient(c)[1:]</span>
+<span class="c1">#             - self.column.porosity</span>
+<span class="c1">#             * self.axial_diffusion</span>
+<span class="c1">#             * self.numerics.evaluate_second_derivative(c)[1:]</span>
+<span class="c1">#         )</span>
+<span class="c1">#         if self.kinetics == AdsorptionKinetics.LOCAL_EQUILIBRIUM:</span>
+<span class="c1">#             result[1 : self.N] = transport + self.column.bulk_density * dqdt</span>
+<span class="c1">#         else:</span>
+<span class="c1">#             result[1 : self.N] = transport + self.column.bulk_density * dqdt[1:]</span>
+
+<span class="c1">#         # solid phase</span>
+<span class="c1">#         if self.kinetics == AdsorptionKinetics.LOCAL_EQUILIBRIUM:</span>
+<span class="c1">#             pass</span>
+<span class="c1">#         elif self.kinetics == AdsorptionKinetics.LINEAR_DRIVING_FORCE:</span>
+<span class="c1">#             result[self.N :] = dqdt - self.rate_constant * (self.isotherm.q(c) - q)</span>
+<span class="c1">#         else:</span>
+<span class="c1">#             result[self.N :] = dqdt - self.rate_constant *</span>
+<span class="c1"># c * (self.isotherm.q(c) - q)</span>
+
+<span class="c1">#         return 0</span>
+
+<span class="c1">#     def _jacobian(self, t, y, ydot, result, cj, jac):</span>
+<span class="c1">#         """Build jacobian of _residual."""</span>
+<span class="c1">#         C, q = self._split(y)</span>
+<span class="c1">#         n = self._n_vars()</span>
+<span class="c1">#         J = np.zeros((n, n))</span>
+
+<span class="c1">#         # Row 0: algebraic constraint</span>
+<span class="c1">#         J[0, : self.N] = self.inlet_bc.jacobian_row(</span>
+<span class="c1">#             self.numerics.collocation.first_derivative[0, :]</span>
+<span class="c1">#         )</span>
+
+<span class="c1">#         # derivative of transport dF/dc</span>
+<span class="c1">#         d_transport = (</span>
+<span class="c1">#             -self.column.porosity</span>
+<span class="c1">#             * self.velocity</span>
+<span class="c1">#             * self.numerics.collocation.first_derivative</span>
+<span class="c1">#             + self.column.porosity</span>
+<span class="c1">#             * self.axial_diffusion</span>
+<span class="c1">#             * self.numerics.collocation.second_derivative</span>
+<span class="c1">#         )</span>
+<span class="c1">#         J[1 : self.N, : self.N] = -d_transport[1:, :]</span>
+
+<span class="c1">#         if self.kinetics == AdsorptionKinetics.LOCAL_EQUILIBRIUM:</span>
+<span class="c1">#             J[1 : self.N, 0] = -d_transport[1:, 0]</span>
+<span class="c1">#             for i in range(1, self.N):</span>
+<span class="c1">#                 J[i, i] += cj * (</span>
+<span class="c1">#                     self.column.porosity * self.isotherm.dC_dq(q[i - 1])</span>
+<span class="c1">#                     + self.column.get_bulk_density()</span>
+<span class="c1">#                 )</span>
+<span class="c1">#         elif self.kinetics == AdsorptionKinetics.LINEAR_DRIVING_FORCE:</span>
+<span class="c1">#             for i in range(1, self.N):</span>
+<span class="c1">#                 J[i, i] += cj * self.column.porosity</span>
+<span class="c1">#                 J[i, self.N + i] += cj * self.column.get_bulk_density()</span>
+
+<span class="c1">#             for i in range(self.N):</span>
+<span class="c1">#                 J[self.N + i, i] = -self.rate_constant * self.isotherm.dq_dC(C[i])</span>
+<span class="c1">#                 J[self.N + i, self.N + i] = self.rate_constant + cj</span>
+
+<span class="c1">#         else:</span>
+<span class="c1">#             for i in range(1, self.N):</span>
+<span class="c1">#                 J[i, i] += cj * self.column.porosity</span>
+<span class="c1">#                 J[i, self.N + i] += cj * self.column.get_bulk_density()</span>
+
+<span class="c1">#             for i in range(self.N):</span>
+<span class="c1">#                 J[self.N + i, i] = (</span>
+<span class="c1">#                     -self.rate_constant</span>
+<span class="c1">#                     * (self.isotherm.q(C[i]) + C[i] * self.isotherm.dq_dC(C[i]))</span>
+<span class="c1">#                     + self.rate_constant * q[i]</span>
+<span class="c1">#                 )</span>
+<span class="c1">#                 J[self.N + i, self.N + i] = self.rate_constant * C[i] + cj</span>
+
+<span class="c1">#         jac[:, :] = J</span>
+
+<span class="c1">#         return 0</span>
+
+<span class="c1">#     def _algebraic_vars_idx(self):</span>
+<span class="c1">#         """Create list identifying which equations are algebraic.</span>
+
+<span class="c1">#         Only the inlet boundary condition for this model.</span>
+<span class="c1">#         """</span>
+<span class="c1">#         return [0]</span>
+
+<span class="c1">#     def _initial_conditions(self):</span>
+<span class="c1">#         """Return (y0, ydot0) consistent with the algebraic constraint."""</span>
+<span class="c1">#         C0 = np.full(self.N, self.initial_concentration)</span>
+<span class="c1">#         C0[0] = self.inlet_bc.apply(</span>
+<span class="c1"># self.numerics.collocation.evaluate_gradient(C0, 0))</span>
+
+<span class="c1">#         if self.kinetics == AdsorptionKinetics.LOCAL_EQUILIBRIUM:</span>
+<span class="c1">#             q0 = np.full(self.N - 1, self.breakthrough.initial_mass_fraction)</span>
+<span class="c1">#             y0 = np.concatenate(([C0[0]], q0))</span>
+<span class="c1">#         else:</span>
+<span class="c1">#             q0 = np.full(self.N, self.breakthrough.initial_mass_fraction)</span>
+<span class="c1">#             q0[0] = self.isotherm.q(</span>
+<span class="c1">#                 self.inlet_concentration</span>
+<span class="c1">#             )  # inlet node at equilibrium with feed</span>
+<span class="c1">#             y0 = np.concatenate([C0, q0])</span>
+
+<span class="c1">#         ydot0 = np.zeros_like(y0)</span>
+<span class="c1">#         return y0, ydot0</span>
+
+<span class="c1">#     def solve(self):</span>
+<span class="c1">#         """Integrate from t_span[0] to t_span[1], returning results at t_eval."""</span>
+<span class="c1">#         y0, ydot0 = self._initial_conditions()</span>
+
+<span class="c1">#         result = self.numerics.integrate(</span>
+<span class="c1">#             residual=self._residual,</span>
+<span class="c1">#             jacobian=self._jacobian,</span>
+<span class="c1">#             y0=y0,</span>
+<span class="c1">#             yp0=ydot0,</span>
+<span class="c1">#             t_span=[0, self.breakthrough.time.tolist()],</span>
+<span class="c1">#             t_eval=self.breakthrough.time,</span>
+<span class="c1">#             algebraic_vars_idx=self._algebraic_vars_idx(),</span>
+<span class="c1">#         )</span>
+
+<span class="c1">#         if result.flag &lt; 0:</span>
+<span class="c1">#             raise RuntimeError(</span>
+<span class="c1">#                 f"IDA solver failed with flag {result.flag}: {result.message}"</span>
+<span class="c1">#             )</span>
+
+<span class="c1">#         # result.values.y has shape (n_out, n_vars); skip the t=t_span[0] row</span>
+<span class="c1">#         y_out = result.values.y[1:]  # (n_times, n_vars)</span>
+
+<span class="c1">#         if (</span>
+<span class="c1">#             self.kinetics == AdsorptionKinetics.LINEAR_DRIVING_FORCE</span>
+<span class="c1">#             or self.kinetics == AdsorptionKinetics.SECOND_ORDER</span>
+<span class="c1">#         ):</span>
+<span class="c1">#             q_out = y_out[:, self.N :]  # (n_times, N)</span>
+<span class="c1">#             C_out = y_out[:, : self.N]</span>
+<span class="c1">#         else:</span>
+<span class="c1">#             # Local equilibrium: recover q from C at each time step</span>
+<span class="c1">#             q_out = np.empty_like(y_out)</span>
+
+<span class="c1">#             q_out[:, 0] = self.isotherm.q(y_out[:, 0])</span>
+<span class="c1">#             q_out[:, 1:] = y_out[:, 1:]</span>
+
+<span class="c1">#             C_out = self.isotherm.C(q_out)</span>
+
+<span class="c1">#         return self.numerics.collocation.nodes, C_out, q_out</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Timothy M. Weigand.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

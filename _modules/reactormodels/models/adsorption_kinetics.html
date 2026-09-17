@@ -76,17 +76,243 @@
   <h1>Source code for reactormodels.models.adsorption_kinetics</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""adsorption_kinetics.py"""</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.isotherm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Isotherm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.multi_species_isotherm</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultiSpeciesIsotherm</span>
+
+
+<div class="viewcode-block" id="SolutionVariable">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.SolutionVariable">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SolutionVariable</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""State dependent variable"""</span>
+
+    <span class="n">C</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_implemented</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">method</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>  <span class="c1"># dummy scalar probe</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
 
 
 <div class="viewcode-block" id="AdsorptionKinetics">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.AdsorptionKinetics">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">AdsorptionKinetics</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AdsorptionKinetics</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Set the form of the adsorption kinetics."""</span>
 
-    <span class="n">LOCAL_EQUILIBRIUM</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
-    <span class="n">LINEAR_DRIVING_FORCE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
-    <span class="n">SECOND_ORDER</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span></div>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inlet_concentration</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solution_variable</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="AdsorptionKinetics.configure">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.AdsorptionKinetics.configure">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">breakthrough</span><span class="p">,</span> <span class="n">isotherm</span><span class="p">,</span> <span class="n">n_nodes</span><span class="p">,</span> <span class="n">inlet_concentration</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Initialize convenient classes/quantities."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">column</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span> <span class="o">=</span> <span class="n">breakthrough</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="p">:</span> <span class="n">Isotherm</span> <span class="o">|</span> <span class="n">MultiSpeciesIsotherm</span> <span class="o">=</span> <span class="n">isotherm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span> <span class="o">=</span> <span class="n">n_nodes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inlet_concentration</span> <span class="o">=</span> <span class="n">inlet_concentration</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">_is_implemented</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">q</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">_is_implemented</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">dq_dC</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">_is_implemented</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">d2q_dC2</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solution_variable</span> <span class="o">=</span> <span class="n">SolutionVariable</span><span class="o">.</span><span class="n">C</span>
+        <span class="k">elif</span> <span class="p">(</span>
+            <span class="n">_is_implemented</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">C</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">_is_implemented</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">dC_dq</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">_is_implemented</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">d2C_dq2</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solution_variable</span> <span class="o">=</span> <span class="n">SolutionVariable</span><span class="o">.</span><span class="n">Q</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_n_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Total length of the IDA state vector."""</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Return (C, q)."""</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_residual_kinetics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">dcdt</span><span class="p">,</span> <span class="n">dqdt</span><span class="p">,</span> <span class="n">transport</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return liquid phase residual."""</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_jacobian_kinetics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">J</span><span class="p">,</span> <span class="n">cj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return liquid phase jacobian."""</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_initial_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Return y0 consistent with the algebraic constraint."""</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_out</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Return C_out and q_out."""</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+
+<div class="viewcode-block" id="LocalEquilibrium">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.LocalEquilibrium">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LocalEquilibrium</span><span class="p">(</span><span class="n">AdsorptionKinetics</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Methods for local equilibrium assumption:</span>
+
+<span class="sd">    dq/dt = dq/dC * dC/dt</span>
+
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_n_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Total length of the IDA state vector."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Return (C, q)."""</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">y</span><span class="p">[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">]</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">C</span><span class="p">,</span> <span class="n">q</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_residual_kinetics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">dcdt</span><span class="p">,</span> <span class="n">dqdt</span><span class="p">,</span> <span class="n">transport</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return liquid phase residual."""</span>
+        <span class="n">result</span><span class="p">[</span><span class="mi">1</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">transport</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">bed_density</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">dq_dC</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">*</span> <span class="n">dcdt</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_jacobian_kinetics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">J</span><span class="p">,</span> <span class="n">cj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return liquid phase jacobian."""</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">):</span>
+            <span class="n">J</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">cj</span> <span class="o">*</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span>
+                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">bed_density</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">dq_dC</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_initial_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Return y0 consistent with the algebraic constraint."""</span>
+        <span class="k">return</span> <span class="n">C0</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_out</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Return C_out and q_out."""</span>
+        <span class="n">C_out</span> <span class="o">=</span> <span class="n">y_out</span><span class="p">[:,</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">]</span>
+        <span class="n">q_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">q</span><span class="p">(</span><span class="n">C_out</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">time</span><span class="p">))]</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">C_out</span><span class="p">,</span> <span class="n">q_out</span></div>
+
+
+
+<div class="viewcode-block" id="DynamicAdsorptionKinetics">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.DynamicAdsorptionKinetics">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DynamicAdsorptionKinetics</span><span class="p">(</span><span class="n">AdsorptionKinetics</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Methods for non-local equilibrium assumption."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rate_constant</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">rate_constant</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Rate constant must be greater than zero."</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rate_constant</span> <span class="o">=</span> <span class="n">rate_constant</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_n_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Total length of the IDA state vector."""</span>
+        <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Return (C, q)."""</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">y</span><span class="p">[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">]</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span> <span class="p">:]</span>
+        <span class="k">return</span> <span class="n">C</span><span class="p">,</span> <span class="n">q</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_residual_kinetics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">dcdt</span><span class="p">,</span> <span class="n">dqdt</span><span class="p">,</span> <span class="n">transport</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return liquid and solid phase residuals."""</span>
+        <span class="c1"># liquid phase</span>
+        <span class="n">result</span><span class="p">[</span><span class="mi">1</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">]</span> <span class="o">=</span> <span class="n">transport</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">bed_density</span> <span class="o">*</span> <span class="n">dqdt</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="c1"># solid phase</span>
+        <span class="n">result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">dqdt</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kinetic_expression</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_jacobian_kinetics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">J</span><span class="p">,</span> <span class="n">cj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return liquid phase jacobian."""</span>
+        <span class="c1"># liquid phase</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">):</span>
+            <span class="n">J</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">cj</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span>
+            <span class="n">J</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">cj</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">bed_density</span>
+        <span class="c1"># solid phase</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_solid_phase</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">J</span><span class="p">,</span> <span class="n">cj</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_initial_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Return y0 consistent with the algebraic constraint."""</span>
+        <span class="n">q0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">initial_mass_fraction</span><span class="p">)</span>
+        <span class="n">q0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">q</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inlet_concentration</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">C0</span><span class="p">,</span> <span class="n">q0</span><span class="p">])</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_out</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Return C_out and q_out."""</span>
+        <span class="n">C_out</span> <span class="o">=</span> <span class="n">y_out</span><span class="p">[:,</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">]</span>
+        <span class="n">q_out</span> <span class="o">=</span> <span class="n">y_out</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span> <span class="p">:]</span>
+        <span class="k">return</span> <span class="n">C_out</span><span class="p">,</span> <span class="n">q_out</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_kinetic_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_solid_phase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">J</span><span class="p">,</span> <span class="n">cj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+
+<div class="viewcode-block" id="LinearDrivingForce">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.LinearDrivingForce">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LinearDrivingForce</span><span class="p">(</span><span class="n">DynamicAdsorptionKinetics</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Methods for linear driving force assumption:</span>
+
+<span class="sd">    dq/dt = rate_constant * (q_e - q)</span>
+
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rate_constant</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">rate_constant</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_kinetic_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rate_constant</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">q</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">-</span> <span class="n">q</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_solid_phase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">J</span><span class="p">,</span> <span class="n">cj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">):</span>
+            <span class="n">J</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">rate_constant</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">dq_dC</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">J</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rate_constant</span> <span class="o">+</span> <span class="n">cj</span></div>
+
+
+
+<div class="viewcode-block" id="SecondOrder">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.SecondOrder">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SecondOrder</span><span class="p">(</span><span class="n">DynamicAdsorptionKinetics</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Methods for second order assumption:</span>
+
+<span class="sd">    dq/dt = rate_constant * C * (q_e - q)</span>
+
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rate_constant</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">rate_constant</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_kinetic_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rate_constant</span> <span class="o">*</span> <span class="n">c</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">q</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">-</span> <span class="n">q</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_solid_phase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">J</span><span class="p">,</span> <span class="n">cj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">):</span>
+            <span class="n">J</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">rate_constant</span>
+                <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">q</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">dq_dC</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">rate_constant</span> <span class="o">*</span> <span class="n">q</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">J</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rate_constant</span> <span class="o">*</span> <span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">cj</span></div>
 
 </pre></div>
 
