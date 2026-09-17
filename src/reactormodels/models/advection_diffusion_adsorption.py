@@ -1,10 +1,8 @@
 """advection_diffusion_adsorption.py"""
 
 from __future__ import annotations
-from collections.abc import Sequence
 from typing import Type
 import numpy as np
-import time
 
 from ..properties.breakthrough import Breakthrough
 from ..numerics.config import NumericsConfig
@@ -36,72 +34,30 @@ class AdvectionDiffusionAdsorption(NumericModel):
 
     def __init__(
         self,
-        breakthrough: Breakthrough | Sequence[Breakthrough],
-        isotherm: Isotherm | MultiSpeciesIsotherm,
+        breakthrough: Breakthrough,
+        isotherm: Isotherm,
         numerics: NumericsConfig,
         kinetics: AdsorptionKinetics = LocalEquilibrium(),
         inlet_bc: Type[InletBC] = DanckwertsBC,
     ):
-        # Normalize breakthroughs to a list
-        if isinstance(breakthrough, Breakthrough):
-            self.breakthroughs = [breakthrough]
-        else:
-            self.breakthroughs = list(breakthrough)
-
-        if not self.breakthroughs:
-            raise ValueError("At least one breakthrough must be provided.")
-
-        # number of species
-        self.n_species = len(self.breakthroughs)
-
-        # Normalize inlet BCs to a list
-        if isinstance(inlet_bc, type):
-            self.inlet_bcs = [inlet_bc] * len(self.breakthroughs)
-        else:
-            self.inlet_bcs = list(inlet_bc)
-
-        if len(self.inlet_bcs) != len(self.breakthroughs):
-            raise ValueError(
-                "The number of inlet boundary conditions must match "
-                "the number of breakthroughs."
-            )
-
-        # Shared physical parameters
-        self.column = self.breakthroughs[0].column
-        self.velocity = self.breakthroughs[0].interstitial_velocity
+        # Physical parameters
+        self.column = breakthrough.column
+        self.breakthrough = breakthrough
+        self.velocity = breakthrough.interstitial_velocity
+        self.axial_diffusion = breakthrough.chemical.axial_diffusion
         self.isotherm = isotherm
 
-        # Species-specific parameters
-        self.axial_diffusion = np.array(
-            [bt.chemical.axial_diffusion for bt in self.breakthroughs]
-        )
-
-        self.initial_concentration = np.array(
-            [bt.initial_concentration for bt in self.breakthroughs]
-        )
-
-        self.initial_mass_fraction = np.array(
-            [bt.initial_mass_fraction for bt in self.breakthroughs]
-        )
-
-        self.inlet_concentration = np.array(
-            [bt.mean_feed_concentration() for bt in self.breakthroughs]
-        )
+        # Initial conditions
+        self.initial_concentration = breakthrough.initial_concentration
 
         # Boundary conditions
-        self.inlet_bc = [
-            bc(
-                inlet_concentration,
-                node=0,
-                velocity=self.velocity,
-                diffusion=diffusion,
-            )
-            for bc, inlet_concentration, diffusion in zip(
-                self.inlet_bcs,
-                self.inlet_concentration,
-                self.axial_diffusion,
-            )
-        ]
+        self.inlet_concentration = breakthrough.mean_feed_concentration()
+        self.inlet_bc = inlet_bc(
+            self.inlet_concentration,
+            node=0,
+            velocity=self.velocity,
+            diffusion=self.axial_diffusion,
+        )
 
         # Numerics
         self.numerics = numerics
@@ -122,13 +78,21 @@ class AdvectionDiffusionAdsorption(NumericModel):
         c, q = self.kinetics._split(y)
         dcdt, dqdt = self.kinetics._split(ydot)
 
-        try:
-            c, q = self._split(y)
-            dcdt, dqdt = self._split(ydot)
+        # fluid phase - inlet
+        result[0] = self.inlet_bc.residual(
+            c[0], self.numerics.collocation.evaluate_gradient(c, 0)
+        )
 
-            if self.kinetics == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
-                result = result.reshape(self.n_species, self.N)
-                c[:, 1:] = self.isotherm.C(q)
+        # fluid phase - internal and outlet
+        transport = (
+            self.column.porosity * dcdt[1:]
+            + self.column.porosity
+            * self.velocity
+            * self.numerics.evaluate_gradient(c)[1:]
+            - self.column.porosity
+            * self.axial_diffusion
+            * self.numerics.evaluate_second_derivative(c)[1:]
+        )
 
         self.kinetics._residual_kinetics(result, c, q, dcdt, dqdt, transport)
 
@@ -253,12 +217,11 @@ class AdvectionDiffusionAdsorption(NumericModel):
             self._jacobian_calls += 1
 
     def _algebraic_vars_idx(self):
-        """Create list identifying which equations are algebraic."""
-        if self.kinetics == AdsorptionKinetics.LOCAL_EQUILIBRIUM:
-            return [i * self.N for i in range(self.n_species)]
-        # LDF / SECOND_ORDER:
-        # one algebraic variable per species: C_i at node 0
-        return [2 * i * self.N for i in range(self.n_species)]
+        """Create list identifying which equations are algebraic.
+
+        Only the inlet boundary condition for this model.
+        """
+        return [0]
 
     def _initial_conditions(self):
         """Return (y0, ydot0) consistent with the algebraic constraint."""
@@ -278,8 +241,8 @@ class AdvectionDiffusionAdsorption(NumericModel):
             jacobian=self._jacobian,
             y0=y0,
             yp0=ydot0,
-            t_span=[0, self.breakthroughs[0].time.tolist()],
-            t_eval=self.breakthroughs[0].time,
+            t_span=[0, self.breakthrough.time.tolist()],
+            t_eval=self.breakthrough.time,
             algebraic_vars_idx=self._algebraic_vars_idx(),
         )
 
