@@ -16,12 +16,12 @@ def run_demo(
     length = 1 / np.pi
     diameter = 2
     porosity = 0.4
-    bulk_density = 0.36
+    bed_density = 0.36
     particle_density = 0.6
     feed_concentrations = 1
     flow_rate = 1
     q_m = 10
-    k = 10
+    rate_constant = 10
     K = 5000
     initial_concentration = 0
     diffusion = 1e-20
@@ -32,8 +32,9 @@ def run_demo(
         diameter=diameter,
         length=length,
         porosity=porosity,
-        bulk_density=bulk_density,
-        media=reactormodels.Media(particle_density=particle_density),
+        media=reactormodels.Media(
+            particle_density=particle_density, bed_density=bed_density
+        ),
         water=reactormodels.Water(),
     )
 
@@ -54,17 +55,19 @@ def run_demo(
         breakthrough=breakthrough,
         isotherm=isotherm,
         numerics=numerics,
-        kinetics=reactormodels.models.AdsorptionKinetics.SECOND_ORDER,
-        k_ldf=k,
+        kinetics=reactormodels.models.SecondOrder(rate_constant),
     )
     x, C, q = model.solve()
 
     bohart_adams = reactormodels.models.BohartAdams(
-        breakthrough=breakthrough, k_BA=k, sorbent_capacity=q_m
+        breakthrough=breakthrough, k_BA=rate_constant, sorbent_capacity=q_m
     )
 
     thomas = reactormodels.models.ThomasLangmuir(
-        breakthrough=breakthrough, langmuir_constant=K, sorbent_capacity=q_m, k_Th=k
+        breakthrough=breakthrough,
+        langmuir_constant=K,
+        sorbent_capacity=q_m,
+        k_Th=rate_constant,
     )
 
     fig, ax = plt.subplots(figsize=(8, 5))

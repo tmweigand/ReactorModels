@@ -21,7 +21,7 @@ def make_breakthrough(
     length: float = 1.0,
     diameter: float = 0.1,
     porosity: float = 0.5,
-    bulk_density: float = 1.0,
+    bed_density: float = 1.0,
     superficial_velocity: float = 1.0,
     axial_diffusion: float = 0.01,
     inlet_concentration: np.ndarray = np.array([1.0]),
@@ -39,8 +39,7 @@ def make_breakthrough(
         length=length,
         diameter=diameter,
         porosity=porosity,
-        bulk_density=bulk_density,
-        media=Media(particle_density=1.0, particle_radius=1.0),
+        media=Media(particle_density=1.0, particle_radius=1.0, bed_density=bed_density),
         water=_water,
     )
     chemical = Chemical(name="tracer", axial_diffusion=axial_diffusion)

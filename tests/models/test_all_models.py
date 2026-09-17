@@ -10,6 +10,9 @@ import reactormodels
 def _state_size(model):
     if hasattr(model, "_n_vars"):
         return model._n_vars()
+    kinetics = getattr(model, "kinetics", None)
+    if kinetics is not None and hasattr(kinetics, "_n_vars"):
+        return kinetics._n_vars()
     return model.N
 
 
@@ -35,14 +38,13 @@ def _build_advection_diffusion():
 
 
 def _build_advection_diffusion_adsorption(
-    kinetics=reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
-    k_ldf=0.0,
+    kinetics=reactormodels.models.LocalEquilibrium(),
 ):
     breakthrough = reactormodels.fixtures.make_breakthrough(
         length=5.0,
         diameter=1.0,
         porosity=0.5,
-        bulk_density=500.0,
+        bed_density=500.0,
         superficial_velocity=0.5,
         axial_diffusion=0.1,
         time=[0.0, 1.0],
@@ -58,7 +60,6 @@ def _build_advection_diffusion_adsorption(
         isotherm=reactormodels.models.LinearIsotherm(K=0.5),
         numerics=numerics,
         kinetics=kinetics,
-        k_ldf=k_ldf,
     )
 
 
@@ -162,6 +163,7 @@ MODEL_BUILDERS = {
     "AdvectionDiffusionAdsorption": _build_advection_diffusion_adsorption,
     "IntraparticleTransport": _build_intraparticle_transport,
     "PSDM": _build_psdm,
+    "PSDMSolid": _build_psdm,
 }
 
 
@@ -220,12 +222,12 @@ def test_jacobian_matches_finite_difference(model_name):
 
 
 @pytest.mark.parametrize(
-    "kinetics,k_ldf",
+    "kinetics",
     [
-        (reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM, 0.0),
-        (reactormodels.models.AdsorptionKinetics.LINEAR_DRIVING_FORCE, 0.5),
+        (reactormodels.models.LocalEquilibrium()),
+        (reactormodels.models.LinearDrivingForce(0.5)),
     ],
 )
-def test_adsorption_jacobian_matches_finite_difference_across_modes(kinetics, k_ldf):
-    model = _build_advection_diffusion_adsorption(kinetics=kinetics, k_ldf=k_ldf)
+def test_adsorption_jacobian_matches_finite_difference_across_modes(kinetics):
+    model = _build_advection_diffusion_adsorption(kinetics=kinetics)
     _assert_jacobian_matches_finite_difference(model)

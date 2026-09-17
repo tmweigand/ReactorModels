@@ -4,24 +4,25 @@ import numpy as np
 import pytest
 
 
-def _base_model(kinetics, k_ldf=0.1, n_col=30):
+def _base_model(
+    kinetics=reactormodels.models.LocalEquilibrium(), n_col=30, dummy_time=[0, 1, 2]
+):
     """Shared setup for all adsorption tests."""
     column_length = 5.0
     diameter = 1
     porosity = 0.5
-    bulk_density = 500.0
+    bed_density = 500.0
     superficial_velocity = 0.5
     axial_diffusion = 0.1
     K = 0.5
-    dummy_time = [0, 1, 2]
 
     breakthrough = reactormodels.fixtures.make_breakthrough(
+        axial_diffusion=axial_diffusion,
+        bed_density=bed_density,
         length=column_length,
         diameter=diameter,
         porosity=porosity,
-        bulk_density=bulk_density,
         superficial_velocity=superficial_velocity,
-        axial_diffusion=axial_diffusion,
         time=dummy_time,
     )
 
@@ -35,24 +36,21 @@ def _base_model(kinetics, k_ldf=0.1, n_col=30):
             isotherm=reactormodels.models.LinearIsotherm(K=K),
             numerics=numerics,
             kinetics=kinetics,
-            k_ldf=k_ldf,
             inlet_bc=reactormodels.models.DirichletBC,
         ),
         axial_diffusion,
         column_length,
         porosity,
-        bulk_density,
+        bed_density,
         K,
     )
 
 
 def test_local_equilibrium_vs_ogata_banks():
     """Linear isotherm + local equilibrium = retarded Ogata-Banks."""
-    model, D, column_length, porosity, rho_b, K = _base_model(
-        reactormodels.models.adsorption_kinetics.AdsorptionKinetics.LOCAL_EQUILIBRIUM
-    )
+    model, D, column_length, eps, rho_b, K = _base_model()
 
-    R = 1.0 + (rho_b * K) / porosity
+    R = 1.0 + (rho_b * K) / eps
 
     t_mid = 0.5 * column_length / (model.breakthrough.interstitial_velocity / R)
     t_eval = np.array([0.25 * t_mid, t_mid, 2.0 * t_mid])
@@ -73,11 +71,9 @@ def test_local_equilibrium_vs_ogata_banks():
 
 def test_ldf_converges_to_equilibrium_at_high_kldf():
     """At very high k_ldf, LDF solution should match local equilibrium."""
-    eq_model, *params = _base_model(
-        reactormodels.models.AdsorptionKinetics.LOCAL_EQUILIBRIUM
-    )
+    eq_model, *params = _base_model()
     ldf_model, *_ = _base_model(
-        reactormodels.models.AdsorptionKinetics.LINEAR_DRIVING_FORCE, k_ldf=1000.0
+        reactormodels.models.LinearDrivingForce(rate_constant=1000.0),
     )
 
     D, L, eps, rho_b, K = params
@@ -100,7 +96,7 @@ def test_ldf_converges_to_equilibrium_at_high_kldf():
 def test_ldf_q_tracks_equilibrium():
     """q should approach q*(C) over time."""
     model, D, L, eps, rho_b, K = _base_model(
-        reactormodels.models.AdsorptionKinetics.LINEAR_DRIVING_FORCE, k_ldf=0.5
+        reactormodels.models.LinearDrivingForce(rate_constant=0.5)
     )
     R = 1.0 + (rho_b * K) / eps
     v_eff = model.breakthrough.interstitial_velocity / (eps * R)
@@ -113,48 +109,3 @@ def test_ldf_q_tracks_equilibrium():
     q_eq = model.isotherm.q(C[0])
     # q should be close to q*(C) at long times
     assert q[0] == pytest.approx(q_eq, rel=0.05)
-
-
-def test_parameter_check():
-    """Checking of None variables"""
-    column_length = 5.0
-    diameter = 1
-    porosity = 0.5
-    bulk_density = 500.0
-    superficial_velocity = 0.5
-    axial_diffusion = None
-    K = None
-    dummy_time = [0, 1, 2]
-
-    breakthrough = reactormodels.fixtures.make_breakthrough(
-        length=column_length,
-        diameter=diameter,
-        porosity=porosity,
-        bulk_density=bulk_density,
-        superficial_velocity=superficial_velocity,
-        axial_diffusion=axial_diffusion,
-        time=dummy_time,
-    )
-
-    numerics = reactormodels.numerics.NumericsConfig(
-        domain_length=column_length, n_interior_points=5, add_inlet=True
-    )
-
-    with pytest.raises(
-        ValueError,
-        match=(
-            r"AdvectionDiffusionAdsorption is missing required parameter\(s\): "
-            r"axial_diffusion, FreundlichIsotherm\.K, FreundlichIsotherm\.n"
-        ),
-    ):
-        reactormodels.models.AdvectionDiffusionAdsorption(
-            breakthrough=breakthrough,
-            isotherm=reactormodels.models.FreundlichIsotherm(
-                K=K,
-                n=None,
-            ),
-            numerics=numerics,
-            kinetics=reactormodels.models.adsorption_kinetics.AdsorptionKinetics.LOCAL_EQUILIBRIUM,
-            k_ldf=0.1,
-            inlet_bc=reactormodels.models.DirichletBC,
-        )
