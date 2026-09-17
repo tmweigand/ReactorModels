@@ -1,18 +1,58 @@
 """adsorption_kinetics.py"""
 
 import numpy as np
+from enum import Enum, auto
+
+from .isotherm import Isotherm
+from .multi_species_isotherm import MultiSpeciesIsotherm
+
+
+class SolutionVariable(Enum):
+    """State dependent variable"""
+
+    C = auto()
+    Q = auto()
+
+
+def _is_implemented(method):
+    try:
+        method(1.0)  # dummy scalar probe
+        return True
+    except NotImplementedError:
+        return False
 
 
 class AdsorptionKinetics:
     """Set the form of the adsorption kinetics."""
 
+    def __init__(self):
+        self.column = None
+        self.breakthrough = None
+        self.isotherm = None
+        self.n_nodes = None
+        self.inlet_concentration = None
+        self.solution_variable = None
+
     def configure(self, breakthrough, isotherm, n_nodes, inlet_concentration):
         """Initialize convenient classes/quantities."""
         self.column = breakthrough.column
         self.breakthrough = breakthrough
-        self.isotherm = isotherm
+        self.isotherm: Isotherm | MultiSpeciesIsotherm = isotherm
         self.n_nodes = n_nodes
         self.inlet_concentration = inlet_concentration
+
+        if (
+            _is_implemented(self.isotherm.q)
+            and _is_implemented(self.isotherm.dq_dC)
+            and _is_implemented(self.isotherm.d2q_dC2)
+        ):
+            self.solution_variable = SolutionVariable.C
+        elif (
+            _is_implemented(self.isotherm.C)
+            and _is_implemented(self.isotherm.dC_dq)
+            and _is_implemented(self.isotherm.d2C_dq2)
+        ):
+            self.solution_variable = SolutionVariable.Q
 
     def _n_vars(self):
         """Total length of the IDA state vector."""
