@@ -6,13 +6,12 @@ import numpy as np
 class AdsorptionKinetics:
     """Set the form of the adsorption kinetics."""
 
-    def configure(self, breakthrough, numerics, isotherm, nodes, inlet_concentration):
+    def configure(self, breakthrough, isotherm, n_nodes, inlet_concentration):
         """Initialize convenient classes/quantities."""
         self.column = breakthrough.column
         self.breakthrough = breakthrough
-        self.numerics = numerics
         self.isotherm = isotherm
-        self.N = nodes
+        self.n_nodes = n_nodes
         self.inlet_concentration = inlet_concentration
 
     def _n_vars(self):
@@ -49,24 +48,24 @@ class LocalEquilibrium(AdsorptionKinetics):
 
     def _n_vars(self):
         """Total length of the IDA state vector."""
-        return self.N
+        return self.n_nodes
 
     def _split(self, y):
         """Return (C, q)."""
-        C = y[: self.N]
+        C = y[: self.n_nodes]
         q = None
         return C, q
 
     def _residual_kinetics(self, result, c, q, dcdt, dqdt, transport) -> None:
         """Return liquid phase residual."""
-        result[1 : self.N] = (
+        result[1 : self.n_nodes] = (
             transport
             + self.column.media.bed_density * (self.isotherm.dq_dC(c) * dcdt)[1:]
         )
 
     def _jacobian_kinetics(self, C, q, J, cj) -> None:
         """Return liquid phase jacobian."""
-        for i in range(1, self.N):
+        for i in range(1, self.n_nodes):
             J[i, i] += cj * (
                 self.column.porosity
                 + self.column.media.bed_density * self.isotherm.dq_dC(C[i])
@@ -78,7 +77,7 @@ class LocalEquilibrium(AdsorptionKinetics):
 
     def _parse_variables(self, y_out):
         """Return C_out and q_out."""
-        C_out = y_out[:, : self.N]
+        C_out = y_out[:, : self.n_nodes]
         q_out = np.array(
             [self.isotherm.q(C_out[i]) for i in range(len(self.breakthrough.time))]
         )
@@ -95,40 +94,40 @@ class DynamicAdsorptionKinetics(AdsorptionKinetics):
 
     def _n_vars(self):
         """Total length of the IDA state vector."""
-        return 2 * self.N
+        return 2 * self.n_nodes
 
     def _split(self, y):
         """Return (C, q)."""
-        C = y[: self.N]
-        q = y[self.N :]
+        C = y[: self.n_nodes]
+        q = y[self.n_nodes :]
         return C, q
 
     def _residual_kinetics(self, result, c, q, dcdt, dqdt, transport) -> None:
         """Return liquid and solid phase residuals."""
         # liquid phase
-        result[1 : self.N] = transport + self.column.media.bed_density * dqdt[1:]
+        result[1 : self.n_nodes] = transport + self.column.media.bed_density * dqdt[1:]
         # solid phase
-        result[self.N :] = dqdt - self._kinetic_expression(c, q)
+        result[self.n_nodes :] = dqdt - self._kinetic_expression(c, q)
 
     def _jacobian_kinetics(self, C, q, J, cj) -> None:
         """Return liquid phase jacobian."""
         # liquid phase
-        for i in range(1, self.N):
+        for i in range(1, self.n_nodes):
             J[i, i] += cj * self.column.porosity
-            J[i, self.N + i] += cj * self.column.media.bed_density
+            J[i, self.n_nodes + i] += cj * self.column.media.bed_density
         # solid phase
         self._solid_phase(C, q, J, cj)
 
     def _set_initial_conditions(self, C0):
         """Return y0 consistent with the algebraic constraint."""
-        q0 = np.full(self.N, self.breakthrough.initial_mass_fraction)
+        q0 = np.full(self.n_nodes, self.breakthrough.initial_mass_fraction)
         q0[0] = self.isotherm.q(self.inlet_concentration)
         return np.concatenate([C0, q0])
 
     def _parse_variables(self, y_out):
         """Return C_out and q_out."""
-        C_out = y_out[:, : self.N]
-        q_out = y_out[:, self.N :]
+        C_out = y_out[:, : self.n_nodes]
+        q_out = y_out[:, self.n_nodes :]
         return C_out, q_out
 
     def _kinetic_expression(self, c, q):
@@ -152,9 +151,9 @@ class LinearDrivingForce(DynamicAdsorptionKinetics):
         return self.rate_constant * (self.isotherm.q(c) - q)
 
     def _solid_phase(self, C, q, J, cj) -> None:
-        for i in range(self.N):
-            J[self.N + i, i] = -self.rate_constant * self.isotherm.dq_dC(C[i])
-            J[self.N + i, self.N + i] = self.rate_constant + cj
+        for i in range(self.n_nodes):
+            J[self.n_nodes + i, i] = -self.rate_constant * self.isotherm.dq_dC(C[i])
+            J[self.n_nodes + i, self.n_nodes + i] = self.rate_constant + cj
 
 
 class SecondOrder(DynamicAdsorptionKinetics):
@@ -171,10 +170,10 @@ class SecondOrder(DynamicAdsorptionKinetics):
         return self.rate_constant * c * (self.isotherm.q(c) - q)
 
     def _solid_phase(self, C, q, J, cj) -> None:
-        for i in range(self.N):
-            J[self.N + i, i] = (
+        for i in range(self.n_nodes):
+            J[self.n_nodes + i, i] = (
                 -self.rate_constant
                 * (self.isotherm.q(C[i]) + C[i] * self.isotherm.dq_dC(C[i]))
                 + self.rate_constant * q[i]
             )
-            J[self.N + i, self.N + i] = self.rate_constant * C[i] + cj
+            J[self.n_nodes + i, self.n_nodes + i] = self.rate_constant * C[i] + cj

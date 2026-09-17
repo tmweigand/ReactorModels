@@ -63,11 +63,11 @@ class AdvectionDiffusionAdsorption(NumericModel):
         self.numerics = numerics
 
         # Discretization
-        self.N = len(self.numerics.collocation.nodes)
+        self.n_nodes = len(self.numerics.collocation.nodes)
 
         # Kinetics
         kinetics.configure(
-            breakthrough, numerics, isotherm, self.N, self.inlet_concentration
+            breakthrough, isotherm, self.n_nodes, self.inlet_concentration
         )
         self.kinetics = kinetics
 
@@ -105,7 +105,7 @@ class AdvectionDiffusionAdsorption(NumericModel):
         J = np.zeros((n, n))
 
         # Row 0: algebraic constraint
-        J[0, : self.N] = self.inlet_bc.jacobian_row(
+        J[0, : self.n_nodes] = self.inlet_bc.jacobian_row(
             self.numerics.collocation.first_derivative[0, :]
         )
 
@@ -118,7 +118,7 @@ class AdvectionDiffusionAdsorption(NumericModel):
             * self.axial_diffusion
             * self.numerics.collocation.second_derivative
         )
-        J[1 : self.N, : self.N] = -d_transport[1:, :]
+        J[1 : self.n_nodes, : self.n_nodes] = -d_transport[1:, :]
 
         self.kinetics._jacobian_kinetics(C, q, J, cj)
 
@@ -135,7 +135,7 @@ class AdvectionDiffusionAdsorption(NumericModel):
 
     def _initial_conditions(self):
         """Return (y0, ydot0) consistent with the algebraic constraint."""
-        C0 = np.full(self.N, self.initial_concentration)
+        C0 = np.full(self.n_nodes, self.initial_concentration)
         C0[0] = self.inlet_bc.apply(self.numerics.collocation.evaluate_gradient(C0, 0))
 
         y0 = self.kinetics._set_initial_conditions(C0)

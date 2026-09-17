@@ -56,19 +56,19 @@ class PSDM(NumericModel):
         self.particle_numerics = particle_numerics
 
         # Discretization
-        self.N_column = len(self.column_numerics.collocation.nodes)
-        self.N_particle = len(self.particle_numerics.collocation.nodes)
+        self.axial_nodes = len(self.column_numerics.collocation.nodes)
+        self.radial_nodes = len(self.particle_numerics.collocation.nodes)
 
         self.assert_parameters_set()
 
     def _n_vars(self) -> int:
         """Total length of the IDA state vector."""
-        return self.N_column + self.N_particle * self.N_column
+        return self.axial_nodes + self.radial_nodes * self.axial_nodes
 
     def _split(self, y: np.ndarray):
         """Return (C, Cp) where Cp is a 2D numpy array."""
-        C = y[: self.N_column]
-        Cp = y[self.N_column :].reshape(self.N_column, self.N_particle)
+        C = y[: self.axial_nodes]
+        Cp = y[self.axial_nodes :].reshape(self.axial_nodes, self.radial_nodes)
         return C, Cp
 
     def _residual(self, t, y, ydot, result):
@@ -76,7 +76,7 @@ class PSDM(NumericModel):
         c, cp = self._split(y)
         dcdt, dcpdt = self._split(ydot)
 
-        sink = np.zeros(self.N_column)
+        sink = np.zeros(self.axial_nodes)
         result[:] = 0
 
         # bulk phase - inlet
@@ -93,11 +93,11 @@ class PSDM(NumericModel):
             * self.column_numerics.evaluate_second_derivative(c)[1:]
         )
 
-        for i in range(self.N_column):
+        for i in range(self.axial_nodes):
             cp_i = cp[i]
             dcpdt_i = dcpdt[i]
 
-            offset = self.N_column + i * self.N_particle
+            offset = self.axial_nodes + i * self.radial_nodes
 
             # center: symmetry
             result[offset] = self.center_bc.residual(
@@ -108,11 +108,11 @@ class PSDM(NumericModel):
 
             # particle phase - internal
             Dp_term = (
-                self.column.media.particle_porosity * dcpdt_i[1 : self.N_particle - 1]
+                self.column.media.particle_porosity * dcpdt_i[1 : self.radial_nodes - 1]
                 - self.column.media.particle_porosity
                 * self.pore_diffusion
                 * self.particle_numerics.evaluate_radial_operator(cp_i)[
-                    1 : self.N_particle - 1
+                    1 : self.radial_nodes - 1
                 ]
             )
 
@@ -123,14 +123,16 @@ class PSDM(NumericModel):
 
             Ds_term = (
                 self.column.media.particle_density
-                * (dqdCp * dcpdt_i)[1 : self.N_particle - 1]
+                * (dqdCp * dcpdt_i)[1 : self.radial_nodes - 1]
                 - self.column.media.particle_density
                 * self.surface_diffusion
-                * lap_q[1 : self.N_particle - 1]
+                * lap_q[1 : self.radial_nodes - 1]
             )
 
             intraparticle_transport = Dp_term + Ds_term
-            result[offset + 1 : offset + self.N_particle - 1] = intraparticle_transport
+            result[offset + 1 : offset + self.radial_nodes - 1] = (
+                intraparticle_transport
+            )
 
             # boundary condition
             grad_cp = self.particle_numerics.evaluate_gradient(cp_i, -1)
@@ -148,7 +150,7 @@ class PSDM(NumericModel):
 
             film_flux = self.k_film * (c_bulk - cp_i[-1])
 
-            result[offset + self.N_particle - 1] = diffusive_flux - film_flux
+            result[offset + self.radial_nodes - 1] = diffusive_flux - film_flux
 
             assert film_flux is not None
             assert self.column.porosity is not None
@@ -161,14 +163,14 @@ class PSDM(NumericModel):
                     / self.column.media.particle_diameter
                 )
 
-        result[1 : self.N_column] = transport + sink[1:]
+        result[1 : self.axial_nodes] = transport + sink[1:]
 
     def _jacobian(self, t, y, ydot, result, cj, jac):
         C, Cp = self._split(y)
         n = self._n_vars()
         J = np.zeros((n, n))
 
-        J[0, : self.N_column] = self.inlet_bc.jacobian_row(
+        J[0, : self.axial_nodes] = self.inlet_bc.jacobian_row(
             self.column_numerics.collocation.first_derivative[0]
         )
 
@@ -181,7 +183,7 @@ class PSDM(NumericModel):
             * self.column_numerics.collocation.second_derivative
         )
 
-        J[1 : self.N_column, : self.N_column] = d_transport[1:, :]
+        J[1 : self.axial_nodes, : self.axial_nodes] = d_transport[1:, :]
 
         coef = (
             6
@@ -190,15 +192,15 @@ class PSDM(NumericModel):
             / self.column.media.particle_diameter
         )
 
-        for i in range(self.N_column):
-            offset = self.N_column + i * self.N_particle
-            surface = offset + self.N_particle - 1
+        for i in range(self.axial_nodes):
+            offset = self.axial_nodes + i * self.radial_nodes
+            surface = offset + self.radial_nodes - 1
 
             cp_i = Cp[i]
             dqdCp = self.isotherm.dq_dC(cp_i)
 
             rows = slice(offset + 1, surface)
-            cols = slice(offset, offset + self.N_particle)
+            cols = slice(offset, offset + self.radial_nodes)
 
             L = self.particle_numerics.collocation.radial_operator_matrix
 
@@ -217,7 +219,7 @@ class PSDM(NumericModel):
                 + self.column.media.particle_density * dqdCp
             )
 
-            for j in range(1, self.N_particle - 1):
+            for j in range(1, self.radial_nodes - 1):
                 J[offset + j, offset + j] += cj * mass[j]
 
             J[offset, :] = 0
@@ -255,11 +257,12 @@ class PSDM(NumericModel):
 
     def _initial_conditions(self):
         """Return (y0, ydot0) consistent with the algebraic constraint."""
-        C0 = np.full(self.N_column, self.breakthrough.initial_concentration)
+        C0 = np.full(self.axial_nodes, self.breakthrough.initial_concentration)
         C0[0] = self.inlet_bc.apply()
 
         Cp0 = np.full(
-            (self.N_column, self.N_particle), self.breakthrough.initial_concentration
+            (self.axial_nodes, self.radial_nodes),
+            self.breakthrough.initial_concentration,
         )
 
         y0 = np.concatenate(
@@ -278,14 +281,16 @@ class PSDM(NumericModel):
         Currently: the inlet boundary condition, plus the particle-center
         and particle-edge boundary conditions for every column node.
         """
-        i = np.arange(self.N_column - 1)
+        i = np.arange(self.axial_nodes - 1)
 
         var_idxs = [0]  # liquid_phase_inlet
         var_idxs.extend(
-            (self.N_column + i * self.N_particle).tolist()
+            (self.axial_nodes + i * self.radial_nodes).tolist()
         )  # particle center
         var_idxs.extend(
-            (self.N_column + i * self.N_particle + (self.N_particle - 1)).tolist()
+            (
+                self.axial_nodes + i * self.radial_nodes + (self.radial_nodes - 1)
+            ).tolist()
         )  # particle edge
 
         return var_idxs
@@ -312,11 +317,11 @@ class PSDM(NumericModel):
         # result.values.y has shape (n_out, n_vars); skip the t=t_span[0] row
         y_out = result.values.y[1:]  # (n_times, n_vars)
 
-        C_out = y_out[:, : self.N_column]  # (n_times, N_column)
+        C_out = y_out[:, : self.axial_nodes]  # (n_times, axial_nodes)
 
-        Cp_out = y_out[:, self.N_column :].reshape(
-            len(self.breakthrough.time), self.N_column, self.N_particle
-        )  # (n_times, N_column, N_particle)
+        Cp_out = y_out[:, self.axial_nodes :].reshape(
+            len(self.breakthrough.time), self.axial_nodes, self.radial_nodes
+        )  # (n_times, axial_nodes, radial_nodes)
 
         return (
             self.column_numerics.collocation.nodes,
