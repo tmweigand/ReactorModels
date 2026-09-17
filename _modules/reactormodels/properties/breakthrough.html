@@ -113,13 +113,28 @@
         <span class="p">),</span> <span class="s2">"Feed concentration data contains NaN"</span>
 
         <span class="k">if</span> <span class="n">effluent_concentrations</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">effluent_concentrations</span><span class="p">)</span>
-            <span class="p">),</span> <span class="s2">"Effluent concentration data contains NaN"</span>
+            <span class="n">effluent_concentrations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
+                <span class="n">effluent_concentrations</span><span class="p">,</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">effluent_concentrations</span> <span class="o">=</span> <span class="n">effluent_concentrations</span>
+
+            <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">effluent_concentrations</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">"The number of concentration measurements must match "</span>
+                    <span class="s2">"the number of time points."</span>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">feed_concentrations</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">feed_concentrations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
+                <span class="n">feed_concentrations</span><span class="p">,</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+            <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="o">=</span> <span class="n">column</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">chemical</span> <span class="o">=</span> <span class="n">chemical</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">feed_concentrations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">feed_concentrations</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feed_concentrations</span> <span class="o">=</span> <span class="n">feed_concentrations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initial_concentration</span> <span class="o">=</span> <span class="n">initial_concentration</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initial_mass_fraction</span> <span class="o">=</span> <span class="n">initial_mass_fraction</span>
 
@@ -128,12 +143,6 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">bed_volumes</span> <span class="o">=</span> <span class="n">bed_volumes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">effluent_concentrations</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="kc">None</span>
-            <span class="k">if</span> <span class="n">effluent_concentrations</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">effluent_concentrations</span><span class="p">)</span>
-        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">flow_rate</span> <span class="o">=</span> <span class="n">flow_rate</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_superficial_velocity</span> <span class="o">=</span> <span class="n">superficial_velocity</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initial_mass_fraction</span> <span class="o">=</span> <span class="n">initial_mass_fraction</span>
@@ -165,6 +174,19 @@
             <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
             <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">)),</span> <span class="s2">"Bed volume data contains NaN"</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_bed_volumes</span> <span class="o">=</span> <span class="n">value</span>
+
+<div class="viewcode-block" id="Breakthrough.valid_data">
+<a class="viewcode-back" href="../../../api/reactormodels.properties.html#reactormodels.Breakthrough.valid_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">valid_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Return time and effluent concentration values without NaNs."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">effluent_concentrations</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Must supply effluent concentration data."</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">effluent_concentrations</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">effluent_concentrations</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span>
+        <span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="Breakthrough.mean_feed_concentration">
 <a class="viewcode-back" href="../../../api/reactormodels.properties.html#reactormodels.Breakthrough.mean_feed_concentration">[docs]</a>
@@ -328,10 +350,169 @@
 <a class="viewcode-back" href="../../../api/reactormodels.properties.html#reactormodels.Breakthrough.has_breakthrough">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_breakthrough</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">breakthrough_fraction</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
+        <span class="n">breakthrough_fraction</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
+        <span class="n">n_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Return True if C/C0 reaches the breakthrough fraction."""</span>
-        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normalize_concentration</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">breakthrough_fraction</span><span class="p">))</span></div>
+<span class="w">        </span><span class="sd">"""Return True if C/C0 exceeds breakthrough threshold at end or run."""</span>
+        <span class="n">normalized_c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_concentration</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">n_points</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">n_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">normalized_c</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n_points</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"n_points must be an integer or None"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">normalized_c</span><span class="p">[</span><span class="o">-</span><span class="n">n_points</span><span class="p">:]</span> <span class="o">&gt;=</span> <span class="n">breakthrough_fraction</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Breakthrough.identify_curve_outliers">
+<a class="viewcode-back" href="../../../api/reactormodels.properties.html#reactormodels.Breakthrough.identify_curve_outliers">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">identify_curve_outliers</span><span class="p">(</span>
+        <span class="n">x_values</span><span class="p">,</span>
+        <span class="n">y_values</span><span class="p">,</span>
+        <span class="n">n_mad</span><span class="p">,</span>
+        <span class="n">window_size</span><span class="p">,</span>
+        <span class="n">max_outliers</span><span class="p">,</span>
+        <span class="n">baseline_threshold</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Identify outliers using iterative local moving median fits.</span>
+
+<span class="sd">        1. Select a local window around each candidate point.</span>
+<span class="sd">        2. Remove the candidate point individually and fit a moving median</span>
+<span class="sd">        trend to the remaining points.</span>
+<span class="sd">        3. Calculate the scaled median absolute deviation (MAD) from the window.</span>
+<span class="sd">        4. Calculate the candidates's deviation from the local median.</span>
+<span class="sd">        5. A point is considered an outlier if the deviation exceeds the specified</span>
+<span class="sd">        number of scaled MADs.</span>
+<span class="sd">        6. Remove the point with the largest normalized deviation.</span>
+<span class="sd">        7. Repeat using the reduced dataset.</span>
+<span class="sd">        """</span>
+        <span class="n">x_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x_values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">y_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y_values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_values</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_values</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"time and values must have the same length."</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">window_size</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"window_size must be at least 3."</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">n_mad</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">" must be non-negative."</span><span class="p">)</span>
+
+        <span class="c1"># Work with original indices so that the final outlier mask</span>
+        <span class="c1"># corresponds to the original input arrays.</span>
+        <span class="n">remaining</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_values</span><span class="p">)))</span>
+
+        <span class="n">removed</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">iteration_results</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_outliers</span><span class="p">):</span>
+            <span class="n">iteration_results</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="n">half_window</span> <span class="o">=</span> <span class="n">window_size</span> <span class="o">//</span> <span class="mi">2</span>
+
+            <span class="c1"># Evaluate every point as a potential outlier.</span>
+            <span class="k">for</span> <span class="n">position</span><span class="p">,</span> <span class="n">original_index</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">remaining</span><span class="p">):</span>
+
+                <span class="c1"># Determine the local window around the candidate.</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">position</span> <span class="o">-</span> <span class="n">half_window</span><span class="p">)</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">remaining</span><span class="p">),</span> <span class="n">position</span> <span class="o">+</span> <span class="n">half_window</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+                <span class="n">window_indices</span> <span class="o">=</span> <span class="n">remaining</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
+
+                <span class="c1"># Exclude the candidate from the local statistics.</span>
+                <span class="n">fit_indices</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">index</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">window_indices</span> <span class="k">if</span> <span class="n">index</span> <span class="o">!=</span> <span class="n">original_index</span>
+                <span class="p">]</span>
+
+                <span class="c1"># Calculate the local median.</span>
+                <span class="n">predicted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">y_values</span><span class="p">[</span><span class="n">fit_indices</span><span class="p">])</span>
+
+                <span class="c1"># Calculate the local median absolute deviation.</span>
+                <span class="n">mad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y_values</span><span class="p">[</span><span class="n">fit_indices</span><span class="p">]</span> <span class="o">-</span> <span class="n">predicted</span><span class="p">))</span>
+
+                <span class="c1"># Scale MAD to be comparable to standard deviation.</span>
+                <span class="n">scaled_mad</span> <span class="o">=</span> <span class="mf">1.4826</span> <span class="o">*</span> <span class="n">mad</span>
+
+                <span class="c1"># Exclude tightly clustered values from outlier check</span>
+                <span class="n">minimum_mad</span> <span class="o">=</span> <span class="mf">0.05</span> <span class="o">*</span> <span class="n">predicted</span>
+                <span class="n">effective_mad</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">scaled_mad</span><span class="p">,</span> <span class="n">minimum_mad</span><span class="p">)</span>
+
+                <span class="c1"># Calculate how far the candidate is from the local median.</span>
+                <span class="n">deviation</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">y_values</span><span class="p">[</span><span class="n">original_index</span><span class="p">]</span> <span class="o">-</span> <span class="n">predicted</span><span class="p">)</span>
+
+                <span class="c1"># Points below the detection threshold are not considered outliers.</span>
+                <span class="n">baseline_value</span> <span class="o">=</span> <span class="n">y_values</span><span class="p">[</span><span class="n">original_index</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">baseline_threshold</span>
+
+                <span class="c1"># Determine whether the candidate is an outlier.</span>
+                <span class="n">is_outlier</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">baseline_value</span> <span class="ow">and</span> <span class="n">deviation</span> <span class="o">&gt;</span> <span class="n">n_mad</span> <span class="o">*</span> <span class="n">effective_mad</span>
+
+                <span class="c1"># Calculate how many scaled MADs away the candidate is.</span>
+                <span class="n">violation_ratio</span> <span class="o">=</span> <span class="n">deviation</span> <span class="o">/</span> <span class="n">effective_mad</span>
+
+                <span class="n">iteration_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s2">"index"</span><span class="p">:</span> <span class="n">original_index</span><span class="p">,</span>
+                        <span class="s2">"time"</span><span class="p">:</span> <span class="n">x_values</span><span class="p">[</span><span class="n">original_index</span><span class="p">],</span>
+                        <span class="s2">"value"</span><span class="p">:</span> <span class="n">y_values</span><span class="p">[</span><span class="n">original_index</span><span class="p">],</span>
+                        <span class="s2">"predicted"</span><span class="p">:</span> <span class="n">predicted</span><span class="p">,</span>
+                        <span class="s2">"mad"</span><span class="p">:</span> <span class="n">mad</span><span class="p">,</span>
+                        <span class="s2">"scaled_mad"</span><span class="p">:</span> <span class="n">effective_mad</span><span class="p">,</span>
+                        <span class="s2">"deviation"</span><span class="p">:</span> <span class="n">deviation</span><span class="p">,</span>
+                        <span class="s2">"violation_ratio"</span><span class="p">:</span> <span class="n">violation_ratio</span><span class="p">,</span>
+                        <span class="s2">"is_outlier"</span><span class="p">:</span> <span class="n">is_outlier</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Keep only points that exceed the MAD threshold.</span>
+            <span class="n">candidates</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">result</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">iteration_results</span> <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s2">"is_outlier"</span><span class="p">]</span>
+            <span class="p">]</span>
+
+            <span class="c1"># Stop if no points exceed the threshold.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">candidates</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="c1"># Remove the point with the greatest MAD violation.</span>
+            <span class="n">worst</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+                <span class="n">candidates</span><span class="p">,</span>
+                <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s2">"violation_ratio"</span><span class="p">],</span>
+            <span class="p">)</span>
+
+            <span class="n">removed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">"iteration"</span><span class="p">:</span> <span class="n">iteration</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="s2">"index"</span><span class="p">:</span> <span class="n">worst</span><span class="p">[</span><span class="s2">"index"</span><span class="p">],</span>
+                    <span class="s2">"time"</span><span class="p">:</span> <span class="n">worst</span><span class="p">[</span><span class="s2">"time"</span><span class="p">],</span>
+                    <span class="s2">"value"</span><span class="p">:</span> <span class="n">worst</span><span class="p">[</span><span class="s2">"value"</span><span class="p">],</span>
+                    <span class="s2">"predicted"</span><span class="p">:</span> <span class="n">worst</span><span class="p">[</span><span class="s2">"predicted"</span><span class="p">],</span>
+                    <span class="s2">"mad"</span><span class="p">:</span> <span class="n">worst</span><span class="p">[</span><span class="s2">"mad"</span><span class="p">],</span>
+                    <span class="s2">"scaled_mad"</span><span class="p">:</span> <span class="n">worst</span><span class="p">[</span><span class="s2">"scaled_mad"</span><span class="p">],</span>
+                    <span class="s2">"deviation"</span><span class="p">:</span> <span class="n">worst</span><span class="p">[</span><span class="s2">"deviation"</span><span class="p">],</span>
+                    <span class="s2">"violation_ratio"</span><span class="p">:</span> <span class="n">worst</span><span class="p">[</span><span class="s2">"violation_ratio"</span><span class="p">],</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"removed time=</span><span class="si">{</span><span class="n">worst</span><span class="p">[</span><span class="s1">'time'</span><span class="p">]</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">, "</span>
+                <span class="sa">f</span><span class="s2">"value=</span><span class="si">{</span><span class="n">worst</span><span class="p">[</span><span class="s1">'value'</span><span class="p">]</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">, "</span>
+                <span class="sa">f</span><span class="s2">"predicted=</span><span class="si">{</span><span class="n">worst</span><span class="p">[</span><span class="s1">'predicted'</span><span class="p">]</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">, "</span>
+                <span class="sa">f</span><span class="s2">"scaled MAD=</span><span class="si">{</span><span class="n">worst</span><span class="p">[</span><span class="s1">'scaled_mad'</span><span class="p">]</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">, "</span>
+                <span class="sa">f</span><span class="s2">"deviation=</span><span class="si">{</span><span class="n">worst</span><span class="p">[</span><span class="s1">'deviation'</span><span class="p">]</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">, "</span>
+                <span class="sa">f</span><span class="s2">"threshold=</span><span class="si">{</span><span class="n">n_mad</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">worst</span><span class="p">[</span><span class="s1">'scaled_mad'</span><span class="p">]</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Remove the point using its original index.</span>
+            <span class="n">remaining</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">worst</span><span class="p">[</span><span class="s2">"index"</span><span class="p">])</span>
+
+        <span class="c1"># Construct the final outlier mask using the original indices.</span>
+        <span class="n">outlier</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">y_values</span><span class="p">),</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">removed</span><span class="p">:</span>
+            <span class="n">outlier</span><span class="p">[</span><span class="n">result</span><span class="p">[</span><span class="s2">"index"</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="n">outlier</span><span class="p">,</span> <span class="n">iteration_results</span><span class="p">,</span> <span class="n">removed</span></div>
 
 
 <div class="viewcode-block" id="Breakthrough.breakthrough_threshold">
