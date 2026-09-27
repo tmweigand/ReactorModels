@@ -54,7 +54,7 @@ def run_demo(
     model = reactormodels.models.AdvectionDiffusionAdsorption(
         breakthrough=breakthrough,
         isotherm=isotherm,
-        numerics=numerics,
+        column_numerics=numerics,
         kinetics=reactormodels.models.SecondOrder(rate_constant),
     )
     x, C, q = model.solve()
@@ -75,7 +75,7 @@ def run_demo(
     C_analytical = bohart_adams.breakthrough_profile(time=t_eval, x=length)
     C_thomas = thomas.breakthrough_profile(time=t_eval, x=length)
     outlet_idx = np.argmin(np.abs(x - length))
-    C_numerical = C[:, outlet_idx]
+    C_numerical = C[:, 0, outlet_idx]
     max_error = np.abs(C_numerical - C_analytical).max()
 
     print(f"max error={max_error:.2e}")

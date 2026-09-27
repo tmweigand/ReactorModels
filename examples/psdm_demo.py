@@ -81,7 +81,7 @@ def run_demo(
         particle_numerics=particle_numerics,
         k_film=k_film,
     )
-    z, r, C, Cp = model.solve()
+    z, r, C, Cp, q = model.solve()
 
     fig, ax = plt.subplots(figsize=(8, 5))
 
@@ -97,7 +97,7 @@ def run_demo(
     for i in indices:
         ax.plot(
             r,
-            Cp[0, i, :],
+            Cp[0, 0, i, :],
             marker="o",
             label=f"z={z[i]:.2f}",
         )

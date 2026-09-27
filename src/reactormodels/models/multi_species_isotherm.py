@@ -1,7 +1,6 @@
 """isotherm.py"""
 
 import numpy as np
-import time
 
 
 class MultiSpeciesIsotherm:
@@ -63,100 +62,89 @@ class CompetitiveFreundlichIsotherm(MultiSpeciesIsotherm):
 
     def C(self, q: np.ndarray):
         """Return liquid phase concentration."""
-        q_arr: np.ndarray = np.asarray(q, dtype=float)
-        q_arr = np.maximum(q_arr, 0.0)
+        q_arr = np.asarray(q, dtype=float)
+        q_arr = np.maximum(q_arr, 1e-8)
 
         Q = np.sum(q_arr, axis=0)
         S = np.sum(self.n[:, None] * q_arr, axis=0)
 
-        C = np.zeros_like(q_arr, dtype=float)
+        A = (S[None, :] / (self.n[:, None] * self.K[:, None])) ** self.n[:, None]
 
-        valid = (Q > 0) & (S > 0)
-
-        if not np.any(valid):
-            return C
-
-        Qv = Q[valid]
-        Sv = S[valid]
-        qv = q_arr[:, valid]
-
-        A = (Sv[None, :] / (self.n[:, None] * self.K[:, None])) ** self.n[:, None]
-
-        C[:, valid] = qv / Qv[None, :] * A
-
-        return C
+        return q_arr / Q[None, :] * A
 
     def dC_dq(self, q: np.ndarray):
         """Calculate derivative of liquid concentration by sorbed mass concentration."""
-        q_arr: np.ndarray = np.asarray(q, dtype=float)
-        q_arr = np.maximum(q_arr, 0.0)
+        q_arr = np.asarray(q, dtype=float)
+        q_arr = np.maximum(q_arr, 1e-8)
 
         Q = np.sum(q_arr, axis=0)
         S = np.sum(self.n[:, None] * q_arr, axis=0)
 
-        n_nodes = q_arr.shape[1]
-
-        J = np.zeros((self.n_species, self.n_species, n_nodes), dtype=float)
-
-        valid = (Q > 0) & (S > 0)
-
-        if not np.any(valid):
-            return J
-
-        Qv = Q[valid]
-        Sv = S[valid]
-        qv = q_arr[:, valid]
-
-        A = (Sv[None, :] / (self.n[:, None] * self.K[:, None])) ** self.n[:, None]
+        A = (S[None, :] / (self.n[:, None] * self.K[:, None])) ** self.n[:, None]
 
         n_i = self.n[:, None, None]
         n_j = self.n[None, :, None]
+        q_i = q_arr[:, None, :]
 
-        q_i = qv[:, None, :]
-
-        J[:, :, valid] = A[:, None, :] * (
-            np.eye(self.n_species)[:, :, None] / Qv[None, None, :]
-            + (q_i / Qv[None, None, :])
-            * (n_i * n_j / Sv[None, None, :] - 1 / Qv[None, None, :])
+        return A[:, None, :] * (
+            np.eye(self.n_species)[:, :, None] / Q[None, None, :]
+            + (q_i / Q[None, None, :])
+            * (n_i * n_j / S[None, None, :] - 1 / Q[None, None, :])
         )
-
-        return J
 
     def d2C_dq2(self, q: np.ndarray) -> np.ndarray:
         """Calculate the second derivative."""
-        q_arr: np.ndarray = np.asarray(q, dtype=float)
-        q_arr = np.maximum(q_arr, 0.0)
+        q_arr = np.asarray(q, dtype=float)
+        q_arr = np.maximum(q_arr, 1e-8)
 
-        Q = np.sum(q_arr)
-        S = np.sum(self.n * q_arr)
+        Q = np.sum(q_arr, axis=0)
+        S = np.sum(self.n[:, None] * q_arr, axis=0)
 
-        H = np.zeros((self.n_species, self.n_species, self.n_species))
+        n_points = q_arr.shape[1]
 
-        if Q == 0 or S == 0:
-            return H
+        H = np.zeros(
+            (
+                self.n_species,
+                self.n_species,
+                self.n_species,
+                n_points,
+            ),
+            dtype=float,
+        )
 
         C = self.C(q_arr)
 
         for i in range(self.n_species):
             for j in range(self.n_species):
                 for k in range(self.n_species):
-                    delta_ij = 1.0 if i == j else 0.0
-                    delta_ik = 1.0 if i == k else 0.0
+                    delta_ij = float(i == j)
+                    delta_ik = float(i == k)
 
-                    if q_arr[i] == 0:
-                        d_ij_over_q = 0
-                        d_ik_over_q = 0
-                        d_ijk_over_q = 0
-                    else:
-                        d_ij_over_q = delta_ij / q_arr[i]
-                        d_ik_over_q = delta_ik / q_arr[i]
-                        d_ijk_over_q = delta_ij * delta_ik / q_arr[i] ** 2
+                    q_i = q_arr[i]
+
+                    d_ij_over_q = np.where(
+                        q_i == 0,
+                        0.0,
+                        delta_ij / q_i,
+                    )
+
+                    d_ik_over_q = np.where(
+                        q_i == 0,
+                        0.0,
+                        delta_ik / q_i,
+                    )
+
+                    d_ijk_over_q = np.where(
+                        q_i == 0,
+                        0.0,
+                        delta_ij * delta_ik / q_i**2,
+                    )
 
                     L_ij = d_ij_over_q + self.n[i] * self.n[j] / S - 1.0 / Q
 
                     L_ik = d_ik_over_q + self.n[i] * self.n[k] / S - 1.0 / Q
 
-                    H[i, j, k] = C[i] * (
+                    H[i, j, k, :] = C[i] * (
                         L_ij * L_ik
                         - d_ijk_over_q
                         - self.n[i] * self.n[j] * self.n[k] / S**2
@@ -164,6 +152,26 @@ class CompetitiveFreundlichIsotherm(MultiSpeciesIsotherm):
                     )
 
         return H
+
+
+class ExtendedCompetitiveFreundlich(CompetitiveFreundlichIsotherm):
+    """C(q) with a smooth linear continuation below q_floor (no clipping)."""
+
+    def __init__(self, K, n, q_floor=1e-6):
+        super().__init__(K, n)
+        self.q_floor = q_floor
+
+    def C(self, q):
+        """Return C with smoothing."""
+        q = np.asarray(q, dtype=float)
+        qc = np.maximum(q, self.q_floor)
+        J = super().dC_dq(qc)
+        return super().C(qc) + np.einsum("ijr,jr->ir", J, q - qc)
+
+    def dC_dq(self, q):
+        """Return dC_dq with smoothing."""
+        qc = np.maximum(np.asarray(q, dtype=float), self.q_floor)
+        return super().dC_dq(qc)
 
 
 class CompetitiveLangmuirIsotherm(MultiSpeciesIsotherm):

@@ -17,22 +17,25 @@ def run_demo(
     particle_density = 600  # g/L
     particle_diameter = 0.07 * 2  # cm
     pore_diffusion = 5e-6  # cm2/s
-    surface_diffusion = 5e-10  # cm2/s
-    k_film = 0.075  # cm/s
+    surface_diffusion = 5e-9  # cm2/s
+    k_film = 0.1  # cm/s
 
     # column
     axial_diffusion = 0  # cm2/s
     K = 100  # (mg/g) * (L/mg)
+    n = 1.1
+    q_m = 500
     length = 100  # cm
     diameter = 10  # cm
     porosity = 0.334
     bulk_density = 399.8  # g/L
     feed_concentrations = 1  # mg/L
     flow_rate = 40  # cm3/s
-    time = np.array(np.loadtxt("examples/ads_time.txt", skiprows=0))
+    ads_data = np.loadtxt("examples/ads_eff.txt", skiprows=3)
+    time = np.array(ads_data[:, 0])
     t_eval = time * 60  # s
 
-    isotherm = reactormodels.models.LinearIsotherm(K=K)
+    isotherm = reactormodels.models.LinearIsotherm(K)
 
     media = reactormodels.Media(
         particle_porosity=particle_porosity,
@@ -61,6 +64,7 @@ def run_demo(
         feed_concentrations=feed_concentrations,
         flow_rate=flow_rate,
         time=t_eval,
+        initial_mass_fraction=1e-8,
     )
 
     column_numerics = reactormodels.numerics.NumericsConfig(
@@ -77,22 +81,18 @@ def run_demo(
         add_inlet=True,
     )
 
-    model = reactormodels.models.PSDMSolid(
+    model = reactormodels.models.PSDM(
         breakthrough=breakthrough,
         isotherm=isotherm,
         column_numerics=column_numerics,
         particle_numerics=particle_numerics,
         k_film=k_film,
     )
-    z, r, C, q = model.solve()
+    z, r, C, Cp, q = model.solve()
 
     fig, ax = plt.subplots(figsize=(8, 5))
-    C_numerical = C[:, -1]
-
-    ads_data = np.loadtxt("examples/ads_eff.txt", skiprows=0)
-
-    ax.plot(t_eval / (1440 * 60), C_numerical, linestyle="-", label="ReactorModels")
-    ax.plot(time / 1440, ads_data, linestyle="--", label="AdDesignS")
+    ax.plot(time / 1440, C[:, 0, -1], linestyle="-", label="ReactorModels")
+    ax.plot(time / 1440, ads_data[:, 3], linestyle="--", label="AdDesignS")
 
     ax.set_title("PSDM Breakthrough Profile")
     ax.set_xlabel("Time (days)")

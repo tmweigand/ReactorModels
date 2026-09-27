@@ -48,7 +48,7 @@ def test_thomas():
     model = reactormodels.models.AdvectionDiffusionAdsorption(
         breakthrough=breakthrough,
         isotherm=isotherm,
-        numerics=numerics,
+        column_numerics=numerics,
         kinetics=reactormodels.models.SecondOrder(rate_constant),
     )
     x, C, _ = model.solve()
@@ -62,5 +62,5 @@ def test_thomas():
 
     C_thomas = thomas.breakthrough_profile(time=t_eval, x=length)
     outlet_idx = np.argmin(np.abs(x - length))
-    C_numerical = C[:, outlet_idx]
+    C_numerical = C[:, 0, outlet_idx]
     assert C_numerical == pytest.approx(C_thomas, abs=1e-2)

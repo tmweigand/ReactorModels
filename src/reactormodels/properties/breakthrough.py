@@ -20,6 +20,7 @@ class Breakthrough:
         feed_concentrations: float | np.ndarray,
         initial_concentration: float = 0.0,
         initial_mass_fraction: float = 0.0,
+        initial_pore_concentration: float = 0.0,
         flow_rate: float | None = None,
         effluent_concentrations: np.ndarray | None = None,
         bed_volumes: np.ndarray | None = None,
@@ -59,6 +60,7 @@ class Breakthrough:
         self.feed_concentrations = feed_concentrations
         self.initial_concentration = initial_concentration
         self.initial_mass_fraction = initial_mass_fraction
+        self.initial_pore_concentration = initial_pore_concentration
 
         self._time: np.ndarray | None = None
         self._bed_volumes: np.ndarray | None = None
@@ -67,7 +69,6 @@ class Breakthrough:
         self.time = time
         self.flow_rate = flow_rate
         self._superficial_velocity = superficial_velocity
-        self.initial_mass_fraction = initial_mass_fraction
 
     @property
     def time(self) -> np.ndarray | None:

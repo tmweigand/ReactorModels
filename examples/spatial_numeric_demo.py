@@ -52,7 +52,7 @@ def run_demo(
     model = reactormodels.models.AdvectionDiffusionAdsorption(
         breakthrough=breakthrough,
         isotherm=isotherm,
-        numerics=numerics,
+        column_numerics=numerics,
         kinetics=reactormodels.models.SecondOrder(rate_constant),
     )
     x, C, q = model.solve()
@@ -65,7 +65,7 @@ def run_demo(
     for i, t in enumerate(t_eval):
         mask = x < 0.99 * length
         C_analytical = bohart_adams.spatial_profile(time=t, x=x[mask])
-        C_numerical = C[i, mask]
+        C_numerical = C[i, 0, mask]
         max_error = np.abs(C_numerical - C_analytical).max()
 
         print(f"t={t:g} s, max error={max_error:.2e}")

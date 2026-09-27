@@ -45,7 +45,7 @@ class DirichletBC(InletBC):
 
     def apply(self, gradient_concentration_0: None | float = None):
         """Return the value on the boundary"""
-        return self.inlet_concentration.copy()
+        return self.inlet_concentration
 
     def residual(
         self,

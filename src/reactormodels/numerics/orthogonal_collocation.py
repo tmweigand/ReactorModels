@@ -195,9 +195,13 @@ class OrthogonalCollocation:
         self, f: np.ndarray, node: int | None = None
     ) -> np.ndarray | float:
         """Evaluate ∇²f = d²f/dr² + (2/r) df/dr."""
-        if node is None:
-            return self.radial_operator_matrix @ f
-        return self.radial_operator_matrix[node, :] @ f
+        f = np.asarray(f)
+        L = self.radial_operator_matrix
+        if f.ndim == 1:
+            return L @ f if node is None else L[node, :] @ f
+        if f.ndim == 2:
+            return f @ L.T if node is None else f @ L[node, :]
+        raise ValueError(f"Expected f to have 1 or 2 dimensions, got {f.ndim}")
 
     def evaluate_gradient(self, f: np.ndarray, node: None | int = None) -> np.ndarray:
         """Return df/dx at a specific collocation node.
