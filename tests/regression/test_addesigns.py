@@ -28,7 +28,7 @@ BASELINE_KWARGS = dict(
     surface_diffusion=5e-10,
     pore_diffusion=5e-6,
     L=100,
-    kf=10,
+    kf=10.0,
     Q=40,
     diameter=10,
     particle_porosity=0.5,
@@ -59,7 +59,7 @@ def make_particle(
     surface_diffusion=5e-10,
     pore_diffusion=5e-6,
     L=100,
-    kf=10,
+    kf=10.0,
     Q=40,
     diameter=10,
     particle_porosity=0.5,
@@ -128,8 +128,8 @@ def run_case(case: dict, kwargs_override: dict):
     t_eval = np.array(case["time"]) * 60
 
     p = make_particle(**kwargs_override, time=t_eval)
-    _, _, C, _ = p.solve()
-    return C[:, -1]
+    _, _, C, _, _ = p.solve()
+    return C[:, 0, -1]
 
 
 AD_RESULTS = load_addesigns_results(AD_BREAKTHROUGH_FILE)

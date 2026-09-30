@@ -60,12 +60,14 @@ class LangmuirIsotherm(Isotherm):
     def dq_dC(self, C: float | np.ndarray) -> np.ndarray:
         """Calculate the derivative of sorbed mass concentration by concentration."""
         C = np.asarray(C, dtype=float)
-        return self.q_m * self.K / (1 + self.K * np.maximum(C, 0.0)) ** 2
+        dq_dC = self.q_m * self.K / (1 + self.K * np.maximum(C, 0.0)) ** 2
+        return dq_dC[np.newaxis, :, :]
 
     def d2q_dC2(self, C: float | np.ndarray) -> np.ndarray:
         """Calculate the second derivative."""
         C = np.asarray(C, dtype=float)
-        return -2 * self.q_m * self.K**2 / (1 + self.K * np.maximum(C, 0.0)) ** 3
+        d2q_dC2 = -2 * self.q_m * self.K**2 / (1 + self.K * np.maximum(C, 0.0)) ** 3
+        return d2q_dC2[np.newaxis, np.newaxis, :, :]
 
     def C(self, q: float | np.ndarray) -> np.ndarray:
         """Return liquid phase concentration"""
@@ -75,7 +77,8 @@ class LangmuirIsotherm(Isotherm):
     def dC_dq(self, q: float | np.ndarray) -> np.ndarray:
         """Calculate derivative of liquid concentration by sorbed mass concentration."""
         q = np.asarray(q, dtype=float)
-        return self.q_m / (self.K * (self.q_m - q) ** 2)
+        dC_dq = self.q_m / (self.K * (self.q_m - q) ** 2)
+        return dC_dq[np.newaxis, :, :]
 
     def d2C_dq2(self, q: float | np.ndarray) -> np.ndarray:
         """Calculate the second derivative."""
@@ -108,7 +111,8 @@ class FreundlichIsotherm(Isotherm):
         """Calculate the derivative of sorbed mass concentration by concentration."""
         C = np.asarray(C, dtype=float)
         C = np.maximum(C, 1e-30)
-        return (self.K / self.n) * C ** (1.0 / self.n - 1.0)
+        dq_dC = (self.K / self.n) * C ** (1.0 / self.n - 1.0)
+        return dq_dC[np.newaxis, :, :]
 
     def d2q_dC2(self, C: float | np.ndarray) -> np.ndarray:
         """Calculate the second derivative."""
@@ -118,22 +122,22 @@ class FreundlichIsotherm(Isotherm):
     def C(self, q):
         """Return liquid phase concentration"""
         q = np.asarray(q, dtype=float)
-        q = np.maximum(q, 0.0)
-
+        q = np.maximum(q, 1e-8)
         return (q / self.K) ** self.n
 
     def dC_dq(self, q: float | np.ndarray) -> np.ndarray:
         """Calculate derivative of liquid concentration by sorbed mass concentration."""
         q = np.asarray(q, dtype=float)
-        q = np.maximum(q, 0.0)
-
-        return self.n * (1 / self.K) ** self.n * q ** (self.n - 1)
+        q = np.maximum(q, 1e-8)
+        dC_dq = self.n * (1 / self.K) ** self.n * q ** (self.n - 1)
+        return dC_dq[np.newaxis, :, :]
 
     def d2C_dq2(self, q: float | np.ndarray) -> np.ndarray:
         """Calculate the second derivative."""
         q = np.asarray(q, dtype=float)
-        q = np.maximum(q, 0.0)
-        return self.n * (self.n - 1) * (1 / self.K) ** self.n * q ** (self.n - 2)
+        q = np.maximum(q, 1e-8)
+        d2C_dq2 = self.n * (self.n - 1) * (1 / self.K) ** self.n * q ** (self.n - 2)
+        return d2C_dq2[np.newaxis, np.newaxis, :, :]
 
 
 class LinearIsotherm(Isotherm):
@@ -155,11 +159,13 @@ class LinearIsotherm(Isotherm):
 
     def dq_dC(self, C: float | np.ndarray) -> np.ndarray:
         """Calculate the derivative of sorbed mass concentration by concentration."""
-        return self.K * np.ones_like(np.asarray(C, dtype=float))
+        dq_dC = self.K * np.ones_like(np.asarray(C, dtype=float))
+        return dq_dC[np.newaxis, :, :]
 
     def d2q_dC2(self, C: float | np.ndarray) -> np.ndarray:
         """Calculate the second derivative."""
-        return np.zeros_like(np.asarray(C, dtype=float))
+        d2q_dC2 = np.zeros_like(np.asarray(C, dtype=float))
+        return d2q_dC2[np.newaxis, np.newaxis, :, :]
 
     def C(self, q: float | np.ndarray) -> np.ndarray:
         """Return liquid phase concentration."""
@@ -167,11 +173,13 @@ class LinearIsotherm(Isotherm):
 
     def dC_dq(self, q: float | np.ndarray) -> np.ndarray:
         """Calculate derivative of liquid concentration by sorbed mass concentration."""
-        return np.ones_like(np.asarray(q, dtype=float)) / self.K
+        dC_dq = np.ones_like(np.asarray(q, dtype=float)) / self.K
+        return dC_dq[np.newaxis, :, :]
 
     def d2C_dq2(self, q: float | np.ndarray) -> np.ndarray:
         """Calculate the second derivative."""
-        return np.zeros_like(np.asarray(q, dtype=float))
+        d2C_dq2 = np.zeros_like(np.asarray(q, dtype=float))
+        return d2C_dq2[np.newaxis, np.newaxis, :, :]
 
 
 def flatten_parameters(parameters):

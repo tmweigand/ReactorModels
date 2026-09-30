@@ -10,8 +10,8 @@ class FilmTransfer:
     def __init__(
         self,
         breakthrough: Breakthrough,
-        method: str = "gnielinski",
         k_film: float | None = None,
+        method: str = "gnielinski",
     ) -> None:
         self.breakthrough = breakthrough
         self.method = method

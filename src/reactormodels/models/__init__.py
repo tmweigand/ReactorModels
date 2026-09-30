@@ -3,7 +3,6 @@
 __all__ = [
     "NumericModel",
     "PSDM",
-    "PSDMSolid",
     "LinearIsotherm",
     "LangmuirIsotherm",
     "FreundlichIsotherm",
@@ -12,6 +11,7 @@ __all__ = [
     "CompetitiveLangmuirIsotherm",
     "CompetitiveLangmuirFreundlichIsotherm",
     "CompetitiveStoichiometricIsotherm",
+    "ExtendedCompetitiveFreundlich",
     "MultiCapacityIsotherm",
     "AdsorbateComplexIsotherm",
     "DirichletBC",
@@ -34,7 +34,6 @@ __all__ = [
 from .numeric_model_base import NumericModel
 from .adsorption_kinetics import LocalEquilibrium, LinearDrivingForce, SecondOrder
 from .psdm import PSDM
-from .psdm_q import PSDMSolid
 from .boundary_conditions import DirichletBC, DanckwertsBC, SymmetryBC
 
 from .isotherm import LinearIsotherm, FreundlichIsotherm, LangmuirIsotherm
@@ -46,6 +45,7 @@ from .multi_species_isotherm import (
     CompetitiveStoichiometricIsotherm,
     MultiCapacityIsotherm,
     AdsorbateComplexIsotherm,
+    ExtendedCompetitiveFreundlich,
 )
 
 from .analytic_models import (

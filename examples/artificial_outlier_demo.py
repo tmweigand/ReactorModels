@@ -8,7 +8,7 @@ import numpy as np
 
 def run_demo(
     show: bool = False,
-    save_path: str | Path = "data_out/input/artificial_outlier_demo.png",
+    save_path: str | Path = "data_out/artificial_outlier_demo.png",
 ):
     """Plot breakthrough profile for PSDM data w/ outliers."""
     # particle
@@ -28,9 +28,10 @@ def run_demo(
     bulk_density = 399.8  # g/L
     flow_rate = 40  # cm3/s
     feed_concentrations = 1
-    time = np.array(np.loadtxt("examples/ads_time.txt", skiprows=0))
+    ads_data = np.loadtxt("examples/ads_eff.txt", skiprows=3)
+    time = np.array(ads_data[:, 0])
     t_eval = time * 60  # s
-    t_eval = t_eval[::5]
+    t_eval = t_eval[::10]
 
     species = ["PFOA", "PFOS"]
 
@@ -87,14 +88,14 @@ def run_demo(
             particle_numerics=particle_numerics,
             k_film=k_film,
         )
-        z, r, C, Cp = model.solve()
+        z, r, C, Cp, q = model.solve()
 
         # add noise every third point
         rng = np.random.default_rng(0)
-        c = np.maximum(C[:, -1], 0)
+        c = np.maximum(C[:, 0, -1], 0)
         c_outliers = c.copy()
 
-        indices = np.arange(0, c.size, 3)
+        indices = np.arange(0, c.size, 12)
 
         # make proportional to concentration
         noise = rng.normal(0, 0.7 * c[indices], size=indices.size)

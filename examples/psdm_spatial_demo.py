@@ -82,11 +82,11 @@ def run_demo(
         particle_numerics=particle_numerics,
         k_film=k_film,
     )
-    z, r, C, Cp = model.solve()
+    z, r, C, Cp, q = model.solve()
 
     fig, ax = plt.subplots(figsize=(8, 5))
     for i, t in enumerate(t_eval):
-        C_numerical = Cp[i, -1, :]
+        C_numerical = Cp[i, 0, -1, :]
 
         ax.plot(r, C_numerical, marker="o", linestyle="-", label=f"t={t:g}")
 

@@ -34,7 +34,7 @@ def _base_model(
         reactormodels.models.AdvectionDiffusionAdsorption(
             breakthrough=breakthrough,
             isotherm=reactormodels.models.LinearIsotherm(K=K),
-            numerics=numerics,
+            column_numerics=numerics,
             kinetics=kinetics,
             inlet_bc=reactormodels.models.DirichletBC,
         ),
@@ -52,21 +52,21 @@ def test_local_equilibrium_vs_ogata_banks():
 
     R = 1.0 + (rho_b * K) / eps
 
-    t_mid = 0.5 * column_length / (model.breakthrough.interstitial_velocity / R)
+    t_mid = 0.5 * column_length / (model.breakthroughs[0].interstitial_velocity / R)
     t_eval = np.array([0.25 * t_mid, t_mid, 2.0 * t_mid])
 
-    model.breakthrough.time = t_eval
+    model.breakthroughs[0].time = t_eval
 
     x, C, q = model.solve()
 
     ogata_banks = reactormodels.models.OgataBanks(
-        breakthrough=model.breakthrough, diffusion=D, retardation=R
+        breakthrough=model.breakthroughs[0], diffusion=D, retardation=R
     )
 
     for i, t in enumerate(t_eval):
         mask = x < 0.8 * column_length
         C_analytical = ogata_banks.spatial_profile(x[mask], t)
-        assert C[i, mask] == pytest.approx(C_analytical, abs=1e-2)
+        assert C[i, 0, mask] == pytest.approx(C_analytical, abs=1e-2)
 
 
 def test_ldf_converges_to_equilibrium_at_high_kldf():
@@ -78,11 +78,11 @@ def test_ldf_converges_to_equilibrium_at_high_kldf():
 
     D, L, eps, rho_b, K = params
     R = 1.0 + (rho_b * K) / eps
-    v_eff = eq_model.breakthrough.interstitial_velocity / (eps * R)
+    v_eff = eq_model.breakthroughs[0].interstitial_velocity / (eps * R)
     t_eval = np.array([0.5 * L / v_eff, L / v_eff])
 
-    eq_model.breakthrough.time = t_eval
-    ldf_model.breakthrough.time = t_eval
+    eq_model.breakthroughs[0].time = t_eval
+    ldf_model.breakthroughs[0].time = t_eval
 
     _, C_eq, q_eq = eq_model.solve()
     _, C_ldf, q_ldf = ldf_model.solve()
@@ -99,10 +99,10 @@ def test_ldf_q_tracks_equilibrium():
         reactormodels.models.LinearDrivingForce(rate_constant=0.5)
     )
     R = 1.0 + (rho_b * K) / eps
-    v_eff = model.breakthrough.interstitial_velocity / (eps * R)
+    v_eff = model.breakthroughs[0].interstitial_velocity / (eps * R)
     t_long = np.array([5.0 * L / v_eff])  # run long enough for q to equilibrate
 
-    model.breakthrough.time = t_long
+    model.breakthroughs[0].time = t_long
 
     _, C, q = model.solve()
 

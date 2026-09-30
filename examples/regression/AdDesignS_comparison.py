@@ -134,8 +134,8 @@ def run_case(case: dict, kwargs_override: dict):
     t_eval = np.array(case["time"]) * 60
 
     p = _make_particle(**kwargs_override, time=t_eval)
-    _, _, C, _ = p.solve()
-    C_numerical = C[:, -1]
+    _, _, C, _, _ = p.solve()
+    C_numerical = C[:, 0, -1]
     return case["time"], C_numerical.tolist()
 
 

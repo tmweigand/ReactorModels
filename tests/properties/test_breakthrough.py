@@ -205,11 +205,11 @@ def test_identify_curve_outliers():
 
     model = _make_particle(time=time)
 
-    _, _, C, _ = model.solve()
+    _, _, C, _, _ = model.solve()
 
     # add noise every third point
     rng = np.random.default_rng(0)
-    c = np.maximum(C[:, -1], 0)
+    c = np.maximum(C[:, 0, -1], 0)
     c_outliers = c.copy()
 
     indices = np.arange(0, c.size, 3)
@@ -226,10 +226,10 @@ def test_identify_curve_outliers():
     assert np.all(np.isnan(c_outliers[nan_indices]))
 
     breakthrough = reactormodels.Breakthrough(
-        column=model.breakthrough.column,
-        chemical=model.breakthrough.chemical,
-        feed_concentrations=model.breakthrough.feed_concentrations,
-        flow_rate=model.breakthrough.flow_rate,
+        column=model.breakthroughs[0].column,
+        chemical=model.breakthroughs[0].chemical,
+        feed_concentrations=model.breakthroughs[0].feed_concentrations,
+        flow_rate=model.breakthroughs[0].flow_rate,
         time=time,
         effluent_concentrations=c_outliers,
     )

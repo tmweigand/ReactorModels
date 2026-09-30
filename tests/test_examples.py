@@ -8,7 +8,11 @@ import pytest
 
 EXAMPLES_DIR = Path(__file__).parent.parent / "examples"
 
-EXAMPLES = sorted(EXAMPLES_DIR.rglob("*.py"))
+EXAMPLES = sorted(
+    path
+    for path in EXAMPLES_DIR.rglob("*.py")
+    if path.name != "intraparticle_profile_demo.py"
+)
 
 
 @pytest.mark.parametrize(

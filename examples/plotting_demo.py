@@ -95,7 +95,7 @@ def run_demo():
             particle_numerics=particle_numerics,
             k_film=k_film,
         )
-        z, r, C, Cp = psdm.solve()
+        z, r, C, Cp, q = psdm.solve()
 
         psdm_out = C[:, -1] / breakthrough.mean_feed_concentration()
 
