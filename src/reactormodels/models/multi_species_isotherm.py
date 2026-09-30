@@ -232,30 +232,37 @@ class CompetitiveLangmuirIsotherm(MultiSpeciesIsotherm):
         return J
 
     def d2q_dC2(self, C: np.ndarray) -> np.ndarray:
-        """Calculate the second derivative."""
-        C_arr: np.ndarray = np.asarray(C, dtype=float)
-        C_arr = np.maximum(C_arr, 0.0)
+        """Calculate the second derivative of sorbed mass concentration."""
+        C = np.asarray(C, dtype=float)
+        C = np.maximum(C, 0.0)
 
-        D = 1.0 + np.sum(self.K * C_arr)
+        # C: (S, R)
+        # D: (R,)
+        D = 1.0 + np.sum(self.K[:, None] * C, axis=0)
 
-        H = np.zeros((self.n_species, self.n_species, self.n_species))
-
-        for i in range(self.n_species):
-            for j in range(self.n_species):
-                for k in range(self.n_species):
-                    delta_ij = 1.0 if i == j else 0.0
-                    delta_ik = 1.0 if i == k else 0.0
-
-                    H[i, j, k] = (
-                        self.q_m
-                        * self.K[i]
-                        / D**2
-                        * (
-                            -delta_ij * self.K[k]
-                            - delta_ik * self.K[j]
-                            + 2.0 * C_arr[i] * self.K[j] * self.K[k] / D
-                        )
-                    )
+        # H[i, j, k, r] = d²q_i / dC_j dC_k
+        H = (
+            self.q_m
+            * self.K[:, None, None, None]
+            / D[None, None, None, :] ** 2
+            * (
+                -(
+                    np.eye(self.n_species)[:, :, None, None]
+                    * self.K[None, None, :, None]
+                )
+                - (
+                    np.eye(self.n_species)[:, None, :, None]
+                    * self.K[None, :, None, None]
+                )
+                + (
+                    2.0
+                    * C[:, None, None, :]
+                    * self.K[None, :, None, None]
+                    * self.K[None, None, :, None]
+                    / D[None, None, None, :]
+                )
+            )
+        )
 
         return H
 

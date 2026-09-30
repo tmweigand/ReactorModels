@@ -163,6 +163,20 @@ class PSDM(NumericModel):
 
     def _residual(self, t, y, ydot, result):
         """IDA residual F(t, y, ydot) = 0.  Writes into `result` in-place."""
+        if not hasattr(self, "_last_progress"):
+            self._last_progress = -1.0
+
+        progress = 100 * t / self.breakthroughs[0].time[-1]
+        progress = np.clip(progress, 0.0, 100.0)
+        progress = round(progress, 2)
+
+        if progress > self._last_progress:
+            print(
+                f"Progress: {progress:.1f}% complete",
+                flush=True,
+            )
+            self._last_progress = progress
+
         c, p_var = self.kinetics._split(y)
         dcdt, dp_vardt = self.kinetics._split(ydot)
 
@@ -269,6 +283,13 @@ class PSDM(NumericModel):
 
         # Each species occupies this many entries in the state vector.
         species_size = N + N * R
+
+        transport_jac = (
+            self.column.porosity * self.velocity * D1[None, :, :]
+            - self.column.porosity
+            * self.axial_diffusion[:, None, None]
+            * D2[None, :, :]
+        )
 
         # Bulk phase
         for i, bc in enumerate(self.inlet_bc):

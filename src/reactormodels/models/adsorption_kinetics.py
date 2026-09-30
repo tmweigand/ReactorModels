@@ -561,8 +561,9 @@ class LiquidPhaseSolve(SolutionVariable):
         """Compute output particle concentrations."""
         Cp_out = p_var_out
         q_out = np.empty_like(Cp_out)
-        for k in range(len(Cp_out)):
-            q_out[k, :, :, :] = self.kinetics.isotherm.q(Cp_out[k, :, :, :])
+        for t in range(len(Cp_out)):
+            for k in range(self.kinetics.axial_nodes):
+                q_out[t, :, k, :] = self.kinetics.isotherm.q(Cp_out[t, :, k, :])
         return Cp_out, q_out
 
 
@@ -815,8 +816,9 @@ class SolidPhaseSolve(SolutionVariable):
         """Compute output particle concentrations."""
         q_out = p_var_out
         Cp_out = np.empty_like(q_out)
-        for k in range(len(q_out)):
-            Cp_out[k, :, :, :] = self.kinetics.isotherm.C(q_out[k, :, :, :])
+        for t in range(len(q_out)):
+            for k in range(self.kinetics.axial_nodes):
+                Cp_out[t, :, k, :] = self.kinetics.isotherm.C(q_out[t, :, k, :])
         return Cp_out, q_out
 
 
