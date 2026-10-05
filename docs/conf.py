@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.abspath("_ext"))
 # -- Project information -----------------------------------------------------
 project = "ReactorModels"
 copyright = "2026, Timothy M. Weigand"
-author = "Timothy M. Weigand"
+author = "Timothy M. Weigand, Mohammed Faran, Graham Parker"
 release = "0.1"
 
 # -- General configuration ---------------------------------------------------
@@ -76,9 +76,11 @@ latex_elements = {
 }
 
 # -- Options for HTML output -------------------------------------------------
-html_theme = "sphinx_rtd_theme"
+html_theme = "renku"
 html_static_path = ["_static"]
 
 html_css_files = [
-    "custom.css",
+    "reactor.css",
 ]
+
+html_favicon = "_static/RM_favicon.png"
