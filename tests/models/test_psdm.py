@@ -162,7 +162,7 @@ def test_algebraic_vars():
     assert isinstance(algebraic_vars, list)
     assert all(isinstance(index, int) for index in algebraic_vars)
 
-    expected_count = 1 + 2 * (model.N_column - 1)
+    expected_count = 1 + 2 * (model.axial_nodes - 1)
     assert len(algebraic_vars) == expected_count
 
     # Inlet boundary condition.
@@ -171,18 +171,18 @@ def test_algebraic_vars():
     # Indices should be unique and within the full state vector.
     assert len(algebraic_vars) == len(set(algebraic_vars))
 
-    state_size = model.N_column + (model.N_column - 1) * model.N_particle
+    state_size = model.axial_nodes + (model.axial_nodes - 1) * model.radial_nodes
     assert all(0 <= index < state_size for index in algebraic_vars)
 
     # First particle: center and edge.
-    first_particle = model.N_column
+    first_particle = model.axial_nodes
     assert first_particle in algebraic_vars
-    assert first_particle + model.N_particle - 1 in algebraic_vars
+    assert first_particle + model.radial_nodes - 1 in algebraic_vars
 
     # Last particle: center and edge.
-    last_particle = model.N_column + ((model.N_column - 2) * model.N_particle)
+    last_particle = model.axial_nodes + ((model.axial_nodes - 2) * model.radial_nodes)
     assert last_particle in algebraic_vars
-    assert last_particle + model.N_particle - 1 in algebraic_vars
+    assert last_particle + model.radial_nodes - 1 in algebraic_vars
 
 
 def test_parameter_check():
