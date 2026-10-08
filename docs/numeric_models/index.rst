@@ -35,50 +35,48 @@ Since there is no advective transport of species within particles, Eqn :eq:`part
     \pd {\lrp{\gke^{p}\rho^{p}\mma ip}}t - \del \vdot \lrp{\gke^{p}\rho^{p}D^{ip}\del\mma ip}
     - \iema M{if}{ip} = 0
 
-where :math:`\gke_p` is the particle porosity. Allowing accumulation of species in the solid phase and pore liquid, 
-Eqn :eq:`particle_mass_balance` can be written as
+The particle domain can be divided further into the solid and pore liquid phases. Thus the solid phase mass 
+balance is given by
 
 .. math::
-    :label: effective_diffusion_balance
+    :label: particle_solid_balance
 
-    \rho_p\pd qt + \gke_p\pd {C_p}t - D_e \del \vdot \lrb{\del \lrp{\rho_pq + \gke_pC_p}} - \iema M{f}{p} = 0
+    \rho_p\pd qt - D_s \del \vdot \del \rho_pq - \iema M{l}{s} = 0
 
-where :math:`\rho_p` is the apparent particle density and :math:`D_e` is the effective diffusion coefficient 
-of species in the particle phase. Assuming the species concentration only changes in the radial direction, 
-Eqn :eq:`effective_diffusion_balance` may be written in spherical coordinates as
+and the pore liquid phase mass balance is given by
 
 .. math::
-    :label: effective_diffusion_model
+    :label: pore_liquid_balance
 
-    \rho_p\pd qt + \gke_p\pd {C_p}t - \frac 1{r^2} \pd {}r \lrb{r^2D_e\lrp{\rho_p\pd {q}r + \gke_p\pd{C_p}r}} 
-    - \iema M{f}{p} = 0
+    \gke_p\pd {C_p}t - D_p \del \vdot \del \gke_pC_p - \iema M{s}{l} = 0
 
-For the pore diffusion model, intraparticle diffusion is assumed to occur primarily in the 
-pore liquid. Thus, Eqn :eq:`effective_diffusion_model` becomes
+where :math:`C_p` is the pore liquid concentration, :math:`\gke_p` is the particle porosity, :math:`\rho_p` is the apparent 
+particle density and :math:`D_s` is the surface diffusion coefficient, and :math:`D_p` is the pore diffusion coefficient. 
+Assuming the species concentration only changes in the radial direction, Eqn :eq:`particle_solid_balance` may be 
+written in spherical coordinates as
+
+.. math::
+    :label: surface_diffusion_model
+
+    \rho_p\pd qt + \frac 1{r^2} \pd {}r \lrb{r^2D_s\rho_p\pd {q}r} 
+    - \iema M{l}{s} = 0
+
+and Eqn :eq:`pore_liquid_balance` becomes
 
 .. math::
     :label: pore_diffusion_model
 
-    \rho_p\pd qt + \gke_p\pd {C_p}t - \frac 1{r^2} \pd {}r \lrb{r^2D_p\gke_p\pd{C_p}r} 
-    - \iema M{f}{p} = 0
+    \gke_p\pd {C_p}t - \frac 1{r^2} \pd {}r \lrb{r^2D_p\gke_p\pd{C_p}r} 
+    - \iema M{s}{l} = 0
 
-where :math:`D_p` is the diffusion coefficient of species in the pore liquid. Alternatively, intraparticle diffusion 
-may be assumed to occur primarily in the solid phase. Thus, Eqn :eq:`effective_diffusion_model` becomes
-
-.. math::
-    :label: homogenous_surface_diffusion
-
-    \rho_p\pd qt + \gke_p\pd {C_p}t - \frac 1{r^2} \pd {}r \lrb{r^2D_s\rho_p\pd {q}r} 
-    - \iema M{f}{p} = 0
-
-where :math:`D_s` is the diffusion coefficient of species in the solid phase. Finally, intraparticle diffusion 
-may be assumed to occur in both the pore liquid and solid phase. Thus, Eqn :eq:`effective_diffusion_model` becomes
+Under the assumption of local equilibrium, Eqn :eq:`surface_diffusion_model` and Eqn :eq:`pore_diffusion_model` can 
+be added together. Since :math:`\iema M{l}{s} = - \iema M{s}{l}`, the intraparticle mass balance can be written as a 
+single equation
 
 .. math::
     :label: pore_and_surface_diffusion
 
-    \rho_p\pd qt + \gke_p\pd {C_p}t - \frac 1{r^2} \pd {}r \lrb{r^2\lrp{D_s\rho_p\pd {q}r + D_p\gke_p\pd{C_p}r}} 
-    - \iema M{f}{p} = 0
+    \rho_p\pd qt + \gke_p\pd {C_p}t - \frac 1{r^2} \pd {}r \lrb{r^2\lrp{D_s\rho_p\pd {q}r + D_p\gke_p\pd{C_p}r}} = 0
 
 which is solved simultaneously with Eqn :eq:`overall_mass_balance`. A kinetic expression for transfer of species from 
 the bulk fluid domain to the particle domain is needed to solve Eqn :eq:`pore_and_surface_diffusion` 
@@ -113,20 +111,27 @@ into Eqn :eq:`film_transfer`
     - \iema M{f}{p} = \frac {3k_f(1-\gke)}{\gke R}\lrb{C(z,t)-C_p(r=R,z,t)}
 
 gives the expression for the rate of transfer of species between the bulk fluid and particle domain. Eqn 
-:eq:`film_transfer_final` is substituted into Eqn :eq:`overall_mass_balance` and Eqn :eq:`effective_diffusion_model` 
-to obtain the final conservation of mass equations in the bulk fluid domain
+:eq:`film_transfer_final` is substituted into Eqn :eq:`overall_mass_balance` to obtain the final 
+conservation of mass equation in the bulk fluid domain
 
 .. math::
     :label:
 
     \gke \pd Ct + \gke v \pd Cz - \gke D_L \pdn 2Cz + \frac {3k_f(1-\gke)}{R}\lrb{C(z,t)-C_p(r=R,z,t)} = 0
 
-and particle domain
+The boundary condition for Eqn :eq:`pore_and_surface_diffusion` at the surface of the particle is given by
 
 .. math::
     :label:
 
-    \rho_p\pd qt + \gke_p\pd {C_p}t - \frac 1{r^2} \pd {}r \lrb{r^2D_e\lrp{\rho_p\pd {q}r + \gke_p\pd{C_p}r}} + k_f\lrb{C(z,t)-C_p(r=R,z,t)} = 0
+    D_s\rho_p\pd {q}r + D_p\gke_p\pd{C_p}r = k_f\lrb{C(z,t)-C_p(r=R,z,t)}
+
+and the boundary condition at the center of the particle is given by 
+
+.. math::
+    :label:
+
+    \rho_p\pd {q(r=0,z,t)}r + \gke_p\pd{C_p(r=0,z,t)}r = 0
 
 Under the assumption of local equilibrium, :math:`q` and :math:`C_p` are related by the Freundlich 
 isotherm equation for any given time and position
