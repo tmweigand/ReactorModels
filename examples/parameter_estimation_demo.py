@@ -1,46 +1,24 @@
-"""parameter_estimation.py"""
+"""parameter_estimation_demo.py
 
+Fits an AdvectionDiffusion breakthrough curve to noisy synthetic data.
+"""
+
+import os
+
+import matplotlib.pyplot as plt
 import numpy as np
 
 import reactormodels
-from reactormodels.regression import (
-    make_parameters,
-    fit_parameters,
+from reactormodels.parameter_estimation import (
     fit_parameters_multistart,
+    make_parameters,
 )
-import matplotlib.pyplot as plt
+from reactormodels.parameter_estimation.model_factory import (
+    make_breakthrough_model_func,
+)
+from reactormodels.properties import Breakthrough, Chemical, Column, Media, Water
 
-
-def build_model(axial_diffusion, superficial_velocity, time):
-    """Construct a adfevtion diffusion modeel"""
-    media = reactormodels.Media()
-    column = reactormodels.Column(
-        length=5,
-        porosity=0.334,
-        diameter=10,
-        bulk_density=399.8,
-        media=media,
-        water=reactormodels.Water(),
-    )
-    chemical = reactormodels.Chemical(
-        axial_diffusion=axial_diffusion,
-    )
-    breakthrough = reactormodels.Breakthrough(
-        column=column,
-        feed_concentrations=1.0,
-        superficial_velocity=superficial_velocity,
-        time=time,
-        chemical=chemical,
-    )
-
-    column_numerics = reactormodels.numerics.NumericsConfig(
-        domain_length=column.length, n_interior_points=8, n_elements=6
-    )
-
-    return reactormodels.models.AdvectionDiffusion(
-        breakthrough=breakthrough,
-        numerics=column_numerics,
-    )
+TRUE_VALUES = dict(axial_diffusion=0.1, superficial_velocity=1.0)
 
 
 def plot_prediction_distribution(
@@ -215,60 +193,72 @@ def plot_prediction_distribution(
 
 
 def main():
-    # --- stand-in for real experimental data ---
     time_min = np.linspace(0.5, 2.5, 40)
 
-    true_model = build_model(
-        axial_diffusion=0.1, superficial_velocity=1.0, time=time_min
-    )
-    x, C_true = true_model.solve()
-    c_over_c0_true = C_true[:, -1]
-
-    rng = np.random.default_rng(0)
-    c_obs = np.clip(c_over_c0_true + rng.normal(0, 0.1, c_over_c0_true.size), 0, 1)
-
-    # --- fit surface_diffusion, pore_diffusion, and kf; particle
-    #     geometry stays fixed at its known/measured value ---
-    def model_func(p, time=time_min):
-        model = build_model(
-            axial_diffusion=p["axial_diffusion"].value,
-            superficial_velocity=p["superficial_velocity"].value,
-            time=time,
-        )
-        _, C = model.solve()
-        return C[:, -1]  # column-outlet C/C0
-
+    # Fit parameter names are matched to attributes of the breakthrough, its
+    # column, media, water and chemical; the rest of the setup is held fixed.
     params = make_parameters(
         axial_diffusion=dict(value=0.25, min=0.001, max=10),
         superficial_velocity=dict(value=0.9, min=0.5, max=6),
     )
+    column = Column(
+        length=5,
+        porosity=0.334,
+        diameter=10,
+        bulk_density=399.8,
+        media=Media(),
+        water=Water(),
+    )
+    breakthrough = Breakthrough(
+        column=column,
+        chemical=Chemical(),
+        feed_concentrations=1.0,
+        time=time_min,
+    )
+    model_func = make_breakthrough_model_func(
+        reactormodels.models.AdvectionDiffusion,
+        breakthrough,
+        params,
+        numerics_kwargs=dict(n_interior_points=8, n_elements=6),
+    )
 
-    best, all_runs = fit_parameters_multistart(
+    # --- stand-in for real experimental data: the same model at known values ---
+    true_params = params.copy()
+    for name, value in TRUE_VALUES.items():
+        true_params[name].set(value=value)
+    c_over_c0_true = model_func(true_params)
+
+    rng = np.random.default_rng(0)
+    c_obs = np.clip(c_over_c0_true + rng.normal(0, 0.1, c_over_c0_true.size), 0, 1)
+
+    # --- fit from several random starts ---
+    best_fit, all_runs = fit_parameters_multistart(
         model_func,
         params,
         y_data=c_obs,
         n_starts=15,
-        log_uniform_names=("axial_diffusion",),  # spans 7 orders of magnitude
-        x_scale="jac",  # also fixes the scaling mismatch
+        log_uniform_names=("axial_diffusion",),  # bounds span 4 orders of magnitude
+        x_scale="jac",  # copes with parameters on very different scales
     )
 
     print("chisqr across starts:", sorted(round(r.result.chisqr, 6) for r in all_runs))
-    result = best  # feed into the rest of your script as before
-
-    # result = fit_parameters(model_func, params, y_data=c_obs)
+    result = best_fit
     print(result.summary())
     print("RMSE:", result.rmse())
 
     print("\n95% confidence intervals (linear/Wald, fast):")
-    for name, (lo, best, hi) in result.ci().items():
-        print(f"  {name}: {best:.4g}  [{lo:.4g}, {hi:.4g}]")
+    for name, (lo, value, hi) in result.confidence_interval().items():
+        print(f"  {name}: {value:.4g}  [{lo:.4g}, {hi:.4g}]")
 
-    # Likelihood-profile CIs are more trustworthy for a nonlinear DAE model
-    # like PSDM, at the cost of many extra solves -- run only when needed.
-    print("\n95% confidence intervals (profile likelihood, slower):")
-    for name, (lo, best, hi) in result.ci(method="profile", level=0.99).items():
-        print(f"  {name}: {best:.4g}  [{lo:.4g}, {hi:.4g}]")
+    # Profile-likelihood CIs are more trustworthy for nonlinear models, at the
+    # cost of many extra solves -- run only when needed.
+    print("\n99% confidence intervals (profile likelihood, slower):")
+    for name, (lo, value, hi) in result.confidence_interval(
+        method="profile_likelihood", level=0.99
+    ).items():
+        print(f"  {name}: {value:.4g}  [{lo:.4g}, {hi:.4g}]")
 
+    os.makedirs("data_out", exist_ok=True)
     plot_prediction_distribution(
         result=result,
         model_func=model_func,
