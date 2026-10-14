@@ -3,9 +3,6 @@
 import numpy as np
 from enum import Enum, auto
 
-from .isotherm import Isotherm
-from .multi_species_isotherm import MultiSpeciesIsotherm
-
 
 class SolutionVariable(Enum):
     """State dependent variable"""
@@ -37,7 +34,7 @@ class AdsorptionKinetics:
         """Initialize convenient classes/quantities."""
         self.column = breakthrough.column
         self.breakthrough = breakthrough
-        self.isotherm: Isotherm | MultiSpeciesIsotherm = isotherm
+        self.isotherm = isotherm
         self.n_nodes = n_nodes
         self.inlet_concentration = inlet_concentration
 

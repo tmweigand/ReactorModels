@@ -66,6 +66,7 @@ Models
    ../bohart_thomas/index
    ../numeric_models/index
    ../isotherms/index
+   ../isotherm_derivatives/index
 
 **************
 Nomenclature

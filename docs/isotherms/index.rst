@@ -1,9 +1,7 @@
-Isotherms
-============
+Multi-Species Isotherms
+==========================
 
-In addition to the single-species isotherms which the Bohart-Adams and Thomas
-Models are built upon, multi-species isotherms may be applied to models which 
-are solved numerically. Multi-species isotherms are derived using Ideal Adsorbed 
+Multi-species isotherms are derived using Ideal Adsorbed 
 Solution Theory (IAST). Take Gibbs' equation for change in surface tension at an 
 adsorption interface to the change in liquid phase concentration of the adsorbate
 
@@ -106,5 +104,3 @@ the following expression is also true
     :label:
 
     n_iq_i = n_jq_j, \quad j = 2, 3, \dots, N
-
-    
