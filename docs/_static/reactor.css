@@ -9,3 +9,7 @@ div.math .eqno {
     position: absolute;
     right: 0;
 }
+
+code.literal, span.pre {
+    color: #333333 !important;
+}
