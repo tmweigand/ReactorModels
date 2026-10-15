@@ -295,7 +295,7 @@ class PSDM(NumericModel):
 
         return var_idxs
 
-    def solve(self):
+    def solve(self, return_breakthrough=False):
         """Integrate from t_span[0] to t_span[1], returning results at t_eval."""
         y0, ydot0 = self._initial_conditions()
 
@@ -323,12 +323,15 @@ class PSDM(NumericModel):
             len(self.breakthrough.time), self.axial_nodes, self.radial_nodes
         )  # (n_times, axial_nodes, radial_nodes)
 
-        return (
-            self.column_numerics.collocation.nodes,
-            self.particle_numerics.collocation.nodes,
-            C_out,
-            Cp_out,
-        )
+        if return_breakthrough:
+            return C_out[:, -1]
+        else:
+            return (
+                self.column_numerics.collocation.nodes,
+                self.particle_numerics.collocation.nodes,
+                C_out,
+                Cp_out,
+            )
 
     def get_sorbed_mass_fraction(
         self, pore_concentration: np.ndarray | float

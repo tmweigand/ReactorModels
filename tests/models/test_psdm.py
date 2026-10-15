@@ -233,3 +233,13 @@ def test_different_states_are_equal():
     Cp_q = q_model.get_pore_concentration(q)
 
     np.testing.assert_allclose(Cp, Cp_q, atol=1e-5)
+
+
+def test_return_breakthrough():
+    """Ensure return breakthrough is correct"""
+
+    time = np.linspace(1e-10, 3600, 5)
+    model = _make_particle(time=time)
+
+    c_out = model.solve(return_breakthrough=True)
+    assert len(c_out) == len(time)

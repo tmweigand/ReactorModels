@@ -109,3 +109,25 @@ def test_ldf_q_tracks_equilibrium():
     q_eq = model.isotherm.q(C[0])
     # q should be close to q*(C) at long times
     assert q[0] == pytest.approx(q_eq, rel=0.05)
+
+
+def test_return_breakthrough():
+    """Ensure return breakthrough is correct"""
+    model, D, column_length, eps, rho_b, K = _base_model()
+
+    R = 1.0 + (rho_b * K) / eps
+
+    t_mid = 0.5 * column_length / (model.breakthrough.interstitial_velocity / R)
+    t_eval = np.array([0.75 * t_mid, t_mid, 2.0 * t_mid])
+
+    model.breakthrough.time = t_eval
+
+    c_out = model.solve(return_breakthrough=True)
+    assert len(c_out) == len(t_eval)
+
+    np.testing.assert_allclose(
+        c_out,
+        np.array([9.723768e-06, 2.75993294e-04, 5.39506707e-01]),
+        rtol=1e-7,
+        atol=0.0,
+    )
