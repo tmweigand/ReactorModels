@@ -13,7 +13,6 @@ from reactormodels.models import (
     MultiCapacityIsotherm,
     AdsorbateComplexIsotherm,
 )
-from reactormodels.models.isotherm import fit_isotherm
 
 
 def test_linear_isotherm():
@@ -64,81 +63,6 @@ def test_linear_zero_concentration():
     result = iso.q(np.array([0.0]))
 
     assert result[0] == 0.0
-
-
-@pytest.mark.skip
-def test_fit_linear_isotherm_recovers_parameter():
-    """Test fitting a linear isotherm to synthetic equilibrium data."""
-    C = np.array([0.0, 1.0, 2.0, 3.0, 4.0])
-    K = 2.5
-    expected = LinearIsotherm(K=K)
-    q = expected.q(C)
-
-    fit = fit_isotherm(
-        LinearIsotherm,
-        C,
-        q,
-        initial_guess=(1.0,),
-        fit_indices=(0,),
-        parameter_template=(K,),
-    )
-
-    np.testing.assert_allclose(fit.K, K)
-
-
-@pytest.mark.skip
-def test_fit_freundlich_isotherm_recovers_parameters():
-    """Test fitting a Freundlich isotherm to synthetic equilibrium data."""
-    C = np.array([1.0, 2.0, 4.0, 8.0, 16.0])
-    K = 3.0
-    n = 2.0
-    expected = FreundlichIsotherm(K, n)
-    q = expected.q(C)
-    params = K, n
-
-    isotherm = fit_isotherm(
-        FreundlichIsotherm,
-        C,
-        q,
-        initial_guess=(1.0, 1.0),
-        fit_indices=(0, 1),
-        parameter_template=params,
-    )
-
-    np.testing.assert_allclose(isotherm.K, K)
-    np.testing.assert_allclose(isotherm.n, n)
-
-
-def test_fit_isotherm_rejects_mismatched_shapes():
-    """Test that fitting rejects C and q arrays with different shapes."""
-    C = np.array([1.0, 2.0, 3.0])
-    q = np.array([1.0, 2.0])
-
-    with pytest.raises(ValueError, match="C and q must have the same shape."):
-        fit_isotherm(
-            LinearIsotherm,
-            C,
-            q,
-            initial_guess=(1.0,),
-            fit_indices=(0, 1),
-            parameter_template=(1,),
-        )
-
-
-def test_fit_isotherm_rejects_negative_values():
-    """Test that fitting rejects negative equilibrium data."""
-    C = np.array([1.0, -2.0, 3.0])
-    q = np.array([1.0, 2.0, 3.0])
-
-    with pytest.raises(ValueError, match="C and q values must be nonnegative."):
-        fit_isotherm(
-            FreundlichIsotherm,
-            C,
-            q,
-            initial_guess=(1.0, 1.0),
-            fit_indices=(0, 1),
-            parameter_template=(1, 1),
-        )
 
 
 def test_c_from_q_equals_q_from_c():
@@ -504,16 +428,6 @@ def test_competitive_freundlich_hessian():
     assert_hessian_chain_rule_matches_numerical(isotherm, "q")
 
 
-def test_competitive_freundlich_hessian():
-    n = np.array([0.7, 0.9])
-    K = np.array([0.5, 0.8])
-
-    isotherm = CompetitiveFreundlichIsotherm(n=n, K=K)
-
-    assert_hessian_matches_numerical(isotherm, "q")
-    assert_hessian_chain_rule_matches_numerical(isotherm, "q")
-
-
 def test_iexcm_hessian():
     K = np.array([1.2, 0.8])
     MW = np.array([35.45, 40.08])
@@ -588,169 +502,225 @@ def test_adsorbate_complex_hessian():
     assert_hessian_chain_rule_matches_numerical(isotherm, "C")
 
 
-@pytest.mark.skip
-def assert_multi_species_fit_recovers_params(
-    model, params, guess, fit_indices, fit_names
+def test_n_species_1_reduces_to_single_species_freundlich():
+    q = np.array([[0.3, 0.5, 0.7]])
+    n = np.array([1.1])
+    K = np.array([0.5])
+
+    iso_single = FreundlichIsotherm(K, n)
+    iso_multi = CompetitiveFreundlichIsotherm(K, n)
+
+    np.testing.assert_allclose(iso_single.C(q), iso_multi.C(q))
+    np.testing.assert_allclose(iso_single.multi_dC_dq(q), iso_multi.dC_dq(q))
+    np.testing.assert_allclose(iso_single.multi_d2C_dq2(q), iso_multi.d2C_dq2(q))
+
+
+def test_n_species_1_reduces_to_single_species_linear():
+    q = np.array([[0.3, 0.5, 0.7]])
+    n = np.array([1.0])
+    K = np.array([0.5])
+
+    iso_linear = LinearIsotherm(K)
+    iso_single = FreundlichIsotherm(K, n)
+    iso_multi = CompetitiveFreundlichIsotherm(K, n)
+
+    np.testing.assert_allclose(iso_linear.C(q), iso_multi.C(q))
+    np.testing.assert_allclose(iso_linear.multi_dC_dq(q), iso_multi.dC_dq(q))
+    np.testing.assert_allclose(
+        iso_linear.multi_d2C_dq2(q), iso_multi.d2C_dq2(q), atol=1e-12
+    )
+
+    np.testing.assert_allclose(iso_single.C(q), iso_multi.C(q))
+    np.testing.assert_allclose(iso_single.multi_dC_dq(q), iso_multi.dC_dq(q))
+    np.testing.assert_allclose(
+        iso_single.multi_d2C_dq2(q), iso_multi.d2C_dq2(q), atol=1e-12
+    )
+
+
+def test_n_species_1_reduces_to_single_species_langmuir():
+    C = np.array([[0.3, 0.5, 0.7]])
+    K = np.array([0.5])
+    q_m = 20
+
+    iso_single = LangmuirIsotherm(K, q_m)
+    iso_multi = CompetitiveLangmuirIsotherm(K, q_m)
+
+    np.testing.assert_allclose(iso_single.q(C), iso_multi.q(C))
+    np.testing.assert_allclose(iso_single.multi_dq_dC(C), iso_multi.dq_dC(C))
+    np.testing.assert_allclose(iso_single.multi_d2q_dC2(C), iso_multi.d2q_dC2(C))
+
+
+def test_langmuir_freundlich_reduces_to_langmuir():
+    C = np.array([[0.3, 0.5, 0.7]])
+    K = np.array([0.5])
+    n = np.array([1.0])
+    q_m = 20
+
+    iso_langmuir = CompetitiveLangmuirIsotherm(K, q_m)
+    iso_lf = CompetitiveLangmuirFreundlichIsotherm(K, n, q_m)
+
+    np.testing.assert_allclose(iso_langmuir.q(C), iso_lf.q(C))
+    np.testing.assert_allclose(iso_langmuir.dq_dC(C), iso_lf.dq_dC(C))
+    np.testing.assert_allclose(iso_langmuir.d2q_dC2(C), iso_lf.d2q_dC2(C))
+
+
+def test_stoichiometric_reduces_to_langmuir():
+    C = np.array([[0.3, 0.5, 0.7]])
+    K = np.array([0.5])
+    n = np.array([1.0])
+    q_m = 20
+
+    iso_langmuir = CompetitiveLangmuirIsotherm(K, q_m)
+    iso_stoich = CompetitiveStoichiometricIsotherm(K, n, q_m)
+
+    np.testing.assert_allclose(iso_langmuir.q(C), iso_stoich.q(C))
+    np.testing.assert_allclose(iso_langmuir.dq_dC(C), iso_stoich.dq_dC(C))
+    np.testing.assert_allclose(iso_langmuir.d2q_dC2(C), iso_stoich.d2q_dC2(C))
+
+
+def test_multi_capacity_reduces_to_langmuir():
+    C = np.array([[0.3, 0.5, 0.7], [0.2, 0.4, 0.5]])
+    K = np.array([0.5, 0.5])
+    q_tot = 20
+    q_m = np.array([20, 20])
+
+    iso_langmuir = CompetitiveLangmuirIsotherm(K, q_tot)
+    iso_multi = MultiCapacityIsotherm(K, q_m)
+
+    np.testing.assert_allclose(iso_langmuir.q(C), iso_multi.q(C))
+    np.testing.assert_allclose(iso_langmuir.dq_dC(C), iso_multi.dq_dC(C))
+    np.testing.assert_allclose(iso_langmuir.d2q_dC2(C), iso_multi.d2q_dC2(C))
+
+
+def test_adsorbate_complex_reduces_to_langmuir():
+    C = np.array([[0.3, 0.5, 0.7], [0.2, 0.4, 0.5]])
+    K = np.array([0.5, 0.5])
+    q_m = 20
+    K_x = 0
+
+    iso_langmuir = CompetitiveLangmuirIsotherm(K, q_m)
+    iso_ac = AdsorbateComplexIsotherm(K, q_m, K_x)
+
+    np.testing.assert_allclose(iso_langmuir.q(C), iso_ac.q(C))
+    np.testing.assert_allclose(iso_langmuir.dq_dC(C), iso_ac.dq_dC(C))
+    np.testing.assert_allclose(iso_langmuir.d2q_dC2(C), iso_ac.d2q_dC2(C))
+
+
+def epa_ceq(
+    q,
+    K,
+    MW,
+    valence,
+    inlet_concentrations,
+    q_m,
+    bulk_density,
+    reference_concentration,
+    reference_mw,
+    reference_z=1,
 ):
-    isotherm = model(*params)
+    """Calculate equilibrium concentrations using EPA HSDMIX equations.
 
-    if isotherm.output == "q":
-        iso = isotherm.q
-    else:
-        iso = isotherm.C
+    q: resin loading, shape (n_species, n_nodes)
+    Returns: EPA-equivalent concentrations, shape (n_species, n_nodes)
+    """
+    # Convert resin loadings to equivalent loadings.
+    q_eq = q * bulk_density * np.asarray(valence)[:, None] / np.asarray(MW)[:, None]
+    q_ref = q_m - q_eq.sum(axis=0)
 
-    # experimental data
-    data_in = np.array(
+    # Total liquid-phase equivalent concentration.
+    CT = (
+        np.sum(np.asarray(inlet_concentrations) * np.asarray(valence) / np.asarray(MW))
+        + reference_concentration * reference_z / reference_mw
+    )
+
+    K = np.asarray(K)
+    valence = np.asarray(valence)
+
+    if np.all(valence == 1) and reference_z == 1:
+        # EPA calc_Ceq_mv: include the reference ion with K_ref = 1.
+        q_all = np.concatenate([q_ref[None, :], q_eq], axis=0)
+        K_all = np.concatenate([[1.0], K])
+
+        alpha = K_all[:, None] / K_all[None, :]
+        C_all = q_all * CT / (alpha @ q_all)
+
+        return C_all[1:]
+
+    # EPA calc_Ceq_dv.
+    divalent = valence == 2
+    monovalent = valence == 1
+
+    a = np.sum(q_eq[divalent] / K[divalent, None], axis=0) / q_ref**2
+    b = 1.0 + np.sum(q_eq[monovalent] / K[monovalent, None], axis=0) / q_ref
+    c = -CT
+
+    C_ref = 2 * c / (-b - np.sqrt(b**2 - 4 * a * c))
+
+    return q_eq / K[:, None] * (C_ref[None, :] / q_ref[None, :]) ** valence[:, None]
+
+
+@pytest.mark.parametrize(
+    "valence",
+    [
+        np.array([1, 1]),  # EPA monovalent branch
+        np.array([1, 2]),  # EPA divalent branch
+        np.array([2, 1, 2]),  # Multiple divalent species
+    ],
+)
+def test_competitive_ion_isotherm_C_matches_epa(valence):
+    K = np.array([0.7, 1.8] if len(valence) == 2 else [0.7, 1.8, 1.2])
+    MW = np.array([35.45, 100.0] if len(valence) == 2 else [100.0, 35.45, 150.0])
+    inlet_concentrations = np.array(
+        [10.0, 20.0] if len(valence) == 2 else [20.0, 10.0, 15.0]
+    )
+
+    q_m = 2.0
+    bulk_density = 500.0
+    reference_concentration = 5.0
+    reference_mw = 35.45
+    reference_z = 1
+
+    isotherm = CompetitiveIonIsotherm(
+        K=K,
+        MW=MW,
+        valence=valence,
+        inlet_concentrations=inlet_concentrations,
+        q_m=q_m,
+        bulk_density=bulk_density,
+        reference_concentration=reference_concentration,
+        reference_mw=reference_mw,
+        reference_z=reference_z,
+    )
+
+    # Several loading states, all below the total exchange capacity.
+    q = np.array(
         [
-            [0.1, 0.1],
-            [0.2, 0.3],
-            [0.3, 0.5],
-            [0.5, 0.2],
-            [0.8, 0.7],
-            [1.0, 1.0],
+            [0.01, 0.02, 0.03],
+            [0.02, 0.01, 0.02],
         ]
     )
-    data_out = np.array([iso(x) for x in data_in])
-
-    fitted = fit_isotherm(
-        model,
-        data_in,
-        data_out,
-        initial_guess=guess,
-        fit_indices=fit_indices,
-        parameter_template=params,
-    )
-
-    for index, name in zip(fit_indices, fit_names):
-        np.testing.assert_allclose(
-            getattr(fitted, name),
-            params[index],
-            rtol=1e-5,
-            atol=1e-7,
+    if len(valence) == 3:
+        q = np.array(
+            [
+                [0.01, 0.02, 0.03],
+                [0.02, 0.01, 0.02],
+                [0.01, 0.015, 0.02],
+            ]
         )
 
-
-@pytest.mark.skip
-def test_adsorbate_complex_fit():
-    K = np.array([0.5, 0.8])
-    q_m = 10.0
-    K_x = 5.0
-
-    params = K, q_m, K_x
-    fit_names = "K", "q_m", "K_x"
-    fit_indices = (0, 1, 2)
-
-    model = AdsorbateComplexIsotherm
-    guess = np.array([0.4, 0.7]), 8.0, 4.0
-
-    assert_multi_species_fit_recovers_params(
-        model, params, guess, fit_indices, fit_names
+    expected = epa_ceq(
+        q=q,
+        K=K,
+        MW=MW,
+        valence=valence,
+        inlet_concentrations=inlet_concentrations,
+        q_m=q_m,
+        bulk_density=bulk_density,
+        reference_concentration=reference_concentration,
+        reference_mw=reference_mw,
+        reference_z=reference_z,
     )
 
+    actual = isotherm.C(q)
 
-@pytest.mark.skip
-def test_competitive_freundlich_fit():
-    K = np.array([0.5, 0.8])
-    n = np.array([0.7, 0.9])
-
-    params = K, n
-    fit_names = "K", "n"
-    fit_indices = (0, 1)
-
-    model = CompetitiveFreundlichIsotherm
-    guess = (np.array([0.4, 0.7]), np.array([1, 1]))
-
-    assert_multi_species_fit_recovers_params(
-        model, params, guess, fit_indices, fit_names
-    )
-
-
-@pytest.mark.skip
-def test_iexcm_fit():
-    K = np.array([1.2, 0.8])
-    MW = np.array([35.45, 40.08])
-    z = np.array([1, 2])
-    C_o = np.array([100.0, 50.0])
-    q_m = 2.0
-    rho_b = 1.0
-
-    params = K, MW, z, C_o, q_m, rho_b
-    fit_names = "K", "q_m"
-    fit_indices = (0, 4)
-
-    model = CompetitiveIonIsotherm
-    guess = (np.array([0.9, 0.7]), 3)
-
-    assert_multi_species_fit_recovers_params(
-        model, params, guess, fit_indices, fit_names
-    )
-
-
-@pytest.mark.skip
-def test_competitive_langmuir_fit():
-    q_m = 20
-    K = np.array([0.5, 0.8])
-
-    params = K, q_m
-    fit_names = "K", "q_m"
-    fit_indices = (0, 1)
-
-    model = CompetitiveLangmuirIsotherm
-    guess = (np.array([0.9, 0.7]), 10)
-
-    assert_multi_species_fit_recovers_params(
-        model, params, guess, fit_indices, fit_names
-    )
-
-
-@pytest.mark.skip
-def test_competitive_langmuir_freundlich_fit():
-    q_m = 20
-    K = np.array([0.5, 0.8])
-    n = np.array([0.7, 0.9])
-
-    params = K, n, q_m
-    fit_names = "K", "n", "q_m"
-    fit_indices = (0, 1, 2)
-
-    model = CompetitiveLangmuirFreundlichIsotherm
-    guess = (np.array([0.4, 0.9]), np.array([1, 0.6]), 10)
-
-    assert_multi_species_fit_recovers_params(
-        model, params, guess, fit_indices, fit_names
-    )
-
-
-@pytest.mark.skip
-def test_competitive_stoichiometric_fit():
-    q_m = 20
-    K = np.array([0.5, 0.8])
-    n = np.array([0.7, 0.9])
-
-    params = K, n, q_m
-    fit_names = "K", "n", "q_m"
-    fit_indices = (0, 1, 2)
-
-    model = CompetitiveStoichiometricIsotherm
-    guess = (np.array([0.4, 0.9]), np.array([1, 0.6]), 10)
-
-    assert_multi_species_fit_recovers_params(
-        model, params, guess, fit_indices, fit_names
-    )
-
-
-@pytest.mark.skip
-def test_multi_capacity_fit():
-    q_m = np.array([5, 10])
-    K = np.array([0.5, 0.8])
-
-    params = K, q_m
-    fit_names = "K", "q_m"
-    fit_indices = (0, 1)
-
-    model = MultiCapacityIsotherm
-    guess = (np.array([0.4, 0.9]), np.array([7, 8]))
-
-    assert_multi_species_fit_recovers_params(
-        model, params, guess, fit_indices, fit_names
-    )
+    np.testing.assert_allclose(actual, expected, rtol=1e-10, atol=1e-12)

@@ -63,7 +63,7 @@ class CompetitiveFreundlichIsotherm(MultiSpeciesIsotherm):
     def C(self, q: np.ndarray):
         """Return liquid phase concentration."""
         q_arr = np.asarray(q, dtype=float)
-        q_arr = np.maximum(q_arr, 1e-8)
+        q_arr = np.maximum(q_arr, 0)
 
         Q = np.sum(q_arr, axis=0)
         S = np.sum(self.n[:, None] * q_arr, axis=0)
@@ -75,7 +75,7 @@ class CompetitiveFreundlichIsotherm(MultiSpeciesIsotherm):
     def dC_dq(self, q: np.ndarray):
         """Calculate derivative of liquid concentration by sorbed mass concentration."""
         q_arr = np.asarray(q, dtype=float)
-        q_arr = np.maximum(q_arr, 1e-8)
+        q_arr = np.maximum(q_arr, 0)
 
         Q = np.sum(q_arr, axis=0)
         S = np.sum(self.n[:, None] * q_arr, axis=0)
@@ -95,7 +95,7 @@ class CompetitiveFreundlichIsotherm(MultiSpeciesIsotherm):
     def d2C_dq2(self, q: np.ndarray) -> np.ndarray:
         """Calculate the second derivative."""
         q_arr = np.asarray(q, dtype=float)
-        q_arr = np.maximum(q_arr, 1e-8)
+        q_arr = np.maximum(q_arr, 0)
 
         Q = np.sum(q_arr, axis=0)
         S = np.sum(self.n[:, None] * q_arr, axis=0)
@@ -943,8 +943,8 @@ class AdsorbateComplexIsotherm(MultiSpeciesIsotherm):
         if self.q_m <= 0:
             raise ValueError("q_m must be greater than zero.")
 
-        if self.K_x <= 0:
-            raise ValueError("K_x must be greater than zero.")
+        if self.K_x < 0:
+            raise ValueError("K_x must be greater than or equal to zero.")
 
     def q(self, C: np.ndarray) -> np.ndarray:
         """Return sorbed mass concentration"""
