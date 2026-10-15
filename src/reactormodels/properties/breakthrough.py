@@ -154,6 +154,10 @@ class Breakthrough:
             )
         return self._superficial_velocity
 
+    @superficial_velocity.setter
+    def superficial_velocity(self, value: float) -> None:
+        self._superficial_velocity = value
+
     @property
     def interstitial_velocity(self) -> float:
         """Interstitial velocity, derived from superficial velocity and porosity."""

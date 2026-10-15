@@ -142,7 +142,7 @@ class AdvectionDiffusionAdsorption(NumericModel):
         ydot0 = np.zeros_like(y0)
         return y0, ydot0
 
-    def solve(self):
+    def solve(self, return_breakthrough=False):
         """Integrate from t_span[0] to t_span[1], returning results at t_eval."""
         y0, ydot0 = self._initial_conditions()
 
@@ -165,4 +165,8 @@ class AdvectionDiffusionAdsorption(NumericModel):
         y_out = result.values.y[1:]  # (n_times, n_vars)
 
         C_out, q_out = self.kinetics._parse_variables(y_out)
-        return self.numerics.collocation.nodes, C_out, q_out
+
+        if return_breakthrough:
+            return C_out[:, -1]
+        else:
+            return self.numerics.collocation.nodes, C_out, q_out
