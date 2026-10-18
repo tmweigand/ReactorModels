@@ -109,17 +109,19 @@ class FreundlichIsotherm(Isotherm):
     def q(self, C: float | np.ndarray) -> np.ndarray:
         """Return sorbed mass concentration"""
         C = np.asarray(C, dtype=float)
-        return self.K * np.maximum(C, 0.0) ** (1.0 / self.n)
+        C = np.maximum(0, C)
+        return self.K * C ** (1.0 / self.n)
 
     def dq_dC(self, C: float | np.ndarray) -> np.ndarray:
         """Calculate the derivative of sorbed mass concentration by concentration."""
         C = np.asarray(C, dtype=float)
-        C = np.maximum(C, 1e-30)
+        C = np.maximum(1e-12, np.abs(C))
         return (self.K / self.n) * C ** (1.0 / self.n - 1.0)
 
     def d2q_dC2(self, C: float | np.ndarray) -> np.ndarray:
         """Calculate the second derivative."""
-        C = np.maximum(np.asarray(C, dtype=float), 1e-30)
+        C = np.asarray(C, dtype=float)
+        C = np.maximum(1e-12, np.abs(C))
         return (self.K / self.n) * (1.0 / self.n - 1.0) * C ** (1.0 / self.n - 2.0)
 
     def C(self, q):

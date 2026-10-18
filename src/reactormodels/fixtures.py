@@ -39,8 +39,9 @@ def make_breakthrough(
         length=length,
         diameter=diameter,
         porosity=porosity,
-        media=Media(particle_density=1.0, particle_radius=1.0, bed_density=bed_density),
+        media=Media(particle_density=1.0, particle_radius=1.0),
         water=_water,
+        bed_density=bed_density,
     )
     chemical = Chemical(name="tracer", axial_diffusion=axial_diffusion)
 

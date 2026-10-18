@@ -18,7 +18,7 @@ def _make_particle(Ds=5e-9, C_in=1):
     length = 100  # cm
     diameter = 10  # cm
     porosity = 0.334
-    bulk_density = 399.8  # g/mL
+    bed_density = 399.8  # g/mL
     flow_rate = 40  # cm3/s
     t_eval = np.linspace(1e-10, 175 * 1440 * 60, 200)  # s
 
@@ -34,7 +34,7 @@ def _make_particle(Ds=5e-9, C_in=1):
         length=length,
         porosity=porosity,
         diameter=diameter,
-        bulk_density=bulk_density,
+        bed_density=bed_density,
         media=media,
         water=reactormodels.Water(),
     )

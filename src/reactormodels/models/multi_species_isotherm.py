@@ -269,7 +269,7 @@ class CompetitiveIonIsotherm(MultiSpeciesIsotherm):
         valence: np.ndarray,
         inlet_concentrations: np.ndarray,
         q_m: float,
-        bulk_density: float,
+        bed_density: float,
         reference_concentration: float = 0,
         reference_mw: float = 35.45,  # chloride default
         reference_z: int = 1,
@@ -282,7 +282,7 @@ class CompetitiveIonIsotherm(MultiSpeciesIsotherm):
         self.C_Ao = reference_concentration
         self.MW_A = reference_mw
         self.z_A = reference_z
-        self.rho_b = bulk_density
+        self.rho_b = bed_density
 
         if (
             self.K.shape != self.MW.shape

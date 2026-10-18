@@ -37,7 +37,6 @@ def _make_particle(
         particle_porosity=particle_porosity,
         particle_diameter=particle_diameter,
         particle_density=particle_density,
-        bed_density=bed_density,
     )
 
     column = reactormodels.Column(
@@ -46,6 +45,7 @@ def _make_particle(
         diameter=diameter,
         media=media,
         water=reactormodels.Water(),
+        bed_density=bed_density,
     )
 
     chemical = reactormodels.Chemical(

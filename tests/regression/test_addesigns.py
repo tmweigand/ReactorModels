@@ -81,7 +81,7 @@ def make_particle(
         length=L,
         porosity=0.334,
         diameter=diameter,
-        bulk_density=399.8,  # g/mL
+        bed_density=399.8,  # g/mL
         media=media,
         water=reactormodels.Water(),
     )

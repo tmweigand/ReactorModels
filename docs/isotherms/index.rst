@@ -1,9 +1,9 @@
 Multi-Species Isotherms
 ==========================
 
-Multi-species isotherms are derived using Ideal Adsorbed 
-Solution Theory (IAST). Take Gibbs' equation for change in surface tension at an 
-adsorption interface to the change in liquid phase concentration of the adsorbate
+Multi-species isotherms are derived using Ideal Adsorbed Solution Theory (IAST) :cite:`MWH3rdedition`. 
+Take Gibbs' equation for change in surface tension at an adsorption interface to the change in liquid 
+phase concentration of the adsorbate
 
 .. math::
     :label:
@@ -34,17 +34,17 @@ comprised of five equations
     q_T = \sLb {i=1}Nq_i
 
 .. math::
-    :label:
+    :label: mole_fraction
 
     x_i = \frac {q_i}{q_T}
 
 .. math::
-    :label:
+    :label: raoults
 
     C_i = x_iC^o_i
 
 .. math::
-    :label:
+    :label: q_sum_inv
 
     \frac 1{q_T} = \sLb {i=1}N \frac {x_i}{q^o_i}
 
@@ -59,7 +59,7 @@ of species :math:`i` in the multi-species system, and :math:`C_i^o` is the conce
 :math:`i` in the single-species system. The Freundlich isotherm equation for a single-species is given by
 
 .. math::
-    :label:
+    :label: freundlich_single
 
     q_i^o = K_i\lrp{C_i^o}^{1/n_i}
 
@@ -104,3 +104,103 @@ the following expression is also true
     :label:
 
     n_iq_i = n_jq_j, \quad j = 2, 3, \dots, N
+
+Rearranging Eqn :eq:`spreading_pressure` to 
+
+.. math::
+    :label: q_single
+
+     q^o_i = \frac 1{n_i}\frac {\pi_iA}{RT}
+
+and Eqn :eq:`freundlich_single` to
+
+.. math::
+    :label: C_single
+
+    C_i^o = \lrp{\frac {q_i^o}{K_i}}^{n_i}
+
+Substituting Eqn :eq:`q_single` into Eqn :eq:`C_single`
+
+.. math::
+    :label: C_single_sub
+
+    C_i^o = \lrp{\frac {\pi_iA}{n_iK_iRT}}^{n_i}
+
+Substituting Eqn :eq:`mole_fraction` and Eqn :eq:`C_single_sub` into Eqn :eq:`raoults`
+
+.. math::
+    :label: freundlich_incomplete
+
+    C_i = \frac {q_i}{\sLb {j=1}N q_j}\lrp{\frac {\pi_iA}{n_iK_iRT}}^{n_i}
+
+Substituting Eqn :eq:`q_single` and Eqn :eq:`mole_fraction` into Eqn :eq:`q_sum_inv`
+
+.. math::
+    :label: q_n_sum
+
+    \frac {\pi_iA}{RT} = \sLb {j=1}Nq_jn_j
+
+The final form of the competitive Freundlich isotherm equation is obtained by substituting 
+Eqn :eq:`q_n_sum` into Eqn :eq:`freundlich_incomplete`
+
+.. math::
+    :label:
+
+    C_i = \frac {q_i}{\sLb {j=1}N q_j}\lrp{\frac {\sLb {j=1}Nq_jn_j}{n_iK_i}}^{n_i}
+
+
+The extended Langmuir was first introduced to relate the adsorbed amount of one gas with respect 
+to the adsorbed amount of a second gas (i.e. a binary mixture). The competitive 
+Langmuir isotherm equation was derived assuming the surface of the adsorbent is uniform and capable 
+of adsorbing only a single layer of adsorbate, and that adsorbed species do not interact with each 
+other :cite:`Markham1931`. The single-species Langmuir isotherm equation is given by
+
+.. math::
+    :label:
+
+    q_i = \frac {q_mK_iC_i}{1 + K_iC_i}
+
+Assuming a fixed total adsorption capacity with a second species :math:`j` in the system, the multi-species 
+Langmuir kinetic expression for species :math:`i` is given by
+
+.. math::
+    :label: multi_kinetics
+    
+    \pd {q_i}t = k_{a,i}C_i\lrp{q_m - q_i - q_j} - k_{d,i}q_i
+
+where :math:`k_{a,i}` and :math:`k_{d,i}` are the species-specific forward and reverse adsorption rate constants, respectively. 
+Where the species-specific Langmuir dissociation constant, :math:`K_i`, is equal to :math:`k_{a,i} / k_{d,i}`. At equilibrium, 
+:math:`\partial q_i / \partial t = 0`, thus Eqn :eq:`multi_kinetics` can be rearranged to
+
+.. math::
+    :label:
+
+    q_i= \frac{k_{a,i}C_i\lrp{q_m - q_j}}{k_{d,i} + k_{a,i}C_i}
+
+dividing through by :math:`k_{d,i}`
+
+.. math::
+    :label: species_i
+    
+    q_i = \frac {K_iC_i\lrp{q_m - q_j}}{1 + K_iC_i}
+
+Similarly, the expression for species :math:`j` is given by
+
+.. math::
+    :label: species_j
+    
+    q_j = \frac {K_jC_j\lrp{q_m - q_i}}{1 + K_jC_j}
+
+Subsituting Eqn :eq:`species_j` into :eq:`species_i` yields
+
+.. math::
+    :label:
+
+    q_i = \frac {q_mK_iC_i}{1+K_iC_i+K_jC_j}
+
+which can be written generally as
+
+.. math::
+    :label:
+
+    q_i = \frac {q_mK_iC_i}{1+\sLb {j=1}NK_jC_j}

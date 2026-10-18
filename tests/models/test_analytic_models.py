@@ -78,7 +78,7 @@ def test_thomas_limiting_form(time=np.linspace(0, 10, 100)):
     length = 1 / np.pi
     diameter = 2
     porosity = 0.4
-    bulk_density = 0.36
+    bed_density = 0.36
     particle_density = 0.6
     feed_concentrations = 1
     flow_rate = 1
@@ -90,7 +90,7 @@ def test_thomas_limiting_form(time=np.linspace(0, 10, 100)):
         length=length,
         diameter=diameter,
         porosity=porosity,
-        bulk_density=bulk_density,
+        bed_density=bed_density,
         media=reactormodels.Media(particle_density=particle_density),
         water=reactormodels.Water(),
     )
@@ -153,7 +153,7 @@ def test_bohart_adams_equals_thomas():
     diameter = 0.5
     length = 1
     flow_rate = 0.02
-    bulk_density = 1
+    bed_density = 1
     porosity = 0.38
     time = np.linspace(0, 200, 200)
 
@@ -161,7 +161,7 @@ def test_bohart_adams_equals_thomas():
         length=length,
         porosity=porosity,
         diameter=diameter,
-        bulk_density=bulk_density,
+        bed_density=bed_density,
         media=reactormodels.Media(),
         water=reactormodels.Water(),
     )

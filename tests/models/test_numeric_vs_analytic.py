@@ -6,29 +6,26 @@ import pytest
 
 def test_thomas():
     """Numerical solution matches analytical solution."""
-    t_eval = np.linspace(1e-10, 10, 200)
-    length = 1 / np.pi
-    diameter = 2
+    t_eval = np.linspace(1e-10, 20000, 200)
+    length = 5
+    diameter = 0.1
     porosity = 0.4
-    bed_density = 0.36
-    particle_density = 0.6
+    bed_density = 500
     feed_concentrations = 1
-    flow_rate = 1
-    q_m = 20
-    rate_constant = 1
-    K = 5000
-    initial_concentration = 0
-    axial_diffusion = 1e-20
+    superficial_velocity = 1
+    q_m = 6
+    rate_constant = 5e-4
+    K = 1e4
+    axial_diffusion = 0.01
 
-    isotherm = reactormodels.models.LangmuirIsotherm(K=K, q_m=q_m)
+    isotherm = reactormodels.models.LangmuirIsotherm(K, q_m)
 
     column = reactormodels.Column(
         length=length,
         porosity=porosity,
         diameter=diameter,
-        media=reactormodels.Media(
-            particle_density=particle_density, bed_density=bed_density
-        ),
+        media=reactormodels.Media(),
+        bed_density=bed_density,
         water=reactormodels.Water(),
     )
 
@@ -36,13 +33,12 @@ def test_thomas():
         column=column,
         chemical=reactormodels.Chemical(axial_diffusion=axial_diffusion),
         feed_concentrations=feed_concentrations,
-        initial_concentration=initial_concentration,
-        flow_rate=flow_rate,
+        superficial_velocity=superficial_velocity,
         time=t_eval,
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
-        domain_length=column.length, n_interior_points=5, n_elements=10, add_inlet=True
+        domain_length=column.length, n_interior_points=8, n_elements=6, add_inlet=True
     )
 
     model = reactormodels.models.AdvectionDiffusionAdsorption(
@@ -50,6 +46,7 @@ def test_thomas():
         isotherm=isotherm,
         numerics=numerics,
         kinetics=reactormodels.models.SecondOrder(rate_constant),
+        inlet_bc=reactormodels.models.DirichletBC,
     )
     x, C, _ = model.solve()
 
@@ -63,4 +60,4 @@ def test_thomas():
     C_thomas = thomas.breakthrough_profile(time=t_eval, x=length)
     outlet_idx = np.argmin(np.abs(x - length))
     C_numerical = C[:, outlet_idx]
-    assert C_numerical == pytest.approx(C_thomas, abs=1e-2)
+    assert C_numerical == pytest.approx(C_thomas, abs=1e-3)

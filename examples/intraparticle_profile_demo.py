@@ -15,7 +15,7 @@ def run_demo(
     length = 1
     diameter = 2
     porosity = 0.4
-    bulk_density = 500
+    bed_density = 500
     superficial_velocity = 1
 
     feed_concentrations = 1
@@ -40,7 +40,7 @@ def run_demo(
         length=length,
         porosity=porosity,
         diameter=diameter,
-        bulk_density=bulk_density,
+        bed_density=bed_density,
         media=media,
         water=reactormodels.Water(),
     )

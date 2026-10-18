@@ -239,7 +239,7 @@ def test_iexcm_jacobian():
     valence = np.array([1, 2])
     inlet_concentrations = np.array([100.0, 50.0])
     q_m = 2.0
-    bulk_density = 1.0
+    bed_density = 1.0
 
     isotherm = CompetitiveIonIsotherm(
         K=K,
@@ -247,7 +247,7 @@ def test_iexcm_jacobian():
         valence=valence,
         inlet_concentrations=inlet_concentrations,
         q_m=q_m,
-        bulk_density=bulk_density,
+        bed_density=bed_density,
     )
 
     assert_jacobian_matches_numerical(isotherm, "q")
@@ -434,7 +434,7 @@ def test_iexcm_hessian():
     valence = np.array([1, 2])
     inlet_concentrations = np.array([100.0, 50.0])
     q_m = 2.0
-    bulk_density = 1.0
+    bed_density = 1.0
 
     isotherm = CompetitiveIonIsotherm(
         K=K,
@@ -442,7 +442,7 @@ def test_iexcm_hessian():
         valence=valence,
         inlet_concentrations=inlet_concentrations,
         q_m=q_m,
-        bulk_density=bulk_density,
+        bed_density=bed_density,
     )
 
     assert_hessian_matches_numerical(isotherm, "q")
@@ -551,9 +551,9 @@ def test_n_species_1_reduces_to_single_species_langmuir():
 
 
 def test_langmuir_freundlich_reduces_to_langmuir():
-    C = np.array([[0.3, 0.5, 0.7]])
-    K = np.array([0.5])
-    n = np.array([1.0])
+    C = np.array([[0.3, 0.5, 0.7], [0.2, 0.4, 0.5]])
+    K = np.array([0.5, 0.6])
+    n = np.array([1.0, 1.0])
     q_m = 20
 
     iso_langmuir = CompetitiveLangmuirIsotherm(K, q_m)
@@ -565,9 +565,9 @@ def test_langmuir_freundlich_reduces_to_langmuir():
 
 
 def test_stoichiometric_reduces_to_langmuir():
-    C = np.array([[0.3, 0.5, 0.7]])
-    K = np.array([0.5])
-    n = np.array([1.0])
+    C = np.array([[0.3, 0.5, 0.7], [0.2, 0.4, 0.5]])
+    K = np.array([0.5, 0.6])
+    n = np.array([1.0, 1.0])
     q_m = 20
 
     iso_langmuir = CompetitiveLangmuirIsotherm(K, q_m)
@@ -580,7 +580,7 @@ def test_stoichiometric_reduces_to_langmuir():
 
 def test_multi_capacity_reduces_to_langmuir():
     C = np.array([[0.3, 0.5, 0.7], [0.2, 0.4, 0.5]])
-    K = np.array([0.5, 0.5])
+    K = np.array([0.5, 0.6])
     q_tot = 20
     q_m = np.array([20, 20])
 
@@ -594,7 +594,7 @@ def test_multi_capacity_reduces_to_langmuir():
 
 def test_adsorbate_complex_reduces_to_langmuir():
     C = np.array([[0.3, 0.5, 0.7], [0.2, 0.4, 0.5]])
-    K = np.array([0.5, 0.5])
+    K = np.array([0.5, 0.6])
     q_m = 20
     K_x = 0
 
@@ -613,7 +613,7 @@ def epa_ceq(
     valence,
     inlet_concentrations,
     q_m,
-    bulk_density,
+    bed_density,
     reference_concentration,
     reference_mw,
     reference_z=1,
@@ -624,7 +624,7 @@ def epa_ceq(
     Returns: EPA-equivalent concentrations, shape (n_species, n_nodes)
     """
     # Convert resin loadings to equivalent loadings.
-    q_eq = q * bulk_density * np.asarray(valence)[:, None] / np.asarray(MW)[:, None]
+    q_eq = q * bed_density * np.asarray(valence)[:, None] / np.asarray(MW)[:, None]
     q_ref = q_m - q_eq.sum(axis=0)
 
     # Total liquid-phase equivalent concentration.
@@ -675,7 +675,7 @@ def test_competitive_ion_isotherm_C_matches_epa(valence):
     )
 
     q_m = 2.0
-    bulk_density = 500.0
+    bed_density = 500.0
     reference_concentration = 5.0
     reference_mw = 35.45
     reference_z = 1
@@ -686,7 +686,7 @@ def test_competitive_ion_isotherm_C_matches_epa(valence):
         valence=valence,
         inlet_concentrations=inlet_concentrations,
         q_m=q_m,
-        bulk_density=bulk_density,
+        bed_density=bed_density,
         reference_concentration=reference_concentration,
         reference_mw=reference_mw,
         reference_z=reference_z,
@@ -715,7 +715,7 @@ def test_competitive_ion_isotherm_C_matches_epa(valence):
         valence=valence,
         inlet_concentrations=inlet_concentrations,
         q_m=q_m,
-        bulk_density=bulk_density,
+        bed_density=bed_density,
         reference_concentration=reference_concentration,
         reference_mw=reference_mw,
         reference_z=reference_z,

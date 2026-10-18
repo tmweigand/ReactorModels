@@ -22,8 +22,9 @@ def _build_solved_model():
         length=column_length,
         porosity=porosity,
         diameter=diameter,
-        media=reactormodels.Media(bed_density=bed_density, particle_density=1),
+        media=reactormodels.Media(particle_density=1),
         water=reactormodels.Water(),
+        bed_density=bed_density,
     )
 
     breakthrough = reactormodels.Breakthrough(

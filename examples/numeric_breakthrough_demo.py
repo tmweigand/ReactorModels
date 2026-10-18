@@ -12,43 +12,39 @@ def run_demo(
 ):
     """Plot the numerical collocation solution against the Bohart-Adams solution."""
 
-    t_eval = np.linspace(1e-10, 10, 200)
-    length = 1 / np.pi
-    diameter = 2
+    t_eval = np.linspace(1e-10, 20000, 200)
+    length = 5
+    diameter = 0.1
     porosity = 0.4
-    bed_density = 0.36
-    particle_density = 0.6
+    bed_density = 500
     feed_concentrations = 1
-    flow_rate = 1
-    q_m = 10
-    rate_constant = 10
-    K = 5000
-    initial_concentration = 0
-    diffusion = 1e-20
+    superficial_velocity = 1
+    q_m = 6
+    rate_constant = 5e-4
+    K = 1e4
+    axial_diffusion = 0.01
 
-    isotherm = reactormodels.models.LangmuirIsotherm(K=K, q_m=q_m)
+    isotherm = reactormodels.models.LangmuirIsotherm(K, q_m)
 
     column = reactormodels.Column(
         diameter=diameter,
         length=length,
         porosity=porosity,
-        media=reactormodels.Media(
-            particle_density=particle_density, bed_density=bed_density
-        ),
+        media=reactormodels.Media(),
         water=reactormodels.Water(),
+        bed_density=bed_density,
     )
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
-        initial_concentration=initial_concentration,
         feed_concentrations=feed_concentrations,
-        flow_rate=flow_rate,
+        superficial_velocity=superficial_velocity,
         time=t_eval,
-        chemical=reactormodels.Chemical(axial_diffusion=diffusion),
+        chemical=reactormodels.Chemical(axial_diffusion=axial_diffusion),
     )
 
     numerics = reactormodels.numerics.NumericsConfig(
-        domain_length=column.length, n_interior_points=5, n_elements=20, add_inlet=True
+        domain_length=column.length, n_interior_points=8, n_elements=6, add_inlet=True
     )
 
     model = reactormodels.models.AdvectionDiffusionAdsorption(
@@ -56,6 +52,7 @@ def run_demo(
         isotherm=isotherm,
         numerics=numerics,
         kinetics=reactormodels.models.SecondOrder(rate_constant),
+        inlet_bc=reactormodels.models.DirichletBC,
     )
     x, C, q = model.solve()
 
@@ -74,16 +71,16 @@ def run_demo(
 
     C_analytical = bohart_adams.breakthrough_profile(time=t_eval, x=length)
     C_thomas = thomas.breakthrough_profile(time=t_eval, x=length)
-    outlet_idx = np.argmin(np.abs(x - length))
-    C_numerical = C[:, outlet_idx]
-    max_error = np.abs(C_numerical - C_analytical).max()
+    C_numerical = C[:, -1]
+    max_error = np.abs(C_numerical - C_thomas).max()
+    max_rel_error = (np.abs(C_numerical - C_thomas) / C_numerical).max()
 
     print(f"max error={max_error:.2e}")
+    print(f"max rel error={max_rel_error:.2e}")
 
     ax.plot(t_eval, C_numerical, linestyle="-", label="Numerical")
     ax.plot(t_eval, C_analytical, linestyle="--", label="Bohart-Adams")
     ax.plot(t_eval, C_thomas, linestyle=":", label="Thomas")
-    # ax.plot(t_eval, q[:, 1], linestyle="-.", label="solid")
 
     ax.set_title("Bohart-Adams: Numerical vs Analytical Solutions")
     ax.set_xlabel("Time")

@@ -98,7 +98,7 @@ class MassBalance:
     @property
     def bed_density(self) -> float:
         """Bed density"""
-        return self.breakthrough.column.media.bed_density
+        return self.breakthrough.column.bed_density
 
     @property
     def cross_section_area(self) -> float:

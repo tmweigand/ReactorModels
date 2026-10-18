@@ -75,7 +75,7 @@ def _build_intraparticle_transport():
         length=100.0,
         porosity=0.334,
         diameter=10.0,
-        bulk_density=399.8,
+        bed_density=399.8,
         media=media,
         water=reactormodels.Water(),
     )
@@ -118,7 +118,7 @@ def _build_psdm():
         length=100.0,
         porosity=0.334,
         diameter=10.0,
-        bulk_density=399.8,
+        bed_density=399.8,
         media=media,
         water=reactormodels.Water(),
     )

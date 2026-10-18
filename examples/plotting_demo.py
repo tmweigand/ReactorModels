@@ -24,7 +24,7 @@ def run_demo():
     length = 1.5  # cm
     diameter = 0.318  # cm
     porosity = 0.38
-    bulk_density = 399.8  # g/L
+    bed_density = 399.8  # g/L
     flow_rate = 0.1  # cm3/s
     BVs = np.linspace(1, 150000, 25)
 
@@ -38,7 +38,7 @@ def run_demo():
         length=length,
         porosity=porosity,
         diameter=diameter,
-        bulk_density=bulk_density,
+        bed_density=bed_density,
         media=media,
         water=reactormodels.Water(),
     )
