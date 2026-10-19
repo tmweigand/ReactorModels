@@ -7,7 +7,7 @@ import numpy as np
 from ..properties.column import Column
 from ..properties.breakthrough import Breakthrough
 from ..properties.film_transfer import FilmTransfer
-from ..numerics.config import NumericsConfig
+from ..numerics.config import PSDMNumerics
 from .numeric_model_base import NumericModel
 from .isotherm import Isotherm
 from .boundary_conditions import InletBC, DirichletBC, SymmetryBC
@@ -31,8 +31,7 @@ class PSDMSolid(NumericModel):
         self,
         breakthrough: Breakthrough,
         isotherm: Isotherm,
-        column_numerics: NumericsConfig,
-        particle_numerics: NumericsConfig,
+        numerics: PSDMNumerics,
         k_film: float | FilmTransfer = 0,
         inlet_bc: Type[InletBC] = DirichletBC,
         center_bc: Type[InletBC] = SymmetryBC,
@@ -52,8 +51,9 @@ class PSDMSolid(NumericModel):
         self.center_bc = center_bc(node=0)
 
         # Numerics
-        self.column_numerics = column_numerics
-        self.particle_numerics = particle_numerics
+        self.numerics = numerics
+        self.column_numerics = numerics.column
+        self.particle_numerics = numerics.particle
 
         # Discretization
         self.N_column = len(self.column_numerics.collocation.nodes)
@@ -294,7 +294,7 @@ class PSDMSolid(NumericModel):
         """Integrate from t_span[0] to t_span[1], returning results at t_eval."""
         y0, ydot0 = self._initial_conditions()
 
-        result = self.column_numerics.integrate(
+        result = self.numerics.integrate(
             residual=self._residual,
             jacobian=self._jacobian,
             y0=y0,
