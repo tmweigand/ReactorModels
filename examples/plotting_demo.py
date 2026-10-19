@@ -59,18 +59,22 @@ def run_demo():
 
     chemicals = [pfoa, pfos]
 
-    column_numerics = reactormodels.numerics.NumericsConfig(
+    column_grid = reactormodels.numerics.SpatialDiscretization(
         domain_length=column.length,
         n_interior_points=3,
         n_elements=8,
         add_inlet=True,
     )
 
-    particle_numerics = reactormodels.numerics.NumericsConfig(
+    particle_grid = reactormodels.numerics.SpatialDiscretization(
         domain_length=media.particle_radius,
         n_interior_points=3,
         n_elements=1,
         add_inlet=True,
+    )
+
+    numerics = reactormodels.numerics.PSDMNumerics(
+        column=column_grid, particle=particle_grid
     )
 
     breakthroughs = []
@@ -91,8 +95,7 @@ def run_demo():
         psdm = reactormodels.models.PSDM(
             breakthrough=breakthrough,
             isotherm=isotherm,
-            column_numerics=column_numerics,
-            particle_numerics=particle_numerics,
+            numerics=numerics,
             k_film=k_film,
         )
         z, r, C, Cp = psdm.solve()

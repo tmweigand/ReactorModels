@@ -108,23 +108,26 @@ def _make_particle(
         chemical=chemical,
     )
 
-    column_numerics = reactormodels.numerics.NumericsConfig(
+    column_grid = reactormodels.numerics.SpatialDiscretization(
         domain_length=column.length,
         n_interior_points=8,
         n_elements=6,
     )
 
-    particle_numerics = reactormodels.numerics.NumericsConfig(
+    particle_grid = reactormodels.numerics.SpatialDiscretization(
         domain_length=media.particle_radius,
         n_interior_points=3,
         n_elements=1,
     )
 
+    numerics = reactormodels.numerics.PSDMNumerics(
+        column=column_grid, particle=particle_grid
+    )
+
     return reactormodels.models.PSDM(
         isotherm=isotherm,
         breakthrough=breakthrough,
-        column_numerics=column_numerics,
-        particle_numerics=particle_numerics,
+        numerics=numerics,
         k_film=kf,
     )
 
