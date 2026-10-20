@@ -104,7 +104,7 @@ class AdvectionDiffusion(NumericModel):
         """
         return [0]
 
-    def solve(self):
+    def solve(self, return_breakthrough=False):
         """Integrate from t_span[0] to t_span[1], returning results at t_eval."""
         c, dcdt = self._initial_conditions()
         result = self.numerics.integrate(
@@ -120,5 +120,9 @@ class AdvectionDiffusion(NumericModel):
             raise RuntimeError(
                 f"IDA solver failed with flag {result.flag}: {result.message}"
             )
-        C_history = result.values.y[1:]  # (n_times, N), skip the t=t_span[0] row
-        return self.numerics.collocation.nodes, C_history
+        C = result.values.y[1:]
+
+        if return_breakthrough:
+            return C[:, -1]
+        else:
+            return self.numerics.collocation.nodes, C

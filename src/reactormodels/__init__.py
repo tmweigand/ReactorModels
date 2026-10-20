@@ -2,6 +2,7 @@
 
 from . import models
 from . import numerics
+from . import parameter_estimation
 from . import postprocess
 from . import fixtures
 from .properties.breakthrough import Breakthrough
@@ -14,6 +15,7 @@ from .properties.film_transfer import FilmTransfer
 __all__ = [
     "models",
     "numerics",
+    "parameter_estimation",
     "postprocess",
     "fixtures",
     "Column",

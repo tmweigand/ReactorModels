@@ -128,3 +128,41 @@ def test_parameter_check():
             breakthrough=breakthrough,
             numerics=numerics,
         )
+
+
+def test_return_breakthrough():
+    """Ensure return breakthrough works"""
+    superficial_velocity = 1  # m/s
+    axial_diffusion = 0.1
+    column_length = 5.0  # m
+    porosity = 0.5
+    column_diameter = 1
+    t_eval = np.array([1.0, 2.0, 3.0])
+
+    breakthrough = reactormodels.fixtures.make_breakthrough(
+        length=column_length,
+        diameter=column_diameter,
+        porosity=porosity,
+        superficial_velocity=superficial_velocity,
+        axial_diffusion=axial_diffusion,
+        time=t_eval,
+    )
+
+    numerics = reactormodels.numerics.NumericsConfig(
+        n_interior_points=5, n_elements=20, domain_length=column_length
+    )
+
+    model = reactormodels.models.AdvectionDiffusion(
+        breakthrough=breakthrough,
+        numerics=numerics,
+    )
+
+    c_out = model.solve(return_breakthrough=True)
+
+    assert len(c_out) == len(t_eval)
+    np.testing.assert_allclose(
+        c_out,
+        np.array([7.05815388e-11, 6.49238960e-02, 9.13800251e-01]),
+        rtol=1e-7,
+        atol=0.0,
+    )
