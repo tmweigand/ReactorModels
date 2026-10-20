@@ -9,9 +9,12 @@
   <title>Bohart-Adams and Thomas &mdash; ReactorModels 0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=ccde76bc" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a6a68382" />
+      <link rel="stylesheet" type="text/css" href="../_static/fonts.css?v=5583d106" />
+      <link rel="stylesheet" type="text/css" href="../_static/reactor.css?v=ccde76bc" />
 
   
+    <link rel="shortcut icon" href="../_static/RM_favicon.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=2709fde1"></script>
@@ -49,6 +52,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../ogata_banks/index.html">Ogata-Banks</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Bohart-Adams and Thomas</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../numeric_models/index.html">Numeric Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../isotherms/index.html">Isotherms</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../model_development/index.html#nomenclature">Nomenclature</a></li>
@@ -158,15 +162,23 @@ is obtained from Eqn <a class="reference internal" href="#equation-langmuir-isot
 and the initial condition <img class="math" src="../_images/math/69bf9f645d5be4b0224a3192c2e1446c10c3f210.svg" alt="q(z,0) = 0"/>. Eqn <a class="reference internal" href="#equation-ba-kinetics1">(24)</a> and Eqn <a class="reference internal" href="#equation-ba-kinetics2">(25)</a>
 are used to derive the Bohart-Adams analytical solution</p>
 <div class="math" id="equation-ba-model">
-<p><img src="../_images/math/56a44595f25f259416934ed41def498f6a551d6c.svg" alt="\frac C{C_o} = \frac 1{1 + \exp\lrp{\frac {\rho_bkq_mL}u -kC_ot}}"/><span class="eqno">(26)<a class="headerlink" href="#equation-ba-model" title="Link to this equation"></a></span></p>
-</div><p>Though mathematically equivalent <span class="bibtex-citation" id="id3">[<a class="reference internal" href="../model_development/index.html#id117" title="Khim Hoong Chu. Fixed bed sorption: setting the record straight on the bohart-adams and thomas models. Journal of Hazardous Materials, 177:1006-1012, 5 2010. doi:10.1016/j.jhazmat.2010.01.019.">2</a>]</span>, the so-called Thomas model is obtained by converting
-units of parameters in Eqn <a class="reference internal" href="#equation-ba-model">(26)</a></p>
+<p><img src="../_images/math/b0bf0782d10d334262182b54c0146ce9eea10078.svg" alt="\frac C{C_o} = \frac {\exp\lrp{kC_o\lrp{t - \frac Lv}}}{\exp\lrp{kC_o\lrp{t - \frac Lv}} + \exp\lrp{\frac {k\rho_bq_mL}u} - 1}"/><span class="eqno">(26)<a class="headerlink" href="#equation-ba-model" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/5638718e225dfb4171aa010fde35f12ce30157a1.svg" alt="t"/> is time and <img class="math" src="../_images/math/9915a93445aed85834bb4cc84e77e7536039c900.svg" alt="L"/> is the bed length. Though mathematically equivalent <span class="bibtex-citation" id="id3">[<a class="reference internal" href="../model_development/index.html#id117" title="Khim Hoong Chu. Fixed bed sorption: setting the record straight on the bohart-adams and thomas models. Journal of Hazardous Materials, 177:1006-1012, 5 2010. doi:10.1016/j.jhazmat.2010.01.019.">2</a>]</span>, the so-called Thomas
+model is obtained by converting units of parameters in Eqn <a class="reference internal" href="#equation-ba-model">(26)</a></p>
 <div class="math" id="equation-bohart-thomas-index-4">
-<p><img src="../_images/math/b06e07fa7d458fcfd5d6eb6fc3e9fbdc529adcdb.svg" alt="\frac C{C_o} = \frac 1{1 + \exp\lrp{\frac {k_{Th}q_ex}Q -k_{Th}C_ot_V}}"/><span class="eqno">(27)<a class="headerlink" href="#equation-bohart-thomas-index-4" title="Link to this equation"></a></span></p>
-</div><p>where <img class="math" src="../_images/math/8a7707785e4bd52b530818056d2291e5b44156cd.svg" alt="t_V"/> is time in bed volumes treated, <img class="math" src="../_images/math/f6e071f0f7964ef804fad5f4cfbba642d8958c95.svg" alt="k_{Th}"/> is the Thomas model rate constant,
+<p><img src="../_images/math/d7cbedcdb2a8f6f1a48393883fa503fcb9eb72a7.svg" alt="\frac C{C_o} = \frac {\exp\lrp{k_{Th}C_o\lrp{BVT - \gke}}}{\exp\lrp{k_{Th}C_o\lrp{BVT - \gke}} + \exp\lrp{k_{Th}q_ex/Q} - 1}"/><span class="eqno">(27)<a class="headerlink" href="#equation-bohart-thomas-index-4" title="Link to this equation"></a></span></p>
+</div><p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+where <img class="math" src="../_images/math/8a7707785e4bd52b530818056d2291e5b44156cd.svg" alt="t_V"/> is time in bed volumes treated, <img class="math" src="../_images/math/f6e071f0f7964ef804fad5f4cfbba642d8958c95.svg" alt="k_{Th}"/> is the Thomas model rate constant,
 <img class="math" src="../_images/math/fbbe2b5b674fd338effd25205a63fe6ad13a1cdf.svg" alt="x"/> is the mass of solid phase in the bed, and <img class="math" src="../_images/math/6eab9926734060c5c6ba71f3894dbab210f27381.svg" alt="Q"/> is the bed volume. The Thomas model relaxes the
 rectangular isotherm assumption by assuming a Langmuir sink kinetic relation. The Langmuir dissociation constant
-<img class="math" src="../_images/math/9fdd732840f1f5e53405d981fecb17343d538c54.svg" alt="b"/> is defined as <img class="math" src="../_images/math/b11299152372ae973a90c92f9b32b4a6ea0e89f2.svg" alt="k_a/k_d"/>, allowing Eqn <a class="reference internal" href="#equation-langmuir-isotherm">(22)</a> to be simplified to</p>
+<img class="math" src="../_images/math/9fdd732840f1f5e53405d981fecb17343d538c54.svg" alt="b"/> is defined as <img class="math" src="../_images/math/b11299152372ae973a90c92f9b32b4a6ea0e89f2.svg" alt="k_a/k_d"/>, allowing Eqn <a class="reference internal" href="#equation-langmuir-isotherm">(22)</a> to be simplified to
+=======
+where <img class="math" src="../_images/math/258718459f4ef3e61411329e6fdd578a0454f885.svg" alt="BVT"/> is bed volumes treated, <img class="math" src="../_images/math/f6e071f0f7964ef804fad5f4cfbba642d8958c95.svg" alt="k_{Th}"/> is the Thomas model rate constant,
+<img class="math" src="../_images/math/fbbe2b5b674fd338effd25205a63fe6ad13a1cdf.svg" alt="x"/> is the mass of solid phase in the bed, and <img class="math" src="../_images/math/6eab9926734060c5c6ba71f3894dbab210f27381.svg" alt="Q"/> is the bed volume.</p>
+<p>The Thomas model relaxes the rectangular isotherm assumption by assuming a Langmuir sink kinetic relation.
+The Langmuir dissociation constant <img class="math" src="../_images/math/9fdd732840f1f5e53405d981fecb17343d538c54.svg" alt="b"/> is defined as <img class="math" src="../_images/math/b11299152372ae973a90c92f9b32b4a6ea0e89f2.svg" alt="k_a/k_d"/>, allowing
+Eqn <a class="reference internal" href="#equation-langmuir-isotherm">(22)</a> to be simplified to
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; 7840053 (add boundary conditions to PSDM and wirte full BH/Th models)</p>
 <div class="math" id="equation-bohart-thomas-index-5">
 <p><img src="../_images/math/e3773b5662dc8db549d58947868f621fcf5b5928.svg" alt="q_e = \frac {q_mbC_e}{1 + bC_e}"/><span class="eqno">(28)<a class="headerlink" href="#equation-bohart-thomas-index-5" title="Link to this equation"></a></span></p>
 </div><p>Eqn <a class="reference internal" href="#equation-langmuir-sink">(19)</a> can now be written as</p>

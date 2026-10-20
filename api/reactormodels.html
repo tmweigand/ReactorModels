@@ -9,9 +9,12 @@
   <title>reactormodels package &mdash; ReactorModels 0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=ccde76bc" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a6a68382" />
+      <link rel="stylesheet" type="text/css" href="../_static/fonts.css?v=5583d106" />
+      <link rel="stylesheet" type="text/css" href="../_static/reactor.css?v=ccde76bc" />
 
   
+    <link rel="shortcut icon" href="../_static/RM_favicon.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=2709fde1"></script>
@@ -408,7 +411,6 @@ uL is the water viscosity (centipoise)</p>
 <li class="toctree-l1"><a class="reference internal" href="reactormodels.models.html">reactormodels.models package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.NumericModel"><code class="docutils literal notranslate"><span class="pre">NumericModel</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.NumericModel.breakthrough"><code class="docutils literal notranslate"><span class="pre">NumericModel.breakthrough</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.NumericModel.numerics"><code class="docutils literal notranslate"><span class="pre">NumericModel.numerics</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.NumericModel.parameters"><code class="docutils literal notranslate"><span class="pre">NumericModel.parameters()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.NumericModel.assert_parameters_set"><code class="docutils literal notranslate"><span class="pre">NumericModel.assert_parameters_set()</span></code></a></li>
 </ul>
@@ -764,7 +766,6 @@ uL is the water viscosity (centipoise)</p>
 <li class="toctree-l2"><a class="reference internal" href="reactormodels.models.html#module-reactormodels.models.numeric_model_base">reactormodels.models.numeric_model_base module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.numeric_model_base.NumericModel"><code class="docutils literal notranslate"><span class="pre">NumericModel</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.numeric_model_base.NumericModel.breakthrough"><code class="docutils literal notranslate"><span class="pre">NumericModel.breakthrough</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.numeric_model_base.NumericModel.numerics"><code class="docutils literal notranslate"><span class="pre">NumericModel.numerics</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.numeric_model_base.NumericModel.parameters"><code class="docutils literal notranslate"><span class="pre">NumericModel.parameters()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.numeric_model_base.NumericModel.assert_parameters_set"><code class="docutils literal notranslate"><span class="pre">NumericModel.assert_parameters_set()</span></code></a></li>
 </ul>
@@ -802,8 +803,11 @@ uL is the water viscosity (centipoise)</p>
 <li class="toctree-l3"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation.average"><code class="docutils literal notranslate"><span class="pre">OrthogonalCollocation.average()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.NumericsConfig"><code class="docutils literal notranslate"><span class="pre">NumericsConfig</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.NumericsConfig.integrate"><code class="docutils literal notranslate"><span class="pre">NumericsConfig.integrate()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.SpatialDiscretization"><code class="docutils literal notranslate"><span class="pre">SpatialDiscretization</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.NumericsConfig"><code class="docutils literal notranslate"><span class="pre">NumericsConfig</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.PSDMNumerics"><code class="docutils literal notranslate"><span class="pre">PSDMNumerics</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.TimeSettings"><code class="docutils literal notranslate"><span class="pre">TimeSettings</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.TimeSettings.integrate"><code class="docutils literal notranslate"><span class="pre">TimeSettings.integrate()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.TimeIntegrator"><code class="docutils literal notranslate"><span class="pre">TimeIntegrator</span></code></a><ul>
@@ -813,10 +817,13 @@ uL is the water viscosity (centipoise)</p>
 <li class="toctree-l2"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.convergence_order"><code class="docutils literal notranslate"><span class="pre">convergence_order()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="reactormodels.numerics.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reactormodels.numerics.html#module-reactormodels.numerics.config">reactormodels.numerics.config module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.config.NumericsConfig"><code class="docutils literal notranslate"><span class="pre">NumericsConfig</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.config.NumericsConfig.integrate"><code class="docutils literal notranslate"><span class="pre">NumericsConfig.integrate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.config.TimeSettings"><code class="docutils literal notranslate"><span class="pre">TimeSettings</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.config.TimeSettings.integrate"><code class="docutils literal notranslate"><span class="pre">TimeSettings.integrate()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.config.SpatialDiscretization"><code class="docutils literal notranslate"><span class="pre">SpatialDiscretization</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.config.NumericsConfig"><code class="docutils literal notranslate"><span class="pre">NumericsConfig</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reactormodels.numerics.html#reactormodels.numerics.config.PSDMNumerics"><code class="docutils literal notranslate"><span class="pre">PSDMNumerics</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="reactormodels.numerics.html#module-reactormodels.numerics.helpers">reactormodels.numerics.helpers module</a><ul>

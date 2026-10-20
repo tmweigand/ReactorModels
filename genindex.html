@@ -8,9 +8,12 @@
   <title>Index &mdash; ReactorModels 0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
-      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=ccde76bc" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=a6a68382" />
+      <link rel="stylesheet" type="text/css" href="_static/fonts.css?v=5583d106" />
+      <link rel="stylesheet" type="text/css" href="_static/reactor.css?v=ccde76bc" />
 
   
+    <link rel="shortcut icon" href="_static/RM_favicon.png"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=2709fde1"></script>
@@ -713,14 +716,14 @@
       </ul></li>
       <li><a href="api/reactormodels.models.html#reactormodels.models.boundary_conditions.InletBC">InletBC (class in reactormodels.models.boundary_conditions)</a>
 </li>
-      <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.config.NumericsConfig.integrate">integrate() (reactormodels.numerics.config.NumericsConfig method)</a>
+      <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.config.TimeSettings.integrate">integrate() (reactormodels.numerics.config.TimeSettings method)</a>
 
       <ul>
-        <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.NumericsConfig.integrate">(reactormodels.numerics.NumericsConfig method)</a>
-</li>
         <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation.integrate">(reactormodels.numerics.orthogonal_collocation.OrthogonalCollocation method)</a>
 </li>
         <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.OrthogonalCollocation.integrate">(reactormodels.numerics.OrthogonalCollocation method)</a>
+</li>
+        <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.TimeSettings.integrate">(reactormodels.numerics.TimeSettings method)</a>
 </li>
       </ul></li>
       <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.time_integrator.TimeIntegrator.integrate_ida">integrate_ida() (reactormodels.numerics.time_integrator.TimeIntegrator method)</a>
@@ -1044,18 +1047,12 @@
       </ul></li>
       <li><a href="api/reactormodels.io.html#reactormodels.io.data_input.normalize_name">normalize_name() (in module reactormodels.io.data_input)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/reactormodels.models.html#reactormodels.models.NumericModel">NumericModel (class in reactormodels.models)</a>
 
       <ul>
         <li><a href="api/reactormodels.models.html#reactormodels.models.numeric_model_base.NumericModel">(class in reactormodels.models.numeric_model_base)</a>
-</li>
-      </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/reactormodels.models.html#reactormodels.models.numeric_model_base.NumericModel.numerics">numerics (reactormodels.models.numeric_model_base.NumericModel attribute)</a>
-
-      <ul>
-        <li><a href="api/reactormodels.models.html#reactormodels.models.NumericModel.numerics">(reactormodels.models.NumericModel attribute)</a>
 </li>
       </ul></li>
       <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.NumericsConfig">NumericsConfig (class in reactormodels.numerics)</a>
@@ -1134,6 +1131,12 @@
 
       <ul>
         <li><a href="api/reactormodels.models.html#reactormodels.models.psdm.PSDM">(class in reactormodels.models.psdm)</a>
+</li>
+      </ul></li>
+      <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.PSDMNumerics">PSDMNumerics (class in reactormodels.numerics)</a>
+
+      <ul>
+        <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.config.PSDMNumerics">(class in reactormodels.numerics.config)</a>
 </li>
       </ul></li>
       <li><a href="api/reactormodels.models.html#reactormodels.models.PSDMSolid">PSDMSolid (class in reactormodels.models)</a>
@@ -1539,6 +1542,12 @@
         <li><a href="api/reactormodels.models.html#reactormodels.models.YoonNelson.spatial_profile">(reactormodels.models.YoonNelson method)</a>
 </li>
       </ul></li>
+      <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.SpatialDiscretization">SpatialDiscretization (class in reactormodels.numerics)</a>
+
+      <ul>
+        <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.config.SpatialDiscretization">(class in reactormodels.numerics.config)</a>
+</li>
+      </ul></li>
       <li><a href="api/reactormodels.html#reactormodels.Breakthrough.summary">summary() (reactormodels.Breakthrough method)</a>
 
       <ul>
@@ -1609,6 +1618,12 @@
 
       <ul>
         <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.time_integrator.TimeIntegrator">(class in reactormodels.numerics.time_integrator)</a>
+</li>
+      </ul></li>
+      <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.TimeSettings">TimeSettings (class in reactormodels.numerics)</a>
+
+      <ul>
+        <li><a href="api/reactormodels.numerics.html#reactormodels.numerics.config.TimeSettings">(class in reactormodels.numerics.config)</a>
 </li>
       </ul></li>
   </ul></td>

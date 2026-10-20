@@ -65,6 +65,7 @@ Models
    ../ogata_banks/index
    ../bohart_thomas/index
    ../numeric_models/index
+   ../isotherms/index
 
 **************
 Nomenclature

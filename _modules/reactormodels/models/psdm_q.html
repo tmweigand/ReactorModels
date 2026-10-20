@@ -8,9 +8,12 @@
   <title>reactormodels.models.psdm_q &mdash; ReactorModels 0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=ccde76bc" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=a6a68382" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/fonts.css?v=5583d106" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/reactor.css?v=ccde76bc" />
 
   
+    <link rel="shortcut icon" href="../../../_static/RM_favicon.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../../../_static/documentation_options.js?v=2709fde1"></script>
@@ -83,7 +86,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..properties.column</span><span class="w"> </span><span class="kn">import</span> <span class="n">Column</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..properties.breakthrough</span><span class="w"> </span><span class="kn">import</span> <span class="n">Breakthrough</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..properties.film_transfer</span><span class="w"> </span><span class="kn">import</span> <span class="n">FilmTransfer</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..numerics.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumericsConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..numerics.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">PSDMNumerics</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.numeric_model_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumericModel</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.isotherm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Isotherm</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.boundary_conditions</span><span class="w"> </span><span class="kn">import</span> <span class="n">InletBC</span><span class="p">,</span> <span class="n">DirichletBC</span><span class="p">,</span> <span class="n">SymmetryBC</span>
@@ -109,8 +112,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">breakthrough</span><span class="p">:</span> <span class="n">Breakthrough</span><span class="p">,</span>
         <span class="n">isotherm</span><span class="p">:</span> <span class="n">Isotherm</span><span class="p">,</span>
-        <span class="n">column_numerics</span><span class="p">:</span> <span class="n">NumericsConfig</span><span class="p">,</span>
-        <span class="n">particle_numerics</span><span class="p">:</span> <span class="n">NumericsConfig</span><span class="p">,</span>
+        <span class="n">numerics</span><span class="p">:</span> <span class="n">PSDMNumerics</span><span class="p">,</span>
         <span class="n">k_film</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">FilmTransfer</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">inlet_bc</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">InletBC</span><span class="p">]</span> <span class="o">=</span> <span class="n">DirichletBC</span><span class="p">,</span>
         <span class="n">center_bc</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">InletBC</span><span class="p">]</span> <span class="o">=</span> <span class="n">SymmetryBC</span><span class="p">,</span>
@@ -130,8 +132,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">center_bc</span> <span class="o">=</span> <span class="n">center_bc</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
         <span class="c1"># Numerics</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">column_numerics</span> <span class="o">=</span> <span class="n">column_numerics</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">particle_numerics</span> <span class="o">=</span> <span class="n">particle_numerics</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span> <span class="o">=</span> <span class="n">numerics</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">column_numerics</span> <span class="o">=</span> <span class="n">numerics</span><span class="o">.</span><span class="n">column</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">particle_numerics</span> <span class="o">=</span> <span class="n">numerics</span><span class="o">.</span><span class="n">particle</span>
 
         <span class="c1"># Discretization</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">N_column</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column_numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
@@ -374,7 +377,7 @@
 <span class="w">        </span><span class="sd">"""Integrate from t_span[0] to t_span[1], returning results at t_eval."""</span>
         <span class="n">y0</span><span class="p">,</span> <span class="n">ydot0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initial_conditions</span><span class="p">()</span>
 
-        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_numerics</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span>
             <span class="n">residual</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_residual</span><span class="p">,</span>
             <span class="n">jacobian</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_jacobian</span><span class="p">,</span>
             <span class="n">y0</span><span class="o">=</span><span class="n">y0</span><span class="p">,</span>

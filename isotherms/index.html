@@ -1,0 +1,183 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Isotherms &mdash; ReactorModels 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a6a68382" />
+      <link rel="stylesheet" type="text/css" href="../_static/fonts.css?v=5583d106" />
+      <link rel="stylesheet" type="text/css" href="../_static/reactor.css?v=ccde76bc" />
+
+  
+    <link rel="shortcut icon" href="../_static/RM_favicon.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Benchmarks" href="../benchmarks.html" />
+    <link rel="prev" title="Numeric Models" href="../numeric_models/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            ReactorModels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../model_development/index.html">Model Development</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../model_development/index.html#models">Models</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../ogata_banks/index.html">Ogata-Banks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../bohart_thomas/index.html">Bohart-Adams and Thomas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../numeric_models/index.html">Numeric Models</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Isotherms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../model_development/index.html#nomenclature">Nomenclature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_development/index.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../benchmarks.html">Benchmarks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">reactormodels</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ReactorModels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../model_development/index.html">Model Development</a></li>
+      <li class="breadcrumb-item active">Isotherms</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/isotherms/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="isotherms">
+<h1>Isotherms<a class="headerlink" href="#isotherms" title="Link to this heading"></a></h1>
+<p>In addition to the single-species isotherms which the Bohart-Adams and Thomas
+Models are built upon, multi-species isotherms may be applied to models which
+are solved numerically. Multi-species isotherms are derived using Ideal Adsorbed
+Solution Theory (IAST). Take Gibbs’ equation for change in surface tension at an
+adsorption interface to the change in liquid phase concentration of the adsorbate</p>
+<div class="math" id="equation-isotherms-index-0">
+<p><img src="../_images/math/2e77457de6916a81f2b5aa681c73d96bc1b29dd8.svg" alt="-Ad\gks_i = Ad\pi_i = q_i RT d\lrp{\ln C_i}"/><span class="eqno">(55)<a class="headerlink" href="#equation-isotherms-index-0" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/126919c397906b6ebff67c0f0016e78b0b32f36e.svg" alt="A"/> is the adsorption area per mass of adsorbent, <img class="math" src="../_images/math/f810750ee649d27aa3f417487caab48fd6b8a678.svg" alt="d\gks_i"/> is the change in surface
+tension due to adsorption, <img class="math" src="../_images/math/b7f0dc8574d269a8d115e31e98fd5dcc58578a7b.svg" alt="d\pi_i"/> is the change in spreading pressure due to adsorption, and
+<img class="math" src="../_images/math/1bd4670f230cc473597d857f2e3ee63dfaaaea1c.svg" alt="d\lrp{\ln C_i}"/> is the change in the natural log of liquid phase concentration. Spreading pressure is
+the difference between the surface tension, <img class="math" src="../_images/math/6fd761a02380ae3bf76836e882cd8540142a688f.svg" alt="\gks_i"/> between the solid interface with pure solvent and
+the solid interface with the solution containing adsorbate (sorptive solution)</p>
+<div class="math" id="equation-isotherms-index-1">
+<p><img src="../_images/math/dbe49a4942b05d6397333a2e5173c3b6684a97fa.svg" alt="d\pi_i = -d\gks_i = \gks_{\text{Pure Water/Adsorbent}} - \gks_{\text{Sorptive Solution/Adsorbent}}"/><span class="eqno">(56)<a class="headerlink" href="#equation-isotherms-index-1" title="Link to this equation"></a></span></p>
+</div><p>This equation is convenient for constructing a multi-species isotherm because the difference in surface tension
+between two sorptive solutions may be quantified without knowing the surface tension between pure water and the
+adsorbent, a generally challenging property to measure. Assuming single-species concentrations, <img class="math" src="../_images/math/d029395a44c3bb3a988ef972c086ac581ce7ddfb.svg" alt="C^o_i"/>
+are in equilibrium with the spreading pressure of the mixture and the single-species concentration, <img class="math" src="../_images/math/2588cdde02eefb3a576e945a3d7dc37e20e4a678.svg" alt="C_i"/>
+in equilibrium with the mixture can be determined from an expression analogous to Raoult’s law. IAST is
+comprised of five equations</p>
+<div class="math" id="equation-isotherms-index-2">
+<p><img src="../_images/math/95c8e7f81c63945dd286789e467ff86fef642741.svg" alt="q_T = \sLb {i=1}Nq_i"/><span class="eqno">(57)<a class="headerlink" href="#equation-isotherms-index-2" title="Link to this equation"></a></span></p>
+</div><div class="math" id="equation-isotherms-index-3">
+<p><img src="../_images/math/a417de4a4637e8d698909fd9ead558fcd47aa409.svg" alt="x_i = \frac {q_i}{q_T}"/><span class="eqno">(58)<a class="headerlink" href="#equation-isotherms-index-3" title="Link to this equation"></a></span></p>
+</div><div class="math" id="equation-isotherms-index-4">
+<p><img src="../_images/math/b044f65eedf8b4036885e183e34f3aa82cd542a6.svg" alt="C_i = x_iC^o_i"/><span class="eqno">(59)<a class="headerlink" href="#equation-isotherms-index-4" title="Link to this equation"></a></span></p>
+</div><div class="math" id="equation-isotherms-index-5">
+<p><img src="../_images/math/d0fabe5e4f7d066013aac47f8c55c8ae6337d20b.svg" alt="\frac 1{q_T} = \sLb {i=1}N \frac {x_i}{q^o_i}"/><span class="eqno">(60)<a class="headerlink" href="#equation-isotherms-index-5" title="Link to this equation"></a></span></p>
+</div><div class="math" id="equation-spreading-pressure">
+<p><img src="../_images/math/d1ea0dc004d4a2a2040406ab1cdb4256602be7e4.svg" alt="\frac {\pi_mA}{RT} = \frac {\pi_iA}{RT} = \ilims 0{q^o_i}\frac {d\ln C^o_i}{d \ln q^o_i}d q^o_i"/><span class="eqno">(61)<a class="headerlink" href="#equation-spreading-pressure" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/fc72aa20056cfe39dee55aab5887bfb12c874826.svg" alt="q_T"/> is the total surface loading, <img class="math" src="../_images/math/ecc4b08f720d76b2f11c2b41bed001ecae3fb8be.svg" alt="q_i"/> is the single-species solid phase loading,
+<img class="math" src="../_images/math/956aed27a3d2dc4e2d87d196fdc9c374a2fb6686.svg" alt="x_i"/> is the mole fraction of species <img class="math" src="../_images/math/364f234f74e428c6cf01f3c4135636b8778de06e.svg" alt="i"/> on the adsorbent surface, <img class="math" src="../_images/math/2588cdde02eefb3a576e945a3d7dc37e20e4a678.svg" alt="C_i"/> concentration
+of species <img class="math" src="../_images/math/364f234f74e428c6cf01f3c4135636b8778de06e.svg" alt="i"/> in the multi-species system, and <img class="math" src="../_images/math/f90ea7815414e1b4abb8684388fc5bf42cfa752b.svg" alt="C_i^o"/> is the concentration of species
+<img class="math" src="../_images/math/364f234f74e428c6cf01f3c4135636b8778de06e.svg" alt="i"/> in the single-species system. The Freundlich isotherm equation for a single-species is given by</p>
+<div class="math" id="equation-isotherms-index-6">
+<p><img src="../_images/math/e0dda31935220c27c8040c3b4996c5eba5108262.svg" alt="q_i^o = K_i\lrp{C_i^o}^{1/n_i}"/><span class="eqno">(62)<a class="headerlink" href="#equation-isotherms-index-6" title="Link to this equation"></a></span></p>
+</div><p>taking the natural log of both sides</p>
+<div class="math" id="equation-isotherms-index-7">
+<p><img src="../_images/math/ae182041c17f1f5c7398cfa375f20b2acd50b142.svg" alt="\ln q_i^o = \ln K_i + \frac 1{n_i} \ln C_i^o"/><span class="eqno">(63)<a class="headerlink" href="#equation-isotherms-index-7" title="Link to this equation"></a></span></p>
+</div><p>and</p>
+<div class="math" id="equation-isotherms-index-8">
+<p><img src="../_images/math/069890b947a962ac396c6e085d9fca9a4e2357e4.svg" alt="\frac {d\ln q^o_i}{d \ln C^o_i} = \frac 1{n_i}"/><span class="eqno">(64)<a class="headerlink" href="#equation-isotherms-index-8" title="Link to this equation"></a></span></p>
+</div><p>thus Eqn <a class="reference internal" href="#equation-spreading-pressure">(61)</a> may be written as</p>
+<div class="math" id="equation-isotherms-index-9">
+<p><img src="../_images/math/2937b7428c215d9806887d223ca6bc52339c449d.svg" alt="\frac {\pi_iA}{RT} = \ilims 0{q^o_i}n_id q^o_i"/><span class="eqno">(65)<a class="headerlink" href="#equation-isotherms-index-9" title="Link to this equation"></a></span></p>
+</div><p>evaluating the integral</p>
+<div class="math" id="equation-isotherms-index-10">
+<p><img src="../_images/math/419e5df22c695fa5991718e6ac7d948de3947725.svg" alt="\frac {\pi_iA}{RT} = n_iq^o_i"/><span class="eqno">(66)<a class="headerlink" href="#equation-isotherms-index-10" title="Link to this equation"></a></span></p>
+</div><p>since</p>
+<div class="math" id="equation-isotherms-index-11">
+<p><img src="../_images/math/11fc63c204132b00da5122eb0bbef818c0178c33.svg" alt="\frac {\pi_iA}{RT} = \frac {\pi_mA}{RT}"/><span class="eqno">(67)<a class="headerlink" href="#equation-isotherms-index-11" title="Link to this equation"></a></span></p>
+</div><p>the following expression is also true</p>
+<div class="math" id="equation-isotherms-index-12">
+<p><img src="../_images/math/5ed7d430cb54b059c4308c0d7562fc1444546ad1.svg" alt="n_iq_i = n_jq_j, \quad j = 2, 3, \dots, N"/><span class="eqno">(68)<a class="headerlink" href="#equation-isotherms-index-12" title="Link to this equation"></a></span></p>
+</div></section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../numeric_models/index.html" class="btn btn-neutral float-left" title="Numeric Models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../benchmarks.html" class="btn btn-neutral float-right" title="Benchmarks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Timothy M. Weigand.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

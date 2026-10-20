@@ -8,9 +8,12 @@
   <title>reactormodels.numerics.config &mdash; ReactorModels 0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=ccde76bc" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=a6a68382" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/fonts.css?v=5583d106" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/reactor.css?v=ccde76bc" />
 
   
+    <link rel="shortcut icon" href="../../../_static/RM_favicon.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../../../_static/documentation_options.js?v=2709fde1"></script>
@@ -82,16 +85,107 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.time_integrator</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimeIntegrator</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_time_settings</span><span class="p">(</span><span class="n">rtol</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">max_steps</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">rtol</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"rtol must be &gt; 0"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">atol</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"atol must be &gt; 0"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">max_steps</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"max_steps must be &gt;= 1"</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="TimeSettings">
+<a class="viewcode-back" href="../../../api/reactormodels.numerics.html#reactormodels.numerics.TimeSettings">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TimeSettings</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""IDA solver tolerances and the ``integrate`` entry point."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rtol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-8</span><span class="p">,</span> <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">,</span> <span class="n">max_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">):</span>
+        <span class="n">_check_time_settings</span><span class="p">(</span><span class="n">rtol</span><span class="p">,</span> <span class="n">atol</span><span class="p">,</span> <span class="n">max_steps</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rtol</span> <span class="o">=</span> <span class="n">rtol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atol</span> <span class="o">=</span> <span class="n">atol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_steps</span> <span class="o">=</span> <span class="n">max_steps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_integrator</span> <span class="o">=</span> <span class="n">TimeIntegrator</span><span class="p">(</span><span class="n">rtol</span><span class="p">,</span> <span class="n">atol</span><span class="p">,</span> <span class="n">max_steps</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TimeSettings.integrate">
+<a class="viewcode-back" href="../../../api/reactormodels.numerics.html#reactormodels.numerics.TimeSettings.integrate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">integrate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">residual</span><span class="p">,</span>
+        <span class="n">y0</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">yp0</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">t_span</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span>
+        <span class="n">t_eval</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">algebraic_vars_idx</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+        <span class="n">jacobian</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Integrate a DAE system using the SUNDIALS IDA solver."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_integrator</span><span class="o">.</span><span class="n">integrate_ida</span><span class="p">(</span>
+            <span class="n">residual</span><span class="o">=</span><span class="n">residual</span><span class="p">,</span>
+            <span class="n">jacobian</span><span class="o">=</span><span class="n">jacobian</span><span class="p">,</span>
+            <span class="n">y0</span><span class="o">=</span><span class="n">y0</span><span class="p">,</span>
+            <span class="n">yp0</span><span class="o">=</span><span class="n">yp0</span><span class="p">,</span>
+            <span class="n">t_span</span><span class="o">=</span><span class="n">t_span</span><span class="p">,</span>
+            <span class="n">t_eval</span><span class="o">=</span><span class="n">t_eval</span><span class="p">,</span>
+            <span class="n">algebraic_vars_idx</span><span class="o">=</span><span class="n">algebraic_vars_idx</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SpatialDiscretization">
+<a class="viewcode-back" href="../../../api/reactormodels.numerics.html#reactormodels.numerics.SpatialDiscretization">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SpatialDiscretization</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Orthogonal collocation settings for a single spatial domain.</span>
+
+<span class="sd">    After construction the ready-to-use :class:`OrthogonalCollocation` instance</span>
+<span class="sd">    is available as ``collocation``.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">domain_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">n_interior_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">add_inlet</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">n_elements</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_interior_points</span> <span class="o">=</span> <span class="n">n_interior_points</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="n">beta</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_inlet</span> <span class="o">=</span> <span class="n">add_inlet</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_elements</span> <span class="o">=</span> <span class="n">n_elements</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">domain_length</span> <span class="o">=</span> <span class="n">domain_length</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_interior_points</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"n_interior_points must be &gt;= 1"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_elements</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"n_elements must be &gt;= 1"</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">collocation</span> <span class="o">=</span> <span class="n">OrthogonalCollocation</span><span class="p">(</span>
+            <span class="n">domain_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">domain_length</span><span class="p">,</span>
+            <span class="n">n_interior_points</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_interior_points</span><span class="p">,</span>
+            <span class="n">alpha</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span>
+            <span class="n">beta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span>
+            <span class="n">add_inlet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">add_inlet</span><span class="p">,</span>
+            <span class="n">n_elements</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_elements</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_gradient</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">evaluate_gradient</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_second_derivative</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">evaluate_second_derivative</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_radial_operator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">evaluate_radial_operator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spatial_integrate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">integrate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">average</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">average</span></div>
+
+
+
 <div class="viewcode-block" id="NumericsConfig">
 <a class="viewcode-back" href="../../../api/reactormodels.numerics.html#reactormodels.numerics.NumericsConfig">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">NumericsConfig</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Numerical settings shared by transport models.</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NumericsConfig</span><span class="p">(</span><span class="n">SpatialDiscretization</span><span class="p">,</span> <span class="n">TimeSettings</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Numerical settings shared by single-domain transport models.</span>
 
-<span class="sd">    This bundles collocation discretization options with IDA solver tolerances</span>
-<span class="sd">    so users can pass one object into model constructors.  After construction</span>
-<span class="sd">    the ready-to-use :class:`OrthogonalCollocation` instance is available as</span>
-<span class="sd">    ``numerics.collocation``, and time integration is performed via</span>
-<span class="sd">    ``numerics.integrate(...)``.</span>
+<span class="sd">    This bundles the collocation discretization with IDA solver tolerances so</span>
+<span class="sd">    users can pass one object into model constructors.  Time integration is</span>
+<span class="sd">    performed via ``numerics.integrate(...)``.</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -106,66 +200,41 @@
         <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">,</span>
         <span class="n">max_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_interior_points</span> <span class="o">=</span> <span class="n">n_interior_points</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="n">beta</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_inlet</span> <span class="o">=</span> <span class="n">add_inlet</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_elements</span> <span class="o">=</span> <span class="n">n_elements</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rtol</span> <span class="o">=</span> <span class="n">rtol</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">atol</span> <span class="o">=</span> <span class="n">atol</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">max_steps</span> <span class="o">=</span> <span class="n">max_steps</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">domain_length</span> <span class="o">=</span> <span class="n">domain_length</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_interior_points</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"n_interior_points must be &gt;= 1"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_elements</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"n_elements must be &gt;= 1"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rtol</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"rtol must be &gt; 0"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">atol</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"atol must be &gt; 0"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_steps</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"max_steps must be &gt;= 1"</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">collocation</span> <span class="o">=</span> <span class="n">OrthogonalCollocation</span><span class="p">(</span>
-            <span class="n">domain_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">domain_length</span><span class="p">,</span>
-            <span class="n">n_interior_points</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_interior_points</span><span class="p">,</span>
-            <span class="n">alpha</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span>
-            <span class="n">beta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span>
-            <span class="n">add_inlet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">add_inlet</span><span class="p">,</span>
-            <span class="n">n_elements</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_elements</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_gradient</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">evaluate_gradient</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_second_derivative</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">evaluate_second_derivative</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_radial_operator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">evaluate_radial_operator</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">spatial_integrate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">integrate</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">average</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">average</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">time_integrator</span> <span class="o">=</span> <span class="n">TimeIntegrator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rtol</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">atol</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_steps</span><span class="p">)</span>
-
-<div class="viewcode-block" id="NumericsConfig.integrate">
-<a class="viewcode-back" href="../../../api/reactormodels.numerics.html#reactormodels.numerics.NumericsConfig.integrate">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">integrate</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">residual</span><span class="p">,</span>
-        <span class="n">y0</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-        <span class="n">yp0</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-        <span class="n">t_span</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span>
-        <span class="n">t_eval</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-        <span class="n">algebraic_vars_idx</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
-        <span class="n">jacobian</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Integrate a DAE system using the SUNDIALS IDA solver."""</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_integrator</span><span class="o">.</span><span class="n">integrate_ida</span><span class="p">(</span>
-            <span class="n">residual</span><span class="o">=</span><span class="n">residual</span><span class="p">,</span>
-            <span class="n">jacobian</span><span class="o">=</span><span class="n">jacobian</span><span class="p">,</span>
-            <span class="n">y0</span><span class="o">=</span><span class="n">y0</span><span class="p">,</span>
-            <span class="n">yp0</span><span class="o">=</span><span class="n">yp0</span><span class="p">,</span>
-            <span class="n">t_span</span><span class="o">=</span><span class="n">t_span</span><span class="p">,</span>
-            <span class="n">t_eval</span><span class="o">=</span><span class="n">t_eval</span><span class="p">,</span>
-            <span class="n">algebraic_vars_idx</span><span class="o">=</span><span class="n">algebraic_vars_idx</span><span class="p">,</span>
+        <span class="c1"># Time settings first so bad tolerances fail before collocation setup.</span>
+        <span class="n">TimeSettings</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rtol</span><span class="p">,</span> <span class="n">atol</span><span class="p">,</span> <span class="n">max_steps</span><span class="p">)</span>
+        <span class="n">SpatialDiscretization</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">domain_length</span><span class="o">=</span><span class="n">domain_length</span><span class="p">,</span>
+            <span class="n">n_interior_points</span><span class="o">=</span><span class="n">n_interior_points</span><span class="p">,</span>
+            <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span>
+            <span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">,</span>
+            <span class="n">add_inlet</span><span class="o">=</span><span class="n">add_inlet</span><span class="p">,</span>
+            <span class="n">n_elements</span><span class="o">=</span><span class="n">n_elements</span><span class="p">,</span>
         <span class="p">)</span></div>
-</div>
+
+
+
+<div class="viewcode-block" id="PSDMNumerics">
+<a class="viewcode-back" href="../../../api/reactormodels.numerics.html#reactormodels.numerics.PSDMNumerics">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PSDMNumerics</span><span class="p">(</span><span class="n">TimeSettings</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Numerical settings for models coupling a column and a particle domain.</span>
+
+<span class="sd">    Holds a separate :class:`SpatialDiscretization` for the column</span>
+<span class="sd">    (``numerics.column``) and for the particle (``numerics.particle``), and one</span>
+<span class="sd">    set of IDA solver tolerances for the coupled system.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">column</span><span class="p">:</span> <span class="n">SpatialDiscretization</span><span class="p">,</span>
+        <span class="n">particle</span><span class="p">:</span> <span class="n">SpatialDiscretization</span><span class="p">,</span>
+        <span class="n">rtol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-8</span><span class="p">,</span>
+        <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">,</span>
+        <span class="n">max_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">rtol</span><span class="p">,</span> <span class="n">atol</span><span class="p">,</span> <span class="n">max_steps</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="o">=</span> <span class="n">column</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">particle</span> <span class="o">=</span> <span class="n">particle</span></div>
 
 </pre></div>
 

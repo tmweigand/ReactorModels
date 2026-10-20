@@ -133,20 +133,29 @@ are used to derive the Bohart-Adams analytical solution
 .. math::
     :label: BA_model
 
-    \frac C{C_o} = \frac 1{1 + \exp\lrp{\frac {\rho_bkq_mL}u -kC_ot}}
+    \frac C{C_o} = \frac {\exp\lrp{kC_o\lrp{t - \frac Lv}}}{\exp\lrp{kC_o\lrp{t - \frac Lv}} + \exp\lrp{\frac {k\rho_bq_mL}u} - 1}
 
-Though mathematically equivalent :cite:`Chu2010`, the so-called Thomas model is obtained by converting 
-units of parameters in Eqn :eq:`BA_model`
+where :math:`t` is time and :math:`L` is the bed length. Though mathematically equivalent :cite:`Chu2010`, the so-called Thomas 
+model is obtained by converting units of parameters in Eqn :eq:`BA_model`
 
 .. math::
     :label:
 
-    \frac C{C_o} = \frac 1{1 + \exp\lrp{\frac {k_{Th}q_ex}Q -k_{Th}C_ot_V}}
+    \frac C{C_o} = \frac {\exp\lrp{k_{Th}C_o\lrp{BVT - \gke}}}{\exp\lrp{k_{Th}C_o\lrp{BVT - \gke}} + \exp\lrp{k_{Th}q_ex/Q} - 1}
 
+<<<<<<< HEAD
 where :math:`t_V` is time in bed volumes treated, :math:`k_{Th}` is the Thomas model rate constant,
 :math:`x` is the mass of solid phase in the bed, and :math:`Q` is the bed volume. The Thomas model relaxes the 
 rectangular isotherm assumption by assuming a Langmuir sink kinetic relation. The Langmuir dissociation constant 
 :math:`b` is defined as :math:`k_a/k_d`, allowing Eqn :eq:`langmuir_isotherm` to be simplified to
+=======
+where :math:`BVT` is bed volumes treated, :math:`k_{Th}` is the Thomas model rate constant,
+:math:`x` is the mass of solid phase in the bed, and :math:`Q` is the bed volume. 
+
+The Thomas model relaxes the rectangular isotherm assumption by assuming a Langmuir sink kinetic relation. 
+The Langmuir dissociation constant :math:`b` is defined as :math:`k_a/k_d`, allowing 
+Eqn :eq:`langmuir_isotherm` to be simplified to
+>>>>>>> 7840053 (add boundary conditions to PSDM and wirte full BH/Th models)
 
 .. math::
     :label: 

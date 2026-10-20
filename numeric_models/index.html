@@ -9,9 +9,12 @@
   <title>Numeric Models &mdash; ReactorModels 0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=ccde76bc" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a6a68382" />
+      <link rel="stylesheet" type="text/css" href="../_static/fonts.css?v=5583d106" />
+      <link rel="stylesheet" type="text/css" href="../_static/reactor.css?v=ccde76bc" />
 
   
+    <link rel="shortcut icon" href="../_static/RM_favicon.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=2709fde1"></script>
@@ -20,7 +23,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Benchmarks" href="../benchmarks.html" />
+    <link rel="next" title="Isotherms" href="../isotherms/index.html" />
     <link rel="prev" title="Bohart-Adams and Thomas" href="../bohart_thomas/index.html" /> 
 </head>
 
@@ -49,6 +52,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../ogata_banks/index.html">Ogata-Banks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../bohart_thomas/index.html">Bohart-Adams and Thomas</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Numeric Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../isotherms/index.html">Isotherms</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../model_development/index.html#nomenclature">Nomenclature</a></li>
@@ -107,31 +111,29 @@ liquid. Thus, Eqn <a class="reference internal" href="../model_development/index
 <div class="math" id="equation-particle-mass-balance">
 <p><img src="../_images/math/f04cf3b4d1b70af18719bb571b92d73ce46b4773.svg" alt="\pd {\lrp{\gke^{p}\rho^{p}\mma ip}}t - \del \vdot \lrp{\gke^{p}\rho^{p}D^{ip}\del\mma ip}
 - \iema M{if}{ip} = 0"/><span class="eqno">(34)<a class="headerlink" href="#equation-particle-mass-balance" title="Link to this equation"></a></span></p>
-</div><p>where <img class="math" src="../_images/math/d1f3ea187628490f4836203db388d43423529651.svg" alt="\gke_p"/> is the particle porosity. Allowing accumulation of species in the solid phase and pore liquid,
-Eqn <a class="reference internal" href="#equation-particle-mass-balance">(34)</a> can be written as</p>
-<div class="math" id="equation-effective-diffusion-balance">
-<p><img src="../_images/math/0b5fc2446bd78ef3cb11030e9f2a1f184e8d2c1b.svg" alt="\rho_p\pd qt + \gke_p\pd {C_p}t - D_e \del \vdot \lrb{\del \lrp{\rho_pq + \gke_pC_p}} - \iema M{f}{p} = 0"/><span class="eqno">(35)<a class="headerlink" href="#equation-effective-diffusion-balance" title="Link to this equation"></a></span></p>
-</div><p>where <img class="math" src="../_images/math/b65d2254223ab0fbe3a4594582feeae2fe2b86d7.svg" alt="\rho_p"/> is the apparent particle density and <img class="math" src="../_images/math/686914c9de4778bd1f8045250544e1a01fc3740f.svg" alt="D_e"/> is the effective diffusion coefficient
-of species in the particle phase. Assuming the species concentration only changes in the radial direction,
-Eqn <a class="reference internal" href="#equation-effective-diffusion-balance">(35)</a> may be written in spherical coordinates as</p>
-<div class="math" id="equation-effective-diffusion-model">
-<p><img src="../_images/math/206b4933482898916aed4e64537530481df714e5.svg" alt="\rho_p\pd qt + \gke_p\pd {C_p}t - \frac 1{r^2} \pd {}r \lrb{r^2D_e\lrp{\rho_p\pd {q}r + \gke_p\pd{C_p}r}}
-- \iema M{f}{p} = 0"/><span class="eqno">(36)<a class="headerlink" href="#equation-effective-diffusion-model" title="Link to this equation"></a></span></p>
-</div><p>For the pore diffusion model, intraparticle diffusion is assumed to occur primarily in the
-pore liquid. Thus, Eqn <a class="reference internal" href="#equation-effective-diffusion-model">(36)</a> becomes</p>
+</div><p>The particle domain can be divided further into the solid and pore liquid phases. Thus the solid phase mass
+balance is given by</p>
+<div class="math" id="equation-particle-solid-balance">
+<p><img src="../_images/math/3cf36e3983915d86be3331fcf2f51d0ec5192260.svg" alt="\rho_p\pd qt - D_s \del \vdot \del \rho_pq - \iema M{l}{s} = 0"/><span class="eqno">(35)<a class="headerlink" href="#equation-particle-solid-balance" title="Link to this equation"></a></span></p>
+</div><p>and the pore liquid phase mass balance is given by</p>
+<div class="math" id="equation-pore-liquid-balance">
+<p><img src="../_images/math/6a45659f5b477f99e729902118fe20803652c51e.svg" alt="\gke_p\pd {C_p}t - D_p \del \vdot \del \gke_pC_p - \iema M{s}{l} = 0"/><span class="eqno">(36)<a class="headerlink" href="#equation-pore-liquid-balance" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/62a08823aef7bbf18014930cf934d1f47fe60636.svg" alt="C_p"/> is the pore liquid concentration, <img class="math" src="../_images/math/d1f3ea187628490f4836203db388d43423529651.svg" alt="\gke_p"/> is the particle porosity, <img class="math" src="../_images/math/b65d2254223ab0fbe3a4594582feeae2fe2b86d7.svg" alt="\rho_p"/> is the apparent
+particle density and <img class="math" src="../_images/math/6a136211ac0fa2d6a74115b2e75a5ad411c4e65e.svg" alt="D_s"/> is the surface diffusion coefficient, and <img class="math" src="../_images/math/799b4e94c028a416ae58bb5a5247a9c938220c2e.svg" alt="D_p"/> is the pore diffusion coefficient.
+Assuming the species concentration only changes in the radial direction, Eqn <a class="reference internal" href="#equation-particle-solid-balance">(35)</a> may be
+written in spherical coordinates as</p>
+<div class="math" id="equation-surface-diffusion-model">
+<p><img src="../_images/math/942d6505bb57a7f9e2ef0407f994a680b8761499.svg" alt="\rho_p\pd qt + \frac 1{r^2} \pd {}r \lrb{r^2D_s\rho_p\pd {q}r}
+- \iema M{l}{s} = 0"/><span class="eqno">(37)<a class="headerlink" href="#equation-surface-diffusion-model" title="Link to this equation"></a></span></p>
+</div><p>and Eqn <a class="reference internal" href="#equation-pore-liquid-balance">(36)</a> becomes</p>
 <div class="math" id="equation-pore-diffusion-model">
-<p><img src="../_images/math/4bc61adc51bcad2d1628452a98f6d7a571595a80.svg" alt="\rho_p\pd qt + \gke_p\pd {C_p}t - \frac 1{r^2} \pd {}r \lrb{r^2D_p\gke_p\pd{C_p}r}
-- \iema M{f}{p} = 0"/><span class="eqno">(37)<a class="headerlink" href="#equation-pore-diffusion-model" title="Link to this equation"></a></span></p>
-</div><p>where <img class="math" src="../_images/math/799b4e94c028a416ae58bb5a5247a9c938220c2e.svg" alt="D_p"/> is the diffusion coefficient of species in the pore liquid. Alternatively, intraparticle diffusion
-may be assumed to occur primarily in the solid phase. Thus, Eqn <a class="reference internal" href="#equation-effective-diffusion-model">(36)</a> becomes</p>
-<div class="math" id="equation-homogenous-surface-diffusion">
-<p><img src="../_images/math/83612d6cf4ea2d336066ee389f9e091a749b9f91.svg" alt="\rho_p\pd qt + \gke_p\pd {C_p}t - \frac 1{r^2} \pd {}r \lrb{r^2D_s\rho_p\pd {q}r}
-- \iema M{f}{p} = 0"/><span class="eqno">(38)<a class="headerlink" href="#equation-homogenous-surface-diffusion" title="Link to this equation"></a></span></p>
-</div><p>where <img class="math" src="../_images/math/6a136211ac0fa2d6a74115b2e75a5ad411c4e65e.svg" alt="D_s"/> is the diffusion coefficient of species in the solid phase. Finally, intraparticle diffusion
-may be assumed to occur in both the pore liquid and solid phase. Thus, Eqn <a class="reference internal" href="#equation-effective-diffusion-model">(36)</a> becomes</p>
+<p><img src="../_images/math/383a4ffd5e2f87cb6d835e41ef04d432aa89beff.svg" alt="\gke_p\pd {C_p}t - \frac 1{r^2} \pd {}r \lrb{r^2D_p\gke_p\pd{C_p}r}
+- \iema M{s}{l} = 0"/><span class="eqno">(38)<a class="headerlink" href="#equation-pore-diffusion-model" title="Link to this equation"></a></span></p>
+</div><p>Under the assumption of local equilibrium, Eqn <a class="reference internal" href="#equation-surface-diffusion-model">(37)</a> and Eqn <a class="reference internal" href="#equation-pore-diffusion-model">(38)</a> can
+be added together. Since <img class="math" src="../_images/math/5a78230b445c8ac369f36baed0e109de0619c9d6.svg" alt="\iema M{l}{s} = - \iema M{s}{l}"/>, the intraparticle mass balance can be written as a
+single equation</p>
 <div class="math" id="equation-pore-and-surface-diffusion">
-<p><img src="../_images/math/6507eae89441db286eb2b25f1a6c8dbf56ed747d.svg" alt="\rho_p\pd qt + \gke_p\pd {C_p}t - \frac 1{r^2} \pd {}r \lrb{r^2\lrp{D_s\rho_p\pd {q}r + D_p\gke_p\pd{C_p}r}}
-- \iema M{f}{p} = 0"/><span class="eqno">(39)<a class="headerlink" href="#equation-pore-and-surface-diffusion" title="Link to this equation"></a></span></p>
+<p><img src="../_images/math/6af1dccebfef009e1e28b29b344a6f3205cd2843.svg" alt="\rho_p\pd qt + \gke_p\pd {C_p}t - \frac 1{r^2} \pd {}r \lrb{r^2\lrp{D_s\rho_p\pd {q}r + D_p\gke_p\pd{C_p}r}} = 0"/><span class="eqno">(39)<a class="headerlink" href="#equation-pore-and-surface-diffusion" title="Link to this equation"></a></span></p>
 </div><p>which is solved simultaneously with Eqn <a class="reference internal" href="#equation-overall-mass-balance">(32)</a>. A kinetic expression for transfer of species from
 the bulk fluid domain to the particle domain is needed to solve Eqn <a class="reference internal" href="#equation-pore-and-surface-diffusion">(39)</a>
 and Eqn <a class="reference internal" href="#equation-overall-mass-balance">(32)</a>. The relation for film transfer with a linear driving force is given by</p>
@@ -149,44 +151,47 @@ Substituting</p>
 <div class="math" id="equation-film-transfer-final">
 <p><img src="../_images/math/49c344b47a5b0cb1e56ec9b5835d9e2c681d7221.svg" alt="- \iema M{f}{p} = \frac {3k_f(1-\gke)}{\gke R}\lrb{C(z,t)-C_p(r=R,z,t)}"/><span class="eqno">(43)<a class="headerlink" href="#equation-film-transfer-final" title="Link to this equation"></a></span></p>
 </div><p>gives the expression for the rate of transfer of species between the bulk fluid and particle domain. Eqn
-<a class="reference internal" href="#equation-film-transfer-final">(43)</a> is substituted into Eqn <a class="reference internal" href="#equation-overall-mass-balance">(32)</a> and Eqn <a class="reference internal" href="#equation-effective-diffusion-model">(36)</a>
-to obtain the final conservation of mass equations in the bulk fluid domain</p>
+<a class="reference internal" href="#equation-film-transfer-final">(43)</a> is substituted into Eqn <a class="reference internal" href="#equation-overall-mass-balance">(32)</a> to obtain the final
+conservation of mass equation in the bulk fluid domain</p>
 <div class="math" id="equation-numeric-models-index-2">
 <p><img src="../_images/math/dc41be0380cd9ca771e2632b06a436226deb8003.svg" alt="\gke \pd Ct + \gke v \pd Cz - \gke D_L \pdn 2Cz + \frac {3k_f(1-\gke)}{R}\lrb{C(z,t)-C_p(r=R,z,t)} = 0"/><span class="eqno">(44)<a class="headerlink" href="#equation-numeric-models-index-2" title="Link to this equation"></a></span></p>
-</div><p>and particle domain</p>
+</div><p>The boundary condition for Eqn <a class="reference internal" href="#equation-pore-and-surface-diffusion">(39)</a> at the surface of the particle is given by</p>
 <div class="math" id="equation-numeric-models-index-3">
-<p><img src="../_images/math/203994fb761423fa4caf444c61fc6f648e280c30.svg" alt="\rho_p\pd qt + \gke_p\pd {C_p}t - \frac 1{r^2} \pd {}r \lrb{r^2D_e\lrp{\rho_p\pd {q}r + \gke_p\pd{C_p}r}} + k_f\lrb{C(z,t)-C_p(r=R,z,t)} = 0"/><span class="eqno">(45)<a class="headerlink" href="#equation-numeric-models-index-3" title="Link to this equation"></a></span></p>
+<p><img src="../_images/math/77a771c24b4cca07f87a91151377671f2b28e555.svg" alt="D_s\rho_p\pd {q}r + D_p\gke_p\pd{C_p}r = k_f\lrb{C(z,t)-C_p(r=R,z,t)}"/><span class="eqno">(45)<a class="headerlink" href="#equation-numeric-models-index-3" title="Link to this equation"></a></span></p>
+</div><p>and the boundary condition at the center of the particle is given by</p>
+<div class="math" id="equation-numeric-models-index-4">
+<p><img src="../_images/math/dd29bee0d8995f2c6fdb780c374f576f3ad686dc.svg" alt="\rho_p\pd {q(r=0,z,t)}r + \gke_p\pd{C_p(r=0,z,t)}r = 0"/><span class="eqno">(46)<a class="headerlink" href="#equation-numeric-models-index-4" title="Link to this equation"></a></span></p>
 </div><p>Under the assumption of local equilibrium, <img class="math" src="../_images/math/28c1bead31932661d6269732ea594042911c3286.svg" alt="q"/> and <img class="math" src="../_images/math/62a08823aef7bbf18014930cf934d1f47fe60636.svg" alt="C_p"/> are related by the Freundlich
 isotherm equation for any given time and position</p>
 <div class="math" id="equation-freundlich-isotherm">
-<p><img src="../_images/math/f4fbfb0e4a31dfd6140c7f6b7abf5b3923d5918c.svg" alt="q = KC_p^{1/n}"/><span class="eqno">(46)<a class="headerlink" href="#equation-freundlich-isotherm" title="Link to this equation"></a></span></p>
+<p><img src="../_images/math/f4fbfb0e4a31dfd6140c7f6b7abf5b3923d5918c.svg" alt="q = KC_p^{1/n}"/><span class="eqno">(47)<a class="headerlink" href="#equation-freundlich-isotherm" title="Link to this equation"></a></span></p>
 </div><p>where <img class="math" src="../_images/math/7b3a5d5ee9f8a36fa0113aa39106c5dfe93fa2c6.svg" alt="K"/> is the capacity constant and  <img class="math" src="../_images/math/449196f0f0de30723b6774137b815ce9d3641c8a.svg" alt="1/n"/> is the intensity constant. If the species is
 present at trace concentrations, a linear isotherm is often assumed (<img class="math" src="../_images/math/a7fa73e30f70462f8b9accda7fb47662757548fc.svg" alt="n=1"/>). Thus, Eqn
-<a class="reference internal" href="#equation-freundlich-isotherm">(46)</a> simplifies to</p>
-<div class="math" id="equation-numeric-models-index-4">
-<p><img src="../_images/math/081287e2be1d1726ed67db6661fab8c4ffe1f1bb.svg" alt="q = KC_p"/><span class="eqno">(47)<a class="headerlink" href="#equation-numeric-models-index-4" title="Link to this equation"></a></span></p>
-</div><p>The film transfer coefficient coefficient may be obtained using the Gnielinski correlation</p>
+<a class="reference internal" href="#equation-freundlich-isotherm">(47)</a> simplifies to</p>
 <div class="math" id="equation-numeric-models-index-5">
-<p><img src="../_images/math/9fd398162eb01ccbe235274988a61229c1dfe51f.svg" alt="k_f = \frac {\lrb{1+1.5(1-\gke)}D}{d_p}\lrb{2+0.644\mathrm{Re}^{1/2}\mathrm{Sc}^{1/3}}"/><span class="eqno">(48)<a class="headerlink" href="#equation-numeric-models-index-5" title="Link to this equation"></a></span></p>
+<p><img src="../_images/math/081287e2be1d1726ed67db6661fab8c4ffe1f1bb.svg" alt="q = KC_p"/><span class="eqno">(48)<a class="headerlink" href="#equation-numeric-models-index-5" title="Link to this equation"></a></span></p>
+</div><p>The film transfer coefficient coefficient may be obtained using the Gnielinski correlation</p>
+<div class="math" id="equation-numeric-models-index-6">
+<p><img src="../_images/math/9fd398162eb01ccbe235274988a61229c1dfe51f.svg" alt="k_f = \frac {\lrb{1+1.5(1-\gke)}D}{d_p}\lrb{2+0.644\mathrm{Re}^{1/2}\mathrm{Sc}^{1/3}}"/><span class="eqno">(49)<a class="headerlink" href="#equation-numeric-models-index-6" title="Link to this equation"></a></span></p>
 </div><p>where <img class="math" src="../_images/math/9966f397484defbbeea74f95a2a80557f3946826.svg" alt="d_p"/> is the particle diameter, <img class="math" src="../_images/math/fa0356495bf706c3150a9b5fb974beb98484ea21.svg" alt="D"/> is the liquid diffusivity of the species in water.
 The particle Reynolds number has the following expression</p>
-<div class="math" id="equation-numeric-models-index-6">
-<p><img src="../_images/math/ed181acbc67186bfa8f3c633c273546a6eb0ac26.svg" alt="\mathrm{Re}=\frac {\rho d_p u}{\mu}"/><span class="eqno">(49)<a class="headerlink" href="#equation-numeric-models-index-6" title="Link to this equation"></a></span></p>
+<div class="math" id="equation-numeric-models-index-7">
+<p><img src="../_images/math/ed181acbc67186bfa8f3c633c273546a6eb0ac26.svg" alt="\mathrm{Re}=\frac {\rho d_p u}{\mu}"/><span class="eqno">(50)<a class="headerlink" href="#equation-numeric-models-index-7" title="Link to this equation"></a></span></p>
 </div><p>where <img class="math" src="../_images/math/b4b31ea7e75904c71ff315bf62e33203c8b5e124.svg" alt="\rho"/> is the density of water and <img class="math" src="../_images/math/88ad310fb1790f384664ab136b818fb23f693b6e.svg" alt="\mu"/> is the dynamic viscosity of water. The Schmidt
 number is given by</p>
-<div class="math" id="equation-numeric-models-index-7">
-<p><img src="../_images/math/33b41865d3830f20bdee72ccbbde004665356e69.svg" alt="\mathrm{Sc}=\frac {\mu}{\rho D}"/><span class="eqno">(50)<a class="headerlink" href="#equation-numeric-models-index-7" title="Link to this equation"></a></span></p>
+<div class="math" id="equation-numeric-models-index-8">
+<p><img src="../_images/math/33b41865d3830f20bdee72ccbbde004665356e69.svg" alt="\mathrm{Sc}=\frac {\mu}{\rho D}"/><span class="eqno">(51)<a class="headerlink" href="#equation-numeric-models-index-8" title="Link to this equation"></a></span></p>
 </div><p>For species where experimental values of <img class="math" src="../_images/math/fa0356495bf706c3150a9b5fb974beb98484ea21.svg" alt="D"/> are not available, it may be approximated
 with the Hayduk-Laudie equation</p>
-<div class="math" id="equation-numeric-models-index-8">
-<p><img src="../_images/math/082f59216a4e641666a955e055cc4474c37fe9cc.svg" alt="D = \frac {13.26\times10^{-5}}{\mu^{1.14} V_b^{0.589}}"/><span class="eqno">(51)<a class="headerlink" href="#equation-numeric-models-index-8" title="Link to this equation"></a></span></p>
+<div class="math" id="equation-numeric-models-index-9">
+<p><img src="../_images/math/082f59216a4e641666a955e055cc4474c37fe9cc.svg" alt="D = \frac {13.26\times10^{-5}}{\mu^{1.14} V_b^{0.589}}"/><span class="eqno">(52)<a class="headerlink" href="#equation-numeric-models-index-9" title="Link to this equation"></a></span></p>
 </div><p>where <img class="math" src="../_images/math/dec31951576cb1fa495d707503e7c653a1ed192e.svg" alt="V_b"/> is the molar volume of the species at its boiling point. The pore diffusion
 coefficient may be approximated as</p>
-<div class="math" id="equation-numeric-models-index-9">
-<p><img src="../_images/math/1e41f01d048b2ae183e643727b351095fb377425.svg" alt="D_p = \frac D{\tau_p}"/><span class="eqno">(52)<a class="headerlink" href="#equation-numeric-models-index-9" title="Link to this equation"></a></span></p>
-</div><p>where <img class="math" src="../_images/math/5eb4676f0c9a0ed49ef4867cb9254f46b91e70fd.svg" alt="\tau_p"/> is the particle tortuosity. The surface diffusion coefficient is given by</p>
 <div class="math" id="equation-numeric-models-index-10">
-<p><img src="../_images/math/67e5d8cf5613b1ecad4cdf8785c01f84cd4093b1.svg" alt="D_s = \frac {D\gke_pC_o^{\lrp{1 - 1/n}}}{\tau_p\rho_pK} \times \text{SPDFR}"/><span class="eqno">(53)<a class="headerlink" href="#equation-numeric-models-index-10" title="Link to this equation"></a></span></p>
+<p><img src="../_images/math/1e41f01d048b2ae183e643727b351095fb377425.svg" alt="D_p = \frac D{\tau_p}"/><span class="eqno">(53)<a class="headerlink" href="#equation-numeric-models-index-10" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/5eb4676f0c9a0ed49ef4867cb9254f46b91e70fd.svg" alt="\tau_p"/> is the particle tortuosity. The surface diffusion coefficient is given by</p>
+<div class="math" id="equation-numeric-models-index-11">
+<p><img src="../_images/math/67e5d8cf5613b1ecad4cdf8785c01f84cd4093b1.svg" alt="D_s = \frac {D\gke_pC_o^{\lrp{1 - 1/n}}}{\tau_p\rho_pK} \times \text{SPDFR}"/><span class="eqno">(54)<a class="headerlink" href="#equation-numeric-models-index-11" title="Link to this equation"></a></span></p>
 </div><p>where SPDFR is the surface to pore diffusion flux ratio.</p>
 </section>
 
@@ -195,7 +200,7 @@ coefficient may be approximated as</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../bohart_thomas/index.html" class="btn btn-neutral float-left" title="Bohart-Adams and Thomas" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../benchmarks.html" class="btn btn-neutral float-right" title="Benchmarks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../isotherms/index.html" class="btn btn-neutral float-right" title="Isotherms" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
