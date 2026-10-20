@@ -39,6 +39,7 @@ dev = [
 docs = [
     "sphinx>=7.0",
     "sphinx_rtd_theme",
+    "renku-sphinx-theme",
     "myst-parser",
     "sphinxcontrib-bibtex",
     "typing_extensions"
