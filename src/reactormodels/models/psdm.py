@@ -32,7 +32,7 @@ class PSDM(NumericModel):
         breakthrough: Breakthrough,
         isotherm: Isotherm,
         numerics: PSDMNumerics,
-        k_film: float | FilmTransfer = 0,
+        k_film: FilmTransfer,
         inlet_bc: Type[InletBC] = DirichletBC,
         center_bc: Type[InletBC] = SymmetryBC,
     ):
