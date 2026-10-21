@@ -9,6 +9,33 @@ Additional Sherwood correlations:
 """
 
 from collections.abc import Callable
+from typing import Literal, cast, get_args
+
+SherwoodMethod = Literal[
+    "tan",
+    "wilson_geankoplis",
+    "ohashi",
+    "williamson",
+    "ko",
+    "wakao_funazkri",
+    "kataoka",
+    "chern_chien",
+    "gnielinski",
+]
+SHERWOOD_METHODS: tuple[str, ...] = get_args(SherwoodMethod)
+
+# Methods whose correlation uses bed porosity.
+_POROSITY_REQUIRED: frozenset[str] = frozenset(
+    {
+        "tan",
+        "wilson_geankoplis",
+        "williamson",
+        "ko",
+        "kataoka",
+        "chern_chien",
+        "gnielinski",
+    }
+)
 
 
 def reynolds_number(
@@ -42,41 +69,31 @@ def peclet_number(
     return length * interstitial_velocity / diffusion
 
 
-_PorosityRequiredMethods = frozenset(
-    {
-        "tan",
-        "wilson_geankoplis",
-        "williamson",
-        "ko",
-        "kataoka",
-        "chern_chien",
-        "gnielinski",
-    }
-)
-
-
 def sherwood_number(
-    method: str,
+    method: SherwoodMethod,
     reynolds: float,
     schmidt: float,
     bed_porosity: float | None = None,
 ) -> float:
     """Calculate Sherwood number using the selected correlation.
 
-    Available methods:
-        tan, wilson_geankoplis, ohashi, williamson, ko,
-        wakao_funazkri, kataoka, chern_chien, gnielinski
+    Available methods are listed in ``SHERWOOD_METHODS``.
     """
-    method = method.lower()
+    key = method.lower()
 
-    try:
-        correlation = _CORRELATIONS[method]
-    except KeyError:
-        raise ValueError(f"Unknown Sherwood method: {method}") from None
+    if key not in _CORRELATIONS:
+        raise ValueError(
+            f"Unknown Sherwood method: {method!r}. "
+            f"Available: {', '.join(SHERWOOD_METHODS)}"
+        )
 
-    if method in _PorosityRequiredMethods and bed_porosity is None:
-        raise ValueError(f"{method} requires bed_porosity.")
+    if key in _POROSITY_REQUIRED:
+        if bed_porosity is None:
+            raise ValueError(f"{key} requires bed_porosity.")
+        if not 0 < bed_porosity < 1:
+            raise ValueError(f"bed_porosity must be in (0, 1), got {bed_porosity}.")
 
+    correlation = _CORRELATIONS[cast(SherwoodMethod, key)]
     return correlation(reynolds, schmidt, bed_porosity)
 
 
@@ -193,7 +210,7 @@ def _gnielinski(reynolds: float, schmidt: float, bed_porosity: float | None) -> 
     )
 
 
-_CORRELATIONS: dict[str, Callable[[float, float, float | None], float]] = {
+_CORRELATIONS: dict[SherwoodMethod, Callable[[float, float, float | None], float]] = {
     "tan": _tan,
     "wilson_geankoplis": _wilson_geankoplis,
     "ohashi": _ohashi,
@@ -204,3 +221,9 @@ _CORRELATIONS: dict[str, Callable[[float, float, float | None], float]] = {
     "chern_chien": _chern_chien,
     "gnielinski": _gnielinski,
 }
+
+# Fail at import time if the Literal, dispatch table, and porosity set drift apart.
+if set(_CORRELATIONS) != set(SHERWOOD_METHODS):
+    raise RuntimeError("SherwoodMethod and _CORRELATIONS are out of sync.")
+if not _POROSITY_REQUIRED <= set(SHERWOOD_METHODS):
+    raise RuntimeError("_POROSITY_REQUIRED contains unknown methods.")

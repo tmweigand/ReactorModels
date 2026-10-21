@@ -46,6 +46,18 @@ def test_liquid_diffusion_coefficient():
     )
 
 
+def test_liquid_diffusion_override_skips_correlation():
+    """A supplied liquid_diffusion is returned without needing molar_volume."""
+    chem = reactormodels.Chemical(name="Example chemical", liquid_diffusion=5e-10)
+
+    assert chem.liquid_diffusion_coefficient(1.0) == 5e-10
+
+
+def test_chemical_rejects_invalid_liquid_diffusion():
+    with pytest.raises(AssertionError, match="Liquid diffusion must be positive"):
+        reactormodels.Chemical(name="Example chemical", liquid_diffusion=0.0)
+
+
 def test_chemical_rejects_invalid_required_values():
     """Test that Chemical rejects invalid molar volume."""
     with pytest.raises(AssertionError, match="molar_volume must be positive"):

@@ -32,7 +32,7 @@ class PSDM(NumericModel):
         breakthrough: Breakthrough,
         isotherm: Isotherm,
         numerics: PSDMNumerics,
-        k_film: float | FilmTransfer = 0,
+        k_film: FilmTransfer,
         inlet_bc: Type[InletBC] = DirichletBC,
         center_bc: Type[InletBC] = SymmetryBC,
     ):
@@ -41,7 +41,15 @@ class PSDM(NumericModel):
         self.column: Column = breakthrough.column
         self.velocity = breakthrough.interstitial_velocity
         self.axial_diffusion = breakthrough.chemical.axial_diffusion
-        self.pore_diffusion = breakthrough.chemical.pore_diffusion
+
+        if breakthrough.chemical.pore_diffusion is not None:
+            self.pore_diffusion = breakthrough.chemical.pore_diffusion
+        elif breakthrough.chemical.liquid_diffusion is not None:
+            self.pore_diffusion = (
+                breakthrough.chemical.liquid_diffusion
+                / breakthrough.column.media.particle_tortuosity
+            )
+
         self.surface_diffusion = breakthrough.chemical.surface_diffusion
         self.isotherm = isotherm
         self.k_film = k_film.k_film if isinstance(k_film, FilmTransfer) else k_film
