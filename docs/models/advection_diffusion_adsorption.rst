@@ -1,7 +1,11 @@
 Advection-Diffusion-Adsorption Model
 =======================================
 
-These equations are obtained by applying Equation :eq:`general_conservation_of_mass` to each phase with the following assumptions: (1) species :math:`i` is transported by advection and diffusion in the water phase; (2) the solid phase is stationary, so there is no advection in the solid phase; (3) surface diffusion of species :math:`i` in the solid phase is neglected; (4) no homogeneous reactions occur in either phase, so :math:`r^{iw} = r^{is} = 0`; and (5) the only interaction between the phases is the adsorption and desorption of species :math:`i` at the water-solid interface.
+These equations are obtained by applying Equation :eq:`general_conservation_of_mass` to each phase with the following assumptions: 
+(1) species :math:`i` is transported by advection and diffusion in the water phase; (2) the solid phase is stationary, so there is 
+no advection in the solid phase; (3) surface diffusion of species :math:`i` in the solid phase is neglected; (4) no homogeneous 
+reactions occur in either phase, so :math:`r^{iw} = r^{is} = 0`; and (5) the only interaction between the phases is the adsorption 
+and desorption of species :math:`i` at the water-solid interface.
 
 For the water phase, the conservation of mass equation is
 

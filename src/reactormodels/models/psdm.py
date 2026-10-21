@@ -41,10 +41,16 @@ class PSDM(NumericModel):
         self.breakthrough: Breakthrough = breakthrough
         self.column: Column = breakthrough.column
         self.velocity = breakthrough.interstitial_velocity
-        self.axial_diffusion = breakthrough.chemical.axial_diffusion
+
+        # Chemical properties
         self.pore_diffusion = breakthrough.chemical.pore_diffusion
         self.surface_diffusion = breakthrough.chemical.surface_diffusion
+
+        # Isotherm
         self.isotherm = isotherm
+
+        # External properties
+        self.axial_diffusion = breakthrough.chemical.axial_diffusion
         self.k_film = k_film.k_film if isinstance(k_film, FilmTransfer) else k_film
 
         # Boundary conditions

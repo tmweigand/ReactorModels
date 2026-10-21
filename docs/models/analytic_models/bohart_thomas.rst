@@ -2,7 +2,7 @@ Bohart-Adams and Thomas
 ===========================
 
 Models including adsorption assume species :math:`i` to be present in either the fluid phase or solid phase. 
-Thus, Eqn :eq:`two_phase` is written in terms of fluid phase :math:`f` and solid phase :math:`s`
+Thus, Eqn :eq:`adv_diff_ads_water` is written in terms of fluid phase :math:`f` and solid phase :math:`s`
 
 .. math::
     :label: BA_conservation_eqn

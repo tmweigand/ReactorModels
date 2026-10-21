@@ -3,7 +3,7 @@ Pore and Surface Diffusion Model
 
 The pore and/or surface diffusion models :cite:`Friedman1984` couple the conservation of mass equations between 
 the bulk fluid domain and the particle domain where species may be present in the solid phase as well as the pore 
-liquid. Thus, Eqn :eq:`two_phase` is written in terms of fluid phase :math:`f` and particle phase :math:`p`
+liquid. Thus, Eqn :eq:`adv_diff_ads_water` is written in terms of fluid phase :math:`f` and particle phase :math:`p`
 
 .. math::
     :label: psdm_mass_balance
@@ -19,7 +19,7 @@ Writing Eqn :eq:`psdm_mass_balance` in simplified terms
     \gke \pd Ct + \gke v \pd Cz - \gke D_L \pdn 2Cz - \iema M{ip}{if} = 0
 
 A conservation of mass equation must also be written for the particle domain. Accordingly, Eqn 
-:eq:`two_phase` is written in terms of particle phase quantities
+:eq:`adv_diff_ads_water` is written in terms of particle phase quantities
 
 .. math::
     :label: particle_conservation

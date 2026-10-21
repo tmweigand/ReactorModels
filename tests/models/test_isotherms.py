@@ -315,12 +315,7 @@ def assert_hessian_matches_numerical(
     atol=1e-7,
 ):
     # Shape: (n_species, n_nodes)
-    x = np.array(
-        [
-            [0.3, 0.5, 0.7],
-            [0.4, 0.6, 0.8],
-        ]
-    )
+    x = np.array([[0.3, 0.5, 0.7], [0.4, 0.6, 0.8], [0.1, 0.2, 0.3]])
 
     if var == "q":
         function = isotherm.C
@@ -363,7 +358,7 @@ def assert_hessian_matches_numerical(
     )
 
 
-def assert_hessian_chain_rule_matches_numerical(
+def assert_hessian_matches_numerical_binary(
     isotherm,
     var,
     eps=1e-4,
@@ -371,19 +366,7 @@ def assert_hessian_chain_rule_matches_numerical(
     atol=1e-7,
 ):
     # Shape: (n_species, n_nodes)
-    x = np.array(
-        [
-            [0.3, 0.5, 0.7],
-            [0.4, 0.6, 0.8],
-        ]
-    )
-
-    dxdt = np.array(
-        [
-            [0.12, 0.08, -0.03],
-            [-0.07, 0.04, 0.09],
-        ]
-    )
+    x = np.array([[0.3, 0.5, 0.7], [0.4, 0.6, 0.8]])
 
     if var == "q":
         function = isotherm.C
@@ -392,23 +375,105 @@ def assert_hessian_chain_rule_matches_numerical(
         function = isotherm.q
         hessian = isotherm.d2q_dC2
 
+    analytical = hessian(x)
+
+    n_species, n_nodes = x.shape
+    numerical = np.zeros((n_species, n_species, n_species, n_nodes))
+
+    for j in range(n_species):
+        for k in range(n_species):
+            ej = np.zeros_like(x)
+            ek = np.zeros_like(x)
+
+            # Perturb species j or k at every node
+            ej[j, :] = eps
+            ek[k, :] = eps
+
+            if j == k:
+                numerical[:, j, k, :] = (
+                    function(x + ej) - 2.0 * function(x) + function(x - ej)
+                ) / eps**2
+            else:
+                numerical[:, j, k, :] = (
+                    function(x + ej + ek)
+                    - function(x + ej - ek)
+                    - function(x - ej + ek)
+                    + function(x - ej - ek)
+                ) / (4.0 * eps**2)
+
+    np.testing.assert_allclose(
+        analytical,
+        numerical,
+        rtol=rtol,
+        atol=atol,
+    )
+
+
+def assert_hessian_contraction_matches_gradient_difference(
+    isotherm,
+    var,
+    eps=1e-5,
+    rtol=1e-4,
+    atol=1e-7,
+):
+    dxdt = np.array([[0.12, -0.07, 0.1], [0.08, -0.05, 0.06], [0.09, -0.01, 0.11]])
+    x = np.array([[0.3, 0.5, 0.7], [0.4, 0.6, 0.8], [0.1, 0.2, 0.3]])
+
+    if var == "q":
+        gradient = isotherm.dC_dq
+        hessian = isotherm.d2C_dq2
+    else:
+        gradient = isotherm.dq_dC
+        hessian = isotherm.d2q_dC2
+
     H = hessian(x)
 
-    # H[i,j,k,n] * dxdt[j,n] * dxdt[k,n]
+    # Analytical contraction: sum over k.
     analytical = np.einsum(
-        "ijkn,jn,kn->in",
+        "ijkn,kn->ijn",
         H,
-        dxdt,
         dxdt,
     )
 
-    numerical = (
-        -function(x + 2 * eps * dxdt)
-        + 16 * function(x + eps * dxdt)
-        - 30 * function(x)
-        + 16 * function(x - eps * dxdt)
-        - function(x - 2 * eps * dxdt)
-    ) / (12 * eps**2)
+    # Numerical directional derivative of the gradient.
+    numerical = (gradient(x + eps * dxdt) - gradient(x - eps * dxdt)) / (2 * eps)
+
+    np.testing.assert_allclose(
+        analytical,
+        numerical,
+        rtol=rtol,
+        atol=atol,
+    )
+
+
+def assert_hessian_contraction_matches_binary(
+    isotherm,
+    var,
+    eps=1e-5,
+    rtol=1e-4,
+    atol=1e-7,
+):
+    dxdt = np.array([[0.12, -0.07, 0.1], [0.08, -0.05, 0.06]])
+    x = np.array([[0.3, 0.5, 0.7], [0.4, 0.6, 0.8]])
+
+    if var == "q":
+        gradient = isotherm.dC_dq
+        hessian = isotherm.d2C_dq2
+    else:
+        gradient = isotherm.dq_dC
+        hessian = isotherm.d2q_dC2
+
+    H = hessian(x)
+
+    # Analytical contraction: sum over k.
+    analytical = np.einsum(
+        "ijkn,kn->ijn",
+        H,
+        dxdt,
+    )
+
+    # Numerical directional derivative of the gradient.
+    numerical = (gradient(x + eps * dxdt) - gradient(x - eps * dxdt)) / (2 * eps)
 
     np.testing.assert_allclose(
         analytical,
@@ -419,20 +484,20 @@ def assert_hessian_chain_rule_matches_numerical(
 
 
 def test_competitive_freundlich_hessian():
-    n = np.array([0.7, 0.9])
-    K = np.array([0.5, 0.8])
+    n = np.array([1.0, 1.1, 1.5])
+    K = np.array([0.5, 0.8, 1.2])
 
     isotherm = CompetitiveFreundlichIsotherm(n=n, K=K)
 
     assert_hessian_matches_numerical(isotherm, "q")
-    assert_hessian_chain_rule_matches_numerical(isotherm, "q")
+    assert_hessian_contraction_matches_gradient_difference(isotherm, "q")
 
 
 def test_iexcm_hessian():
-    K = np.array([1.2, 0.8])
-    MW = np.array([35.45, 40.08])
-    valence = np.array([1, 2])
-    inlet_concentrations = np.array([100.0, 50.0])
+    K = np.array([1.0, 1.1, 1.5])
+    MW = np.array([35.45, 96.06, 62.01])
+    valence = np.array([1, 2, 1])
+    inlet_concentrations = np.array([100.0, 50.0, 25.0])
     q_m = 2.0
     bed_density = 1.0
 
@@ -446,39 +511,39 @@ def test_iexcm_hessian():
     )
 
     assert_hessian_matches_numerical(isotherm, "q")
-    assert_hessian_chain_rule_matches_numerical(isotherm, "q")
+    assert_hessian_contraction_matches_gradient_difference(isotherm, "q")
 
 
 def test_competitive_langmuir_hessian():
     q_m = 20
-    K = np.array([0.5, 0.8])
+    K = np.array([0.5, 0.8, 1.0])
 
     isotherm = CompetitiveLangmuirIsotherm(q_m=q_m, K=K)
 
     assert_hessian_matches_numerical(isotherm, "C")
-    assert_hessian_chain_rule_matches_numerical(isotherm, "C")
+    assert_hessian_contraction_matches_gradient_difference(isotherm, "C")
 
 
 def test_competitive_langmuir_freundlich_hessian():
     q_m = 20
-    K = np.array([0.5, 0.8])
-    n = np.array([0.7, 0.9])
+    K = np.array([0.5, 0.8, 0.6])
+    n = np.array([0.7, 0.9, 0.5])
 
     isotherm = CompetitiveLangmuirFreundlichIsotherm(q_m=q_m, K=K, n=n)
 
     assert_hessian_matches_numerical(isotherm, "C")
-    assert_hessian_chain_rule_matches_numerical(isotherm, "C")
+    assert_hessian_contraction_matches_gradient_difference(isotherm, "C")
 
 
 def test_competitive_stoichiometric_hessian():
     q_m = 20
-    K = np.array([0.5, 0.8])
-    n = np.array([0.7, 0.9])
+    K = np.array([0.5, 0.8, 0.6])
+    n = np.array([0.7, 0.9, 1.0])
 
     isotherm = CompetitiveStoichiometricIsotherm(q_m=q_m, K=K, n=n)
 
     assert_hessian_matches_numerical(isotherm, "C")
-    assert_hessian_chain_rule_matches_numerical(isotherm, "C")
+    assert_hessian_contraction_matches_gradient_difference(isotherm, "C")
 
 
 def test_multi_capacity_hessian():
@@ -487,8 +552,8 @@ def test_multi_capacity_hessian():
 
     isotherm = MultiCapacityIsotherm(q_m=q_m, K=K)
 
-    assert_hessian_matches_numerical(isotherm, "C")
-    assert_hessian_chain_rule_matches_numerical(isotherm, "C")
+    assert_hessian_matches_numerical_binary(isotherm, "C")
+    assert_hessian_contraction_matches_binary(isotherm, "C")
 
 
 def test_adsorbate_complex_hessian():
@@ -498,8 +563,8 @@ def test_adsorbate_complex_hessian():
 
     isotherm = AdsorbateComplexIsotherm(q_m=q_m, K=K, K_x=K_x)
 
-    assert_hessian_matches_numerical(isotherm, "C")
-    assert_hessian_chain_rule_matches_numerical(isotherm, "C")
+    assert_hessian_matches_numerical_binary(isotherm, "C")
+    assert_hessian_contraction_matches_binary(isotherm, "C")
 
 
 def test_n_species_1_reduces_to_single_species_freundlich():
@@ -551,9 +616,9 @@ def test_n_species_1_reduces_to_single_species_langmuir():
 
 
 def test_langmuir_freundlich_reduces_to_langmuir():
-    C = np.array([[0.3, 0.5, 0.7], [0.2, 0.4, 0.5]])
-    K = np.array([0.5, 0.6])
-    n = np.array([1.0, 1.0])
+    C = np.array([[0.3, 0.5, 0.7], [0.2, 0.4, 0.5], [0.1, 0.2, 0.3]])
+    K = np.array([0.5, 0.6, 0.7])
+    n = np.array([1.0, 1.0, 1.0])
     q_m = 20
 
     iso_langmuir = CompetitiveLangmuirIsotherm(K, q_m)
@@ -565,9 +630,9 @@ def test_langmuir_freundlich_reduces_to_langmuir():
 
 
 def test_stoichiometric_reduces_to_langmuir():
-    C = np.array([[0.3, 0.5, 0.7], [0.2, 0.4, 0.5]])
-    K = np.array([0.5, 0.6])
-    n = np.array([1.0, 1.0])
+    C = np.array([[0.3, 0.5, 0.7], [0.2, 0.4, 0.5], [0.1, 0.2, 0.3]])
+    K = np.array([0.5, 0.6, 0.7])
+    n = np.array([1.0, 1.0, 1.0])
     q_m = 20
 
     iso_langmuir = CompetitiveLangmuirIsotherm(K, q_m)

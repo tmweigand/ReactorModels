@@ -9,7 +9,6 @@ from .chemical import Chemical
 class Breakthrough:
     """Collect information from experimental breakthrough data.
 
-    water_matrix: label for water that was tested.
     feed_concentrations: feed concentrations over the experiment duration.
     """
 
