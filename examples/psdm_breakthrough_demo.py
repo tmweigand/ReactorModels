@@ -63,14 +63,14 @@ def run_demo(
         time=t_eval,
     )
 
-    column_numerics = reactormodels.numerics.NumericsConfig(
+    column_grid = reactormodels.numerics.SpatialDiscretization(
         domain_length=column.length,
         n_interior_points=3,
         n_elements=8,
         add_inlet=True,
     )
 
-    particle_numerics = reactormodels.numerics.NumericsConfig(
+    particle_grid = reactormodels.numerics.SpatialDiscretization(
         domain_length=media.particle_radius,
         n_interior_points=3,
         n_elements=1,
@@ -80,8 +80,7 @@ def run_demo(
     model = reactormodels.models.PSDM(
         breakthrough=breakthrough,
         isotherm=isotherm,
-        column_numerics=column_numerics,
-        particle_numerics=particle_numerics,
+        numerics=numerics,
         k_film=k_film,
     )
     z, r, C, q = model.solve()

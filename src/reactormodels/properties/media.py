@@ -13,12 +13,14 @@ class Media:
         particle_density: float | None = None,
         particle_radius: float | None = None,
         particle_diameter: float | None = None,
+        particle_tortuosity: float = 1.0,
     ) -> None:
         self.sphericity = sphericity
         self.particle_porosity = particle_porosity
         self.particle_density = particle_density
         self.particle_radius = particle_radius
         self.particle_diameter = particle_diameter
+        self.particle_tortuosity = particle_tortuosity
 
         # Radius vs diameter support
         if self.particle_radius is not None and self.particle_diameter is not None:

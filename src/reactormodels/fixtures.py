@@ -28,6 +28,7 @@ def make_breakthrough(
     initial_concentration: float = 0.0,
     time: np.ndarray = np.array([1.0]),
     water: Water | None = None,
+    chemical: Chemical | None = None,
 ) -> Breakthrough:
     """Build a simple 1D advection-diffusion breakthrough problem."""
     if water is not None:
@@ -43,11 +44,15 @@ def make_breakthrough(
         water=_water,
         bed_density=bed_density,
     )
-    chemical = Chemical(name="tracer", axial_diffusion=axial_diffusion)
+
+    if chemical is not None:
+        _chemical = chemical
+    else:
+        _chemical = Chemical(name="tracer", axial_diffusion=axial_diffusion)
 
     return Breakthrough(
         column=column,
-        chemical=chemical,
+        chemical=_chemical,
         feed_concentrations=inlet_concentration,
         initial_concentration=initial_concentration,
         superficial_velocity=superficial_velocity,

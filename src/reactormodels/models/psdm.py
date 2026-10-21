@@ -7,7 +7,7 @@ import numpy as np
 from ..properties.column import Column
 from ..properties.breakthrough import Breakthrough
 from ..properties.film_transfer import FilmTransfer
-from ..numerics.config import NumericsConfig
+from ..numerics.config import PSDMNumerics
 from .numeric_model_base import NumericModel
 from .isotherm import Isotherm
 from .boundary_conditions import InletBC, DirichletBC, SymmetryBC
@@ -31,9 +31,8 @@ class PSDM(NumericModel):
         self,
         breakthrough: Breakthrough,
         isotherm: Isotherm,
-        column_numerics: NumericsConfig,
-        particle_numerics: NumericsConfig,
-        k_film: float | FilmTransfer = 0,
+        numerics: PSDMNumerics,
+        k_film: FilmTransfer,
         inlet_bc: Type[InletBC] = DirichletBC,
         center_bc: Type[InletBC] = SymmetryBC,
     ):
@@ -41,9 +40,16 @@ class PSDM(NumericModel):
         self.breakthrough: Breakthrough = breakthrough
         self.column: Column = breakthrough.column
         self.velocity = breakthrough.interstitial_velocity
+        self.axial_diffusion = breakthrough.chemical.axial_diffusion
 
-        # Chemical properties
-        self.pore_diffusion = breakthrough.chemical.pore_diffusion
+        if breakthrough.chemical.pore_diffusion is not None:
+            self.pore_diffusion = breakthrough.chemical.pore_diffusion
+        elif breakthrough.chemical.liquid_diffusion is not None:
+            self.pore_diffusion = (
+                breakthrough.chemical.liquid_diffusion
+                / breakthrough.column.media.particle_tortuosity
+            )
+
         self.surface_diffusion = breakthrough.chemical.surface_diffusion
 
         # Isotherm
@@ -58,8 +64,9 @@ class PSDM(NumericModel):
         self.center_bc = center_bc(node=0)
 
         # Numerics
-        self.column_numerics = column_numerics
-        self.particle_numerics = particle_numerics
+        self.numerics = numerics
+        self.column_numerics = numerics.column
+        self.particle_numerics = numerics.particle
 
         # Discretization
         self.axial_nodes = len(self.column_numerics.collocation.nodes)
@@ -297,7 +304,7 @@ class PSDM(NumericModel):
         """Integrate from t_span[0] to t_span[1], returning results at t_eval."""
         y0, ydot0 = self._initial_conditions()
 
-        result = self.column_numerics.integrate(
+        result = self.numerics.integrate(
             residual=self._residual,
             jacobian=self._jacobian,
             y0=y0,
