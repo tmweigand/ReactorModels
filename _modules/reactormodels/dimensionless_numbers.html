@@ -88,6 +88,33 @@
 <span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">cast</span><span class="p">,</span> <span class="n">get_args</span>
+
+<span class="n">SherwoodMethod</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span>
+    <span class="s2">"tan"</span><span class="p">,</span>
+    <span class="s2">"wilson_geankoplis"</span><span class="p">,</span>
+    <span class="s2">"ohashi"</span><span class="p">,</span>
+    <span class="s2">"williamson"</span><span class="p">,</span>
+    <span class="s2">"ko"</span><span class="p">,</span>
+    <span class="s2">"wakao_funazkri"</span><span class="p">,</span>
+    <span class="s2">"kataoka"</span><span class="p">,</span>
+    <span class="s2">"chern_chien"</span><span class="p">,</span>
+    <span class="s2">"gnielinski"</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">SHERWOOD_METHODS</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_args</span><span class="p">(</span><span class="n">SherwoodMethod</span><span class="p">)</span>
+
+<span class="c1"># Methods whose correlation uses bed porosity.</span>
+<span class="n">_POROSITY_REQUIRED</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">"tan"</span><span class="p">,</span>
+        <span class="s2">"wilson_geankoplis"</span><span class="p">,</span>
+        <span class="s2">"williamson"</span><span class="p">,</span>
+        <span class="s2">"ko"</span><span class="p">,</span>
+        <span class="s2">"kataoka"</span><span class="p">,</span>
+        <span class="s2">"chern_chien"</span><span class="p">,</span>
+        <span class="s2">"gnielinski"</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>
 
 
 <div class="viewcode-block" id="reynolds_number">
@@ -130,43 +157,33 @@
 
 
 
-<span class="n">_PorosityRequiredMethods</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
-    <span class="p">{</span>
-        <span class="s2">"tan"</span><span class="p">,</span>
-        <span class="s2">"wilson_geankoplis"</span><span class="p">,</span>
-        <span class="s2">"williamson"</span><span class="p">,</span>
-        <span class="s2">"ko"</span><span class="p">,</span>
-        <span class="s2">"kataoka"</span><span class="p">,</span>
-        <span class="s2">"chern_chien"</span><span class="p">,</span>
-        <span class="s2">"gnielinski"</span><span class="p">,</span>
-    <span class="p">}</span>
-<span class="p">)</span>
-
-
 <div class="viewcode-block" id="sherwood_number">
 <a class="viewcode-back" href="../../api/reactormodels.html#reactormodels.dimensionless_numbers.sherwood_number">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">sherwood_number</span><span class="p">(</span>
-    <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">method</span><span class="p">:</span> <span class="n">SherwoodMethod</span><span class="p">,</span>
     <span class="n">reynolds</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">schmidt</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">bed_porosity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Calculate Sherwood number using the selected correlation.</span>
 
-<span class="sd">    Available methods:</span>
-<span class="sd">        tan, wilson_geankoplis, ohashi, williamson, ko,</span>
-<span class="sd">        wakao_funazkri, kataoka, chern_chien, gnielinski</span>
+<span class="sd">    Available methods are listed in ``SHERWOOD_METHODS``.</span>
 <span class="sd">    """</span>
-    <span class="n">method</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">correlation</span> <span class="o">=</span> <span class="n">_CORRELATIONS</span><span class="p">[</span><span class="n">method</span><span class="p">]</span>
-    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unknown Sherwood method: </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_CORRELATIONS</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Unknown Sherwood method: </span><span class="si">{</span><span class="n">method</span><span class="si">!r}</span><span class="s2">. "</span>
+            <span class="sa">f</span><span class="s2">"Available: </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">SHERWOOD_METHODS</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">_PorosityRequiredMethods</span> <span class="ow">and</span> <span class="n">bed_porosity</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2"> requires bed_porosity."</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">_POROSITY_REQUIRED</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">bed_porosity</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> requires bed_porosity."</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">bed_porosity</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"bed_porosity must be in (0, 1), got </span><span class="si">{</span><span class="n">bed_porosity</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
 
+    <span class="n">correlation</span> <span class="o">=</span> <span class="n">_CORRELATIONS</span><span class="p">[</span><span class="n">cast</span><span class="p">(</span><span class="n">SherwoodMethod</span><span class="p">,</span> <span class="n">key</span><span class="p">)]</span>
     <span class="k">return</span> <span class="n">correlation</span><span class="p">(</span><span class="n">reynolds</span><span class="p">,</span> <span class="n">schmidt</span><span class="p">,</span> <span class="n">bed_porosity</span><span class="p">)</span></div>
 
 
@@ -284,7 +301,7 @@
     <span class="p">)</span>
 
 
-<span class="n">_CORRELATIONS</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">],</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+<span class="n">_CORRELATIONS</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">SherwoodMethod</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">],</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">"tan"</span><span class="p">:</span> <span class="n">_tan</span><span class="p">,</span>
     <span class="s2">"wilson_geankoplis"</span><span class="p">:</span> <span class="n">_wilson_geankoplis</span><span class="p">,</span>
     <span class="s2">"ohashi"</span><span class="p">:</span> <span class="n">_ohashi</span><span class="p">,</span>
@@ -295,6 +312,12 @@
     <span class="s2">"chern_chien"</span><span class="p">:</span> <span class="n">_chern_chien</span><span class="p">,</span>
     <span class="s2">"gnielinski"</span><span class="p">:</span> <span class="n">_gnielinski</span><span class="p">,</span>
 <span class="p">}</span>
+
+<span class="c1"># Fail at import time if the Literal, dispatch table, and porosity set drift apart.</span>
+<span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">_CORRELATIONS</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">set</span><span class="p">(</span><span class="n">SHERWOOD_METHODS</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"SherwoodMethod and _CORRELATIONS are out of sync."</span><span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">_POROSITY_REQUIRED</span> <span class="o">&lt;=</span> <span class="nb">set</span><span class="p">(</span><span class="n">SHERWOOD_METHODS</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"_POROSITY_REQUIRED contains unknown methods."</span><span class="p">)</span>
 </pre></div>
 
            </div>

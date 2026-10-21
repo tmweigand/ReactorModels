@@ -79,8 +79,6 @@
   <h1>Source code for reactormodels.properties.chemical</h1><div class="highlight"><pre>
 <span></span><span class="sd">"""chemical.py"""</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-
 
 <div class="viewcode-block" id="Chemical">
 <a class="viewcode-back" href="../../../api/reactormodels.properties.html#reactormodels.Chemical">[docs]</a>
@@ -93,6 +91,7 @@
         <span class="n">axial_diffusion</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">pore_diffusion</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">surface_diffusion</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">liquid_diffusion</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">molar_volume</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">molecular_weight</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">density</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -132,10 +131,16 @@
                 <span class="s2">"Surface diffusion must be positive, "</span> <span class="sa">f</span><span class="s2">"got </span><span class="si">{</span><span class="n">surface_diffusion</span><span class="si">}</span><span class="s2">"</span>
             <span class="p">)</span>
 
+        <span class="k">if</span> <span class="n">liquid_diffusion</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="p">(</span>
+                <span class="n">liquid_diffusion</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="p">),</span> <span class="sa">f</span><span class="s2">"Liquid diffusion must be positive, got </span><span class="si">{</span><span class="n">liquid_diffusion</span><span class="si">}</span><span class="s2">"</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axial_diffusion</span> <span class="o">=</span> <span class="n">axial_diffusion</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pore_diffusion</span> <span class="o">=</span> <span class="n">pore_diffusion</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">surface_diffusion</span> <span class="o">=</span> <span class="n">surface_diffusion</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">liquid_diffusion</span> <span class="o">=</span> <span class="n">liquid_diffusion</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">molecular_weight</span> <span class="o">=</span> <span class="n">molecular_weight</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">molar_volume</span> <span class="o">=</span> <span class="n">molar_volume</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">density</span> <span class="o">=</span> <span class="n">density</span>
@@ -146,31 +151,30 @@
 
 <div class="viewcode-block" id="Chemical.liquid_diffusion_coefficient">
 <a class="viewcode-back" href="../../../api/reactormodels.properties.html#reactormodels.Chemical.liquid_diffusion_coefficient">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">liquid_diffusion_coefficient</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">viscosity</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""From a correlation given by Hayduk and Laudie (1974):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">liquid_diffusion_coefficient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">viscosity</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return `liquid_diffusion`, computing and storing it if not provided.</span>
 
-<span class="sd">        ----reference----</span>
-<span class="sd">        (AdDesignS manual appendix F eq.no.7)</span>
+<span class="sd">        Correlation: Hayduk and Laudie (1974), AdDesignS manual appendix F eq. 7.</span>
+<span class="sd">            DL: liquid diffusivity (cm2/s)</span>
+<span class="sd">            Vb: molar volume at the normal boiling point (cm3/mol)</span>
+<span class="sd">            uL: water viscosity (centipoise)</span>
 
-<span class="sd">        ----parameters----</span>
-<span class="sd">        DL is the liquid diffusivity (cm2/s)</span>
-<span class="sd">        Vb is the molar volume of the chemical at the normal boiling point (cm3/mol)</span>
-<span class="sd">        uL is the water viscosity (centipoise)</span>
+
+<span class="sd">        Note: This relationship is for dilute, organic compounds.</span>
 <span class="sd">        """</span>
-        <span class="k">assert</span> <span class="n">viscosity</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"viscosity must be positive, got </span><span class="si">{</span><span class="n">viscosity</span><span class="si">}</span><span class="s2">"</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">liquid_diffusion</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">molar_volume</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">"molar_volume is required to calculate "</span>
+                    <span class="s2">"the liquid diffusion coefficient."</span>
+                <span class="p">)</span>
+            <span class="k">assert</span> <span class="n">viscosity</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"viscosity must be positive, got </span><span class="si">{</span><span class="n">viscosity</span><span class="si">}</span><span class="s2">"</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">molar_volume</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">"molar_volume is required to calculate "</span>
-                <span class="s2">"the liquid diffusion coefficient."</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">liquid_diffusion</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span>
+                <span class="mf">13.26e-5</span> <span class="o">/</span> <span class="p">(</span><span class="n">viscosity</span><span class="o">**</span><span class="mf">1.14</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">molar_volume</span><span class="o">**</span><span class="mf">0.589</span><span class="p">)</span>
             <span class="p">)</span>
 
-        <span class="k">return</span> <span class="mf">13.26e-5</span> <span class="o">/</span> <span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">viscosity</span><span class="p">,</span> <span class="mf">1.14</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">molar_volume</span><span class="p">,</span> <span class="mf">0.589</span><span class="p">)</span>
-        <span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">liquid_diffusion</span></div>
 </div>
 
 </pre></div>
