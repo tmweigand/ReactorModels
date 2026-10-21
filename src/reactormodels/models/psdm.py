@@ -82,8 +82,8 @@ class PSDM(NumericModel):
         c, cp = self._split(y)
         dcdt, dcpdt = self._split(ydot)
 
-        sink = np.zeros(self.axial_nodes)
-        result[:] = 0
+        # set interphase exchange terms to zero initially
+        interphase_exchange = np.zeros(self.axial_nodes)
 
         # bulk phase - inlet
         result[0] = self.inlet_bc.residual(c[0])
@@ -99,14 +99,16 @@ class PSDM(NumericModel):
             * self.column_numerics.evaluate_second_derivative(c)[1:]
         )
 
+        # particle domain loop
         for i in range(self.axial_nodes):
             cp_i = cp[i]
             dcpdt_i = dcpdt[i]
 
-            offset = self.axial_nodes + i * self.radial_nodes
+            # index of nodes at particle center
+            center = self.axial_nodes + i * self.radial_nodes
 
-            # center: symmetry
-            result[offset] = self.center_bc.residual(
+            # center: symmetry (dcp/dr = 0)
+            result[center] = self.center_bc.residual(
                 gradient_concentration_0=self.particle_numerics.evaluate_gradient(
                     cp_i, 0
                 )
@@ -121,12 +123,12 @@ class PSDM(NumericModel):
                     1 : self.radial_nodes - 1
                 ]
             )
-
+            # isotherm derivative for chain rule
             dqdCp = self.isotherm.dq_dC(cp_i)
+            # laplacian of q for surface diffusion term
             lap_q = self.particle_numerics.evaluate_radial_operator(
                 self.isotherm.q(cp_i)
             )
-
             Ds_term = (
                 self.column.media.particle_density
                 * (dqdCp * dcpdt_i)[1 : self.radial_nodes - 1]
@@ -134,52 +136,41 @@ class PSDM(NumericModel):
                 * self.surface_diffusion
                 * lap_q[1 : self.radial_nodes - 1]
             )
+            # exclude indices at particle center and surface
+            result[center + 1 : center + self.radial_nodes - 1] = Dp_term + Ds_term
 
-            intraparticle_transport = Dp_term + Ds_term
-            result[offset + 1 : offset + self.radial_nodes - 1] = (
-                intraparticle_transport
-            )
-
-            # boundary condition
+            # surface boundary condition - gradients at surface
             grad_cp = self.particle_numerics.evaluate_gradient(cp_i, -1)
             grad_q = self.particle_numerics.evaluate_gradient(self.isotherm.q(cp_i), -1)
 
-            diffusive_flux = (
+            intraparticle_flux = (
                 self.column.media.particle_porosity * self.pore_diffusion * grad_cp
                 + self.column.media.particle_density * self.surface_diffusion * grad_q
             )
+            surface_flux = self.k_film * (c[i] - cp_i[-1])
 
-            if i == 0:
-                c_bulk = self.inlet_bc.apply()
-            else:
-                c_bulk = c[i]
+            result[center + self.radial_nodes - 1] = intraparticle_flux - surface_flux
 
-            film_flux = self.k_film * (c_bulk - cp_i[-1])
-
-            result[offset + self.radial_nodes - 1] = diffusive_flux - film_flux
-
-            assert film_flux is not None
-            assert self.column.porosity is not None
-            assert self.column.media.particle_diameter is not None
-            if i > 0:
-                sink[i] = (
-                    6
-                    * film_flux
-                    * (1 - self.column.porosity)
-                    / self.column.media.particle_diameter
-                )
-
-        result[1 : self.axial_nodes] = transport + sink[1:]
+            # compute interphase exchange terms
+            interphase_exchange[i] = (
+                6
+                * surface_flux
+                * (1 - self.column.porosity)
+                / self.column.media.particle_diameter
+            )
+        # add interphase exchange term to internal bulk nodes
+        result[1 : self.axial_nodes] = transport + interphase_exchange[1:]
 
     def _jacobian(self, t, y, ydot, result, cj, jac):
-        C, Cp = self._split(y)
+        _, Cp = self._split(y)
         n = self._n_vars()
         J = np.zeros((n, n))
 
+        # apply jacobian to bulk inlet nodes
         J[0, : self.axial_nodes] = self.inlet_bc.jacobian_row(
             self.column_numerics.collocation.first_derivative[0]
         )
-
+        # derivative of transport
         d_transport = (
             self.column.porosity
             * self.velocity
@@ -191,7 +182,7 @@ class PSDM(NumericModel):
 
         J[1 : self.axial_nodes, : self.axial_nodes] = d_transport[1:, :]
 
-        coef = (
+        film_coef = (
             6
             * (1 - self.column.porosity)
             * self.k_film
@@ -199,14 +190,14 @@ class PSDM(NumericModel):
         )
 
         for i in range(self.axial_nodes):
-            offset = self.axial_nodes + i * self.radial_nodes
-            surface = offset + self.radial_nodes - 1
+            center = self.axial_nodes + i * self.radial_nodes
+            surface = center + self.radial_nodes - 1
 
             cp_i = Cp[i]
             dqdCp = self.isotherm.dq_dC(cp_i)
 
-            rows = slice(offset + 1, surface)
-            cols = slice(offset, offset + self.radial_nodes)
+            rows = slice(center + 1, surface)
+            cols = slice(center, center + self.radial_nodes)
 
             L = self.particle_numerics.collocation.radial_operator_matrix
 
@@ -226,10 +217,10 @@ class PSDM(NumericModel):
             )
 
             for j in range(1, self.radial_nodes - 1):
-                J[offset + j, offset + j] += cj * mass[j]
+                J[center + j, center + j] += cj * mass[j]
 
-            J[offset, :] = 0
-            J[offset, cols] = self.center_bc.jacobian_row(
+            J[center, :] = 0
+            J[center, cols] = self.center_bc.jacobian_row(
                 self.particle_numerics.collocation.first_derivative[0, :]
             )
 
@@ -252,13 +243,14 @@ class PSDM(NumericModel):
                 J[surface, surface] += self.k_film
             else:
                 J[i, i] += cj * self.column.porosity
-                J[i, i] += coef
-                J[i, surface] -= coef
+                J[i, i] += film_coef
+                J[i, surface] -= film_coef
 
                 J[surface, i] = -self.k_film
                 J[surface, surface] += self.k_film
 
         jac[:, :] = J
+
         return 0
 
     def _initial_conditions(self):
@@ -336,10 +328,10 @@ class PSDM(NumericModel):
             Cp_out,
         )
 
-    def get_sorbed_mass_fraction(
+    def get_solid_phase_loading(
         self, pore_concentration: np.ndarray | float
     ) -> np.ndarray | float:
-        """Calculate the sorbed mass fraction q"""
+        """Calculate the solid phase loading q"""
         return self.isotherm.q(pore_concentration)
 
     def get_radial_average(self, data_in: np.ndarray) -> np.ndarray | float:

@@ -259,7 +259,8 @@ class PSDMSolid(NumericModel):
         C0[0] = self.inlet_bc.apply()
 
         q0 = np.full(
-            (self.N_column, self.N_particle), self.breakthrough.initial_mass_fraction
+            (self.N_column, self.N_particle),
+            self.breakthrough.initial_solid_phase_loading,
         )
 
         y0 = np.concatenate(
@@ -326,10 +327,10 @@ class PSDMSolid(NumericModel):
         )
 
     def get_pore_concentration(
-        self, mass_fraction: np.ndarray | float
+        self, solid_phase_loading: np.ndarray | float
     ) -> np.ndarray | float:
         """Calculate the pore concentration Cp"""
-        return self.isotherm.C(mass_fraction)
+        return self.isotherm.C(solid_phase_loading)
 
     def get_radial_average(self, data_in: np.ndarray) -> np.ndarray | float:
         """Return the volume-weighted average over a spherical particle."""

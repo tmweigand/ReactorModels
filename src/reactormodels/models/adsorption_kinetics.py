@@ -165,7 +165,7 @@ class DynamicAdsorptionKinetics(AdsorptionKinetics):
     def _set_initial_conditions(self, C0):
         """Return y0 consistent with the algebraic constraint."""
         # set initial solid phase loading at all nodes
-        q0 = np.full(self.n_nodes, self.breakthrough.initial_mass_fraction)
+        q0 = np.full(self.n_nodes, self.breakthrough.initial_solid_phase_loading)
         # replace inlet with solid phase loading calculated from isotherm
         q0[0] = self.isotherm.q(self.inlet_concentration)
         return np.concatenate([C0, q0])

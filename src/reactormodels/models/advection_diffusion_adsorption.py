@@ -111,7 +111,7 @@ class AdvectionDiffusionAdsorption(NumericModel):
         # Row 0 and row n_nodes are algebraic constants for
         # liquid and solid phase concentrations, repsectively
         J[0, : self.n_nodes] = self.inlet_bc.jacobian_row(
-            self.numerics.collocation.first_derivative[0, :]
+            self.numerics.collocation.first_derivative[0]
         )
 
         # derivative of transport residual with respect to c

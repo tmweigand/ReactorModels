@@ -77,7 +77,7 @@ def run_demo(
         add_inlet=True,
     )
 
-    model = reactormodels.models.PSDMSolid(
+    model = reactormodels.models.PSDM(
         breakthrough=breakthrough,
         isotherm=isotherm,
         column_numerics=column_numerics,

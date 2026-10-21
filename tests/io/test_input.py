@@ -144,7 +144,7 @@ def test_load_input_file():
     assert breakthrough.initial_concentration == pytest.approx(1.0)
 
     assert breakthrough._superficial_velocity == pytest.approx(0.001)
-    assert breakthrough.initial_mass_fraction == pytest.approx(0.5)
+    assert breakthrough.initial_solid_phase_loading == pytest.approx(0.5)
 
     assert set(data["isotherms"]) == {"chemical1"}
 

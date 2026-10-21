@@ -56,7 +56,7 @@ def mass_balance():
     return reactormodels.postprocess.MassBalance(
         model=model,
         liquid_concentration=C,
-        sorbent_mass_fraction=q,
+        solid_phase_loading=q,
     )
 
 
