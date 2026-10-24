@@ -6,10 +6,10 @@ import numpy as np
 class MultiSpeciesIsotherm:
     """Base class for multi-species adsorption isotherms.
 
-    Input shape is (n_species).
+    Input shape is (n_species, 1).
 
     Output:
-    C/q -> (n_species).
+    C/q -> (n_species, 1).
     dC_dq/dq_dC -> (n_species, n_species), indexed [i, j].
     d2C_dq2/d2q_dC2 -> (n_species, n_species, n_species), indexed [i, j, k].
 

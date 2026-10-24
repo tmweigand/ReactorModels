@@ -175,7 +175,7 @@ class BatchPSDM(NumericModel):
     def _algebraic_vars_idx(self):
         """Create list identifying which equations are algebraic.
 
-        Only the inlet boundary condition for this model.
+        Particle surface and center nodes.
         """
         return [1, self.N]
 
