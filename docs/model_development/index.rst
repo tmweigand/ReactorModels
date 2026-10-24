@@ -13,7 +13,7 @@ built upon the conservation of mass for a species in a phase over a differential
     \del \vdot \lrp{\gke^{\gka}\rho^{\gka}\mma i\gka \vec v^\sol{i\gka}} = 0
 
 where :math:`\gke^{\gka}` is the volume fraction of phase :math:`\gka`, :math:`\rho^{\gka}` is the density of phase :math:`\gka`, 
-:math:`\mma i\gka`  is the mass fraction of species :math:`i` in phase :math:`\gka`, and :math:`\vec v^\sol{i\gka}` 
+:math:`\mma i\gka`  is the solid phase loading of species :math:`i` in phase :math:`\gka`, and :math:`\vec v^\sol{i\gka}` 
 is the velocity vector of species :math:`i` in phase :math:`\gka`.
 
 Transport of species in a phase can occur through both advection and random (Brownian) motion of the species within the phase 
@@ -66,6 +66,7 @@ Models
    ../bohart_thomas/index
    ../numeric_models/index
    ../isotherms/index
+   ../isotherm_derivatives/index
 
 **************
 Nomenclature
@@ -121,7 +122,7 @@ Nomenclature
 | *Greek Letters*
 | :math:`\gke^{\gka}`: volume fraction of phase :math:`\gka`
 | :math:`\rho^{\gka}`: density of phase :math:`\gka` 
-| :math:`\mma i\gka`: mass fraction of species :math:`i` in phase :math:`\gka`
+| :math:`\mma i\gka`: solid phase loading of species :math:`i` in phase :math:`\gka`
 | :math:`\gke`: bed void fraction
 | :math:`\rho_p`: apparent density of the solid phase
 | :math:`\rho_b`: bed density :math:`\lrp{(1-\gke)\rho_p}`

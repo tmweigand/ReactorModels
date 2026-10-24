@@ -6,7 +6,7 @@ import numpy as np
 from ..properties.breakthrough import Breakthrough
 from ..numerics.config import NumericsConfig
 from .numeric_model_base import NumericModel
-from .boundary_conditions import InletBC, DirichletBC
+from .boundary_conditions import BoundaryConditions, DirichletBC
 
 
 class AdvectionDiffusion(NumericModel):
@@ -26,7 +26,7 @@ class AdvectionDiffusion(NumericModel):
         self,
         breakthrough: Breakthrough,
         numerics: NumericsConfig,
-        inlet_bc: Type[InletBC] = DirichletBC,
+        inlet_bc: Type[BoundaryConditions] = DirichletBC,
     ):
 
         # Physical parameters

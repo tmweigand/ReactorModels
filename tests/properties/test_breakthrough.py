@@ -19,15 +19,15 @@ def test_breakthrough_class():
         length=length,
         diameter=diameter,
         porosity=porosity,
-        media=reactormodels.Media,
-        water=reactormodels.Water,
+        media=reactormodels.Media(),
+        water=reactormodels.Water(),
     )
 
     column_volume = column.column_volume()
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
-        chemical=reactormodels.Chemical,
+        chemical=reactormodels.Chemical(),
         feed_concentrations=feed_concentrations,
         time=time,
         bed_volumes=bed_volumes,
@@ -78,7 +78,7 @@ def _make_particle(
     length = 100  # cm
     diameter = 10  # cm
     porosity = 0.334
-    bulk_density = 399.8  # g/mL
+    bed_density = 399.8  # g/mL
     flow_rate = 40  # cm³/s
 
     isotherm = reactormodels.models.LinearIsotherm(K=K)
@@ -93,7 +93,7 @@ def _make_particle(
         length=length,
         porosity=porosity,
         diameter=diameter,
-        bulk_density=bulk_density,
+        bed_density=bed_density,
         media=media,
         water=reactormodels.Water(),
     )
@@ -154,13 +154,13 @@ def test_breakthough_time():
         length=length,
         diameter=diameter,
         porosity=porosity,
-        media=reactormodels.Media,
-        water=reactormodels.Water,
+        media=reactormodels.Media(),
+        water=reactormodels.Water(),
     )
 
     breakthrough = reactormodels.Breakthrough(
         column=column,
-        chemical=reactormodels.Chemical,
+        chemical=reactormodels.Chemical(),
         feed_concentrations=feed_concentrations,
         time=time,
         bed_volumes=None,
@@ -186,8 +186,8 @@ def test_breakthough_bed_volumes():
         length=length,
         diameter=diameter,
         porosity=porosity,
-        media=reactormodels.Media,
-        water=reactormodels.Water,
+        media=reactormodels.Media(),
+        water=reactormodels.Water(),
     )
 
     breakthrough = reactormodels.Breakthrough(

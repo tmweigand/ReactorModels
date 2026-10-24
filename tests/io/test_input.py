@@ -33,7 +33,6 @@ def test_load_input_file():
     media = data["media"]
     assert isinstance(media, reactormodels.Media)
 
-    assert media.bed_density == pytest.approx(500.0)
     assert media.sphericity == pytest.approx(1.0)
     assert media.particle_porosity == pytest.approx(0.5)
     assert media.particle_density == pytest.approx(500.0)
@@ -48,7 +47,7 @@ def test_load_input_file():
     assert column.diameter == pytest.approx(0.05)
     assert column.porosity == pytest.approx(0.4)
 
-    assert column.bulk_density is None
+    assert column.bed_density == pytest.approx(500.0)
     assert column.sorbent_mass is None
     assert column.water is water
     assert column.media is media
@@ -144,7 +143,7 @@ def test_load_input_file():
     assert breakthrough.initial_concentration == pytest.approx(1.0)
 
     assert breakthrough._superficial_velocity == pytest.approx(0.001)
-    assert breakthrough.initial_mass_fraction == pytest.approx(0.5)
+    assert breakthrough.initial_solid_phase_loading == pytest.approx(0.5)
 
     assert set(data["isotherms"]) == {"chemical1"}
 

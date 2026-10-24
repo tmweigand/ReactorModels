@@ -22,8 +22,9 @@ def _build_solved_model():
         length=column_length,
         porosity=porosity,
         diameter=diameter,
-        media=reactormodels.Media(bed_density=bed_density, particle_density=1),
+        media=reactormodels.Media(particle_density=1),
         water=reactormodels.Water(),
+        bed_density=bed_density,
     )
 
     breakthrough = reactormodels.Breakthrough(
@@ -55,7 +56,7 @@ def mass_balance():
     return reactormodels.postprocess.MassBalance(
         model=model,
         liquid_concentration=C,
-        sorbent_mass_fraction=q,
+        solid_phase_loading=q,
     )
 
 
