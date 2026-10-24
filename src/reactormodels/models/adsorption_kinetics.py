@@ -95,9 +95,10 @@ class LocalEquilibrium(AdsorptionKinetics):
 
     def _residual_kinetics(self, result, c, q, dcdt, dqdt, transport) -> None:
         """Return liquid phase residual."""
-        result[1 : self.n_nodes] = (
-            transport + self.column.bed_density * (self.isotherm.dq_dC(c) * dcdt)[1:]
-        )
+        for i in range(1, self.n_nodes):
+            result[i] = transport[i - 1] + self.column.bed_density * (
+                self.isotherm.dq_dC(c[i]) * dcdt[i]
+            )
 
     def _jacobian_kinetics(self, C, dcdt, q, J, cj) -> None:
         """Return liquid phase jacobian."""
@@ -119,9 +120,10 @@ class LocalEquilibrium(AdsorptionKinetics):
         """Return C_out and q_out."""
         C_out = y_out[:, : self.n_nodes]
         # calculate solid phase loading from isotherm equation
-        q_out = np.array(
-            [self.isotherm.q(C_out[i]) for i in range(len(self.breakthrough.time))]
-        )
+        q_out = np.empty_like(C_out)
+        for t in range(len(self.breakthrough.time)):
+            for i in range(self.n_nodes):
+                q_out[t, i] = self.isotherm.q(C_out[t, i])
         return C_out, q_out
 
 
@@ -147,9 +149,11 @@ class DynamicAdsorptionKinetics(AdsorptionKinetics):
     def _residual_kinetics(self, result, c, q, dcdt, dqdt, transport) -> None:
         """Return liquid and solid phase residuals."""
         # liquid phase
-        result[1 : self.n_nodes] = transport + self.column.bed_density * dqdt[1:]
+        for i in range(1, self.n_nodes):
+            result[i] = transport[i - 1] + self.column.bed_density * dqdt[i]
         # solid phase
-        result[self.n_nodes :] = dqdt - self._kinetic_expression(c, q)
+        for i in range(self.n_nodes):
+            result[self.n_nodes + i] = dqdt[i] - self._kinetic_expression(c, q, i)
 
     def _jacobian_kinetics(self, C, dcdt, q, J, cj) -> None:
         """Return liquid phase jacobian."""
@@ -176,7 +180,7 @@ class DynamicAdsorptionKinetics(AdsorptionKinetics):
         q_out = y_out[:, self.n_nodes :]
         return C_out, q_out
 
-    def _kinetic_expression(self, c, q):
+    def _kinetic_expression(self, c, q, i):
         raise NotImplementedError
 
     def _solid_phase(self, C, q, J, cj) -> None:
@@ -193,8 +197,8 @@ class LinearDrivingForce(DynamicAdsorptionKinetics):
     def __init__(self, rate_constant: float):
         super().__init__(rate_constant)
 
-    def _kinetic_expression(self, c, q):
-        return self.rate_constant * (self.isotherm.q(c) - q)
+    def _kinetic_expression(self, c, q, i):
+        return self.rate_constant * (self.isotherm.q(c[i]) - q[i])
 
     def _solid_phase(self, C, q, J, cj) -> None:
         # LDF solid phase residual
@@ -215,8 +219,8 @@ class SecondOrder(DynamicAdsorptionKinetics):
     def __init__(self, rate_constant: float):
         super().__init__(rate_constant)
 
-    def _kinetic_expression(self, c, q):
-        return self.rate_constant * c * (self.isotherm.q(c) - q)
+    def _kinetic_expression(self, c, q, i):
+        return self.rate_constant * c[i] * (self.isotherm.q(c[i]) - q[i])
 
     def _solid_phase(self, C, q, J, cj) -> None:
         # second-order solid phase residual

@@ -9,7 +9,7 @@ from ..numerics.config import NumericsConfig
 from .numeric_model_base import NumericModel
 from .isotherm import Isotherm
 from .adsorption_kinetics import AdsorptionKinetics, LocalEquilibrium
-from .boundary_conditions import InletBC, DanckwertsBC
+from .boundary_conditions import BoundaryConditions, DanckwertsBC
 
 __all__ = ["AdvectionDiffusionAdsorption"]
 
@@ -38,7 +38,7 @@ class AdvectionDiffusionAdsorption(NumericModel):
         isotherm: Isotherm,
         numerics: NumericsConfig,
         kinetics: AdsorptionKinetics = LocalEquilibrium(),
-        inlet_bc: Type[InletBC] = DanckwertsBC,
+        inlet_bc: Type[BoundaryConditions] = DanckwertsBC,
     ):
         # Physical parameters
         self.column = breakthrough.column

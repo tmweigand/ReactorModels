@@ -12,7 +12,6 @@ BREAKTHROUGH_FILE = DATA_DIRECTORY / "input_breakthrough_test.xlsx"
 ISOTHERM_FILE = DATA_DIRECTORY / "input_isotherm_test.xlsx"
 
 
-@pytest.mark.skip
 def test_load_input_file():
     """Test loading experimental input data against Excel values."""
     data = load_input_file(

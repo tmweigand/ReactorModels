@@ -63,7 +63,7 @@ def _build_advection_diffusion_adsorption(
     )
 
 
-def _build_intraparticle_transport():
+def _build_batch_psdm():
     isotherm = reactormodels.models.LinearIsotherm(K=100.0)
 
     media = reactormodels.Media(
@@ -99,10 +99,12 @@ def _build_intraparticle_transport():
         n_elements=1,
         add_inlet=True,
     )
-    return reactormodels.models.IntraparticleTransport(
+    return reactormodels.models.BatchPSDM(
         isotherm=isotherm,
         breakthrough=breakthrough,
         numerics=numerics,
+        sorbent_dosage=0.001,
+        k_film=0.1,
     )
 
 
@@ -163,7 +165,7 @@ def _build_psdm():
 MODEL_BUILDERS = {
     "AdvectionDiffusion": _build_advection_diffusion,
     "AdvectionDiffusionAdsorption": _build_advection_diffusion_adsorption,
-    "IntraparticleTransport": _build_intraparticle_transport,
+    "BatchPSDM": _build_batch_psdm,
     "PSDM": _build_psdm,
     "PSDMSolid": _build_psdm,
 }

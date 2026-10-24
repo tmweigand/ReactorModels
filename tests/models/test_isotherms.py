@@ -116,12 +116,7 @@ def assert_jacobian_matches_numerical(
     rtol=1e-5,
     atol=1e-7,
 ):
-    x = np.array(
-        [
-            [0.3, 0.5],
-            [0.1, 0.4],
-        ]
-    )
+    x = np.array([[0.3], [0.1]])
 
     if var == "q":
         function = isotherm.C
@@ -132,25 +127,19 @@ def assert_jacobian_matches_numerical(
 
     analytical = jacobian(x)
 
-    n_species, n_nodes = x.shape
+    n_species = x.size
 
-    numerical = np.zeros(
-        (n_species, n_species, n_nodes),
-        dtype=float,
-    )
+    numerical = np.zeros((n_species, n_species))
 
     for j in range(n_species):
-        for k in range(n_nodes):
-            x_plus = x.copy()
-            x_minus = x.copy()
+        x_plus = x.copy()
+        x_minus = x.copy()
 
-            # Perturb species j at node k
-            x_plus[j, k] += eps
-            x_minus[j, k] -= eps
+        # Perturb species j at node k
+        x_plus[j] += eps
+        x_minus[j] -= eps
 
-            numerical[:, j, k] = (function(x_plus)[:, k] - function(x_minus)[:, k]) / (
-                2 * eps
-            )
+        numerical[:, j] = (function(x_plus) - function(x_minus)) / (2 * eps)
 
     np.testing.assert_allclose(
         analytical,
@@ -167,53 +156,25 @@ def assert_chain_rule_matches_numerical(
     rtol=1e-5,
     atol=1e-7,
 ):
-    x = np.array(
-        [
-            [0.3, 0.5],
-            [0.1, 0.4],
-        ]
-    )
+    x = np.array([[0.3], [0.1]])
 
-    dxdt = np.array(
-        [
-            [0.12, -0.07],
-            [0.08, -0.05],
-        ]
-    )
+    dxdt = np.array([[0.12], [0.08]])
 
     if var == "q":
+        function = isotherm.C
         J = isotherm.dC_dq(x)
-
-        # J[i, j, k] = dC_i(k) / dq_j(k)
-        # dxdt[j, k] = dq_j(k) / dt
-        #
-        # analytical[i, k] =
-        #     sum_j J[i, j, k] * dxdt[j, k]
-        analytical = np.einsum(
-            "ijk,jk->ik",
-            J,
-            dxdt,
-        )
-
-        x_plus = x + eps * dxdt
-        x_minus = x - eps * dxdt
-
-        numerical = (isotherm.C(x_plus) - isotherm.C(x_minus)) / (2 * eps)
-
     else:
+        function = isotherm.q
         J = isotherm.dq_dC(x)
 
-        # J[i, j, k] = dq_i(k) / dC_j(k)
-        analytical = np.einsum(
-            "ijk,jk->ik",
-            J,
-            dxdt,
-        )
+    analytical = J @ dxdt
 
-        x_plus = x + eps * dxdt
-        x_minus = x - eps * dxdt
+    x_plus = x + eps * dxdt
+    x_minus = x - eps * dxdt
 
-        numerical = (isotherm.q(x_plus) - isotherm.q(x_minus)) / (2 * eps)
+    numerical = (function(x_plus) - function(x_minus)) / (2 * eps)
+    if numerical.ndim == 1:
+        numerical = numerical.reshape(-1, 1)
 
     np.testing.assert_allclose(
         analytical,
@@ -314,8 +275,8 @@ def assert_hessian_matches_numerical(
     rtol=1e-4,
     atol=1e-7,
 ):
-    # Shape: (n_species, n_nodes)
-    x = np.array([[0.3, 0.5, 0.7], [0.4, 0.6, 0.8], [0.1, 0.2, 0.3]])
+    # Shape: (n_species, 1)
+    x = np.array([[0.3], [0.4], [0.1]])
 
     if var == "q":
         function = isotherm.C
@@ -326,8 +287,8 @@ def assert_hessian_matches_numerical(
 
     analytical = hessian(x)
 
-    n_species, n_nodes = x.shape
-    numerical = np.zeros((n_species, n_species, n_species, n_nodes))
+    n_species = x.size
+    numerical = np.zeros((n_species, n_species, n_species))
 
     for j in range(n_species):
         for k in range(n_species):
@@ -339,11 +300,11 @@ def assert_hessian_matches_numerical(
             ek[k, :] = eps
 
             if j == k:
-                numerical[:, j, k, :] = (
+                numerical[:, j, k] = (
                     function(x + ej) - 2.0 * function(x) + function(x - ej)
                 ) / eps**2
             else:
-                numerical[:, j, k, :] = (
+                numerical[:, j, k] = (
                     function(x + ej + ek)
                     - function(x + ej - ek)
                     - function(x - ej + ek)
@@ -365,8 +326,8 @@ def assert_hessian_matches_numerical_binary(
     rtol=1e-4,
     atol=1e-7,
 ):
-    # Shape: (n_species, n_nodes)
-    x = np.array([[0.3, 0.5, 0.7], [0.4, 0.6, 0.8]])
+    # Shape: (n_species, 1)
+    x = np.array([[0.3], [0.4]])
 
     if var == "q":
         function = isotherm.C
@@ -377,8 +338,8 @@ def assert_hessian_matches_numerical_binary(
 
     analytical = hessian(x)
 
-    n_species, n_nodes = x.shape
-    numerical = np.zeros((n_species, n_species, n_species, n_nodes))
+    n_species = x.size
+    numerical = np.zeros((n_species, n_species, n_species))
 
     for j in range(n_species):
         for k in range(n_species):
@@ -390,11 +351,11 @@ def assert_hessian_matches_numerical_binary(
             ek[k, :] = eps
 
             if j == k:
-                numerical[:, j, k, :] = (
+                numerical[:, j, k] = (
                     function(x + ej) - 2.0 * function(x) + function(x - ej)
                 ) / eps**2
             else:
-                numerical[:, j, k, :] = (
+                numerical[:, j, k] = (
                     function(x + ej + ek)
                     - function(x + ej - ek)
                     - function(x - ej + ek)
@@ -416,8 +377,8 @@ def assert_hessian_contraction_matches_gradient_difference(
     rtol=1e-4,
     atol=1e-7,
 ):
-    dxdt = np.array([[0.12, -0.07, 0.1], [0.08, -0.05, 0.06], [0.09, -0.01, 0.11]])
-    x = np.array([[0.3, 0.5, 0.7], [0.4, 0.6, 0.8], [0.1, 0.2, 0.3]])
+    dxdt = np.array([[0.12], [0.08], [0.09]])
+    x = np.array([[0.3], [0.4], [0.1]])
 
     if var == "q":
         gradient = isotherm.dC_dq
@@ -430,9 +391,9 @@ def assert_hessian_contraction_matches_gradient_difference(
 
     # Analytical contraction: sum over k.
     analytical = np.einsum(
-        "ijkn,kn->ijn",
+        "ijk,k->ij",
         H,
-        dxdt,
+        dxdt.ravel(),
     )
 
     # Numerical directional derivative of the gradient.
@@ -453,8 +414,8 @@ def assert_hessian_contraction_matches_binary(
     rtol=1e-4,
     atol=1e-7,
 ):
-    dxdt = np.array([[0.12, -0.07, 0.1], [0.08, -0.05, 0.06]])
-    x = np.array([[0.3, 0.5, 0.7], [0.4, 0.6, 0.8]])
+    dxdt = np.array([[0.12], [0.08]])
+    x = np.array([[0.3], [0.4]])
 
     if var == "q":
         gradient = isotherm.dC_dq
@@ -467,9 +428,9 @@ def assert_hessian_contraction_matches_binary(
 
     # Analytical contraction: sum over k.
     analytical = np.einsum(
-        "ijkn,kn->ijn",
+        "ijk,k->ij",
         H,
-        dxdt,
+        dxdt.ravel(),
     )
 
     # Numerical directional derivative of the gradient.

@@ -10,7 +10,7 @@ from ..properties.film_transfer import FilmTransfer
 from ..numerics.config import PSDMNumerics
 from .numeric_model_base import NumericModel
 from .isotherm import Isotherm
-from .boundary_conditions import InletBC, DirichletBC, SymmetryBC
+from .boundary_conditions import BoundaryConditions, DirichletBC, SymmetryBC
 
 __all__ = ["PSDMSolid"]
 
@@ -33,8 +33,8 @@ class PSDMSolid(NumericModel):
         isotherm: Isotherm,
         numerics: PSDMNumerics,
         k_film: float | FilmTransfer = 0,
-        inlet_bc: Type[InletBC] = DirichletBC,
-        center_bc: Type[InletBC] = SymmetryBC,
+        inlet_bc: Type[BoundaryConditions] = DirichletBC,
+        center_bc: Type[BoundaryConditions] = SymmetryBC,
     ):
         # Physical parameters
         self.breakthrough: Breakthrough = breakthrough

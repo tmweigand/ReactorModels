@@ -18,7 +18,7 @@ def run_demo(
     particle_diameter = 0.07 * 2  # cm
     pore_diffusion = 5e-6  # cm2/s
     surface_diffusion = 5e-10  # cm2/s
-    k_film = 0.075  # cm/s
+    k_film = 0.1  # cm/s
 
     # column
     axial_diffusion = 0  # cm2/s
@@ -76,6 +76,8 @@ def run_demo(
         n_elements=1,
         add_inlet=True,
     )
+
+    numerics = reactormodels.numerics.PSDMNumerics(column_grid, particle_grid)
 
     model = reactormodels.models.PSDM(
         breakthrough=breakthrough,

@@ -8,25 +8,30 @@ import numpy as np
 
 def run_demo(
     show: bool = False,
-    save_path: str | Path = "data_out/intraparticle_profile_demo.png",
+    save_path: str | Path = "data_out/pore_diffusion_demo.png",
 ):
-    """Plot the intraparticle concentration profile."""
+    """Plot breakthrough profile for pore diffusion model."""
 
-    length = 1
-    diameter = 2
-    porosity = 0.4
-    bed_density = 500
-    superficial_velocity = 1
-
-    feed_concentrations = 1
+    # particle
     particle_porosity = 0.5
-    particle_density = 0.6
-    initial_concentration = 0
-    particle_diameter = 2.0
-    pore_diffusion = 0.1
-    surface_diffusion = 0.01
-    K = 1
-    t_eval = np.array([2, 4, 6, 8, 10])
+    particle_density = 600  # g/L
+    particle_diameter = 0.07 * 2  # cm
+    pore_diffusion = 2.5e-5  # cm2/s
+    surface_diffusion = 0  # cm2/s
+    k_film = 0.1  # cm/s
+
+    # column
+    axial_diffusion = 0  # cm2/s
+    K = 0  # (mg/g) * (L/mg)
+    length = 100  # cm
+    diameter = 10  # cm
+    porosity = 0.334
+    bed_density = 399.8  # g/L
+    feed_concentrations = 1  # mg/L
+    flow_rate = 40  # cm3/s
+    t_eval = np.linspace(
+        1e-10, length * np.pi * (diameter / 2) ** 2 / flow_rate * porosity * 5, 200
+    )  # s
 
     isotherm = reactormodels.models.LinearIsotherm(K=K)
 
@@ -46,6 +51,7 @@ def run_demo(
     )
 
     chemical = reactormodels.Chemical(
+        axial_diffusion=axial_diffusion,
         pore_diffusion=pore_diffusion,
         surface_diffusion=surface_diffusion,
     )
@@ -54,36 +60,41 @@ def run_demo(
         column=column,
         chemical=chemical,
         feed_concentrations=feed_concentrations,
-        superficial_velocity=superficial_velocity,
+        flow_rate=flow_rate,
         time=t_eval,
     )
 
-    numerics = reactormodels.numerics.NumericsConfig(
-        domain_length=media.particle_radius,
-        n_interior_points=5,
-        n_elements=10,
+    column_numerics = reactormodels.numerics.NumericsConfig(
+        domain_length=column.length,
+        n_interior_points=3,
+        n_elements=8,
         add_inlet=True,
     )
 
-    model = reactormodels.models.IntraparticleTransport(
+    particle_numerics = reactormodels.numerics.NumericsConfig(
+        domain_length=media.particle_radius,
+        n_interior_points=3,
+        n_elements=1,
+        add_inlet=True,
+    )
+
+    model = reactormodels.models.PSDM(
         breakthrough=breakthrough,
         isotherm=isotherm,
-        numerics=numerics,
+        column_numerics=column_numerics,
+        particle_numerics=particle_numerics,
+        k_film=k_film,
     )
-    x, C, q = model.solve()
+    z, r, C, q = model.solve()
 
     fig, ax = plt.subplots(figsize=(8, 5))
-    for i, t in enumerate(t_eval):
-        mask = x < 0.99 * (particle_diameter / 2)
-        C_numerical = C[i, mask]
 
-        ax.plot(x[mask], C_numerical, marker="o", linestyle="-", label=f"t={t:g}")
+    ax.plot(t_eval, C[:, -1], linestyle="-")
 
-    ax.set_title("Intraparticle Concentration Profile")
-    ax.set_xlabel("r")
+    ax.set_title("PDM Breakthrough Profile")
+    ax.set_xlabel("Time (s)")
     ax.set_ylabel("C / C_in")
     ax.grid(True, alpha=0.3)
-    ax.legend(fontsize=8, ncols=1)
     fig.tight_layout()
 
     save_path = Path(save_path)
