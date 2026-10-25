@@ -15,7 +15,12 @@ class InletBC:
     ):
         raise NotImplementedError
 
-    def apply(self, gradient_concentration_0: None | float = None):
+    def apply(
+        self,
+        initial_concentrations: np.ndarray,
+        A_row: np.ndarray,
+        gradient_concentration_0: None | float = None,
+    ):
         """Return the value on the boundary"""
         raise NotImplementedError
 
@@ -43,7 +48,12 @@ class DirichletBC(InletBC):
         self.inlet_concentration = inlet_concentration
         self.node = node
 
-    def apply(self, gradient_concentration_0: None | float = None):
+    def apply(
+        self,
+        initial_concentrations: np.ndarray,
+        A_row: np.ndarray,
+        gradient_concentration_0: None | float = None,
+    ):
         """Return the value on the boundary"""
         return self.inlet_concentration
 
@@ -74,12 +84,19 @@ class DanckwertsBC(InletBC):
         self.velocity = velocity
         self.diffusion = diffusion
 
-    def apply(self, gradient_concentration_0: None | float = None):
+    def apply(
+        self,
+        initial_concentrations: np.ndarray,
+        A_row: np.ndarray,
+        gradient_concentration_0: None | float = None,
+    ):
         """Return the value on the boundary"""
-        return (
-            self.inlet_concentration
-            + (self.diffusion / self.velocity) * gradient_concentration_0
+        numerator = self.velocity * self.inlet_concentration + self.diffusion * (
+            A_row[1:] @ initial_concentrations[1:]
         )
+        denominator = self.velocity - self.diffusion * A_row[0]
+
+        return numerator / denominator
 
     def residual(
         self, concentration_0: float, gradient_concentration_0: None | float = None
@@ -111,7 +128,12 @@ class SymmetryBC(InletBC):
     def __init__(self, node: int = 0, velocity=None, diffusion=None):
         self.node = node
 
-    def apply(self, gradient_concentration_0: None | float = None):
+    def apply(
+        self,
+        initial_concentrations: None | np.ndarray = None,
+        A_row: None | np.ndarray = None,
+        gradient_concentration_0: None | float = None,
+    ):
         """Symmetry does not set a concentration value directly."""
         raise NotImplementedError("SymmetryBC has no direct value; use residual().")
 

@@ -5,6 +5,8 @@ from enum import Enum, auto
 
 from .isotherm import Isotherm
 from .multi_species_isotherm import MultiSpeciesIsotherm
+from ..properties.breakthrough import Breakthrough
+from ..properties.column import Column
 
 
 class SolutionVariable(Enum):
@@ -25,19 +27,25 @@ def _is_implemented(method):
 class AdsorptionKinetics:
     """Set the form of the adsorption kinetics."""
 
-    def __init__(self):
-        self.column = None
-        self.breakthrough = None
-        self.isotherm = None
-        self.n_nodes = None
-        self.inlet_concentration = None
-        self.solution_variable = None
+    def __init__(self) -> None:
+        self.column: Column
+        self.breakthrough: Breakthrough
+        self.isotherm: Isotherm | MultiSpeciesIsotherm
+        self.n_nodes: int
+        self.inlet_concentration: float
+        self.solution_variable: SolutionVariable
 
-    def configure(self, breakthrough, isotherm, n_nodes, inlet_concentration):
+    def configure(
+        self,
+        breakthrough: Breakthrough,
+        isotherm: Isotherm | MultiSpeciesIsotherm,
+        n_nodes: int,
+        inlet_concentration: float,
+    ) -> None:
         """Initialize convenient classes/quantities."""
         self.column = breakthrough.column
         self.breakthrough = breakthrough
-        self.isotherm: Isotherm | MultiSpeciesIsotherm = isotherm
+        self.isotherm = isotherm
         self.n_nodes = n_nodes
         self.inlet_concentration = inlet_concentration
 

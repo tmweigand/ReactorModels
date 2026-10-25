@@ -204,10 +204,25 @@ class OrthogonalCollocation:
 
         If node is provided, only return the value at specified node.
         """
-        if node is None:
-            return self.first_derivative @ f
-        else:
-            return self.first_derivative[node, :] @ f
+        f = np.asarray(f)
+        if f.ndim == 1:
+            if node is None:
+                return self.first_derivative @ f
+            else:
+                return self.first_derivative[node, :] @ f
+
+        if f.ndim == 2:
+            if f.shape[1] != self.first_derivative.shape[1]:
+                raise ValueError(
+                    f"Expected {self.first_derivative.shape[1]} "
+                    f"spatial nodes, got {f.shape[1]}"
+                )
+
+            if node is None:
+                return f @ self.first_derivative.T
+
+            return f @ self.first_derivative[node, :]
+        raise ValueError(f"Expected f to have 1 or 2 dimensions, got {f.ndim}")
 
     def evaluate_second_derivative(
         self, f: np.ndarray, node: None | int = None
@@ -216,10 +231,25 @@ class OrthogonalCollocation:
 
         If node is provided, only return the value at specified node.
         """
-        if node is None:
-            return self.second_derivative @ f
-        else:
-            return self.second_derivative[node, :] @ f
+        f = np.asarray(f)
+        if f.ndim == 1:
+            if node is None:
+                return self.second_derivative @ f
+            else:
+                return self.second_derivative[node, :] @ f
+
+        if f.ndim == 2:
+            if f.shape[1] != self.second_derivative.shape[1]:
+                raise ValueError(
+                    f"Expected {self.second_derivative.shape[1]} "
+                    f"spatial nodes, got {f.shape[1]}"
+                )
+
+            if node is None:
+                return f @ self.second_derivative.T
+
+            return f @ self.second_derivative[node, :]
+        raise ValueError(f"Expected f to have 1 or 2 dimensions, got {f.ndim}")
 
     def integrate(
         self,

@@ -2,7 +2,7 @@
 
 from typing import Type
 import numpy as np
-
+from collections.abc import Sequence
 from ..properties.breakthrough import Breakthrough
 from ..numerics.config import NumericsConfig
 from .numeric_model_base import NumericModel
@@ -24,54 +24,105 @@ class AdvectionDiffusion(NumericModel):
 
     def __init__(
         self,
-        breakthrough: Breakthrough,
+        breakthrough: Breakthrough | Sequence[Breakthrough],
         numerics: NumericsConfig,
         inlet_bc: Type[InletBC] = DirichletBC,
     ):
+        # Normalize breakthroughs to a list
+        if isinstance(breakthrough, Breakthrough):
+            self.breakthroughs = [breakthrough]
+        else:
+            self.breakthroughs = list(breakthrough)
+
+        if not self.breakthroughs:
+            raise ValueError("At least one breakthrough must be provided.")
+        if not all(isinstance(b, Breakthrough) for b in self.breakthroughs):
+            raise TypeError("breakthrough must be one or more Breakthroughs.")
+
+        # number of species
+        self.n_species = len(self.breakthroughs)
 
         # Physical parameters
-        self.breakthrough = breakthrough
-        self.velocity = breakthrough.interstitial_velocity
-        self.axial_diffusion = breakthrough.chemical.axial_diffusion
+        self.velocity = self.breakthroughs[0].interstitial_velocity
 
-        # Initial conditions
-        self.initial_concentration = breakthrough.initial_concentration
-
-        # Boundary conditions
-        self.inlet_concentration = breakthrough.mean_feed_concentration()
-        self.inlet_bc = inlet_bc(
-            breakthrough.mean_feed_concentration(),
-            node=0,
-            velocity=self.velocity,
-            diffusion=self.axial_diffusion,
+        # Species-specific parameters
+        self.axial_diffusion = np.array(
+            [bt.chemical.axial_diffusion for bt in self.breakthroughs]
         )
+        if not np.any(self.axial_diffusion):
+            raise ValueError("Axial diffusion is required for each species.")
+
+        self.initial_concentration = np.array(
+            [bt.initial_concentration for bt in self.breakthroughs]
+        )
+        self.inlet_concentration = np.array(
+            [bt.mean_feed_concentration() for bt in self.breakthroughs]
+        )
+
+        # Normalize inlet BCs to a list
+        if isinstance(inlet_bc, type):
+            self.inlet_bcs = [inlet_bc] * len(self.breakthroughs)
+        else:
+            self.inlet_bcs = list(inlet_bc)
+
+        if len(self.inlet_bcs) != len(self.breakthroughs):
+            raise ValueError(
+                "The number of inlet boundary conditions must match "
+                "the number of breakthroughs."
+            )
+        self.inlet_bc = [
+            bc(
+                inlet_concentration,
+                node=0,
+                velocity=self.velocity,
+                diffusion=diffusion,
+            )
+            for bc, inlet_concentration, diffusion in zip(
+                self.inlet_bcs,
+                self.inlet_concentration,
+                self.axial_diffusion,
+            )
+        ]
 
         # Numerics
         self.numerics = numerics
 
         # Discretization
-        self.N = len(self.numerics.collocation.nodes)
+        self.axial_nodes = len(self.numerics.collocation.nodes)
 
         self.assert_parameters_set()
 
-    def _residual(self, t, C, Cdot, result):
-        """IDA residual callback.  Writes into `result` in-place."""
-        # Inlet boundary condition
-        result[0] = self.inlet_bc.residual(
-            C[0], self.numerics.collocation.evaluate_gradient(C, 0)
-        )
+    def _reshape(self, y):
+        """Reshape vectors for multi-species."""
+        y = y.reshape(self.n_species, self.axial_nodes)
+        return y
 
-        # Inter nodes and outlet
-        rhs = -self.velocity * self.numerics.evaluate_gradient(
-            C
-        ) + self.axial_diffusion * self.numerics.evaluate_second_derivative(C)
-        result[1:] = Cdot[1:] - rhs[1:]
+    def _residual(self, t, c, cdot, result):
+        """IDA residual callback.  Writes into `result` in-place."""
+        # reshape C and result
+        c = self._reshape(c)
+        dcdt = self._reshape(cdot)
+        result = self._reshape(result)
+
+        # Inlet boundary condition
+        G = self.numerics.collocation.evaluate_gradient(c)
+        for i, bc in enumerate(self.inlet_bc):
+            result[i, 0] = bc.residual(c[i, 0], G[i, 0])
+
+        # Interior nodes and outlet
+        result[:, 1:] = (
+            dcdt[:, 1:]
+            + self.velocity * self.numerics.evaluate_gradient(c)[:, 1:]
+            - self.axial_diffusion[:, None]
+            * self.numerics.evaluate_second_derivative(c)[:, 1:]
+        )
 
         return 0
 
     def _jacobian(self, t, C, Cdot, result, cj, jac):
         """Build jacobian of _residual."""
-        J = np.zeros((self.N, self.N))
+        n_vars = self.axial_nodes * self.n_species
+        J = np.zeros((n_vars, n_vars))
 
         # Row 0: algebraic constraint, no Cdot term
         J[0, :] = self.inlet_bc.jacobian_row(
@@ -84,7 +135,7 @@ class AdvectionDiffusion(NumericModel):
             + self.axial_diffusion * self.numerics.collocation.second_derivative
         )  # (N,N)
         J[1:, :] = -pde_jac[1:, :]  # dF/dC contribution
-        for i in range(1, self.N):
+        for i in range(1, self.axial_nodes):
             J[i, i] += cj  # dF/dCdot: Cdot[i] appears only in row i
 
         jac[:, :] = J
@@ -92,33 +143,47 @@ class AdvectionDiffusion(NumericModel):
 
     def _initial_conditions(self):
         """Set the initial concentration and dcdt."""
-        c = np.full(self.N, self.initial_concentration)
-        c[0] = self.inlet_bc.apply(self.numerics.collocation.evaluate_gradient(c, 0))
-        dcdt = np.zeros(self.N)
-        return c, dcdt
+        C_init = np.asarray(self.initial_concentration, dtype=float)
+
+        C0 = np.broadcast_to(
+            C_init[:, None],
+            (self.n_species, self.axial_nodes),
+        ).copy()
+
+        A0 = self.numerics.collocation.first_derivative[0, :]
+        for i, bc in enumerate(self.inlet_bc):
+            C0[i, 0] = bc.apply(C0[i, :], A0)
+
+        C0 = C0.ravel()
+        Cdot0 = np.zeros_like(C0)
+        return C0, Cdot0
 
     def _algebraic_vars_idx(self):
         """Create list identifying which equations are algebraic.
 
-        Only the inlet boundary condition for this model.
+        Only the inlet boundary condition for each species.
         """
-        return [0]
+        return [i * self.axial_nodes for i in range(self.n_species)]
 
     def solve(self):
         """Integrate from t_span[0] to t_span[1], returning results at t_eval."""
         c, dcdt = self._initial_conditions()
         result = self.numerics.integrate(
             residual=self._residual,
-            jacobian=self._jacobian,
+            # jacobian=self._jacobian,
             y0=c,
             yp0=dcdt,
-            t_span=[0, self.breakthrough.time.tolist()],
-            t_eval=self.breakthrough.time,
+            t_span=[0, self.breakthroughs[0].time.tolist()],
+            t_eval=self.breakthroughs[0].time,
             algebraic_vars_idx=self._algebraic_vars_idx(),
         )
         if result.flag < 0:
             raise RuntimeError(
                 f"IDA solver failed with flag {result.flag}: {result.message}"
             )
-        C_history = result.values.y[1:]  # (n_times, N), skip the t=t_span[0] row
-        return self.numerics.collocation.nodes, C_history
+
+        # (n_times, n_species, axial_nodes), skip the t=t_span[0] row
+        C_out = result.values.y[1:]
+        C_out = C_out.reshape(len(C_out), self.n_species, self.axial_nodes)
+
+        return self.numerics.collocation.nodes, C_out
