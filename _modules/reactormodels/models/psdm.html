@@ -10,7 +10,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=a6a68382" />
       <link rel="stylesheet" type="text/css" href="../../../_static/fonts.css?v=5583d106" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/reactor.css?v=ccde76bc" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/reactor.css?v=a7804f7f" />
 
   
     <link rel="shortcut icon" href="../../../_static/RM_favicon.png"/>
@@ -44,10 +44,12 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../model_development/index.html">Model Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/index.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../numerical_methods/index.html">Numerical Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../benchmarks.html">Benchmarks</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">reactormodels</a></li>
 </ul>
@@ -89,7 +91,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..numerics.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">PSDMNumerics</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.numeric_model_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumericModel</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.isotherm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Isotherm</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.boundary_conditions</span><span class="w"> </span><span class="kn">import</span> <span class="n">InletBC</span><span class="p">,</span> <span class="n">DirichletBC</span><span class="p">,</span> <span class="n">SymmetryBC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.boundary_conditions</span><span class="w"> </span><span class="kn">import</span> <span class="n">BoundaryConditions</span><span class="p">,</span> <span class="n">DirichletBC</span><span class="p">,</span> <span class="n">SymmetryBC</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"PSDM"</span><span class="p">]</span>
 
@@ -114,8 +116,8 @@
         <span class="n">isotherm</span><span class="p">:</span> <span class="n">Isotherm</span><span class="p">,</span>
         <span class="n">numerics</span><span class="p">:</span> <span class="n">PSDMNumerics</span><span class="p">,</span>
         <span class="n">k_film</span><span class="p">:</span> <span class="n">FilmTransfer</span><span class="p">,</span>
-        <span class="n">inlet_bc</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">InletBC</span><span class="p">]</span> <span class="o">=</span> <span class="n">DirichletBC</span><span class="p">,</span>
-        <span class="n">center_bc</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">InletBC</span><span class="p">]</span> <span class="o">=</span> <span class="n">SymmetryBC</span><span class="p">,</span>
+        <span class="n">inlet_bc</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">BoundaryConditions</span><span class="p">]</span> <span class="o">=</span> <span class="n">DirichletBC</span><span class="p">,</span>
+        <span class="n">center_bc</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">BoundaryConditions</span><span class="p">]</span> <span class="o">=</span> <span class="n">SymmetryBC</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="c1"># Physical parameters</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span><span class="p">:</span> <span class="n">Breakthrough</span> <span class="o">=</span> <span class="n">breakthrough</span>
@@ -132,7 +134,12 @@
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">surface_diffusion</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">chemical</span><span class="o">.</span><span class="n">surface_diffusion</span>
+
+        <span class="c1"># Isotherm</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span> <span class="o">=</span> <span class="n">isotherm</span>
+
+        <span class="c1"># External properties</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axial_diffusion</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">chemical</span><span class="o">.</span><span class="n">axial_diffusion</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">k_film</span> <span class="o">=</span> <span class="n">k_film</span><span class="o">.</span><span class="n">k_film</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k_film</span><span class="p">,</span> <span class="n">FilmTransfer</span><span class="p">)</span> <span class="k">else</span> <span class="n">k_film</span>
 
         <span class="c1"># Boundary conditions</span>
@@ -165,8 +172,8 @@
         <span class="n">c</span><span class="p">,</span> <span class="n">cp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
         <span class="n">dcdt</span><span class="p">,</span> <span class="n">dcpdt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split</span><span class="p">(</span><span class="n">ydot</span><span class="p">)</span>
 
-        <span class="n">sink</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axial_nodes</span><span class="p">)</span>
-        <span class="n">result</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># set interphase exchange terms to zero initially</span>
+        <span class="n">interphase_exchange</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axial_nodes</span><span class="p">)</span>
 
         <span class="c1"># bulk phase - inlet</span>
         <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inlet_bc</span><span class="o">.</span><span class="n">residual</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -182,87 +189,79 @@
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_numerics</span><span class="o">.</span><span class="n">evaluate_second_derivative</span><span class="p">(</span><span class="n">c</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
         <span class="p">)</span>
 
+        <span class="c1"># particle domain loop</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axial_nodes</span><span class="p">):</span>
             <span class="n">cp_i</span> <span class="o">=</span> <span class="n">cp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="n">dcpdt_i</span> <span class="o">=</span> <span class="n">dcpdt</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
-            <span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axial_nodes</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial_nodes</span>
+            <span class="c1"># index of nodes at particle center</span>
+            <span class="n">center</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axial_nodes</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial_nodes</span>
 
-            <span class="c1"># center: symmetry</span>
-            <span class="n">result</span><span class="p">[</span><span class="n">offset</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_bc</span><span class="o">.</span><span class="n">residual</span><span class="p">(</span>
+            <span class="c1"># center: symmetry (dcp/dr = 0)</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">center</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_bc</span><span class="o">.</span><span class="n">residual</span><span class="p">(</span>
                 <span class="n">gradient_concentration_0</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">particle_numerics</span><span class="o">.</span><span class="n">evaluate_gradient</span><span class="p">(</span>
                     <span class="n">cp_i</span><span class="p">,</span> <span class="mi">0</span>
                 <span class="p">)</span>
             <span class="p">)</span>
 
-            <span class="c1"># particle phase - internal</span>
-            <span class="n">Dp_term</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_porosity</span> <span class="o">*</span> <span class="n">dcpdt_i</span><span class="p">[</span><span class="mi">1</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial_nodes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-                <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_porosity</span>
-                <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_diffusion</span>
-                <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_numerics</span><span class="o">.</span><span class="n">evaluate_radial_operator</span><span class="p">(</span><span class="n">cp_i</span><span class="p">)[</span>
-                    <span class="mi">1</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial_nodes</span> <span class="o">-</span> <span class="mi">1</span>
-                <span class="p">]</span>
-            <span class="p">)</span>
+            <span class="c1"># laplacian of q for surface diffusion term</span>
+            <span class="n">q_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">q</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cp_i</span><span class="p">])</span>
+            <span class="n">lap_q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_numerics</span><span class="o">.</span><span class="n">evaluate_radial_operator</span><span class="p">(</span><span class="n">q_i</span><span class="p">)</span>
+            <span class="c1"># laplacian of q for surface diffusion term</span>
+            <span class="n">lap_cp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_numerics</span><span class="o">.</span><span class="n">evaluate_radial_operator</span><span class="p">(</span><span class="n">cp_i</span><span class="p">)</span>
 
-            <span class="n">dqdCp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">dq_dC</span><span class="p">(</span><span class="n">cp_i</span><span class="p">)</span>
-            <span class="n">lap_q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_numerics</span><span class="o">.</span><span class="n">evaluate_radial_operator</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">q</span><span class="p">(</span><span class="n">cp_i</span><span class="p">)</span>
-            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial_nodes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="c1"># isotherm derivative for chain rule</span>
+                <span class="n">dqdCp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">dq_dC</span><span class="p">(</span><span class="n">cp_i</span><span class="p">[</span><span class="n">r</span><span class="p">])</span>
 
-            <span class="n">Ds_term</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span>
-                <span class="o">*</span> <span class="p">(</span><span class="n">dqdCp</span> <span class="o">*</span> <span class="n">dcpdt_i</span><span class="p">)[</span><span class="mi">1</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial_nodes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-                <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span>
-                <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface_diffusion</span>
-                <span class="o">*</span> <span class="n">lap_q</span><span class="p">[</span><span class="mi">1</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial_nodes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-            <span class="p">)</span>
+                <span class="c1"># particle phase - internal</span>
+                <span class="n">Dp_term</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_porosity</span> <span class="o">*</span> <span class="n">dcpdt_i</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+                    <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_porosity</span>
+                    <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_diffusion</span>
+                    <span class="o">*</span> <span class="n">lap_cp</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+                <span class="p">)</span>
+                <span class="n">Ds_term</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span> <span class="o">*</span> <span class="n">dqdCp</span> <span class="o">*</span> <span class="n">dcpdt_i</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+                    <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span>
+                    <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface_diffusion</span>
+                    <span class="o">*</span> <span class="n">lap_q</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+                <span class="p">)</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">center</span> <span class="o">+</span> <span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">Dp_term</span> <span class="o">+</span> <span class="n">Ds_term</span>
 
-            <span class="n">intraparticle_transport</span> <span class="o">=</span> <span class="n">Dp_term</span> <span class="o">+</span> <span class="n">Ds_term</span>
-            <span class="n">result</span><span class="p">[</span><span class="n">offset</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span> <span class="n">offset</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial_nodes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">intraparticle_transport</span>
-            <span class="p">)</span>
-
-            <span class="c1"># boundary condition</span>
+            <span class="c1"># surface boundary condition - gradients at surface</span>
             <span class="n">grad_cp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_numerics</span><span class="o">.</span><span class="n">evaluate_gradient</span><span class="p">(</span><span class="n">cp_i</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">grad_q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_numerics</span><span class="o">.</span><span class="n">evaluate_gradient</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">q</span><span class="p">(</span><span class="n">cp_i</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">grad_q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_numerics</span><span class="o">.</span><span class="n">evaluate_gradient</span><span class="p">(</span><span class="n">q_i</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
-            <span class="n">diffusive_flux</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">intraparticle_flux</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_porosity</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_diffusion</span> <span class="o">*</span> <span class="n">grad_cp</span>
                 <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface_diffusion</span> <span class="o">*</span> <span class="n">grad_q</span>
             <span class="p">)</span>
+            <span class="n">surface_flux</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_film</span> <span class="o">*</span> <span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">cp_i</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
-            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">c_bulk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inlet_bc</span><span class="o">.</span><span class="n">apply</span><span class="p">()</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">c_bulk</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">center</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial_nodes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">intraparticle_flux</span> <span class="o">-</span> <span class="n">surface_flux</span>
 
-            <span class="n">film_flux</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_film</span> <span class="o">*</span> <span class="p">(</span><span class="n">c_bulk</span> <span class="o">-</span> <span class="n">cp_i</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-
-            <span class="n">result</span><span class="p">[</span><span class="n">offset</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial_nodes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">diffusive_flux</span> <span class="o">-</span> <span class="n">film_flux</span>
-
-            <span class="k">assert</span> <span class="n">film_flux</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_diameter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-            <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">sink</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="mi">6</span>
-                    <span class="o">*</span> <span class="n">film_flux</span>
-                    <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span><span class="p">)</span>
-                    <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_diameter</span>
-                <span class="p">)</span>
-
-        <span class="n">result</span><span class="p">[</span><span class="mi">1</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">axial_nodes</span><span class="p">]</span> <span class="o">=</span> <span class="n">transport</span> <span class="o">+</span> <span class="n">sink</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="c1"># compute interphase exchange terms</span>
+            <span class="n">interphase_exchange</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="mi">6</span>
+                <span class="o">*</span> <span class="n">surface_flux</span>
+                <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span><span class="p">)</span>
+                <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_diameter</span>
+            <span class="p">)</span>
+        <span class="c1"># add interphase exchange term to internal bulk nodes</span>
+        <span class="n">result</span><span class="p">[</span><span class="mi">1</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">axial_nodes</span><span class="p">]</span> <span class="o">=</span> <span class="n">transport</span> <span class="o">+</span> <span class="n">interphase_exchange</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">ydot</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">cj</span><span class="p">,</span> <span class="n">jac</span><span class="p">):</span>
-        <span class="n">C</span><span class="p">,</span> <span class="n">Cp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">Cp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">dCpdt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split</span><span class="p">(</span><span class="n">ydot</span><span class="p">)</span>
         <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_vars</span><span class="p">()</span>
         <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
 
+        <span class="c1"># bulk inlet boundary condition</span>
         <span class="n">J</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">axial_nodes</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inlet_bc</span><span class="o">.</span><span class="n">jacobian_row</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">column_numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">first_derivative</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="p">)</span>
-
+        <span class="c1"># derivative of transport</span>
         <span class="n">d_transport</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span>
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span>
@@ -271,10 +270,11 @@
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">axial_diffusion</span>
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">second_derivative</span>
         <span class="p">)</span>
-
+        <span class="c1"># change in bulk residual w.r.t. bulk C</span>
         <span class="n">J</span><span class="p">[</span><span class="mi">1</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">axial_nodes</span><span class="p">,</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">axial_nodes</span><span class="p">]</span> <span class="o">=</span> <span class="n">d_transport</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span>
 
-        <span class="n">coef</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="c1"># coefficient for loss of mass from bulk phase</span>
+        <span class="n">film_coef</span> <span class="o">=</span> <span class="p">(</span>
             <span class="mi">6</span>
             <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span><span class="p">)</span>
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_film</span>
@@ -282,66 +282,71 @@
         <span class="p">)</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axial_nodes</span><span class="p">):</span>
-            <span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axial_nodes</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial_nodes</span>
-            <span class="n">surface</span> <span class="o">=</span> <span class="n">offset</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial_nodes</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="c1"># particle indexing</span>
+            <span class="n">center</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axial_nodes</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial_nodes</span>
+            <span class="n">surface</span> <span class="o">=</span> <span class="n">center</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial_nodes</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">particle_nodes</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">center</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial_nodes</span><span class="p">)</span>
 
-            <span class="n">cp_i</span> <span class="o">=</span> <span class="n">Cp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="n">dqdCp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">dq_dC</span><span class="p">(</span><span class="n">cp_i</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial_nodes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="c1"># change in particle residual w.r.t. Cp</span>
+                <span class="n">cp_r</span> <span class="o">=</span> <span class="n">Cp</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">]</span>
+                <span class="n">dqdCp_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">dq_dC</span><span class="p">(</span><span class="n">cp_r</span><span class="p">)</span>
+                <span class="n">d2qdCp2_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">d2q_dC2</span><span class="p">(</span><span class="n">cp_r</span><span class="p">)</span>
 
-            <span class="n">rows</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">offset</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">surface</span><span class="p">)</span>
-            <span class="n">cols</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">offset</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial_nodes</span><span class="p">)</span>
+                <span class="n">L</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">radial_operator_matrix</span>
 
-            <span class="n">L</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">radial_operator_matrix</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radial_nodes</span><span class="p">):</span>
+                    <span class="n">dqdCp_k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">dq_dC</span><span class="p">(</span><span class="n">Cp</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">k</span><span class="p">])</span>
+                    <span class="n">J</span><span class="p">[</span><span class="n">center</span> <span class="o">+</span> <span class="n">r</span><span class="p">,</span> <span class="n">center</span> <span class="o">+</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_porosity</span>
+                        <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_diffusion</span>
+                        <span class="o">*</span> <span class="n">L</span><span class="p">[</span><span class="n">r</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span>
+                        <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span>
+                        <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface_diffusion</span>
+                        <span class="o">*</span> <span class="n">L</span><span class="p">[</span><span class="n">r</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="n">dqdCp_k</span>
+                    <span class="p">)</span>
+                <span class="n">J</span><span class="p">[</span><span class="n">center</span> <span class="o">+</span> <span class="n">r</span><span class="p">,</span> <span class="n">center</span> <span class="o">+</span> <span class="n">r</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span> <span class="o">*</span> <span class="n">d2qdCp2_r</span> <span class="o">*</span> <span class="n">dCpdt</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">]</span>
+                <span class="p">)</span>
+                <span class="n">J</span><span class="p">[</span><span class="n">center</span> <span class="o">+</span> <span class="n">r</span><span class="p">,</span> <span class="n">center</span> <span class="o">+</span> <span class="n">r</span><span class="p">]</span> <span class="o">+=</span> <span class="n">cj</span> <span class="o">*</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_porosity</span>
+                    <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span> <span class="o">*</span> <span class="n">dqdCp_r</span>
+                <span class="p">)</span>
 
-            <span class="n">J</span><span class="p">[</span>
-                <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span>
-            <span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_porosity</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_diffusion</span> <span class="o">*</span> <span class="n">L</span><span class="p">[</span>
-                <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:</span>
-            <span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface_diffusion</span> <span class="o">*</span> <span class="n">L</span><span class="p">[</span>
-                <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:</span>
-            <span class="p">]</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span>
-                <span class="n">dqdCp</span>
-            <span class="p">)</span>
+                <span class="c1"># zero gradient at particle center</span>
+                <span class="n">J</span><span class="p">[</span><span class="n">center</span><span class="p">,</span> <span class="n">particle_nodes</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_bc</span><span class="o">.</span><span class="n">jacobian_row</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">particle_numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">first_derivative</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="p">)</span>
 
-            <span class="n">mass</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_porosity</span>
-                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span> <span class="o">*</span> <span class="n">dqdCp</span>
-            <span class="p">)</span>
+                <span class="c1"># change in surface residual w.r.t. Cp</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radial_nodes</span><span class="p">):</span>
+                    <span class="n">dqdCp_k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">dq_dC</span><span class="p">(</span><span class="n">Cp</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">k</span><span class="p">])</span>
+                    <span class="n">G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">first_derivative</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
 
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial_nodes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-                <span class="n">J</span><span class="p">[</span><span class="n">offset</span> <span class="o">+</span> <span class="n">j</span><span class="p">,</span> <span class="n">offset</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="n">cj</span> <span class="o">*</span> <span class="n">mass</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
-
-            <span class="n">J</span><span class="p">[</span><span class="n">offset</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="n">J</span><span class="p">[</span><span class="n">offset</span><span class="p">,</span> <span class="n">cols</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_bc</span><span class="o">.</span><span class="n">jacobian_row</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">particle_numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">first_derivative</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
-            <span class="p">)</span>
-
-            <span class="n">G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">first_derivative</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
-            <span class="n">d2qdCp2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">d2q_dC2</span><span class="p">(</span><span class="n">cp_i</span><span class="p">)</span>
-            <span class="n">grad_cp</span> <span class="o">=</span> <span class="n">G</span> <span class="o">@</span> <span class="n">cp_i</span>
-
-            <span class="n">surface_diffusion_jac</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">G</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">dqdCp</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">grad_cp</span><span class="p">,</span> <span class="n">G</span><span class="p">)</span> <span class="o">*</span> <span class="n">d2qdCp2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="p">)</span>
-
-            <span class="n">J</span><span class="p">[</span><span class="n">surface</span><span class="p">,</span> <span class="n">cols</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_porosity</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_diffusion</span> <span class="o">*</span> <span class="n">G</span>
-                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span>
-                <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface_diffusion</span>
-                <span class="o">*</span> <span class="n">surface_diffusion_jac</span>
-            <span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">J</span><span class="p">[</span><span class="n">surface</span><span class="p">,</span> <span class="n">center</span> <span class="o">+</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_porosity</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_diffusion</span> <span class="o">*</span> <span class="n">G</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                        <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span>
+                        <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface_diffusion</span>
+                        <span class="o">*</span> <span class="n">G</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="n">dqdCp_k</span>
+                    <span class="p">)</span>
                 <span class="n">J</span><span class="p">[</span><span class="n">surface</span><span class="p">,</span> <span class="n">surface</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_film</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">J</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">cj</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span>
-                <span class="n">J</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">coef</span>
-                <span class="n">J</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">surface</span><span class="p">]</span> <span class="o">-=</span> <span class="n">coef</span>
 
+                <span class="c1"># change in surface residual w.r.t. bulk C</span>
                 <span class="n">J</span><span class="p">[</span><span class="n">surface</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">k_film</span>
-                <span class="n">J</span><span class="p">[</span><span class="n">surface</span><span class="p">,</span> <span class="n">surface</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_film</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">axial_nodes</span><span class="p">):</span>
+            <span class="n">center</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axial_nodes</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial_nodes</span>
+            <span class="n">surface</span> <span class="o">=</span> <span class="n">center</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial_nodes</span> <span class="o">-</span> <span class="mi">1</span>
+
+            <span class="c1"># change in bulk residual w.r.t. bulk C</span>
+            <span class="n">J</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">film_coef</span> <span class="o">+</span> <span class="n">cj</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span>
+            <span class="c1"># change in bulk residual w.r.t. surface Cp</span>
+            <span class="n">J</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">surface</span><span class="p">]</span> <span class="o">-=</span> <span class="n">film_coef</span>
 
         <span class="n">jac</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">J</span>
+
         <span class="k">return</span> <span class="mi">0</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_initial_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -422,12 +427,12 @@
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="PSDM.get_sorbed_mass_fraction">
-<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.PSDM.get_sorbed_mass_fraction">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_sorbed_mass_fraction</span><span class="p">(</span>
+<div class="viewcode-block" id="PSDM.get_solid_phase_loading">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.PSDM.get_solid_phase_loading">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_solid_phase_loading</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">pore_concentration</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Calculate the sorbed mass fraction q"""</span>
+<span class="w">        </span><span class="sd">"""Calculate the solid phase loading q"""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">isotherm</span><span class="o">.</span><span class="n">q</span><span class="p">(</span><span class="n">pore_concentration</span><span class="p">)</span></div>
 
 

@@ -10,7 +10,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=a6a68382" />
       <link rel="stylesheet" type="text/css" href="../../../_static/fonts.css?v=5583d106" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/reactor.css?v=ccde76bc" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/reactor.css?v=a7804f7f" />
 
   
     <link rel="shortcut icon" href="../../../_static/RM_favicon.png"/>
@@ -44,10 +44,12 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../model_development/index.html">Model Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/index.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../numerical_methods/index.html">Numerical Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../benchmarks.html">Benchmarks</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">reactormodels</a></li>
 </ul>
@@ -97,17 +99,15 @@
         <span class="n">porosity</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">media</span><span class="p">:</span> <span class="n">Media</span><span class="p">,</span>
         <span class="n">water</span><span class="p">:</span> <span class="n">Water</span><span class="p">,</span>
-        <span class="n">bulk_density</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">bed_density</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">sorbent_mass</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Initialize packed-bed column properties."""</span>
         <span class="k">assert</span> <span class="n">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"length must be positive, got </span><span class="si">{</span><span class="n">length</span><span class="si">}</span><span class="s2">"</span>
         <span class="k">assert</span> <span class="n">diameter</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"diameter must be positive, got </span><span class="si">{</span><span class="n">diameter</span><span class="si">}</span><span class="s2">"</span>
         <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">porosity</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"porosity must be in (0, 1), got </span><span class="si">{</span><span class="n">porosity</span><span class="si">}</span><span class="s2">"</span>
-        <span class="k">if</span> <span class="n">bulk_density</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="p">(</span>
-                <span class="n">bulk_density</span> <span class="o">&gt;</span> <span class="mi">0</span>
-            <span class="p">),</span> <span class="sa">f</span><span class="s2">"bulk_density must be positive, got </span><span class="si">{</span><span class="n">bulk_density</span><span class="si">}</span><span class="s2">"</span>
+        <span class="k">if</span> <span class="n">bed_density</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">bed_density</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"bed_density must be positive, got </span><span class="si">{</span><span class="n">bed_density</span><span class="si">}</span><span class="s2">"</span>
         <span class="k">if</span> <span class="n">sorbent_mass</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">assert</span> <span class="p">(</span>
                 <span class="n">sorbent_mass</span> <span class="o">&gt;</span> <span class="mi">0</span>
@@ -117,7 +117,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span> <span class="o">=</span> <span class="n">porosity</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">diameter</span> <span class="o">=</span> <span class="n">diameter</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">media</span> <span class="o">=</span> <span class="n">media</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bulk_density</span> <span class="o">=</span> <span class="n">bulk_density</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">particle_density</span> <span class="o">=</span> <span class="n">media</span><span class="o">.</span><span class="n">particle_density</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bed_density</span> <span class="o">=</span> <span class="n">bed_density</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sorbent_mass</span> <span class="o">=</span> <span class="n">sorbent_mass</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">water</span> <span class="o">=</span> <span class="n">water</span>
 
@@ -135,39 +136,46 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cross_section_area</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span></div>
 
 
-<div class="viewcode-block" id="Column.get_bulk_density">
-<a class="viewcode-back" href="../../../api/reactormodels.properties.html#reactormodels.Column.get_bulk_density">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_bulk_density</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Return or calculate the packed-bed bulk density.</span>
-
-<span class="sd">        Bed density = Mass_solids / Volume_total</span>
-<span class="sd">        """</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bulk_density</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bulk_density</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">"Bulk density cannot be determined. "</span>
-                <span class="s2">"Ensure media.particle_density is set."</span>
-            <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">bulk_density</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bulk_density</span></div>
+<div class="viewcode-block" id="Column.get_bed_density">
+<a class="viewcode-back" href="../../../api/reactormodels.properties.html#reactormodels.Column.get_bed_density">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_bed_density</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return bed density calculated from particle density and porosity."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_density</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_density</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">rho_b</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_density</span>
+                <span class="k">assert</span> <span class="n">rho_b</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_density</span><span class="p">,</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"bed_density inconsistent with porosity and particle_density. "</span>
+                    <span class="sa">f</span><span class="s2">"Expected </span><span class="si">{</span><span class="n">rho_b</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bed_density</span><span class="si">}</span><span class="s2">"</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_density</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">rho_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_density</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorbent_mass</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">assert</span> <span class="n">rho_b</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorbent_mass</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_volume</span><span class="p">(),</span> <span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">"bed_density inconsistent with column_volume and "</span>
+                        <span class="sa">f</span><span class="s2">"sorbent_mass. Expected </span><span class="si">{</span><span class="n">rho_b</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bed_density</span><span class="si">}</span><span class="s2">"</span>
+                    <span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorbent_mass</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">rho_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorbent_mass</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_volume</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">"particle_density or sorbent_mass is needed "</span>
+                    <span class="s2">"to calculate bed density."</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">rho_b</span></div>
 
 
 <div class="viewcode-block" id="Column.get_particle_density">
 <a class="viewcode-back" href="../../../api/reactormodels.properties.html#reactormodels.Column.get_particle_density">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_particle_density</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Return or calculate the media particle density."""</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bulk_density</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">"Particle density cannot be determined. Ensure bulk_density is set."</span>
-            <span class="p">)</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">get_particle_density</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bulk_density</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">"""Return the particle density with units of"""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_density</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rho_p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particle_density</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_density</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rho_p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_bed_density</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"particle_density of bed_density not provided."</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">rho_p</span></div>
 
 
 <div class="viewcode-block" id="Column.get_sorbent_mass">
@@ -175,15 +183,19 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">get_sorbent_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return or calculate the sorbent mass in the packed bed."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorbent_mass</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorbent_mass</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bulk_density</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_density</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">m_s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorbent_mass</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_density</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">m_s</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_density</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_volume</span><span class="p">(),</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"sorbent_mass inconsistent with bed_density. "</span>
+                    <span class="sa">f</span><span class="s2">"Expected </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bed_density</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">column_volume</span><span class="p">()</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">m_s</span><span class="si">}</span><span class="s2">."</span>
+                <span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_density</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">m_s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_bed_density</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_volume</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">"Particle density cannot be determined. Ensure bulk_density is set."</span>
+                <span class="s2">"particle_density cannot be determined. Ensure bed_density is set."</span>
             <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">sorbent_mass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_bulk_density</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_volume</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorbent_mass</span></div>
+        <span class="k">return</span> <span class="n">m_s</span></div>
 
 
 <div class="viewcode-block" id="Column.get_total_porosity">
@@ -194,7 +206,6 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">"Media.particle_porosity is required to compute total porosity."</span>
             <span class="p">)</span>
-
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">porosity</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">particle_porosity</span></div>
 </div>
 

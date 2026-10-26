@@ -1,0 +1,263 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Isotherm Derivatives &mdash; ReactorModels 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a6a68382" />
+      <link rel="stylesheet" type="text/css" href="../_static/fonts.css?v=5583d106" />
+      <link rel="stylesheet" type="text/css" href="../_static/reactor.css?v=a7804f7f" />
+
+  
+    <link rel="shortcut icon" href="../_static/RM_favicon.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="References" href="../references.html" />
+    <link rel="prev" title="Time Integration" href="time_integration.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            ReactorModels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../models/index.html">Models</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Numerical Methods</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="spatial_discretization.html">Spatial Discretization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="time_integration.html">Time Integration</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Isotherm Derivatives</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../benchmarks.html">Benchmarks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">reactormodels</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ReactorModels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Numerical Methods</a></li>
+      <li class="breadcrumb-item active">Isotherm Derivatives</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/numerical_methods/isotherm_derivatives.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="isotherm-derivatives">
+<h1>Isotherm Derivatives<a class="headerlink" href="#isotherm-derivatives" title="Link to this heading"></a></h1>
+<p>Recall Eqn <a class="reference internal" href="../models/analytic_models/bohart_thomas.html#equation-adsorptive-mass-balance">(64)</a>, the conservation of mass equation for a differential
+column slice</p>
+<div class="math" id="equation-numerical-methods-isotherm-derivatives-0">
+<p><img src="../_images/math/226fac1c1e57a2766a49c7d8de9d73c5f91d6926.svg" alt="\gke\pd Ct + \gke v \pd Cz - \gke D \pdn 2Cz + \rho_b\pd qt = 0"/><span class="eqno">(89)<a class="headerlink" href="#equation-numerical-methods-isotherm-derivatives-0" title="Link to this equation"></a></span></p>
+</div><p>and Eqn <a class="reference internal" href="../models/psdm.html#equation-pore-and-surface-diffusion">(13)</a>, the conservation of mass equation within a spherical
+adsorbent particle</p>
+<div class="math" id="equation-numerical-methods-isotherm-derivatives-1">
+<p><img src="../_images/math/aae3184db2704fda6a4628317fd01875f8613aa2.svg" alt="\gke_p\pd {C_p}t - \frac 1{r^2} \pd {}r \lrb{r^2\gke_pD_p\pd {C_p}r} + \rho_s\pd qt  -
+\frac 1{r^2} \pd {}r\lrb{r^2\rho_sD_s\pd qr} = 0"/><span class="eqno">(90)<a class="headerlink" href="#equation-numerical-methods-isotherm-derivatives-1" title="Link to this equation"></a></span></p>
+</div><p>Under the assumption of local equilibrium, the chain rule is applied to obtain a single
+unknown time derivative variable.</p>
+<div class="math" id="equation-numerical-methods-isotherm-derivatives-2">
+<p><img src="../_images/math/82689f9a46d189f11971aa1df4fa13870dbdaeb4.svg" alt="\pd qt = \pd qC \pd Ct"/><span class="eqno">(91)<a class="headerlink" href="#equation-numerical-methods-isotherm-derivatives-2" title="Link to this equation"></a></span></p>
+</div><p>Thus, it is necessary to compute the first derivative of the isotherm equation.
+Single-species isotherm equations have the form</p>
+<div class="math" id="equation-numerical-methods-isotherm-derivatives-3">
+<p><img src="../_images/math/61f477e56516bc49a085fb933745a81f41474095.svg" alt="q_i = f(C_i)"/><span class="eqno">(92)<a class="headerlink" href="#equation-numerical-methods-isotherm-derivatives-3" title="Link to this equation"></a></span></p>
+</div><p>where the first and second derivatives return a scalar quantity. For multi-species isotherms
+such as the competitive Freundlich</p>
+<div class="math" id="equation-numerical-methods-isotherm-derivatives-4">
+<p><img src="../_images/math/f3ba2b543fc70fb08a6641dc8474ed58f23eaceb.svg" alt="C_i = \frac {q_i}{\sLb {j=1}m q_j} \lrb{\frac {\sLb {j=1}m n_jq_j}{n_iK_i}}^{n_i}"/><span class="eqno">(93)<a class="headerlink" href="#equation-numerical-methods-isotherm-derivatives-4" title="Link to this equation"></a></span></p>
+</div><p>and Langmuir</p>
+<div class="math" id="equation-numerical-methods-isotherm-derivatives-5">
+<p><img src="../_images/math/00ebafbc66ebf8b7b5de1079ad488fd970937eb2.svg" alt="q_i = \frac {q_mK_iC_i}{1 + \sLb {j=1}m K_jC_j}"/><span class="eqno">(94)<a class="headerlink" href="#equation-numerical-methods-isotherm-derivatives-5" title="Link to this equation"></a></span></p>
+</div><p>the solid phase concentration of species <img class="math" src="../_images/math/364f234f74e428c6cf01f3c4135636b8778de06e.svg" alt="i"/> depends upon the liquid phase
+concentration of all species in solution, and vice versa.</p>
+<div class="math" id="equation-numerical-methods-isotherm-derivatives-6">
+<p><img src="../_images/math/49237c0c0df3efde084bad6f5d92904878552532.svg" alt="q_i = f(C_i,\dots,C_n) \text{ or } C_i = f(q_i,\dots,C_n)"/><span class="eqno">(95)<a class="headerlink" href="#equation-numerical-methods-isotherm-derivatives-6" title="Link to this equation"></a></span></p>
+</div><p>Therefore, the first derivative returns a matrix of values called a Jacobian</p>
+<div class="math" id="equation-numerical-methods-isotherm-derivatives-7">
+<p><img src="../_images/math/922097956bad06b6245d9c754ecad4d3f46f8977.svg" alt="\label{jacobian}
+\ten J =
+\begin{bmatrix}
+    \pd {q_i}{C_i} &amp; \dots &amp; \pd {q_i}{C_n} \\
+    \vdots &amp; \ddots &amp; \vdots\\
+    \pd {q_n}{C_i} &amp; \dots &amp; \pd {q_n}{C_n}
+\end{bmatrix}"/><span class="eqno">(96)<a class="headerlink" href="#equation-numerical-methods-isotherm-derivatives-7" title="Link to this equation"></a></span></p>
+</div><p>or in Einstein notation</p>
+<div class="math" id="equation-numerical-methods-isotherm-derivatives-8">
+<p><img src="../_images/math/6af984a202f3bcef8c4e23f1c7f5bc55f5873eee.svg" alt="\pd {q_i}{C_j} = J_{ij}"/><span class="eqno">(97)<a class="headerlink" href="#equation-numerical-methods-isotherm-derivatives-8" title="Link to this equation"></a></span></p>
+</div><p>and the second derivative returns an array of matrices (third-order tensor)</p>
+<div class="math" id="equation-numerical-methods-isotherm-derivatives-9">
+<p><img src="../_images/math/3edbc212b84631241acd501d6080bb0388c212fc.svg" alt="\ten H_i =
+\begin{bmatrix}
+    \pdn 2{q_i}{C_i} &amp; \dots &amp; \pdsm {q_i}{C_i}{C_n} \\
+    \vdots &amp; \ddots &amp; \vdots\\
+    \pdsm {q_i}{C_n}{C_i} &amp; \dots &amp; \pdn 2{q_i}{C_n}
+\end{bmatrix}"/><span class="eqno">(98)<a class="headerlink" href="#equation-numerical-methods-isotherm-derivatives-9" title="Link to this equation"></a></span></p>
+</div><div class="math" id="equation-numerical-methods-isotherm-derivatives-10">
+<p><img src="../_images/math/05134a05533b25519859fc6668616e576ae22310.svg" alt="\boldsymbol{\mathcal{H}} = \lrb{\ten H_i, \dots, \ten H_n}"/><span class="eqno">(99)<a class="headerlink" href="#equation-numerical-methods-isotherm-derivatives-10" title="Link to this equation"></a></span></p>
+</div><p>or in Einstein notation</p>
+<div class="math" id="equation-numerical-methods-isotherm-derivatives-11">
+<p><img src="../_images/math/92bbb67400619f64d81c92278ca79d4fbefafe51.svg" alt="\pdsm {q_i}{C_j}{C_k}  = H_{ijk}"/><span class="eqno">(100)<a class="headerlink" href="#equation-numerical-methods-isotherm-derivatives-11" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/6819aeab6ad39fa8887d22e2b9e09f2f337dcb74.svg" alt="n"/> is the number of species in the system. The Jacobian matrix is reduced to a scalar quantity for each species through an Einstein summation, and input to the conservation equation for each species, respectively. Suppose you have the vector</p>
+<div class="math" id="equation-numerical-methods-isotherm-derivatives-12">
+<p><img src="../_images/math/4ddca07bdf178c36a880e5b805e07c1f25817eb9.svg" alt="\dot {\vec C} =
+\begin{bmatrix}
+    \pd {C_i}t\\
+    \vdots\\
+    \pd {C_n}t
+\end{bmatrix}"/><span class="eqno">(101)<a class="headerlink" href="#equation-numerical-methods-isotherm-derivatives-12" title="Link to this equation"></a></span></p>
+</div><p>which you want to contract with the Jacobian matrix</p>
+<div class="math" id="equation-numerical-methods-isotherm-derivatives-13">
+<p><img src="../_images/math/eda33086a9cf824d32632ed60b59a113c1418406.svg" alt="\begin{bmatrix}
+    \pd {q_i}{C_i} &amp; \dots &amp; \pd {q_i}{C_n} \\
+    \vdots &amp; \ddots &amp; \vdots\\
+    \pd {q_n}{C_i} &amp; \dots &amp; \pd {q_n}{C_n}
+\end{bmatrix}
+\ \vdot \
+\begin{bmatrix}
+    \pd {C_i}t\\
+    \vdots\\
+    \pd {C_n}t
+\end{bmatrix}
+=
+\begin{bmatrix}
+    \pd {q_i}{C_i}\pd {C_i}t + \dots + \pd {q_i}{C_n}\pd {C_n}t\\
+    \vdots\\
+    \pd {q_n}{C_i}\pd {C_i}t + \dots + \pd {q_n}{C_n}\pd {C_n}t
+\end{bmatrix}
+=
+\begin{bmatrix}
+    \pd {q_i}t\\
+    \vdots\\
+    \pd {q_n}t
+\end{bmatrix}"/><span class="eqno">(102)<a class="headerlink" href="#equation-numerical-methods-isotherm-derivatives-13" title="Link to this equation"></a></span></p>
+</div><p>or in Einstein notation</p>
+<div class="math" id="equation-numerical-methods-isotherm-derivatives-14">
+<p><img src="../_images/math/328851f3c6bfc87b18e2f2efe6846ed31b8dfe3e.svg" alt="J_{ij} \dot C_j = \dot q_i"/><span class="eqno">(103)<a class="headerlink" href="#equation-numerical-methods-isotherm-derivatives-14" title="Link to this equation"></a></span></p>
+</div><p>which can be computed in <code class="docutils literal notranslate"><span class="pre">numpy</span></code> using <code class="docutils literal notranslate"><span class="pre">numpy.einsum(&quot;ij,j</span> <span class="pre">-&gt;</span> <span class="pre">i&quot;,</span> <span class="pre">J,</span> <span class="pre">dCdt)</span></code> where <code class="docutils literal notranslate"><span class="pre">J</span></code>
+is <img class="math" src="../_images/math/aaede451e52c0925af693683870de5e8dd743dc0.svg" alt="\ten J"/> and <code class="docutils literal notranslate"><span class="pre">dCdt</span></code> is <img class="math" src="../_images/math/718c5748dbe933b23a2c78db4f5e3623a584012d.svg" alt="\dot {\vec C}"/>. The numerical solver also requires
+a Jacobian matrix for the residual equations themselves. Since the Hessian is a 3rd-order
+tensor, it also must undergo an Einstein summation to become a matrix. The following
+operation is performed for each species</p>
+<div class="math" id="equation-numerical-methods-isotherm-derivatives-15">
+<p><img src="../_images/math/8e269eef4f52a3d2643bac8963cc6c26c8f717dd.svg" alt="\begin{bmatrix}
+    \pdn 2{q_i}{C_i} &amp; \dots &amp; \pdsm {q_i}{C_i}{C_n} \\
+    \vdots &amp; \ddots &amp; \vdots\\
+    \pdsm {q_i}{C_n}{C_i} &amp; \dots &amp; \pdn 2{q_i}{C_n}
+\end{bmatrix}
+\ \vdot \
+\begin{bmatrix}
+    \pd {C_i}t\\
+    \vdots\\
+    \pd {C_n}t
+\end{bmatrix}
+=
+\begin{bmatrix}
+    \pdn 2{q_i}{C_i}\pd {C_i}t + \dots + \pdsm {q_i}{C_i}{C_n}\pd {C_n}t\\
+    \vdots\\
+    \pdsm {q_i}{C_n}{C_i}\pd {C_i}t + \dots + \pdn 2{q_i}{C_n}\pd {C_n}t
+\end{bmatrix}
+=
+\begin{bmatrix}
+    \pd {\dot q_i}{C_i}\\
+    \vdots\\
+    \pd {\dot q_i}{C_n}
+\end{bmatrix}"/><span class="eqno">(104)<a class="headerlink" href="#equation-numerical-methods-isotherm-derivatives-15" title="Link to this equation"></a></span></p>
+</div><p>then vertically stacked to obtain the matrix</p>
+<div class="math" id="equation-numerical-methods-isotherm-derivatives-16">
+<p><img src="../_images/math/ee46830c1379d8168894bce261423cc66724a95a.svg" alt="\begin{bmatrix}
+    \pd {\dot q_i}{C_i} &amp; \dots &amp; \pd {\dot q_i}{C_n}\\
+    \vdots &amp; \ddots &amp;\vdots\\
+    \pd {\dot q_n}{C_i} &amp; \dots &amp; \pd {\dot q_n}{C_n}
+\end{bmatrix}"/><span class="eqno">(105)<a class="headerlink" href="#equation-numerical-methods-isotherm-derivatives-16" title="Link to this equation"></a></span></p>
+</div><p>or in Einstein notation</p>
+<div class="math" id="equation-numerical-methods-isotherm-derivatives-17">
+<p><img src="../_images/math/c9c2a87d89adfde231dde3ce2e5b05383a26dfa9.svg" alt="H_{ijk}\dot C_k = \pd {\dot q_i}{C_j}"/><span class="eqno">(106)<a class="headerlink" href="#equation-numerical-methods-isotherm-derivatives-17" title="Link to this equation"></a></span></p>
+</div><p>which can be computed using <code class="docutils literal notranslate"><span class="pre">numpy.einsum(&quot;ijk,k-&gt;ij&quot;,</span> <span class="pre">H,</span> <span class="pre">dCdt)</span></code> where <code class="docutils literal notranslate"><span class="pre">H</span></code> is
+<img class="math" src="../_images/math/75cb5b4e4d4f310278d9cb6b8467996258709aa6.svg" alt="\boldsymbol{\mathcal{H}}"/>. These operations are performed at every axial and radial node,
+written simply in Einstein notation as</p>
+<div class="math" id="equation-numerical-methods-isotherm-derivatives-18">
+<p><img src="../_images/math/6275238df74fc4705d45abd209c6469f7fc9b3ef.svg" alt="\pd {q_{il}}{C_{jk}}\dot C_{jm}\gkd_{lk}\gkd_{lm} = \dot q_{il}"/><span class="eqno">(107)<a class="headerlink" href="#equation-numerical-methods-isotherm-derivatives-18" title="Link to this equation"></a></span></p>
+</div><p>making the expression <code class="docutils literal notranslate"><span class="pre">numpy.einsum(&quot;ijl,jl-&gt;il&quot;,</span> <span class="pre">J,</span> <span class="pre">dCdt)</span></code>. Writing the Hessian contraction
+in Einstein notation</p>
+<div class="math" id="equation-numerical-methods-isotherm-derivatives-19">
+<p><img src="../_images/math/5cdaabcd6e6f0a129bb6d057b2c961e512f754ba.svg" alt="\pdsm {q_{il}}{C_{jm}}{C_{kn}} \dot C_{ko} \gkd_{lm}\gkd_{ln}\gkd_{lo} = \lrp{\pd {\dot q_i}{C_j}}_l"/><span class="eqno">(108)<a class="headerlink" href="#equation-numerical-methods-isotherm-derivatives-19" title="Link to this equation"></a></span></p>
+</div><p>and equivalent expression <code class="docutils literal notranslate"><span class="pre">numpy.einsum(&quot;ijkl,kl-&gt;ijl&quot;,</span> <span class="pre">H,</span> <span class="pre">dCdt)</span></code>.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="time_integration.html" class="btn btn-neutral float-left" title="Time Integration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../references.html" class="btn btn-neutral float-right" title="References" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Timothy M. Weigand.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

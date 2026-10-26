@@ -49,18 +49,18 @@ reactormodels.models.analytic\_models module
    :show-inheritance:
    :undoc-members:
 
-reactormodels.models.boundary\_conditions module
-------------------------------------------------
+reactormodels.models.batch\_psdm module
+---------------------------------------
 
-.. automodule:: reactormodels.models.boundary_conditions
+.. automodule:: reactormodels.models.batch_psdm
    :members:
    :show-inheritance:
    :undoc-members:
 
-reactormodels.models.intraparticle\_transport module
-----------------------------------------------------
+reactormodels.models.boundary\_conditions module
+------------------------------------------------
 
-.. automodule:: reactormodels.models.intraparticle_transport
+.. automodule:: reactormodels.models.boundary_conditions
    :members:
    :show-inheritance:
    :undoc-members:

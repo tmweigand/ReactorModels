@@ -1,0 +1,153 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advection-Diffusion-Adsorption Model &mdash; ReactorModels 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a6a68382" />
+      <link rel="stylesheet" type="text/css" href="../_static/fonts.css?v=5583d106" />
+      <link rel="stylesheet" type="text/css" href="../_static/reactor.css?v=a7804f7f" />
+
+  
+    <link rel="shortcut icon" href="../_static/RM_favicon.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Pore and Surface Diffusion Model" href="psdm.html" />
+    <link rel="prev" title="General Conservation Equations" href="conservation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            ReactorModels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Models</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="conservation.html">General Conservation Equations</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Advection-Diffusion-Adsorption Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="psdm.html">Pore and Surface Diffusion Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isotherms.html">Multi-Species Isotherms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analytic_models/index.html">Analytic Models</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../numerical_methods/index.html">Numerical Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../benchmarks.html">Benchmarks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">reactormodels</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ReactorModels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Models</a></li>
+      <li class="breadcrumb-item active">Advection-Diffusion-Adsorption Model</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/models/advection_diffusion_adsorption.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="advection-diffusion-adsorption-model">
+<h1>Advection-Diffusion-Adsorption Model<a class="headerlink" href="#advection-diffusion-adsorption-model" title="Link to this heading"></a></h1>
+<p>These equations are obtained by applying Equation <a class="reference internal" href="conservation.html#equation-general-conservation-of-mass">(1)</a> to each phase with the following assumptions:
+(1) species <img class="math" src="../_images/math/364f234f74e428c6cf01f3c4135636b8778de06e.svg" alt="i"/> is transported by advection and diffusion in the water phase; (2) the solid phase is stationary, so there is
+no advection in the solid phase; (3) surface diffusion of species <img class="math" src="../_images/math/364f234f74e428c6cf01f3c4135636b8778de06e.svg" alt="i"/> in the solid phase is neglected; (4) no homogeneous
+reactions occur in either phase, so <img class="math" src="../_images/math/9902ffad648b21b15e9521273882a16d9ebe5dc1.svg" alt="r^{iw} = r^{is} = 0"/>; and (5) the only interaction between the phases is the adsorption
+and desorption of species <img class="math" src="../_images/math/364f234f74e428c6cf01f3c4135636b8778de06e.svg" alt="i"/> at the water-solid interface.</p>
+<p>For the water phase, the conservation of mass equation is</p>
+<div class="math" id="equation-adv-diff-ads-water">
+<p><img src="../_images/math/8b80cc98b52390913cef97c89c5d7a015d298ef6.svg" alt="\pd{\lrp{\gke^{w}\rho^{w}\mma i w}}{t}
++ \del \vdot \lrp{\gke^{w}\rho^{w}\mma i w \vec v^{w}}
+- \del \vdot \lrp{\gke^{w}\rho^{w}D^{iw}\del\mma i w}
+- \iema M{is}{iw} = 0"/><span class="eqno">(2)<a class="headerlink" href="#equation-adv-diff-ads-water" title="Link to this equation"></a></span></p>
+</div><p>and for the solid phase it is</p>
+<div class="math" id="equation-adv-diff-ads-solid">
+<p><img src="../_images/math/ddf9e29a4cced0c0570d48e275f25389972e2eca.svg" alt="\pd{\lrp{\gke^{s}\rho^{s}\mma i s}}{t}
+- \iema M{iw}{is} = 0"/><span class="eqno">(3)<a class="headerlink" href="#equation-adv-diff-ads-solid" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/63cb9d07e987027cb93a5ee3175f950da973703e.svg" alt="\iema M{is}{iw}"/> is the rate of mass transfer of species
+<img class="math" src="../_images/math/364f234f74e428c6cf01f3c4135636b8778de06e.svg" alt="i"/> from the solid phase into the water phase (desorption), and
+<img class="math" src="../_images/math/771bd28dbe332a4ce173b45c60a862cae150fca0.svg" alt="\iema M{iw}{is}"/> is the rate of mass transfer from the water phase
+into the solid phase (adsorption). Because mass is conserved at the
+interface,</p>
+<div class="math" id="equation-adsorption-exchange-balance">
+<p><img src="../_images/math/29235e3e9e7b36d3f9bd8b1ce64e29b59de68a4f.svg" alt="\iema M{iw}{is} = - \iema M{is}{iw}"/><span class="eqno">(4)<a class="headerlink" href="#equation-adsorption-exchange-balance" title="Link to this equation"></a></span></p>
+</div><p>so the mass adsorbed onto the solid is exactly the mass removed from the
+water, and the two equations are coupled through this term. A closure
+relationship for <img class="math" src="../_images/math/771bd28dbe332a4ce173b45c60a862cae150fca0.svg" alt="\iema M{iw}{is}"/>, such as a linear equilibrium or a
+kinetic adsorption model, is required to close the system.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="conservation.html" class="btn btn-neutral float-left" title="General Conservation Equations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="psdm.html" class="btn btn-neutral float-right" title="Pore and Surface Diffusion Model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Timothy M. Weigand.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

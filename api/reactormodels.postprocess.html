@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a6a68382" />
       <link rel="stylesheet" type="text/css" href="../_static/fonts.css?v=5583d106" />
-      <link rel="stylesheet" type="text/css" href="../_static/reactor.css?v=ccde76bc" />
+      <link rel="stylesheet" type="text/css" href="../_static/reactor.css?v=a7804f7f" />
 
   
     <link rel="shortcut icon" href="../_static/RM_favicon.png"/>
@@ -47,10 +47,12 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../model_development/index.html">Model Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models/index.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../numerical_methods/index.html">Numerical Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../benchmarks.html">Benchmarks</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">reactormodels</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="reactormodels.html">reactormodels package</a><ul class="current">
@@ -108,7 +110,7 @@
 <p>Initialize the postprocess subpackage</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="reactormodels.postprocess.MassBalance">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.postprocess.</span></span><span class="sig-name descname"><span class="pre">MassBalance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.numeric_model_base.NumericModel" title="reactormodels.models.numeric_model_base.NumericModel"><span class="pre">NumericModel</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">liquid_concentration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sorbent_mass_fraction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pore_concentration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/postprocess/mass_balance.html#MassBalance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.postprocess.MassBalance" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.postprocess.</span></span><span class="sig-name descname"><span class="pre">MassBalance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.numeric_model_base.NumericModel" title="reactormodels.models.numeric_model_base.NumericModel"><span class="pre">NumericModel</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">liquid_concentration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solid_phase_loading</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pore_concentration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/postprocess/mass_balance.html#MassBalance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.postprocess.MassBalance" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Compute and verify mass balance for a 1D adsorption column, over time.</p>
 <blockquote>
@@ -127,8 +129,8 @@ mass_out = v * eps * integral_0^t C(L, t’) dt’</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="reactormodels.postprocess.MassBalance.sorbent_mass_fraction">
-<span class="sig-name descname"><span class="pre">sorbent_mass_fraction</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a class="headerlink" href="#reactormodels.postprocess.MassBalance.sorbent_mass_fraction" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="reactormodels.postprocess.MassBalance.solid_phase_loading">
+<span class="sig-name descname"><span class="pre">solid_phase_loading</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a class="headerlink" href="#reactormodels.postprocess.MassBalance.solid_phase_loading" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -296,7 +298,7 @@ inspect an earlier point.</p>
 <p>mass_balance.py</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="reactormodels.postprocess.mass_balance.MassBalance">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.postprocess.mass_balance.</span></span><span class="sig-name descname"><span class="pre">MassBalance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.numeric_model_base.NumericModel" title="reactormodels.models.numeric_model_base.NumericModel"><span class="pre">NumericModel</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">liquid_concentration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sorbent_mass_fraction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pore_concentration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/postprocess/mass_balance.html#MassBalance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.postprocess.mass_balance.MassBalance" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">reactormodels.postprocess.mass_balance.</span></span><span class="sig-name descname"><span class="pre">MassBalance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="reactormodels.models.html#reactormodels.models.numeric_model_base.NumericModel" title="reactormodels.models.numeric_model_base.NumericModel"><span class="pre">NumericModel</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">liquid_concentration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solid_phase_loading</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pore_concentration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/reactormodels/postprocess/mass_balance.html#MassBalance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#reactormodels.postprocess.mass_balance.MassBalance" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Compute and verify mass balance for a 1D adsorption column, over time.</p>
 <blockquote>
@@ -315,8 +317,8 @@ mass_out = v * eps * integral_0^t C(L, t’) dt’</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="reactormodels.postprocess.mass_balance.MassBalance.sorbent_mass_fraction">
-<span class="sig-name descname"><span class="pre">sorbent_mass_fraction</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a class="headerlink" href="#reactormodels.postprocess.mass_balance.MassBalance.sorbent_mass_fraction" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="reactormodels.postprocess.mass_balance.MassBalance.solid_phase_loading">
+<span class="sig-name descname"><span class="pre">solid_phase_loading</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a class="headerlink" href="#reactormodels.postprocess.mass_balance.MassBalance.solid_phase_loading" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">

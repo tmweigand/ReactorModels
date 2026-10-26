@@ -10,7 +10,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=a6a68382" />
       <link rel="stylesheet" type="text/css" href="../../../_static/fonts.css?v=5583d106" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/reactor.css?v=ccde76bc" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/reactor.css?v=a7804f7f" />
 
   
     <link rel="shortcut icon" href="../../../_static/RM_favicon.png"/>
@@ -44,10 +44,12 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../model_development/index.html">Model Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/index.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../numerical_methods/index.html">Numerical Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../benchmarks.html">Benchmarks</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">reactormodels</a></li>
 </ul>
@@ -90,7 +92,6 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Breakthrough</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Collect information from experimental breakthrough data.</span>
 
-<span class="sd">    water_matrix: label for water that was tested.</span>
 <span class="sd">    feed_concentrations: feed concentrations over the experiment duration.</span>
 <span class="sd">    """</span>
 
@@ -100,7 +101,7 @@
         <span class="n">chemical</span><span class="p">:</span> <span class="n">Chemical</span><span class="p">,</span>
         <span class="n">feed_concentrations</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
         <span class="n">initial_concentration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
-        <span class="n">initial_mass_fraction</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">initial_solid_phase_loading</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
         <span class="n">flow_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">effluent_concentrations</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">bed_volumes</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -139,7 +140,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">chemical</span> <span class="o">=</span> <span class="n">chemical</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">feed_concentrations</span> <span class="o">=</span> <span class="n">feed_concentrations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initial_concentration</span> <span class="o">=</span> <span class="n">initial_concentration</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">initial_mass_fraction</span> <span class="o">=</span> <span class="n">initial_mass_fraction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_solid_phase_loading</span> <span class="o">=</span> <span class="n">initial_solid_phase_loading</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_time</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_bed_volumes</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -148,7 +149,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">flow_rate</span> <span class="o">=</span> <span class="n">flow_rate</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_superficial_velocity</span> <span class="o">=</span> <span class="n">superficial_velocity</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">initial_mass_fraction</span> <span class="o">=</span> <span class="n">initial_mass_fraction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_solid_phase_loading</span> <span class="o">=</span> <span class="n">initial_solid_phase_loading</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>

@@ -1,0 +1,155 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Time Integration &mdash; ReactorModels 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a6a68382" />
+      <link rel="stylesheet" type="text/css" href="../_static/fonts.css?v=5583d106" />
+      <link rel="stylesheet" type="text/css" href="../_static/reactor.css?v=a7804f7f" />
+
+  
+    <link rel="shortcut icon" href="../_static/RM_favicon.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Isotherm Derivatives" href="isotherm_derivatives.html" />
+    <link rel="prev" title="Spatial Discretization" href="spatial_discretization.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            ReactorModels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../models/index.html">Models</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Numerical Methods</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="spatial_discretization.html">Spatial Discretization</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Time Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isotherm_derivatives.html">Isotherm Derivatives</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../benchmarks.html">Benchmarks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">reactormodels</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ReactorModels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Numerical Methods</a></li>
+      <li class="breadcrumb-item active">Time Integration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/numerical_methods/time_integration.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="time-integration">
+<h1>Time Integration<a class="headerlink" href="#time-integration" title="Link to this heading"></a></h1>
+<p>After the spatial discretization described in the previous section, the
+macroscale equations become a system of differential-algebraic equations
+(DAEs) in time. The differential equations come from the interior nodes, and
+the algebraic equations come from the boundary conditions and any other
+constraints. The system is written in the implicit form</p>
+<div class="math" id="equation-dae-system">
+<p><img src="../_images/math/df0a952d337647dd0231a312aee563336ff5637f.svg" alt="\mathbf{F}\lrp{t, \mathbf{y}, \dot{\mathbf{y}}} = \mathbf{0}"/><span class="eqno">(86)<a class="headerlink" href="#equation-dae-system" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/9bf48d696d03887127f970634ff61194420c6dde.svg" alt="\mathbf{y}"/> is the vector of unknowns (the nodal values of all
+species in all phases) and <img class="math" src="../_images/math/0074459d74c8a4ded2c0fa37cf89f844083dc0ba.svg" alt="\dot{\mathbf{y}}"/> is its time derivative.</p>
+<p>The system is integrated in time with the IDA solver from the SUNDIALS
+package, which is designed for DAEs in the form of Equation <a class="reference internal" href="#equation-dae-system">(86)</a>.
+IDA uses variable-order, variable-step backward differentiation formulas
+(BDF), in which the time derivative at step <img class="math" src="../_images/math/6819aeab6ad39fa8887d22e2b9e09f2f337dcb74.svg" alt="n"/> is approximated by a
+weighted sum of the solution at previous steps,</p>
+<div class="math" id="equation-bdf-approximation">
+<p><img src="../_images/math/4cc7abb129f45da547869d2efa0af8fcd48190fd.svg" alt="\dot{\mathbf{y}}_n \approx \frac{1}{h_n} \sum_{j=0}^{q} \alpha_j \mathbf{y}_{n-j}"/><span class="eqno">(87)<a class="headerlink" href="#equation-bdf-approximation" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/3158cf0a5da4307ce8734bcc011c4a243180e8fd.svg" alt="h_n"/> is the time step and <img class="math" src="../_images/math/28c1bead31932661d6269732ea594042911c3286.svg" alt="q"/> is the order of the method
+(1 to 5). Substituting this expression into Equation <a class="reference internal" href="#equation-dae-system">(86)</a> gives a
+nonlinear algebraic system at each step, which is solved with Newton’s method.
+The Newton iteration uses the Jacobian</p>
+<div class="math" id="equation-dae-jacobian">
+<p><img src="../_images/math/0ce19288c89caa11ceb5a3684066998118a93426.svg" alt="\mathbf{J} = \pd{\mathbf{F}}{\mathbf{y}} + \frac{\alpha_0}{h_n} \pd{\mathbf{F}}{\dot{\mathbf{y}}}"/><span class="eqno">(88)<a class="headerlink" href="#equation-dae-jacobian" title="Link to this equation"></a></span></p>
+</div><p>Because BDF methods are implicit, they remain stable for the stiff systems
+that result from combining fast adsorption or reaction with slow transport.</p>
+<p>At each step IDA automatically adjusts the time step and the order to keep the
+local error within the user-specified relative and absolute tolerances. Before
+the integration starts, the initial values <img class="math" src="../_images/math/378e0c011a6cd364e34ab463e77983942cc8fd48.svg" alt="\mathbf{y}_0"/> and
+<img class="math" src="../_images/math/e8e9039949d3aeb4d84bc914fc6f335ace107c50.svg" alt="\dot{\mathbf{y}}_0"/> must be consistent, meaning that they satisfy
+Equation <a class="reference internal" href="#equation-dae-system">(86)</a> at <img class="math" src="../_images/math/cb50a4832a89281561124af19fc690b239f5fa95.svg" alt="t = 0"/>. IDA can compute consistent initial
+conditions from the initial values of the differential variables.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="spatial_discretization.html" class="btn btn-neutral float-left" title="Spatial Discretization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="isotherm_derivatives.html" class="btn btn-neutral float-right" title="Isotherm Derivatives" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Timothy M. Weigand.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

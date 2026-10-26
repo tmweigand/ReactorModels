@@ -1,0 +1,207 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spatial Discretization &mdash; ReactorModels 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a6a68382" />
+      <link rel="stylesheet" type="text/css" href="../_static/fonts.css?v=5583d106" />
+      <link rel="stylesheet" type="text/css" href="../_static/reactor.css?v=a7804f7f" />
+
+  
+    <link rel="shortcut icon" href="../_static/RM_favicon.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Time Integration" href="time_integration.html" />
+    <link rel="prev" title="Numerical Methods" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            ReactorModels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../models/index.html">Models</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Numerical Methods</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Spatial Discretization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#governing-idea">Governing Idea</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#node-generation">Node Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#differentiation-matrices">Differentiation Matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multi-element-collocation">Multi-Element Collocation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="time_integration.html">Time Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isotherm_derivatives.html">Isotherm Derivatives</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../benchmarks.html">Benchmarks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">reactormodels</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ReactorModels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Numerical Methods</a></li>
+      <li class="breadcrumb-item active">Spatial Discretization</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/numerical_methods/spatial_discretization.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="spatial-discretization">
+<h1>Spatial Discretization<a class="headerlink" href="#spatial-discretization" title="Link to this heading"></a></h1>
+<p>The macroscale equations above are partial differential equations in time
+<img class="math" src="../_images/math/5638718e225dfb4171aa010fde35f12ce30157a1.svg" alt="t"/> and space <img class="math" src="../_images/math/5a4bf704e64ba90556f1742f7fe96c4b079bb7c4.svg" alt="x \in [0, L]"/>. They are discretized in space with
+orthogonal collocation, which turns each PDE into a system of ODEs (or DAEs)
+in time that can be solved with a stiff integrator.</p>
+<section id="governing-idea">
+<h2>Governing Idea<a class="headerlink" href="#governing-idea" title="Link to this heading"></a></h2>
+<p>The solution is approximated by the Lagrange interpolating polynomial through
+<img class="math" src="../_images/math/a4e88ca33b86a146d13f2e711720d9766dfd06c7.svg" alt="N"/> nodes <img class="math" src="../_images/math/956aed27a3d2dc4e2d87d196fdc9c374a2fb6686.svg" alt="x_i"/>,</p>
+<div class="math" id="equation-oc-interpolant">
+<p><img src="../_images/math/382f1ea4336d84837702abaea9a66132ec5c1242.svg" alt="u(x) \approx \sum_{j=1}^{N} u_j \, \ell_j(x),
+\qquad
+\ell_j(x) = \prod_{k \ne j} \frac{x - x_k}{x_j - x_k}"/><span class="eqno">(81)<a class="headerlink" href="#equation-oc-interpolant" title="Link to this equation"></a></span></p>
+</div><p>Because <img class="math" src="../_images/math/0bc849f2b6b84beb94b275396cb07b955d663ab3.svg" alt="\ell_j(x_i) = \delta_{ij}"/>, the unknowns are the nodal values
+<img class="math" src="../_images/math/eb5044a9bd4073695d4893670d23a0809cfe316f.svg" alt="u_j"/>. The PDE is enforced exactly at the interior nodes (the
+collocation points), and the boundary conditions replace the equations at the
+boundary nodes. The accuracy depends on where the nodes are placed.</p>
+</section>
+<section id="node-generation">
+<h2>Node Generation<a class="headerlink" href="#node-generation" title="Link to this heading"></a></h2>
+<p>The interior nodes are the <img class="math" src="../_images/math/6819aeab6ad39fa8887d22e2b9e09f2f337dcb74.svg" alt="n"/> roots of the Jacobi polynomial
+<img class="math" src="../_images/math/8b35b46d307188ef4c133010c3d5a6b2ed7b28d7.svg" alt="P_n^{(\alpha,\beta)}"/>, which is orthogonal on <img class="math" src="../_images/math/f12741945d58efceae1c9654eb5e536219a0a1bf.svg" alt="[-1, 1]"/> with
+weight <img class="math" src="../_images/math/c8d8f251ab37b907960a7e5c1d154937170deeef.svg" alt="(1-t)^{\alpha}(1+t)^{\beta}"/>. The roots are computed with the
+Golub-Welsch algorithm, as the eigenvalues of the symmetric tridiagonal
+matrix built from the three-term recurrence coefficients of the polynomial,
+and are then mapped to <img class="math" src="../_images/math/4a948da4a21d9bbc3633efb8ed42bdbfd2eb1557.svg" alt="[0, 1]"/>. Choosing the nodes this way gives
+spectral convergence for smooth solutions.</p>
+<p>The same eigen-decomposition gives the Gauss quadrature weights <img class="math" src="../_images/math/52ca4bbbc3d679e811d308b6469f79f9cdbbc399.svg" alt="w_i"/>,
+so integrals and averages over the domain are evaluated as</p>
+<div class="math" id="equation-oc-quadrature">
+<p><img src="../_images/math/4e9512b5e855fd7b77f5f11f78724025b11b2712.svg" alt="\int_0^L f \, dx \approx \sum_i w_i f_i,
+\qquad
+\bar{f} = \frac{1}{L} \sum_i w_i f_i"/><span class="eqno">(82)<a class="headerlink" href="#equation-oc-quadrature" title="Link to this equation"></a></span></p>
+</div><p>This is a plain integral only for the default Legendre case
+(<img class="math" src="../_images/math/e8f782b9c6cb98f201239db2c3186db8ba8107e2.svg" alt="\alpha = \beta = 0"/>).</p>
+<p>Boundary nodes are added to the interior roots so that boundary conditions
+can be applied at <img class="math" src="../_images/math/63a78f586bb62cc52af3d6c1c4e0118aa0d8b8f1.svg" alt="x = 0"/> and <img class="math" src="../_images/math/0e4cf20fc4d0ce3b9eed1deec82b60e1ebac1d3e.svg" alt="x = L"/>. These nodes have zero
+quadrature weight.</p>
+</section>
+<section id="differentiation-matrices">
+<h2>Differentiation Matrices<a class="headerlink" href="#differentiation-matrices" title="Link to this heading"></a></h2>
+<p>Differentiating the interpolant and evaluating it at the nodes replaces every
+spatial derivative with a matrix-vector product,</p>
+<div class="math" id="equation-oc-derivative-matrices">
+<p><img src="../_images/math/0ac49c10b42e02d048a2411bb096b9ace474fa3b.svg" alt="\left. \pd{u}{x} \right|_{x_i} \approx \sum_j A_{ij} u_j,
+\qquad
+\left. \pd{^2 u}{x^2} \right|_{x_i} \approx \sum_j B_{ij} u_j"/><span class="eqno">(83)<a class="headerlink" href="#equation-oc-derivative-matrices" title="Link to this equation"></a></span></p>
+</div><p>where the first derivative matrix is</p>
+<div class="math" id="equation-oc-first-derivative-matrix">
+<p><img src="../_images/math/e67e14f1dfc9f31fc70ff5f7da3f14cf1c834c86.svg" alt="A_{ij} = \ell_j'(x_i) =
+\begin{cases}
+\displaystyle \frac{\prod_{k \ne i,j} (x_i - x_k)}{\prod_{k \ne j} (x_j - x_k)}
+&amp; i \ne j \\[3ex]
+\displaystyle \sum_{k \ne i} \frac{1}{x_i - x_k} &amp; i = j
+\end{cases}"/><span class="eqno">(84)<a class="headerlink" href="#equation-oc-first-derivative-matrix" title="Link to this equation"></a></span></p>
+</div><p>and the second derivative matrix is <img class="math" src="../_images/math/373f005adb26db97330165244f26e1529c7a87d9.svg" alt="\mathbf{B} = \mathbf{A}\mathbf{A}"/>.
+The matrices are built on <img class="math" src="../_images/math/4a948da4a21d9bbc3633efb8ed42bdbfd2eb1557.svg" alt="[0, 1]"/> and scaled to the domain length by
+<img class="math" src="../_images/math/ff792797908099b03fe86825fe5e2a2869631eac.svg" alt="\mathbf{A} \to \mathbf{A}/L"/> and <img class="math" src="../_images/math/6c3f1ea066e10fdd31e6de731f0cb2228c52bbd7.svg" alt="\mathbf{B} \to \mathbf{B}/L^2"/>.</p>
+</section>
+<section id="multi-element-collocation">
+<h2>Multi-Element Collocation<a class="headerlink" href="#multi-element-collocation" title="Link to this heading"></a></h2>
+<p>For steep fronts (high Péclet number), a single high-degree polynomial
+oscillates and its differentiation matrices become ill-conditioned. In this
+case the domain is divided into <img class="math" src="../_images/math/32cbd642c57dd3b3ca982a7b42da6af0f02c49bf.svg" alt="n_e"/> elements of equal width
+<img class="math" src="../_images/math/a3d2f3718c287f48e491981214ebd8662b4f986e.svg" alt="h = 1/n_e"/>, each with a low-order polynomial. The local matrices are
+built once, scaled by</p>
+<div class="math" id="equation-oc-element-scaling">
+<p><img src="../_images/math/a844c7cfac617c41ebd73406429be0ad20c89a13.svg" alt="\mathbf{A}_\mathrm{loc} \to \frac{\mathbf{A}_\mathrm{loc}}{h},
+\qquad
+\mathbf{B}_\mathrm{loc} \to \frac{\mathbf{B}_\mathrm{loc}}{h^2}"/><span class="eqno">(85)<a class="headerlink" href="#equation-oc-element-scaling" title="Link to this equation"></a></span></p>
+</div><p>and placed on the diagonal of the global matrices. Neighboring elements share
+the node at their junction, so the solution is continuous and the total
+number of nodes is <img class="math" src="../_images/math/96edf5458ba6adb75512692e007aff09846bc9b0.svg" alt="n_e(n+1)+1"/>. At a junction node, the derivative
+row is the average of the left and right element rows, and the quadrature
+weights are summed. The model is refined by increasing <img class="math" src="../_images/math/32cbd642c57dd3b3ca982a7b42da6af0f02c49bf.svg" alt="n_e"/> until the
+results stop changing.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Numerical Methods" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="time_integration.html" class="btn btn-neutral float-right" title="Time Integration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Timothy M. Weigand.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

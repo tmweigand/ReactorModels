@@ -10,7 +10,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=a6a68382" />
       <link rel="stylesheet" type="text/css" href="../../../_static/fonts.css?v=5583d106" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/reactor.css?v=ccde76bc" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/reactor.css?v=a7804f7f" />
 
   
     <link rel="shortcut icon" href="../../../_static/RM_favicon.png"/>
@@ -44,10 +44,12 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../model_development/index.html">Model Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/index.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../numerical_methods/index.html">Numerical Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../benchmarks.html">Benchmarks</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">reactormodels</a></li>
 </ul>
@@ -82,12 +84,12 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 
-<div class="viewcode-block" id="InletBC">
-<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.InletBC">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">InletBC</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Base class for inlet boundary conditions.</span>
+<div class="viewcode-block" id="BoundaryConditions">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.BoundaryConditions">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BoundaryConditions</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Base class for boundary conditions.</span>
 
-<span class="sd">    All inlet boundary condition classes should inherit from this class</span>
+<span class="sd">    All boundary condition classes should inherit from this class</span>
 <span class="sd">    and implement the `residual` and `apply` methods.</span>
 <span class="sd">    """</span>
 
@@ -96,15 +98,15 @@
     <span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
-<div class="viewcode-block" id="InletBC.apply">
-<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.InletBC.apply">[docs]</a>
+<div class="viewcode-block" id="BoundaryConditions.apply">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.BoundaryConditions.apply">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradient_concentration_0</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Return the value on the boundary"""</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
-<div class="viewcode-block" id="InletBC.residual">
-<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.InletBC.residual">[docs]</a>
+<div class="viewcode-block" id="BoundaryConditions.residual">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.BoundaryConditions.residual">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">residual</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">concentration_0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">gradient_concentration_0</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">):</span>
@@ -112,8 +114,8 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
-<div class="viewcode-block" id="InletBC.jacobian_row">
-<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.InletBC.jacobian_row">[docs]</a>
+<div class="viewcode-block" id="BoundaryConditions.jacobian_row">
+<a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.BoundaryConditions.jacobian_row">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">jacobian_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A_row</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return dF_inlet/dC, the Jacobian row for the inlet constraint."""</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
@@ -123,7 +125,7 @@
 
 <div class="viewcode-block" id="DirichletBC">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.DirichletBC">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">DirichletBC</span><span class="p">(</span><span class="n">InletBC</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DirichletBC</span><span class="p">(</span><span class="n">BoundaryConditions</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Dirichlet inlet boundary condition.</span>
 
 <span class="sd">    Enforces a fixed inlet concentration:</span>
@@ -167,7 +169,7 @@
 
 <div class="viewcode-block" id="DanckwertsBC">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.DanckwertsBC">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">DanckwertsBC</span><span class="p">(</span><span class="n">InletBC</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DanckwertsBC</span><span class="p">(</span><span class="n">BoundaryConditions</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Danckwerts (flux-conserving) inlet boundary condition.</span>
 
 <span class="sd">    Governing equation:</span>
@@ -219,7 +221,7 @@
 
 <div class="viewcode-block" id="SymmetryBC">
 <a class="viewcode-back" href="../../../api/reactormodels.models.html#reactormodels.models.SymmetryBC">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">SymmetryBC</span><span class="p">(</span><span class="n">InletBC</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SymmetryBC</span><span class="p">(</span><span class="n">BoundaryConditions</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Zero gradient boundary condition at particle center.</span>
 
 <span class="sd">    Enforces dC/dr = 0 at r=0</span>

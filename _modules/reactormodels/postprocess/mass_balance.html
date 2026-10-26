@@ -10,7 +10,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=a6a68382" />
       <link rel="stylesheet" type="text/css" href="../../../_static/fonts.css?v=5583d106" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/reactor.css?v=ccde76bc" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/reactor.css?v=a7804f7f" />
 
   
     <link rel="shortcut icon" href="../../../_static/RM_favicon.png"/>
@@ -44,10 +44,12 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../model_development/index.html">Model Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/index.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../numerical_methods/index.html">Numerical Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../benchmarks.html">Benchmarks</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">reactormodels</a></li>
 </ul>
@@ -105,7 +107,7 @@
 
     <span class="n">model</span><span class="p">:</span> <span class="n">NumericModel</span>
     <span class="n">liquid_concentration</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># shape (n_t, n_x) — column concentration history</span>
-    <span class="n">sorbent_mass_fraction</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># shape (n_t, n_x) — adsorbed-phase history</span>
+    <span class="n">solid_phase_loading</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>  <span class="c1"># shape (n_t, n_x) — adsorbed-phase history</span>
     <span class="n">pore_concentration</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># shape (n_t, n_x_particle)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -113,8 +115,8 @@
 
 <span class="sd">        If true perform radial averages.</span>
 <span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sorbent_mass_fraction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_as_radially_averaged</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sorbent_mass_fraction</span><span class="p">,</span> <span class="s2">"sorbent_mass_fraction"</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solid_phase_loading</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_as_radially_averaged</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solid_phase_loading</span><span class="p">,</span> <span class="s2">"solid_phase_loading"</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pore_concentration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pore_concentration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_as_radially_averaged</span><span class="p">(</span>
@@ -125,7 +127,7 @@
 <span class="w">        </span><span class="sd">"""Collapse a (n_t, n_x, n_r) radially-resolved field to (n_t, n_x).</span>
 
 <span class="sd">        Some models track a within-particle radial profile, so</span>
-<span class="sd">        `sorbent_mass_fraction`/`pore_concentration` may arrive as 3D</span>
+<span class="sd">        `solid_phase_loading`/`pore_concentration` may arrive as 3D</span>
 <span class="sd">        arrays with a trailing radial axis. MassBalance only operates on</span>
 <span class="sd">        column-averaged quantities, so a 3D array is radially averaged</span>
 <span class="sd">        via `model.get_radial_average` automatically; a 2D array is</span>
@@ -179,7 +181,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">bed_density</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Bed density"""</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">media</span><span class="o">.</span><span class="n">bed_density</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">breakthrough</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">bed_density</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">cross_section_area</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
@@ -272,7 +274,7 @@
         <span class="k">return</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bed_density</span>
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cross_section_area</span>
-            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_integrate_history</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sorbent_mass_fraction</span><span class="p">)</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spatial_integrate_history</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solid_phase_loading</span><span class="p">)</span>
         <span class="p">)</span>
 
     <span class="nd">@property</span>

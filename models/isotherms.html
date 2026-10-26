@@ -1,0 +1,226 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multi-Species Isotherms &mdash; ReactorModels 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a6a68382" />
+      <link rel="stylesheet" type="text/css" href="../_static/fonts.css?v=5583d106" />
+      <link rel="stylesheet" type="text/css" href="../_static/reactor.css?v=a7804f7f" />
+
+  
+    <link rel="shortcut icon" href="../_static/RM_favicon.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Analytic Models" href="analytic_models/index.html" />
+    <link rel="prev" title="Pore and Surface Diffusion Model" href="psdm.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            ReactorModels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Models</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="conservation.html">General Conservation Equations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advection_diffusion_adsorption.html">Advection-Diffusion-Adsorption Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="psdm.html">Pore and Surface Diffusion Model</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Multi-Species Isotherms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analytic_models/index.html">Analytic Models</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../numerical_methods/index.html">Numerical Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../benchmarks.html">Benchmarks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">reactormodels</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ReactorModels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Models</a></li>
+      <li class="breadcrumb-item active">Multi-Species Isotherms</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/models/isotherms.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="multi-species-isotherms">
+<h1>Multi-Species Isotherms<a class="headerlink" href="#multi-species-isotherms" title="Link to this heading"></a></h1>
+<p>Multi-species isotherms are derived using Ideal Adsorbed Solution Theory (IAST) <span class="bibtex-citation" id="id1">[<a class="reference internal" href="../references.html#id3" title="John C. Crittenden, R. Rhodes Trussell, David W. Hand, and Kerry J. Howe. MWH's water treatment : principles and design. John Wiley &amp; Sons, Inc., Hoboken, NJ, USA, 3rd edition, 2012.">3</a>]</span>.
+Take Gibbs’ equation for change in surface tension at an adsorption interface to the change in liquid
+phase concentration of the adsorbate</p>
+<div class="math" id="equation-models-isotherms-0">
+<p><img src="../_images/math/2e77457de6916a81f2b5aa681c73d96bc1b29dd8.svg" alt="-Ad\gks_i = Ad\pi_i = q_i RT d\lrp{\ln C_i}"/><span class="eqno">(29)<a class="headerlink" href="#equation-models-isotherms-0" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/126919c397906b6ebff67c0f0016e78b0b32f36e.svg" alt="A"/> is the adsorption area per mass of adsorbent, <img class="math" src="../_images/math/f810750ee649d27aa3f417487caab48fd6b8a678.svg" alt="d\gks_i"/> is the change in surface
+tension due to adsorption, <img class="math" src="../_images/math/b7f0dc8574d269a8d115e31e98fd5dcc58578a7b.svg" alt="d\pi_i"/> is the change in spreading pressure due to adsorption, and
+<img class="math" src="../_images/math/1bd4670f230cc473597d857f2e3ee63dfaaaea1c.svg" alt="d\lrp{\ln C_i}"/> is the change in the natural log of liquid phase concentration. Spreading pressure is
+the difference between the surface tension, <img class="math" src="../_images/math/6fd761a02380ae3bf76836e882cd8540142a688f.svg" alt="\gks_i"/> between the solid interface with pure solvent and
+the solid interface with the solution containing adsorbate (sorptive solution)</p>
+<div class="math" id="equation-models-isotherms-1">
+<p><img src="../_images/math/dbe49a4942b05d6397333a2e5173c3b6684a97fa.svg" alt="d\pi_i = -d\gks_i = \gks_{\text{Pure Water/Adsorbent}} - \gks_{\text{Sorptive Solution/Adsorbent}}"/><span class="eqno">(30)<a class="headerlink" href="#equation-models-isotherms-1" title="Link to this equation"></a></span></p>
+</div><p>This equation is convenient for constructing a multi-species isotherm because the difference in surface tension
+between two sorptive solutions may be quantified without knowing the surface tension between pure water and the
+adsorbent, a generally challenging property to measure. Assuming single-species concentrations, <img class="math" src="../_images/math/d029395a44c3bb3a988ef972c086ac581ce7ddfb.svg" alt="C^o_i"/>
+are in equilibrium with the spreading pressure of the mixture and the single-species concentration, <img class="math" src="../_images/math/2588cdde02eefb3a576e945a3d7dc37e20e4a678.svg" alt="C_i"/>
+in equilibrium with the mixture can be determined from an expression analogous to Raoult’s law. IAST is
+comprised of five equations</p>
+<div class="math" id="equation-models-isotherms-2">
+<p><img src="../_images/math/95c8e7f81c63945dd286789e467ff86fef642741.svg" alt="q_T = \sLb {i=1}Nq_i"/><span class="eqno">(31)<a class="headerlink" href="#equation-models-isotherms-2" title="Link to this equation"></a></span></p>
+</div><div class="math" id="equation-mole-fraction">
+<p><img src="../_images/math/a417de4a4637e8d698909fd9ead558fcd47aa409.svg" alt="x_i = \frac {q_i}{q_T}"/><span class="eqno">(32)<a class="headerlink" href="#equation-mole-fraction" title="Link to this equation"></a></span></p>
+</div><div class="math" id="equation-raoults">
+<p><img src="../_images/math/b044f65eedf8b4036885e183e34f3aa82cd542a6.svg" alt="C_i = x_iC^o_i"/><span class="eqno">(33)<a class="headerlink" href="#equation-raoults" title="Link to this equation"></a></span></p>
+</div><div class="math" id="equation-q-sum-inv">
+<p><img src="../_images/math/d0fabe5e4f7d066013aac47f8c55c8ae6337d20b.svg" alt="\frac 1{q_T} = \sLb {i=1}N \frac {x_i}{q^o_i}"/><span class="eqno">(34)<a class="headerlink" href="#equation-q-sum-inv" title="Link to this equation"></a></span></p>
+</div><div class="math" id="equation-spreading-pressure">
+<p><img src="../_images/math/d1ea0dc004d4a2a2040406ab1cdb4256602be7e4.svg" alt="\frac {\pi_mA}{RT} = \frac {\pi_iA}{RT} = \ilims 0{q^o_i}\frac {d\ln C^o_i}{d \ln q^o_i}d q^o_i"/><span class="eqno">(35)<a class="headerlink" href="#equation-spreading-pressure" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/fc72aa20056cfe39dee55aab5887bfb12c874826.svg" alt="q_T"/> is the total surface loading, <img class="math" src="../_images/math/ecc4b08f720d76b2f11c2b41bed001ecae3fb8be.svg" alt="q_i"/> is the single-species solid phase loading,
+<img class="math" src="../_images/math/956aed27a3d2dc4e2d87d196fdc9c374a2fb6686.svg" alt="x_i"/> is the mole fraction of species <img class="math" src="../_images/math/364f234f74e428c6cf01f3c4135636b8778de06e.svg" alt="i"/> on the adsorbent surface, <img class="math" src="../_images/math/2588cdde02eefb3a576e945a3d7dc37e20e4a678.svg" alt="C_i"/> concentration
+of species <img class="math" src="../_images/math/364f234f74e428c6cf01f3c4135636b8778de06e.svg" alt="i"/> in the multi-species system, and <img class="math" src="../_images/math/f90ea7815414e1b4abb8684388fc5bf42cfa752b.svg" alt="C_i^o"/> is the concentration of species
+<img class="math" src="../_images/math/364f234f74e428c6cf01f3c4135636b8778de06e.svg" alt="i"/> in the single-species system. The Freundlich isotherm equation for a single-species is given by</p>
+<div class="math" id="equation-freundlich-single">
+<p><img src="../_images/math/e0dda31935220c27c8040c3b4996c5eba5108262.svg" alt="q_i^o = K_i\lrp{C_i^o}^{1/n_i}"/><span class="eqno">(36)<a class="headerlink" href="#equation-freundlich-single" title="Link to this equation"></a></span></p>
+</div><p>taking the natural log of both sides</p>
+<div class="math" id="equation-models-isotherms-3">
+<p><img src="../_images/math/ae182041c17f1f5c7398cfa375f20b2acd50b142.svg" alt="\ln q_i^o = \ln K_i + \frac 1{n_i} \ln C_i^o"/><span class="eqno">(37)<a class="headerlink" href="#equation-models-isotherms-3" title="Link to this equation"></a></span></p>
+</div><p>and</p>
+<div class="math" id="equation-models-isotherms-4">
+<p><img src="../_images/math/069890b947a962ac396c6e085d9fca9a4e2357e4.svg" alt="\frac {d\ln q^o_i}{d \ln C^o_i} = \frac 1{n_i}"/><span class="eqno">(38)<a class="headerlink" href="#equation-models-isotherms-4" title="Link to this equation"></a></span></p>
+</div><p>thus Eqn <a class="reference internal" href="#equation-spreading-pressure">(35)</a> may be written as</p>
+<div class="math" id="equation-models-isotherms-5">
+<p><img src="../_images/math/2937b7428c215d9806887d223ca6bc52339c449d.svg" alt="\frac {\pi_iA}{RT} = \ilims 0{q^o_i}n_id q^o_i"/><span class="eqno">(39)<a class="headerlink" href="#equation-models-isotherms-5" title="Link to this equation"></a></span></p>
+</div><p>evaluating the integral</p>
+<div class="math" id="equation-models-isotherms-6">
+<p><img src="../_images/math/419e5df22c695fa5991718e6ac7d948de3947725.svg" alt="\frac {\pi_iA}{RT} = n_iq^o_i"/><span class="eqno">(40)<a class="headerlink" href="#equation-models-isotherms-6" title="Link to this equation"></a></span></p>
+</div><p>since</p>
+<div class="math" id="equation-models-isotherms-7">
+<p><img src="../_images/math/11fc63c204132b00da5122eb0bbef818c0178c33.svg" alt="\frac {\pi_iA}{RT} = \frac {\pi_mA}{RT}"/><span class="eqno">(41)<a class="headerlink" href="#equation-models-isotherms-7" title="Link to this equation"></a></span></p>
+</div><p>the following expression is also true</p>
+<div class="math" id="equation-models-isotherms-8">
+<p><img src="../_images/math/5ed7d430cb54b059c4308c0d7562fc1444546ad1.svg" alt="n_iq_i = n_jq_j, \quad j = 2, 3, \dots, N"/><span class="eqno">(42)<a class="headerlink" href="#equation-models-isotherms-8" title="Link to this equation"></a></span></p>
+</div><p>Rearranging Eqn <a class="reference internal" href="#equation-spreading-pressure">(35)</a> to</p>
+<div class="math" id="equation-q-single">
+<p><img src="../_images/math/92a0a0bb7c2bd10789f10aeaadbc5eb32222684d.svg" alt="q^o_i = \frac 1{n_i}\frac {\pi_iA}{RT}"/><span class="eqno">(43)<a class="headerlink" href="#equation-q-single" title="Link to this equation"></a></span></p>
+</div><p>and Eqn <a class="reference internal" href="#equation-freundlich-single">(36)</a> to</p>
+<div class="math" id="equation-c-single">
+<p><img src="../_images/math/92f3f62a8d717508f59816133c58a542ecfbafdf.svg" alt="C_i^o = \lrp{\frac {q_i^o}{K_i}}^{n_i}"/><span class="eqno">(44)<a class="headerlink" href="#equation-c-single" title="Link to this equation"></a></span></p>
+</div><p>Substituting Eqn <a class="reference internal" href="#equation-q-single">(43)</a> into Eqn <a class="reference internal" href="#equation-c-single">(44)</a></p>
+<div class="math" id="equation-c-single-sub">
+<p><img src="../_images/math/dbc78d9c7abb219a4df7cc875fec4e5aa4846464.svg" alt="C_i^o = \lrp{\frac {\pi_iA}{n_iK_iRT}}^{n_i}"/><span class="eqno">(45)<a class="headerlink" href="#equation-c-single-sub" title="Link to this equation"></a></span></p>
+</div><p>Substituting Eqn <a class="reference internal" href="#equation-mole-fraction">(32)</a> and Eqn <a class="reference internal" href="#equation-c-single-sub">(45)</a> into Eqn <a class="reference internal" href="#equation-raoults">(33)</a></p>
+<div class="math" id="equation-freundlich-incomplete">
+<p><img src="../_images/math/a345285b58763dc85e1a00fadbec9922564c79d1.svg" alt="C_i = \frac {q_i}{\sLb {j=1}N q_j}\lrp{\frac {\pi_iA}{n_iK_iRT}}^{n_i}"/><span class="eqno">(46)<a class="headerlink" href="#equation-freundlich-incomplete" title="Link to this equation"></a></span></p>
+</div><p>Substituting Eqn <a class="reference internal" href="#equation-q-single">(43)</a> and Eqn <a class="reference internal" href="#equation-mole-fraction">(32)</a> into Eqn <a class="reference internal" href="#equation-q-sum-inv">(34)</a></p>
+<div class="math" id="equation-q-n-sum">
+<p><img src="../_images/math/9a130380de1967b9932a5355f7493bba049785fb.svg" alt="\frac {\pi_iA}{RT} = \sLb {j=1}Nq_jn_j"/><span class="eqno">(47)<a class="headerlink" href="#equation-q-n-sum" title="Link to this equation"></a></span></p>
+</div><p>The final form of the competitive Freundlich isotherm equation is obtained by substituting
+Eqn <a class="reference internal" href="#equation-q-n-sum">(47)</a> into Eqn <a class="reference internal" href="#equation-freundlich-incomplete">(46)</a></p>
+<div class="math" id="equation-models-isotherms-9">
+<p><img src="../_images/math/3f14206e170adec94e475761457adcce5332b4d5.svg" alt="C_i = \frac {q_i}{\sLb {j=1}N q_j}\lrp{\frac {\sLb {j=1}Nq_jn_j}{n_iK_i}}^{n_i}"/><span class="eqno">(48)<a class="headerlink" href="#equation-models-isotherms-9" title="Link to this equation"></a></span></p>
+</div><p>The extended Langmuir was first introduced to relate the adsorbed amount of one gas with respect
+to the adsorbed amount of a second gas (i.e. a binary mixture). The competitive
+Langmuir isotherm equation was derived assuming the surface of the adsorbent is uniform and capable
+of adsorbing only a single layer of adsorbate, and that adsorbed species do not interact with each
+other <span class="bibtex-citation" id="id2">[<a class="reference internal" href="../references.html#id4" title="E. C. Markham and Arthur F. Benton. The adsorption of gas mixtures by silica. Journal of the American Chemical Society, 53(2):497-507, 02 1931. doi:10.1021/ja01353a013.">5</a>]</span>. The single-species Langmuir isotherm equation is given by</p>
+<div class="math" id="equation-models-isotherms-10">
+<p><img src="../_images/math/eb702eb0b682d8d1513d1312bf0b9f78b85d5733.svg" alt="q_i = \frac {q_mK_iC_i}{1 + K_iC_i}"/><span class="eqno">(49)<a class="headerlink" href="#equation-models-isotherms-10" title="Link to this equation"></a></span></p>
+</div><p>Assuming a fixed total adsorption capacity with a second species <img class="math" src="../_images/math/5a997b5b3f443f81c0dea303c9513a48698bdd4c.svg" alt="j"/> in the system, the multi-species
+Langmuir kinetic expression for species <img class="math" src="../_images/math/364f234f74e428c6cf01f3c4135636b8778de06e.svg" alt="i"/> is given by</p>
+<div class="math" id="equation-multi-kinetics">
+<p><img src="../_images/math/fc7f597e5ad2ace55da3656223396d8c19756d68.svg" alt="\pd {q_i}t = k_{a,i}C_i\lrp{q_m - q_i - q_j} - k_{d,i}q_i"/><span class="eqno">(50)<a class="headerlink" href="#equation-multi-kinetics" title="Link to this equation"></a></span></p>
+</div><p>where <img class="math" src="../_images/math/ab56765b70c86ede23d66334689c3367d288dda2.svg" alt="k_{a,i}"/> and <img class="math" src="../_images/math/5a2fc59c918663b52baa8b49e3bfd2346a690126.svg" alt="k_{d,i}"/> are the species-specific forward and reverse adsorption rate constants, respectively.
+Where the species-specific Langmuir dissociation constant, <img class="math" src="../_images/math/3ea7c1e90439bf5232277ff9ae91c6427d8c503b.svg" alt="K_i"/>, is equal to <img class="math" src="../_images/math/95a66b51a709911d613af4d17e33e728a6c575c8.svg" alt="k_{a,i} / k_{d,i}"/>. At equilibrium,
+<img class="math" src="../_images/math/7fe9a8da9c8397fb64262f371db1a2f97f424e9d.svg" alt="\partial q_i / \partial t = 0"/>, thus Eqn <a class="reference internal" href="#equation-multi-kinetics">(50)</a> can be rearranged to</p>
+<div class="math" id="equation-models-isotherms-11">
+<p><img src="../_images/math/028ff37426dc4e097d9bcbbaf5b952d6cbc91a6a.svg" alt="q_i= \frac{k_{a,i}C_i\lrp{q_m - q_j}}{k_{d,i} + k_{a,i}C_i}"/><span class="eqno">(51)<a class="headerlink" href="#equation-models-isotherms-11" title="Link to this equation"></a></span></p>
+</div><p>dividing through by <img class="math" src="../_images/math/5a2fc59c918663b52baa8b49e3bfd2346a690126.svg" alt="k_{d,i}"/></p>
+<div class="math" id="equation-species-i">
+<p><img src="../_images/math/ba552e63f04002b41b25547f73ba024b367c487c.svg" alt="q_i = \frac {K_iC_i\lrp{q_m - q_j}}{1 + K_iC_i}"/><span class="eqno">(52)<a class="headerlink" href="#equation-species-i" title="Link to this equation"></a></span></p>
+</div><p>Similarly, the expression for species <img class="math" src="../_images/math/5a997b5b3f443f81c0dea303c9513a48698bdd4c.svg" alt="j"/> is given by</p>
+<div class="math" id="equation-species-j">
+<p><img src="../_images/math/e8370229a98049a51903a45425b033453ffa9dbf.svg" alt="q_j = \frac {K_jC_j\lrp{q_m - q_i}}{1 + K_jC_j}"/><span class="eqno">(53)<a class="headerlink" href="#equation-species-j" title="Link to this equation"></a></span></p>
+</div><p>Subsituting Eqn <a class="reference internal" href="#equation-species-j">(53)</a> into <a class="reference internal" href="#equation-species-i">(52)</a> yields</p>
+<div class="math" id="equation-models-isotherms-12">
+<p><img src="../_images/math/6d05a0f4d371ac2b4376a38158c0cb48bed8769c.svg" alt="q_i = \frac {q_mK_iC_i}{1+K_iC_i+K_jC_j}"/><span class="eqno">(54)<a class="headerlink" href="#equation-models-isotherms-12" title="Link to this equation"></a></span></p>
+</div><p>which can be written generally as</p>
+<div class="math" id="equation-models-isotherms-13">
+<p><img src="../_images/math/e4567695bd77e213fd150a91ce6b184e0958c201.svg" alt="q_i = \frac {q_mK_iC_i}{1+\sLb {j=1}NK_jC_j}"/><span class="eqno">(55)<a class="headerlink" href="#equation-models-isotherms-13" title="Link to this equation"></a></span></p>
+</div></section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="psdm.html" class="btn btn-neutral float-left" title="Pore and Surface Diffusion Model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="analytic_models/index.html" class="btn btn-neutral float-right" title="Analytic Models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Timothy M. Weigand.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

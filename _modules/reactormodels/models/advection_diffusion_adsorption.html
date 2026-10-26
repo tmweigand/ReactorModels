@@ -10,7 +10,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=a6a68382" />
       <link rel="stylesheet" type="text/css" href="../../../_static/fonts.css?v=5583d106" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/reactor.css?v=ccde76bc" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/reactor.css?v=a7804f7f" />
 
   
     <link rel="shortcut icon" href="../../../_static/RM_favicon.png"/>
@@ -44,10 +44,12 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../model_development/index.html">Model Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models/index.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../numerical_methods/index.html">Numerical Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../benchmarks.html">Benchmarks</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">reactormodels</a></li>
 </ul>
@@ -88,7 +90,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.numeric_model_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumericModel</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.isotherm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Isotherm</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.adsorption_kinetics</span><span class="w"> </span><span class="kn">import</span> <span class="n">AdsorptionKinetics</span><span class="p">,</span> <span class="n">LocalEquilibrium</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.boundary_conditions</span><span class="w"> </span><span class="kn">import</span> <span class="n">InletBC</span><span class="p">,</span> <span class="n">DanckwertsBC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.boundary_conditions</span><span class="w"> </span><span class="kn">import</span> <span class="n">BoundaryConditions</span><span class="p">,</span> <span class="n">DanckwertsBC</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"AdvectionDiffusionAdsorption"</span><span class="p">]</span>
 
@@ -100,14 +102,14 @@
 
 <span class="sd">    The governing equations are:</span>
 
-<span class="sd">        Fluid phase: eps*dC/dt + eps * v * dC/dx - eps* D * d2C/dx2 - rho_b * dq/dt = 0</span>
-<span class="sd">        Solid phase: dq/dt = rate_constant *(q*(C) - q) for ldf</span>
-<span class="sd">                     dq/dt = rate_constant * C *(q*(C) - q) for second order</span>
-<span class="sd">                     where q* is provided isotherm.</span>
+<span class="sd">    Fluid phase: eps * dC/dt + eps * v * dC/dx - eps * D * d2C/dx2 - rho_b * dq/dt = 0</span>
+<span class="sd">    Solid phase: dq/dt = rate_constant *(q*(C) - q) for ldf</span>
+<span class="sd">                 dq/dt = rate_constant * C *(q*(C) - q) for second order</span>
+<span class="sd">                 where q* is calculated from the isotherm equation.</span>
 
 <span class="sd">    If local_equilibirium is assumed, the solid phase equation is ignored and:</span>
 
-<span class="sd">        dq_dt = dq*/dc*dc/dt</span>
+<span class="sd">        dq_dt = dq*/dc * dc/dt</span>
 
 <span class="sd">    """</span>
 
@@ -119,7 +121,7 @@
         <span class="n">isotherm</span><span class="p">:</span> <span class="n">Isotherm</span><span class="p">,</span>
         <span class="n">numerics</span><span class="p">:</span> <span class="n">NumericsConfig</span><span class="p">,</span>
         <span class="n">kinetics</span><span class="p">:</span> <span class="n">AdsorptionKinetics</span> <span class="o">=</span> <span class="n">LocalEquilibrium</span><span class="p">(),</span>
-        <span class="n">inlet_bc</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">InletBC</span><span class="p">]</span> <span class="o">=</span> <span class="n">DanckwertsBC</span><span class="p">,</span>
+        <span class="n">inlet_bc</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">BoundaryConditions</span><span class="p">]</span> <span class="o">=</span> <span class="n">DanckwertsBC</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="c1"># Physical parameters</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="o">=</span> <span class="n">breakthrough</span><span class="o">.</span><span class="n">column</span>
@@ -143,10 +145,10 @@
         <span class="c1"># Numerics</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span> <span class="o">=</span> <span class="n">numerics</span>
 
-        <span class="c1"># Discretization</span>
+        <span class="c1"># Discretization (n_nodes = 1 + n_elements + n_points * n_elements)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
 
-        <span class="c1"># Kinetics</span>
+        <span class="c1"># Initialize AdsorptionKinetics class</span>
         <span class="n">kinetics</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span>
             <span class="n">breakthrough</span><span class="p">,</span> <span class="n">isotherm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inlet_concentration</span>
         <span class="p">)</span>
@@ -175,6 +177,7 @@
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">evaluate_second_derivative</span><span class="p">(</span><span class="n">c</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
         <span class="p">)</span>
 
+        <span class="c1"># additional residual equations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kinetics</span><span class="o">.</span><span class="n">_residual_kinetics</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">dcdt</span><span class="p">,</span> <span class="n">dqdt</span><span class="p">,</span> <span class="n">transport</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="mi">0</span>
@@ -182,41 +185,47 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">ydot</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">cj</span><span class="p">,</span> <span class="n">jac</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Build jacobian of _residual."""</span>
         <span class="n">C</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kinetics</span><span class="o">.</span><span class="n">_split</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">dcdt</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kinetics</span><span class="o">.</span><span class="n">_split</span><span class="p">(</span><span class="n">ydot</span><span class="p">)</span>
+
+        <span class="c1"># create n x n matrix where n is the number of variables/residual eqns</span>
         <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kinetics</span><span class="o">.</span><span class="n">_n_vars</span><span class="p">()</span>
         <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
 
-        <span class="c1"># Row 0: algebraic constraint</span>
+        <span class="c1"># Row 0 and row n_nodes are algebraic constants for</span>
+        <span class="c1"># liquid and solid phase concentrations, repsectively</span>
         <span class="n">J</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inlet_bc</span><span class="o">.</span><span class="n">jacobian_row</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">first_derivative</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">first_derivative</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="p">)</span>
 
-        <span class="c1"># derivative of transport dF/dc</span>
+        <span class="c1"># derivative of transport residual with respect to c</span>
         <span class="n">d_transport</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span>
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span>
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">first_derivative</span>
-            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span>
+            <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="o">.</span><span class="n">porosity</span>
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">axial_diffusion</span>
             <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">second_derivative</span>
         <span class="p">)</span>
-        <span class="n">J</span><span class="p">[</span><span class="mi">1</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">,</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">d_transport</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span>
+        <span class="c1"># change in liquid phase residuals with respect to c</span>
+        <span class="n">J</span><span class="p">[</span><span class="mi">1</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">,</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">]</span> <span class="o">=</span> <span class="n">d_transport</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">kinetics</span><span class="o">.</span><span class="n">_jacobian_kinetics</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">J</span><span class="p">,</span> <span class="n">cj</span><span class="p">)</span>
+        <span class="c1"># additional jacobian rows and columns</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kinetics</span><span class="o">.</span><span class="n">_jacobian_kinetics</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">dcdt</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">J</span><span class="p">,</span> <span class="n">cj</span><span class="p">)</span>
 
         <span class="n">jac</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">J</span>
 
         <span class="k">return</span> <span class="mi">0</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_algebraic_vars_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Create list identifying which equations are algebraic.</span>
-
-<span class="sd">        Only the inlet boundary condition for this model.</span>
-<span class="sd">        """</span>
+<span class="w">        </span><span class="sd">"""Create list identifying which equations are algebraic."""</span>
+        <span class="c1"># liquid phase inlet residual only</span>
         <span class="k">return</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_initial_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Return (y0, ydot0) consistent with the algebraic constraint."""</span>
+        <span class="c1"># set initial liquid phase concentration at all nodes</span>
         <span class="n">C0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_concentration</span><span class="p">)</span>
+        <span class="c1"># replace inlet liquid phase concentration with boundary condition</span>
         <span class="n">C0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inlet_bc</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">evaluate_gradient</span><span class="p">(</span><span class="n">C0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 
         <span class="n">y0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kinetics</span><span class="o">.</span><span class="n">_set_initial_conditions</span><span class="p">(</span><span class="n">C0</span><span class="p">)</span>
@@ -244,9 +253,9 @@
                 <span class="sa">f</span><span class="s2">"IDA solver failed with flag </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">flag</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span>
             <span class="p">)</span>
 
-        <span class="c1"># result.values.y has shape (n_out, n_vars); skip the t=t_span[0] row</span>
-        <span class="n">y_out</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># (n_times, n_vars)</span>
-
+        <span class="c1"># result.values.y has shape (n_times, n_vars); skip the t=t_span[0] row</span>
+        <span class="n">y_out</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="c1"># extract/calculate liquid phase concentration and solid phase loading</span>
         <span class="n">C_out</span><span class="p">,</span> <span class="n">q_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kinetics</span><span class="o">.</span><span class="n">_parse_variables</span><span class="p">(</span><span class="n">y_out</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">collocation</span><span class="o">.</span><span class="n">nodes</span><span class="p">,</span> <span class="n">C_out</span><span class="p">,</span> <span class="n">q_out</span></div>
 </div>
