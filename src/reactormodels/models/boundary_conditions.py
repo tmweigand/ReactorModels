@@ -50,8 +50,8 @@ class DirichletBC(InletBC):
 
     def apply(
         self,
-        initial_concentrations: np.ndarray,
-        A_row: np.ndarray,
+        initial_concentrations: np.ndarray | None = None,
+        A_row: np.ndarray | None = None,
         gradient_concentration_0: None | float = None,
     ):
         """Return the value on the boundary"""

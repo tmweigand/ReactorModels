@@ -124,21 +124,29 @@ class AdvectionDiffusion(NumericModel):
         n_vars = self.axial_nodes * self.n_species
         J = np.zeros((n_vars, n_vars))
 
-        # Row 0: algebraic constraint, no Cdot term
-        J[0, :] = self.inlet_bc.jacobian_row(
-            self.numerics.collocation.first_derivative[0, :]
-        )
+        for i, bc in enumerate(self.inlet_bc):
+            # Species inlet rows: algebraic constraint, no Cdot term
+            inlet_node = i * self.axial_nodes
+            outlet_node = inlet_node + self.axial_nodes
+            species_nodes = slice(inlet_node, outlet_node)
 
-        # Rows 1:: dF/dC = -pde_jac,  dF/dCdot = I  => full J row = -pde_jac + cj*I
-        pde_jac = (
-            -self.velocity * self.numerics.collocation.first_derivative
-            + self.axial_diffusion * self.numerics.collocation.second_derivative
-        )  # (N,N)
-        J[1:, :] = -pde_jac[1:, :]  # dF/dC contribution
-        for i in range(1, self.axial_nodes):
-            J[i, i] += cj  # dF/dCdot: Cdot[i] appears only in row i
+            J[inlet_node, species_nodes] = bc.jacobian_row(
+                self.numerics.collocation.first_derivative[0, :]
+            )
+
+            # Species interior and outlet rows: change in interior residual w.r.t to C
+            interior_nodes = slice(inlet_node + 1, outlet_node)
+            d_transport = (
+                self.velocity * self.numerics.collocation.first_derivative
+                - self.axial_diffusion[i] * self.numerics.collocation.second_derivative
+            )
+            J[interior_nodes, species_nodes] = d_transport[1:, :]
+
+            diagonal = np.arange(inlet_node + 1, outlet_node)
+            J[diagonal, diagonal] += cj
 
         jac[:, :] = J
+
         return 0
 
     def _initial_conditions(self):
@@ -170,7 +178,7 @@ class AdvectionDiffusion(NumericModel):
         c, dcdt = self._initial_conditions()
         result = self.numerics.integrate(
             residual=self._residual,
-            # jacobian=self._jacobian,
+            jacobian=self._jacobian,
             y0=c,
             yp0=dcdt,
             t_span=[0, self.breakthroughs[0].time.tolist()],
