@@ -3,6 +3,11 @@
 import numpy as np
 
 
+def _clip(x: float | np.ndarray, eps: float = 0):
+    """Clip function to trim negative values."""
+    return np.maximum(x, eps)
+
+
 class Isotherm:
     """Base class for adsorption isotherms."""
 
@@ -58,13 +63,13 @@ class LangmuirIsotherm(Isotherm):
 
     def dq_dC(self, C: float | np.ndarray) -> np.ndarray:
         """Calculate the derivative of sorbed mass concentration by concentration."""
-        C = np.asarray(C, dtype=float)
-        return self.q_m * self.K / (1 + self.K * np.maximum(C, 0.0)) ** 2
+        clip_C = _clip(np.asarray(C, dtype=float), 0.0)
+        return self.q_m * self.K / (1 + self.K * clip_C) ** 2
 
     def d2q_dC2(self, C: float | np.ndarray) -> np.ndarray:
         """Calculate the second derivative."""
-        C = np.asarray(C, dtype=float)
-        return -2 * self.q_m * self.K**2 / (1 + self.K * np.maximum(C, 0.0)) ** 3
+        clip_C = _clip(np.asarray(C, dtype=float), 0.0)
+        return -2 * self.q_m * self.K**2 / (1 + self.K * clip_C) ** 3
 
     def multi_dq_dC(self, C: float | np.ndarray) -> np.ndarray:
         """Calculate the derivative of q for multi-species structure."""
@@ -108,41 +113,34 @@ class FreundlichIsotherm(Isotherm):
 
     def q(self, C: float | np.ndarray) -> np.ndarray:
         """Return sorbed mass concentration"""
-        C = np.asarray(C, dtype=float)
-        C = np.maximum(0, C)
-        return self.K * C ** (1.0 / self.n)
+        clip_C = _clip(np.asarray(C, dtype=float), 0.0)
+        return self.K * clip_C ** (1.0 / self.n)
 
     def dq_dC(self, C: float | np.ndarray) -> np.ndarray:
         """Calculate the derivative of sorbed mass concentration by concentration."""
-        C = np.asarray(C, dtype=float)
-        C = np.maximum(1e-12, np.abs(C))
-        return (self.K / self.n) * C ** (1.0 / self.n - 1.0)
+        clip_C = _clip(np.asarray(np.abs(C), dtype=float), 1e-12)
+        return (self.K / self.n) * clip_C ** (1.0 / self.n - 1.0)
 
     def d2q_dC2(self, C: float | np.ndarray) -> np.ndarray:
         """Calculate the second derivative."""
-        C = np.asarray(C, dtype=float)
-        C = np.maximum(1e-12, np.abs(C))
-        return (self.K / self.n) * (1.0 / self.n - 1.0) * C ** (1.0 / self.n - 2.0)
+        clip_C = _clip(np.asarray(np.abs(C), dtype=float), 1e-12)
+        return (self.K / self.n) * (1.0 / self.n - 1.0) * clip_C ** (1.0 / self.n - 2.0)
 
     def C(self, q):
         """Return liquid phase concentration"""
-        q = np.asarray(q, dtype=float)
-        q = np.maximum(q, 0.0)
-
-        return (q / self.K) ** self.n
+        clip_q = _clip(np.asarray(q, dtype=float), 0.0)
+        return (clip_q / self.K) ** self.n
 
     def dC_dq(self, q: float | np.ndarray) -> np.ndarray:
         """Calculate derivative of liquid concentration by sorbed mass concentration."""
-        q = np.asarray(q, dtype=float)
-        q = np.maximum(q, 0.0)
+        clip_q = _clip(np.asarray(q, dtype=float), 0.0)
 
-        return self.n * (1 / self.K) ** self.n * q ** (self.n - 1)
+        return self.n * (1 / self.K) ** self.n * clip_q ** (self.n - 1)
 
     def d2C_dq2(self, q: float | np.ndarray) -> np.ndarray:
         """Calculate the second derivative."""
-        q = np.asarray(q, dtype=float)
-        q = np.maximum(q, 0.0)
-        return self.n * (self.n - 1) * (1 / self.K) ** self.n * q ** (self.n - 2)
+        clip_q = _clip(np.asarray(q, dtype=float), 0.0)
+        return self.n * (self.n - 1) * (1 / self.K) ** self.n * clip_q ** (self.n - 2)
 
     def multi_dC_dq(self, q: float | np.ndarray) -> np.ndarray:
         """Calculate derivative of C for multi-species structure."""
