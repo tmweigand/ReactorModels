@@ -12,9 +12,9 @@ def run_demo(
     superficial_velocity = 1.0  # m/s
     domain_length = 5.0  # m
     porosity = 0.5
-    t_eval = np.array([0.1, 0.5, 1.0])
+    t_eval = np.array([[0.1], [0.5], [1.0]])
     diameter = 0.1
-    diffusions = np.linspace(0.1, 1, 6)  # m^2/s
+    diffusions = np.linspace(0.1, 1, 3)  # m^2/s
     C_in = 1
 
     column = reactormodels.Column(
@@ -31,7 +31,7 @@ def run_demo(
             column=column,
             feed_concentrations=C_in,
             superficial_velocity=superficial_velocity,
-            time=t_eval,
+            time=t_eval[i],
             chemical=reactormodels.Chemical(axial_diffusion=diffusions[i]),
         )
         breakthroughs.append(breakthrough)
@@ -47,9 +47,9 @@ def run_demo(
     x, C = model.solve()
 
     fig, axes = plt.subplots(
-        2,
+        1,
         3,
-        figsize=(12, 8),
+        figsize=(12, 4),
         sharex=True,
         squeeze=False,
     )
@@ -65,7 +65,7 @@ def run_demo(
             diffusion=diffusion,
         )
 
-        for i, t in enumerate(t_eval):
+        for i, t in enumerate(model.t_eval):
             C_analytical = ogata_banks.spatial_profile(
                 x=x[mask],
                 time=t,

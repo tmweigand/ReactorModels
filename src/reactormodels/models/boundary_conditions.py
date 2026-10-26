@@ -19,7 +19,6 @@ class InletBC:
         self,
         initial_concentrations: np.ndarray,
         A_row: np.ndarray,
-        gradient_concentration_0: None | float = None,
     ):
         """Return the value on the boundary"""
         raise NotImplementedError
@@ -52,7 +51,6 @@ class DirichletBC(InletBC):
         self,
         initial_concentrations: np.ndarray | None = None,
         A_row: np.ndarray | None = None,
-        gradient_concentration_0: None | float = None,
     ):
         """Return the value on the boundary"""
         return self.inlet_concentration
@@ -88,7 +86,6 @@ class DanckwertsBC(InletBC):
         self,
         initial_concentrations: np.ndarray,
         A_row: np.ndarray,
-        gradient_concentration_0: None | float = None,
     ):
         """Return the value on the boundary"""
         numerator = self.velocity * self.inlet_concentration + self.diffusion * (
@@ -132,7 +129,6 @@ class SymmetryBC(InletBC):
         self,
         initial_concentrations: None | np.ndarray = None,
         A_row: None | np.ndarray = None,
-        gradient_concentration_0: None | float = None,
     ):
         """Symmetry does not set a concentration value directly."""
         raise NotImplementedError("SymmetryBC has no direct value; use residual().")

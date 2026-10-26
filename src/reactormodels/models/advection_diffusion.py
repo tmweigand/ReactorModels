@@ -44,6 +44,13 @@ class AdvectionDiffusion(NumericModel):
 
         # Physical parameters
         self.velocity = self.breakthroughs[0].interstitial_velocity
+        if not all(
+            np.isclose(bt.interstitial_velocity, self.velocity)
+            for bt in self.breakthroughs
+        ):
+            raise ValueError(
+                "All breakthroughs must have the same interstitial velocity."
+            )
 
         # Species-specific parameters
         self.axial_diffusion = np.array(
@@ -176,13 +183,17 @@ class AdvectionDiffusion(NumericModel):
     def solve(self):
         """Integrate from t_span[0] to t_span[1], returning results at t_eval."""
         c, dcdt = self._initial_conditions()
+
+        # Generate t_eval using unique time points from all breakthroughs
+        self.t_eval = np.unique(np.concatenate([bt.time for bt in self.breakthroughs]))
+
         result = self.numerics.integrate(
             residual=self._residual,
             jacobian=self._jacobian,
             y0=c,
             yp0=dcdt,
-            t_span=[0, self.breakthroughs[0].time.tolist()],
-            t_eval=self.breakthroughs[0].time,
+            t_span=[0, self.t_eval[-1]],
+            t_eval=self.t_eval,
             algebraic_vars_idx=self._algebraic_vars_idx(),
         )
         if result.flag < 0:
