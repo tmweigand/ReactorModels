@@ -24,7 +24,7 @@ class MassBalance:
 
     model: NumericModel
     liquid_concentration: np.ndarray  # shape (n_t, n_x) — column concentration history
-    sorbent_mass_fraction: np.ndarray  # shape (n_t, n_x) — adsorbed-phase history
+    solid_phase_loading: np.ndarray  # shape (n_t, n_x) — adsorbed-phase history
     pore_concentration: np.ndarray | None = None  # shape (n_t, n_x_particle)
 
     def __post_init__(self) -> None:
@@ -32,8 +32,8 @@ class MassBalance:
 
         If true perform radial averages.
         """
-        self.sorbent_mass_fraction = self._as_radially_averaged(
-            self.sorbent_mass_fraction, "sorbent_mass_fraction"
+        self.solid_phase_loading = self._as_radially_averaged(
+            self.solid_phase_loading, "solid_phase_loading"
         )
         if self.pore_concentration is not None:
             self.pore_concentration = self._as_radially_averaged(
@@ -44,7 +44,7 @@ class MassBalance:
         """Collapse a (n_t, n_x, n_r) radially-resolved field to (n_t, n_x).
 
         Some models track a within-particle radial profile, so
-        `sorbent_mass_fraction`/`pore_concentration` may arrive as 3D
+        `solid_phase_loading`/`pore_concentration` may arrive as 3D
         arrays with a trailing radial axis. MassBalance only operates on
         column-averaged quantities, so a 3D array is radially averaged
         via `model.get_radial_average` automatically; a 2D array is
@@ -98,7 +98,7 @@ class MassBalance:
     @property
     def bed_density(self) -> float:
         """Bed density"""
-        return self.breakthrough.column.media.bed_density
+        return self.breakthrough.column.bed_density
 
     @property
     def cross_section_area(self) -> float:
@@ -191,7 +191,7 @@ class MassBalance:
         return (
             self.bed_density
             * self.cross_section_area
-            * self._spatial_integrate_history(self.sorbent_mass_fraction)
+            * self._spatial_integrate_history(self.solid_phase_loading)
         )
 
     @property

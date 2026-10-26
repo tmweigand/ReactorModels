@@ -14,15 +14,17 @@ ReactorModels documentation
 ReactorModels is a Python package for solving transport equations. More to come...
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
-   model_development/index
+   models/index
+   numerical_methods/index
+   references
    benchmarks
 
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
+   :caption: API Reference
 
    api/modules
 

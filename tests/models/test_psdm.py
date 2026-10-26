@@ -37,7 +37,6 @@ def _make_particle(
         particle_porosity=particle_porosity,
         particle_diameter=particle_diameter,
         particle_density=particle_density,
-        bed_density=bed_density,
     )
 
     column = reactormodels.Column(
@@ -46,6 +45,7 @@ def _make_particle(
         diameter=diameter,
         media=media,
         water=reactormodels.Water(),
+        bed_density=bed_density,
     )
 
     chemical = reactormodels.Chemical(
@@ -195,14 +195,14 @@ def test_parameter_check():
         _make_particle(Ds=None)
 
 
-def test_get_sorbed_mass_fraction():
-    """Sorbed mass fraction should have the same shape as pore concentration."""
+def test_get_solid_phase_loading():
+    """Solid phase loading should have the same shape as pore concentration."""
 
     time = np.linspace(1e-10, 3600, 50)
     model = _make_particle(time=time)
 
     _, _, _, Cp = model.solve()
-    q = model.get_sorbed_mass_fraction(Cp)
+    q = model.get_solid_phase_loading(Cp)
 
     assert q.shape == Cp.shape
 
@@ -218,7 +218,7 @@ def test_mass_balance():
     mass_balance = reactormodels.postprocess.MassBalance(
         model=model,
         liquid_concentration=C,
-        sorbent_mass_fraction=model.get_sorbed_mass_fraction(Cp),
+        solid_phase_loading=model.get_solid_phase_loading(Cp),
         pore_concentration=Cp,
     )
 

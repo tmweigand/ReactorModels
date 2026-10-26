@@ -13,7 +13,7 @@ def run_demo(
     length = 1 / np.pi
     diameter = 2
     porosity = 0.4
-    bulk_density = 0.36
+    bed_density = 0.36
     particle_density = 0.6
     diffusion = 0.1
     feed_concentrations = 1
@@ -23,7 +23,7 @@ def run_demo(
         length=length,
         diameter=diameter,
         porosity=porosity,
-        bulk_density=bulk_density,
+        bed_density=bed_density,
         media=reactormodels.Media(particle_density=particle_density),
         water=reactormodels.Water(),
     )
