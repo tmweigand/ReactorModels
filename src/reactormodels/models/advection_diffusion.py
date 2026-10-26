@@ -43,6 +43,10 @@ class AdvectionDiffusion(NumericModel):
         self.n_species = len(self.breakthroughs)
 
         # Physical parameters
+        self.column = self.breakthroughs[0].column
+        if not all(bt.column is self.column for bt in self.breakthroughs):
+            raise ValueError("All breakthroughs must share the same Column object.")
+
         self.velocity = self.breakthroughs[0].interstitial_velocity
         if not all(
             np.isclose(bt.interstitial_velocity, self.velocity)

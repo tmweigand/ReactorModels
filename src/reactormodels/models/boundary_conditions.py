@@ -101,7 +101,7 @@ class DanckwertsBC(InletBC):
         """Compute the residual at inlet boundary."""
         if gradient_concentration_0 is None:
             raise ValueError(
-                "gradient_concentration_0 must be provided " "for DanckwertsBC"
+                "gradient_concentration_0 must be provided for DanckwertsBC."
             )
 
         return (
