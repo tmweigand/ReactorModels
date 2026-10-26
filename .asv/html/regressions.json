@@ -1,1 +1,1 @@
-{"regressions": [["benchmarks.ConvergenceSuite.time_solve(7, 5)", "graphs/branch-main/machine-github-actions-macos/python-3.11/benchmarks.ConvergenceSuite.time_solve.json", {}, 12, 0.02250627099999747, 0.018207541499975832, [[null, 146, 0.018207541499975832, 0.02250627099999747]]]]}
+{"regressions": []}
