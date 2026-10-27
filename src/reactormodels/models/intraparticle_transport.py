@@ -70,7 +70,7 @@ class IntraparticleTransport(NumericModel):
 
         # Center: symmetry
         result[0] = self.center_bc.residual(
-            gradient_concentration_0=self.numerics.collocation.evaluate_gradient(c, 0)
+            first_derivative_row=self.numerics.collocation.evaluate_gradient(c, 0)
         )
 
         # Surface: dirichlet

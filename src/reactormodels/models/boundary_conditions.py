@@ -18,7 +18,7 @@ class InletBC:
     def apply(
         self,
         initial_concentrations: np.ndarray,
-        A_row: np.ndarray,
+        first_derivative_row: np.ndarray,
     ):
         """Return the value on the boundary"""
         raise NotImplementedError
@@ -29,7 +29,7 @@ class InletBC:
         """Compute the residual at inlet boundary."""
         raise NotImplementedError
 
-    def jacobian_row(self, A_row: np.ndarray) -> np.ndarray:
+    def jacobian_row(self, first_derivative_row: np.ndarray) -> np.ndarray:
         """Return dF_inlet/dC, the Jacobian row for the inlet constraint."""
         raise NotImplementedError
 
@@ -50,7 +50,7 @@ class DirichletBC(InletBC):
     def apply(
         self,
         initial_concentrations: np.ndarray | None = None,
-        A_row: np.ndarray | None = None,
+        first_derivative_row: np.ndarray | None = None,
     ):
         """Return the value on the boundary"""
         return self.inlet_concentration
@@ -58,14 +58,14 @@ class DirichletBC(InletBC):
     def residual(
         self,
         concentration_0: float,
-        gradient_concentration_0: None | float = None,
+        first_derivative_row: None | float = None,
     ):
         """Compute the residual at inlet boundary."""
         return concentration_0 - self.inlet_concentration
 
-    def jacobian_row(self, A_row: np.ndarray) -> np.ndarray:
+    def jacobian_row(self, first_derivative_row: np.ndarray) -> np.ndarray:
         """dF/dC: residual = C[0] - C_in, so only the C[0] entry is non-zero."""
-        row = np.zeros_like(A_row)
+        row = np.zeros_like(first_derivative_row)
         row[self.node] = 1.0
         return row
 
@@ -85,13 +85,13 @@ class DanckwertsBC(InletBC):
     def apply(
         self,
         initial_concentrations: np.ndarray,
-        A_row: np.ndarray,
+        first_derivative_row: np.ndarray,
     ):
         """Return the value on the boundary"""
         numerator = self.velocity * self.inlet_concentration + self.diffusion * (
-            A_row[1:] @ initial_concentrations[1:]
+            first_derivative_row[1:] @ initial_concentrations[1:]
         )
-        denominator = self.velocity - self.diffusion * A_row[0]
+        denominator = self.velocity - self.diffusion * first_derivative_row[0]
 
         return numerator / denominator
 
@@ -109,9 +109,9 @@ class DanckwertsBC(InletBC):
             + self.diffusion * gradient_concentration_0
         )
 
-    def jacobian_row(self, A_row: np.ndarray) -> np.ndarray:
+    def jacobian_row(self, first_derivative_row: np.ndarray) -> np.ndarray:
         """dF/dC: residual = v*(C_in - C[0]) + D*(A[0,:] @ C)."""
-        row = self.diffusion * A_row
+        row = self.diffusion * first_derivative_row
         row[0] -= self.velocity
         return row
 
@@ -128,7 +128,7 @@ class SymmetryBC(InletBC):
     def apply(
         self,
         initial_concentrations: None | np.ndarray = None,
-        A_row: None | np.ndarray = None,
+        first_derivative_row: None | np.ndarray = None,
     ):
         """Symmetry does not set a concentration value directly."""
         raise NotImplementedError("SymmetryBC has no direct value; use residual().")
@@ -136,13 +136,13 @@ class SymmetryBC(InletBC):
     def residual(
         self,
         concentration_0: float | None = None,
-        gradient_concentration_0: None | float = None,
+        first_derivative_row: None | float = None,
     ):
         """Compute the residual: the gradient itself, which must equal zero."""
-        if gradient_concentration_0 is None:
-            raise ValueError("gradient_concentration_0 must be provided for SymmetryBC")
-        return gradient_concentration_0
+        if first_derivative_row is None:
+            raise ValueError("first_derivative_row must be provided for SymmetryBC")
+        return first_derivative_row
 
-    def jacobian_row(self, A_row: np.ndarray) -> np.ndarray:
-        """dF/dC: residual = A_row @ C, so the Jacobian row is A_row itself."""
-        return A_row
+    def jacobian_row(self, first_derivative_row: np.ndarray) -> np.ndarray:
+        """dF/dC: residual = first_derivative_row @ C, so the Jacobian row is first_derivative_row itself."""
+        return first_derivative_row

@@ -1,6 +1,7 @@
 """base.py"""
 
 from __future__ import annotations
+import numpy as np
 
 from ..properties.breakthrough import Breakthrough
 
@@ -58,6 +59,10 @@ class NumericModel:
                 f"{type(self).__name__} is missing required parameter(s): "
                 f"{', '.join(missing)}"
             )
+
+    def _get_default_t_eval(self) -> np.ndarray:
+        """Return unique time points across all breakthroughs."""
+        return np.unique(np.concatenate([bt.time for bt in self.breakthroughs]))
 
 
 def _unset_constructor_params(obj: Any) -> list[str]:

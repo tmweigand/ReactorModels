@@ -109,9 +109,7 @@ class PSDM(NumericModel):
 
             # center: symmetry
             result[offset] = self.center_bc.residual(
-                gradient_concentration_0=self.particle_numerics.evaluate_gradient(
-                    cp_i, 0
-                )
+                first_derivative_row=self.particle_numerics.evaluate_gradient(cp_i, 0)
             )
 
             # particle phase - internal

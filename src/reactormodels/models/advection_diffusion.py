@@ -27,6 +27,7 @@ class AdvectionDiffusion(NumericModel):
         breakthrough: Breakthrough | Sequence[Breakthrough],
         numerics: NumericsConfig,
         inlet_bc: Type[InletBC] = DirichletBC,
+        t_eval: np.ndarray | None = None,
     ):
         # Normalize breakthroughs to a list
         if isinstance(breakthrough, Breakthrough):
@@ -101,7 +102,16 @@ class AdvectionDiffusion(NumericModel):
         # Discretization
         self.axial_nodes = len(self.numerics.collocation.nodes)
 
+        # Set where t is output
+        self.t_eval = (
+            self._get_default_t_eval() if t_eval is None else np.asarray(t_eval)
+        )
+
         self.assert_parameters_set()
+
+    def _n_vars(self) -> int:
+        """Total number of unknowns"""
+        return self.axial_nodes * self.n_species
 
     def _reshape(self, y):
         """Reshape vectors for multi-species."""
@@ -132,7 +142,7 @@ class AdvectionDiffusion(NumericModel):
 
     def _jacobian(self, t, C, Cdot, result, cj, jac):
         """Build jacobian of _residual."""
-        n_vars = self.axial_nodes * self.n_species
+        n_vars = self._n_vars()
         J = np.zeros((n_vars, n_vars))
 
         for i, bc in enumerate(self.inlet_bc):
@@ -162,20 +172,20 @@ class AdvectionDiffusion(NumericModel):
 
     def _initial_conditions(self):
         """Set the initial concentration and dcdt."""
-        C_init = np.asarray(self.initial_concentration, dtype=float)
+        c_init = np.asarray(self.initial_concentration, dtype=float)
 
-        C0 = np.broadcast_to(
-            C_init[:, None],
+        c_0 = np.broadcast_to(
+            c_init[:, None],
             (self.n_species, self.axial_nodes),
         ).copy()
 
-        A0 = self.numerics.collocation.first_derivative[0, :]
+        first_derivative_matrix = self.numerics.collocation.first_derivative[0, :]
         for i, bc in enumerate(self.inlet_bc):
-            C0[i, 0] = bc.apply(C0[i, :], A0)
+            c_0[i, 0] = bc.apply(c_0[i, :], first_derivative_matrix)
 
-        C0 = C0.ravel()
-        Cdot0 = np.zeros_like(C0)
-        return C0, Cdot0
+        c_0 = c_0.ravel()
+        dcdt_0 = np.zeros_like(c_0)
+        return c_0, dcdt_0
 
     def _algebraic_vars_idx(self):
         """Create list identifying which equations are algebraic.
@@ -187,9 +197,6 @@ class AdvectionDiffusion(NumericModel):
     def solve(self):
         """Integrate from t_span[0] to t_span[1], returning results at t_eval."""
         c, dcdt = self._initial_conditions()
-
-        # Generate t_eval using unique time points from all breakthroughs
-        self.t_eval = np.unique(np.concatenate([bt.time for bt in self.breakthroughs]))
 
         result = self.numerics.integrate(
             residual=self._residual,
@@ -206,7 +213,7 @@ class AdvectionDiffusion(NumericModel):
             )
 
         # (n_times, n_species, axial_nodes), skip the t=t_span[0] row
-        C_out = result.values.y[1:]
-        C_out = C_out.reshape(len(C_out), self.n_species, self.axial_nodes)
+        c_out = result.values.y[1:]
+        c_out = c_out.reshape(len(c_out), self.n_species, self.axial_nodes)
 
-        return self.numerics.collocation.nodes, C_out
+        return self.numerics.collocation.nodes, c_out
