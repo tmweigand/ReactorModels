@@ -3,6 +3,13 @@
 import numpy as np
 from enum import Enum, auto
 
+<<<<<<< HEAD
+=======
+from ..properties.breakthrough import Breakthrough
+from .isotherm import Isotherm
+from .multi_species_isotherm import MultiSpeciesIsotherm
+
+>>>>>>> 84f9ea2 (start multi-species advection-diffusion-adsorption)
 
 class SolutionVariable(Enum):
     """State dependent variable"""
@@ -29,14 +36,23 @@ class AdsorptionKinetics:
         self.n_nodes = None
         self.inlet_concentration = None
         self.solution_variable = None
+        self.n_species = None
 
-    def configure(self, breakthrough, isotherm, n_nodes, inlet_concentration):
+    def configure(
+        self, breakthrough, isotherm, n_nodes, inlet_concentration, n_species
+    ):
         """Initialize convenient classes/quantities."""
         self.column = breakthrough.column
+<<<<<<< HEAD
         self.breakthrough = breakthrough
         self.isotherm = isotherm
+=======
+        self.breakthrough: Breakthrough = breakthrough
+        self.isotherm: Isotherm | MultiSpeciesIsotherm = isotherm
+>>>>>>> 84f9ea2 (start multi-species advection-diffusion-adsorption)
         self.n_nodes = n_nodes
         self.inlet_concentration = inlet_concentration
+        self.n_species = n_species
 
         if (
             _is_implemented(self.isotherm.q)
@@ -85,16 +101,26 @@ class LocalEquilibrium(AdsorptionKinetics):
 
     def _n_vars(self):
         """Total length of the IDA state vector."""
-        return self.n_nodes
+        return self.n_nodes * self.n_species
 
     def _split(self, y):
         """Return (C, q)."""
-        C = y[: self.n_nodes]
+        C = y.reshape(self.n_species, self.n_nodes)
         q = None
         return C, q
 
     def _residual_kinetics(self, result, c, q, dcdt, dqdt, transport) -> None:
         """Return liquid phase residual."""
+<<<<<<< HEAD
+=======
+        for i in range(1, self.n_nodes):
+            dqdC = self.isotherm.dq_dC(c[:, i])  # (n_species, n_species)
+            dqdt = dqdC @ dcdt[:, i]
+            result[:, i] += self.column.media.bed_density * dqdt
+
+    def _jacobian_kinetics(self, C, q, J, cj) -> None:
+        """Return liquid phase jacobian."""
+>>>>>>> 84f9ea2 (start multi-species advection-diffusion-adsorption)
         for i in range(1, self.n_nodes):
             result[i] = transport[i - 1] + self.column.bed_density * (
                 self.isotherm.dq_dC(c[i]) * dcdt[i]

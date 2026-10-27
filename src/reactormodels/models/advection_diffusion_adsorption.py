@@ -3,11 +3,13 @@
 from __future__ import annotations
 from typing import Type
 import numpy as np
+from collections.abc import Sequence
 
 from ..properties.breakthrough import Breakthrough
 from ..numerics.config import NumericsConfig
 from .numeric_model_base import NumericModel
 from .isotherm import Isotherm
+from .multi_species_isotherm import MultiSpeciesIsotherm
 from .adsorption_kinetics import AdsorptionKinetics, LocalEquilibrium
 from .boundary_conditions import BoundaryConditions, DanckwertsBC
 
@@ -34,40 +36,100 @@ class AdvectionDiffusionAdsorption(NumericModel):
 
     def __init__(
         self,
-        breakthrough: Breakthrough,
-        isotherm: Isotherm,
+        breakthrough: Breakthrough | Sequence[Breakthrough],
+        isotherm: Isotherm | Sequence[Isotherm] | MultiSpeciesIsotherm,
         numerics: NumericsConfig,
         kinetics: AdsorptionKinetics = LocalEquilibrium(),
+<<<<<<< HEAD
         inlet_bc: Type[BoundaryConditions] = DanckwertsBC,
+=======
+        inlet_bc: Type[InletBC] | Sequence[Type[InletBC]] = DanckwertsBC,
+>>>>>>> 84f9ea2 (start multi-species advection-diffusion-adsorption)
     ):
+        # Normalize breakthroughs to a list
+        if isinstance(breakthrough, Breakthrough):
+            self.breakthroughs = [breakthrough]
+        else:
+            self.breakthroughs = list(breakthrough)
+
+        if not self.breakthroughs:
+            raise ValueError("At least one breakthrough must be provided.")
+        if not all(isinstance(b, Breakthrough) for b in self.breakthroughs):
+            raise TypeError("breakthrough must be one or more Breakthroughs.")
+
+        # number of species
+        self.n_species = len(self.breakthroughs)
+
         # Physical parameters
-        self.column = breakthrough.column
-        self.breakthrough = breakthrough
-        self.velocity = breakthrough.interstitial_velocity
-        self.axial_diffusion = breakthrough.chemical.axial_diffusion
+        self.column = self.breakthroughs[0].column
+        if not all(bt.column is self.column for bt in self.breakthroughs):
+            raise ValueError("All breakthroughs must share the same Column object.")
+
+        self.velocity = self.breakthroughs[0].interstitial_velocity
+        if not all(
+            np.isclose(bt.interstitial_velocity, self.velocity)
+            for bt in self.breakthroughs
+        ):
+            raise ValueError(
+                "All breakthroughs must have the same interstitial velocity."
+            )
+
+        # Isotherm
         self.isotherm = isotherm
 
-        # Initial conditions
-        self.initial_concentration = breakthrough.initial_concentration
-
-        # Boundary conditions
-        self.inlet_concentration = breakthrough.mean_feed_concentration()
-        self.inlet_bc = inlet_bc(
-            self.inlet_concentration,
-            node=0,
-            velocity=self.velocity,
-            diffusion=self.axial_diffusion,
+        # Species-specific parameters
+        self.axial_diffusion = np.array(
+            [bt.chemical.axial_diffusion for bt in self.breakthroughs]
         )
+        self.initial_concentration = np.array(
+            [bt.initial_concentration for bt in self.breakthroughs]
+        )
+        self.inlet_concentration = np.array(
+            [bt.mean_feed_concentration() for bt in self.breakthroughs]
+        )
+
+        # Normalize inlet BCs to a list
+        if isinstance(inlet_bc, type):
+            self.inlet_bcs = [inlet_bc] * len(self.breakthroughs)
+        else:
+            self.inlet_bcs = list(inlet_bc)
+
+        if len(self.inlet_bcs) != len(self.breakthroughs):
+            raise ValueError(
+                "The number of inlet boundary conditions must match "
+                "the number of breakthroughs."
+            )
+        self.inlet_bc = [
+            bc(
+                inlet_concentration,
+                node=0,
+                velocity=self.velocity,
+                diffusion=diffusion,
+            )
+            for bc, inlet_concentration, diffusion in zip(
+                self.inlet_bcs,
+                self.inlet_concentration,
+                self.axial_diffusion,
+            )
+        ]
 
         # Numerics
         self.numerics = numerics
 
+<<<<<<< HEAD
         # Discretization (n_nodes = 1 + n_elements + n_points * n_elements)
         self.n_nodes = len(self.numerics.collocation.nodes)
+=======
+        # Discretization
+        self.axial_nodes = len(self.numerics.collocation.nodes)
+>>>>>>> 84f9ea2 (start multi-species advection-diffusion-adsorption)
 
         # Initialize AdsorptionKinetics class
         kinetics.configure(
-            breakthrough, isotherm, self.n_nodes, self.inlet_concentration
+            self.breakthroughs,
+            self.isotherm,
+            self.axial_nodes,
+            self.inlet_concentration,
         )
         self.kinetics = kinetics
 
