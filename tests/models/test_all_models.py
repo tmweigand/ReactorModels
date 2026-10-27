@@ -13,7 +13,7 @@ def _state_size(model):
     kinetics = getattr(model, "kinetics", None)
     if kinetics is not None and hasattr(kinetics, "_n_vars"):
         return kinetics._n_vars()
-    return model.N
+    return model.axial_nodes
 
 
 def _build_advection_diffusion():
@@ -167,7 +167,6 @@ MODEL_BUILDERS = {
     "AdvectionDiffusionAdsorption": _build_advection_diffusion_adsorption,
     "BatchPSDM": _build_batch_psdm,
     "PSDM": _build_psdm,
-    "PSDMSolid": _build_psdm,
 }
 
 

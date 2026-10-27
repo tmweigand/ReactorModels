@@ -142,8 +142,8 @@ class AdvectionDiffusionAdsorption(NumericModel):
         """Return (y0, ydot0) consistent with the algebraic constraint."""
         # set initial liquid phase concentration at all nodes
         C0 = np.full(self.n_nodes, self.initial_concentration)
-        # replace inlet liquid phase concentration with boundary condition
-        C0[0] = self.inlet_bc.apply(self.numerics.collocation.evaluate_gradient(C0, 0))
+        A0 = self.numerics.collocation.first_derivative[0, :]
+        C0[0] = self.inlet_bc.apply(C0, A0)
 
         y0 = self.kinetics._set_initial_conditions(C0)
         ydot0 = np.zeros_like(y0)

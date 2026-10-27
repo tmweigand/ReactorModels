@@ -114,11 +114,9 @@ class PSDM(NumericModel):
             # index of nodes at particle center
             center = self.axial_nodes + i * self.radial_nodes
 
-            # center: symmetry (dcp/dr = 0)
+            # center: symmetry
             result[center] = self.center_bc.residual(
-                gradient_concentration_0=self.particle_numerics.evaluate_gradient(
-                    cp_i, 0
-                )
+                first_derivative_row=self.particle_numerics.evaluate_gradient(cp_i, 0)
             )
 
             # laplacian of q for surface diffusion term
