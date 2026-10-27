@@ -26,7 +26,7 @@ class AdvectionDiffusion(NumericModel):
         self,
         breakthrough: Breakthrough | Sequence[Breakthrough],
         numerics: NumericsConfig,
-        inlet_bc: Type[InletBC] = DirichletBC,
+        inlet_bc: Type[BoundaryConditions] = DirichletBC,
         t_eval: np.ndarray | None = None,
     ):
         # Normalize breakthroughs to a list
@@ -104,7 +104,9 @@ class AdvectionDiffusion(NumericModel):
 
         # Set where t is output
         self.t_eval = (
-            self._get_default_t_eval() if t_eval is None else np.asarray(t_eval)
+            self._get_default_t_eval(self.breakthroughs)
+            if t_eval is None
+            else np.asarray(t_eval)
         )
 
         self.assert_parameters_set()

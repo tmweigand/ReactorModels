@@ -24,7 +24,7 @@ class BoundaryConditions:
         raise NotImplementedError
 
     def residual(
-        self, concentration_0: float, gradient_concentration_0: None | float = None
+        self, concentration_0: float, first_derivative_row: None | float = None
     ):
         """Compute the residual at inlet boundary."""
         raise NotImplementedError
@@ -144,5 +144,5 @@ class SymmetryBC(BoundaryConditions):
         return first_derivative_row
 
     def jacobian_row(self, first_derivative_row: np.ndarray) -> np.ndarray:
-        """dF/dC: residual = first_derivative_row @ C, so the Jacobian row is first_derivative_row itself."""
+        """dF/dC: residual = first_derivative_row @ C."""
         return first_derivative_row

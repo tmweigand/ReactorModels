@@ -115,7 +115,7 @@ class PSDM(NumericModel):
             center = self.axial_nodes + i * self.radial_nodes
 
             # center: symmetry
-            result[offset] = self.center_bc.residual(
+            result[center] = self.center_bc.residual(
                 first_derivative_row=self.particle_numerics.evaluate_gradient(cp_i, 0)
             )
 

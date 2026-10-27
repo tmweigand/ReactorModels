@@ -73,7 +73,7 @@ class BatchPSDM(NumericModel):
 
         # Center: symmetry
         result[1] = self.center_bc.residual(
-            gradient_concentration_0=self.numerics.collocation.evaluate_gradient(cp, 0)
+            first_derivative_row=self.numerics.collocation.evaluate_gradient(cp, 0)
         )
 
         # Surface: bulk

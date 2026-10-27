@@ -167,7 +167,6 @@ MODEL_BUILDERS = {
     "AdvectionDiffusionAdsorption": _build_advection_diffusion_adsorption,
     "BatchPSDM": _build_batch_psdm,
     "PSDM": _build_psdm,
-    "PSDMSolid": _build_psdm,
 }
 
 
