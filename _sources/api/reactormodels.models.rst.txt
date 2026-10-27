@@ -96,11 +96,3 @@ reactormodels.models.psdm module
    :members:
    :show-inheritance:
    :undoc-members:
-
-reactormodels.models.psdm\_q module
------------------------------------
-
-.. automodule:: reactormodels.models.psdm_q
-   :members:
-   :show-inheritance:
-   :undoc-members:

@@ -298,10 +298,25 @@
 
 <span class="sd">        If node is provided, only return the value at specified node.</span>
 <span class="sd">        """</span>
-        <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_derivative</span> <span class="o">@</span> <span class="n">f</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_derivative</span><span class="p">[</span><span class="n">node</span><span class="p">,</span> <span class="p">:]</span> <span class="o">@</span> <span class="n">f</span></div>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_derivative</span> <span class="o">@</span> <span class="n">f</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_derivative</span><span class="p">[</span><span class="n">node</span><span class="p">,</span> <span class="p">:]</span> <span class="o">@</span> <span class="n">f</span>
+
+        <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_derivative</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"Expected </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">first_derivative</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> "</span>
+                    <span class="sa">f</span><span class="s2">"spatial nodes, got </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">f</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_derivative</span><span class="o">.</span><span class="n">T</span>
+
+            <span class="k">return</span> <span class="n">f</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_derivative</span><span class="p">[</span><span class="n">node</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Expected f to have 1 or 2 dimensions, got </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">ndim</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="OrthogonalCollocation.evaluate_second_derivative">
@@ -313,10 +328,25 @@
 
 <span class="sd">        If node is provided, only return the value at specified node.</span>
 <span class="sd">        """</span>
-        <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">second_derivative</span> <span class="o">@</span> <span class="n">f</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">second_derivative</span><span class="p">[</span><span class="n">node</span><span class="p">,</span> <span class="p">:]</span> <span class="o">@</span> <span class="n">f</span></div>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">second_derivative</span> <span class="o">@</span> <span class="n">f</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">second_derivative</span><span class="p">[</span><span class="n">node</span><span class="p">,</span> <span class="p">:]</span> <span class="o">@</span> <span class="n">f</span>
+
+        <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">second_derivative</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"Expected </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">second_derivative</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> "</span>
+                    <span class="sa">f</span><span class="s2">"spatial nodes, got </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">f</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">second_derivative</span><span class="o">.</span><span class="n">T</span>
+
+            <span class="k">return</span> <span class="n">f</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">second_derivative</span><span class="p">[</span><span class="n">node</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Expected f to have 1 or 2 dimensions, got </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">ndim</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="OrthogonalCollocation.integrate">
