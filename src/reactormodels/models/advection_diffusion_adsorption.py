@@ -158,26 +158,32 @@ class AdvectionDiffusionAdsorption(NumericModel):
     def _jacobian(self, t, y, ydot, result, cj, jac):
         """Build jacobian of _residual."""
         C, q = self.kinetics._split(y)
+        dCdt, _ = self.kinetics._split(ydot)
         n = self.kinetics._n_vars()
         J = np.zeros((n, n))
 
-        # Row 0: algebraic constraint
-        J[0, : self.n_nodes] = self.inlet_bc.jacobian_row(
-            self.numerics.collocation.first_derivative[0, :]
-        )
+        for i, bc in enumerate(self.inlet_bc):
+            # Species inlet rows: algebraic constraint, no Cdot term
+            inlet_node = i * self.axial_nodes
+            outlet_node = inlet_node + self.axial_nodes
+            species_nodes = slice(inlet_node, outlet_node)
 
-        # derivative of transport dF/dc
-        d_transport = (
-            -self.column.porosity
-            * self.velocity
-            * self.numerics.collocation.first_derivative
-            + self.column.porosity
-            * self.axial_diffusion
-            * self.numerics.collocation.second_derivative
-        )
-        J[1 : self.n_nodes, : self.n_nodes] = -d_transport[1:, :]
+            J[inlet_node, species_nodes] = bc.jacobian_row(
+                self.numerics.collocation.first_derivative[0, :]
+            )
+            # Species interior and outlet rows: change in interior residual w.r.t to C
+            interior_nodes = slice(inlet_node + 1, outlet_node)
+            d_transport = (
+                -self.column.porosity
+                * self.velocity
+                * self.numerics.collocation.first_derivative
+                + self.column.porosity
+                * self.axial_diffusion[i]
+                * self.numerics.collocation.second_derivative
+            )
+            J[interior_nodes, species_nodes] = d_transport[1:, :]
 
-        self.kinetics._jacobian_kinetics(C, q, J, cj)
+            self.kinetics._jacobian_kinetics(C, q, J, cj)
 
         jac[:, :] = J
 
@@ -215,7 +221,7 @@ class AdvectionDiffusionAdsorption(NumericModel):
 
         result = self.numerics.integrate(
             residual=self._residual,
-            # jacobian=self._jacobian,
+            jacobian=self._jacobian,
             y0=y0,
             yp0=ydot0,
             t_span=[0, self.t_eval[-1]],
