@@ -29,9 +29,15 @@ class NumericModel:
     `solve()` rather than `__init__` so that models can be constructed with
     parameters still unset (e.g. while calibrating them) and only need to
     be complete once you actually try to run them.
+
+    Subclasses that can be calibrated declare `fittable_parameters`: the
+    `group.name` paths (e.g. `"chemical.axial_diffusion"`) that
+    `make_breakthrough_model_func` may fit. Only list parameters that change
+    the solution; `tests/models/test_fit_all_parameters.py` checks each one.
     """
 
     _param_names: tuple[str, ...] = ()
+    fittable_parameters: frozenset[str] = frozenset()
     breakthrough: Breakthrough
 
     def parameters(self) -> dict[str, Any]:

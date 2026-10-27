@@ -9,7 +9,7 @@ from ..numerics.config import NumericsConfig
 from .numeric_model_base import NumericModel
 from .isotherm import Isotherm
 from .adsorption_kinetics import AdsorptionKinetics, LocalEquilibrium
-from .boundary_conditions import InletBC, DanckwertsBC
+from .boundary_conditions import BoundaryConditions, DanckwertsBC
 
 __all__ = ["AdvectionDiffusionAdsorption"]
 
@@ -19,14 +19,14 @@ class AdvectionDiffusionAdsorption(NumericModel):
 
     The governing equations are:
 
-        Fluid phase: eps*dC/dt + eps * v * dC/dx - eps* D * d2C/dx2 - rho_b * dq/dt = 0
-        Solid phase: dq/dt = rate_constant *(q*(C) - q) for ldf
-                     dq/dt = rate_constant * C *(q*(C) - q) for second order
-                     where q* is provided isotherm.
+    Fluid phase: eps * dC/dt + eps * v * dC/dx - eps * D * d2C/dx2 - rho_b * dq/dt = 0
+    Solid phase: dq/dt = rate_constant *(q*(C) - q) for ldf
+                 dq/dt = rate_constant * C *(q*(C) - q) for second order
+                 where q* is calculated from the isotherm equation.
 
     If local_equilibirium is assumed, the solid phase equation is ignored and:
 
-        dq_dt = dq*/dc*dc/dt
+        dq_dt = dq*/dc * dc/dt
 
     """
 
@@ -38,7 +38,7 @@ class AdvectionDiffusionAdsorption(NumericModel):
         isotherm: Isotherm,
         numerics: NumericsConfig,
         kinetics: AdsorptionKinetics = LocalEquilibrium(),
-        inlet_bc: Type[InletBC] = DanckwertsBC,
+        inlet_bc: Type[BoundaryConditions] = DanckwertsBC,
     ):
         # Physical parameters
         self.column = breakthrough.column
@@ -62,10 +62,10 @@ class AdvectionDiffusionAdsorption(NumericModel):
         # Numerics
         self.numerics = numerics
 
-        # Discretization
+        # Discretization (n_nodes = 1 + n_elements + n_points * n_elements)
         self.n_nodes = len(self.numerics.collocation.nodes)
 
-        # Kinetics
+        # Initialize AdsorptionKinetics class
         kinetics.configure(
             breakthrough, isotherm, self.n_nodes, self.inlet_concentration
         )
@@ -94,6 +94,7 @@ class AdvectionDiffusionAdsorption(NumericModel):
             * self.numerics.evaluate_second_derivative(c)[1:]
         )
 
+        # additional residual equations
         self.kinetics._residual_kinetics(result, c, q, dcdt, dqdt, transport)
 
         return 0
@@ -101,40 +102,45 @@ class AdvectionDiffusionAdsorption(NumericModel):
     def _jacobian(self, t, y, ydot, result, cj, jac):
         """Build jacobian of _residual."""
         C, q = self.kinetics._split(y)
+        dcdt, _ = self.kinetics._split(ydot)
+
+        # create n x n matrix where n is the number of variables/residual eqns
         n = self.kinetics._n_vars()
         J = np.zeros((n, n))
 
-        # Row 0: algebraic constraint
+        # Row 0 and row n_nodes are algebraic constants for
+        # liquid and solid phase concentrations, repsectively
         J[0, : self.n_nodes] = self.inlet_bc.jacobian_row(
-            self.numerics.collocation.first_derivative[0, :]
+            self.numerics.collocation.first_derivative[0]
         )
 
-        # derivative of transport dF/dc
+        # derivative of transport residual with respect to c
         d_transport = (
-            -self.column.porosity
+            self.column.porosity
             * self.velocity
             * self.numerics.collocation.first_derivative
-            + self.column.porosity
+            - self.column.porosity
             * self.axial_diffusion
             * self.numerics.collocation.second_derivative
         )
-        J[1 : self.n_nodes, : self.n_nodes] = -d_transport[1:, :]
+        # change in liquid phase residuals with respect to c
+        J[1 : self.n_nodes, : self.n_nodes] = d_transport[1:, :]
 
-        self.kinetics._jacobian_kinetics(C, q, J, cj)
+        # additional jacobian rows and columns
+        self.kinetics._jacobian_kinetics(C, dcdt, q, J, cj)
 
         jac[:, :] = J
 
         return 0
 
     def _algebraic_vars_idx(self):
-        """Create list identifying which equations are algebraic.
-
-        Only the inlet boundary condition for this model.
-        """
+        """Create list identifying which equations are algebraic."""
+        # liquid phase inlet residual only
         return [0]
 
     def _initial_conditions(self):
         """Return (y0, ydot0) consistent with the algebraic constraint."""
+        # set initial liquid phase concentration at all nodes
         C0 = np.full(self.n_nodes, self.initial_concentration)
         A0 = self.numerics.collocation.first_derivative[0, :]
         C0[0] = self.inlet_bc.apply(C0, A0)
@@ -162,8 +168,8 @@ class AdvectionDiffusionAdsorption(NumericModel):
                 f"IDA solver failed with flag {result.flag}: {result.message}"
             )
 
-        # result.values.y has shape (n_out, n_vars); skip the t=t_span[0] row
-        y_out = result.values.y[1:]  # (n_times, n_vars)
-
+        # result.values.y has shape (n_times, n_vars); skip the t=t_span[0] row
+        y_out = result.values.y[1:]
+        # extract/calculate liquid phase concentration and solid phase loading
         C_out, q_out = self.kinetics._parse_variables(y_out)
         return self.numerics.collocation.nodes, C_out, q_out

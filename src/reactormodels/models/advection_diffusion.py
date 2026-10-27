@@ -6,7 +6,7 @@ from collections.abc import Sequence
 from ..properties.breakthrough import Breakthrough
 from ..numerics.config import NumericsConfig
 from .numeric_model_base import NumericModel
-from .boundary_conditions import InletBC, DirichletBC
+from .boundary_conditions import BoundaryConditions, DirichletBC
 
 
 class AdvectionDiffusion(NumericModel):

@@ -25,7 +25,7 @@ def run_demo(
 
     t_eval = np.array([100.0, 200.0, 500.0, 1000.0])
 
-    media = reactormodels.Media(bed_density=bed_density)
+    media = reactormodels.Media()
     water = reactormodels.Water()
     chemical = reactormodels.Chemical(axial_diffusion=diffusion)
 
@@ -35,6 +35,7 @@ def run_demo(
         length=domain_length,
         porosity=porosity,
         diameter=diameter,
+        bed_density=bed_density,
     )
 
     breakthrough = reactormodels.Breakthrough(
@@ -50,7 +51,10 @@ def run_demo(
     )
 
     model = reactormodels.models.AdvectionDiffusionAdsorption(
-        breakthrough=breakthrough, isotherm=isotherm, numerics=numerics
+        breakthrough=breakthrough,
+        isotherm=isotherm,
+        numerics=numerics,
+        kinetics=reactormodels.models.SecondOrder(0.01),
     )
 
     x, C, q = model.solve()

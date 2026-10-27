@@ -165,7 +165,7 @@ class Clark(AnalyticModels):
 class BohartAdams(AnalyticModels):
     """Bohart-Adams Model.
 
-    bulk_density: dry mass of sorbent per volume bed
+    bed_density: dry mass of sorbent per volume bed
     k_BA: Bohart-Adams lumped rate constant
     sorbent_capacity: removal capacity per mass sorbent
     v: interstitial velocity
@@ -188,7 +188,7 @@ class BohartAdams(AnalyticModels):
         if self.column.porosity is not None and self.particle_density is not None:
             self.rho_arg = self.particle_density * (1 - self.column.porosity)
         elif self.particle_density is None and self.column.porosity is not None:
-            self.rho_arg = self.column.get_bulk_density()
+            self.rho_arg = self.column.get_bed_density()
         else:
             raise ValueError("Porosity is needed to use the Bohart-Adams model.")
 
@@ -303,7 +303,7 @@ class ThomasLangmuir(AnalyticModels):
         if self.column.porosity is not None and self.particle_density is not None:
             self.rho_arg = self.particle_density * (1 - self.column.porosity)
         elif self.particle_density is None and self.column.porosity is not None:
-            self.rho_arg = self.column.get_bulk_density()
+            self.rho_arg = self.column.get_bed_density()
         else:
             raise ValueError("Porosity is needed to use the Thomas model.")
 

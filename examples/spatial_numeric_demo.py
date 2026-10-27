@@ -31,8 +31,8 @@ def run_demo(
         length=length,
         porosity=porosity,
         diameter=diameter,
-        bulk_density=bed_density,
-        media=reactormodels.Media(bed_density=bed_density),
+        bed_density=bed_density,
+        media=reactormodels.Media(),
         water=reactormodels.Water(),
     )
 

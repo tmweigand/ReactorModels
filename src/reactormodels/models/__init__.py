@@ -25,7 +25,7 @@ __all__ = [
     "BohartAdams",
     "ThomasRectangular",
     "ThomasLangmuir",
-    "IntraparticleTransport",
+    "BatchPSDM",
     "LocalEquilibrium",
     "LinearDrivingForce",
     "SecondOrder",
@@ -58,4 +58,4 @@ from .analytic_models import (
 )
 from .advection_diffusion import AdvectionDiffusion
 from .advection_diffusion_adsorption import AdvectionDiffusionAdsorption
-from .intraparticle_transport import IntraparticleTransport
+from .batch_psdm import BatchPSDM

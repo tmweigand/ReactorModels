@@ -2,7 +2,7 @@ Ogata-Banks
 ==============
 
 In advective-dispersive transport, species :math:`i` is assumed to be entirely in the fluid phase 
-:math:`f` with no exchange of mass between phases. Thus, the final term in Eqn :eq:`two_phase` is 
+:math:`f` with no exchange of mass between phases. Thus, the final term in Eqn :eq:`adv_diff_ads_water` is 
 dropped
 
 .. math::

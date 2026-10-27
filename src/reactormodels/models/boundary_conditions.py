@@ -3,10 +3,10 @@
 import numpy as np
 
 
-class InletBC:
-    """Base class for inlet boundary conditions.
+class BoundaryConditions:
+    """Base class for boundary conditions.
 
-    All inlet boundary condition classes should inherit from this class
+    All boundary condition classes should inherit from this class
     and implement the `residual` and `apply` methods.
     """
 
@@ -34,7 +34,7 @@ class InletBC:
         raise NotImplementedError
 
 
-class DirichletBC(InletBC):
+class DirichletBC(BoundaryConditions):
     """Dirichlet inlet boundary condition.
 
     Enforces a fixed inlet concentration:
@@ -70,7 +70,7 @@ class DirichletBC(InletBC):
         return row
 
 
-class DanckwertsBC(InletBC):
+class DanckwertsBC(BoundaryConditions):
     """Danckwerts (flux-conserving) inlet boundary condition.
 
     Governing equation:
@@ -116,7 +116,7 @@ class DanckwertsBC(InletBC):
         return row
 
 
-class SymmetryBC(InletBC):
+class SymmetryBC(BoundaryConditions):
     """Zero gradient boundary condition at particle center.
 
     Enforces dC/dr = 0 at r=0

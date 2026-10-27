@@ -18,7 +18,7 @@ def run_demo(
     particle_diameter = 0.07 * 2  # cm
     pore_diffusion = 5e-6  # cm2/s
     surface_diffusion = 5e-10  # cm2/s
-    k_film = 0.075  # cm/s
+    k_film = 0.1  # cm/s
 
     # column
     axial_diffusion = 0  # cm2/s
@@ -26,7 +26,7 @@ def run_demo(
     length = 100  # cm
     diameter = 10  # cm
     porosity = 0.334
-    bulk_density = 399.8  # g/L
+    bed_density = 399.8  # g/L
     feed_concentrations = 1  # mg/L
     flow_rate = 40  # cm3/s
     time = np.array(np.loadtxt("examples/ads_time.txt", skiprows=0))
@@ -44,7 +44,7 @@ def run_demo(
         length=length,
         porosity=porosity,
         diameter=diameter,
-        bulk_density=bulk_density,
+        bed_density=bed_density,
         media=media,
         water=reactormodels.Water(),
     )
@@ -77,11 +77,9 @@ def run_demo(
         add_inlet=True,
     )
 
-    numerics = reactormodels.numerics.PSDMNumerics(
-        column=column_grid, particle=particle_grid
-    )
+    numerics = reactormodels.numerics.PSDMNumerics(column_grid, particle_grid)
 
-    model = reactormodels.models.PSDMSolid(
+    model = reactormodels.models.PSDM(
         breakthrough=breakthrough,
         isotherm=isotherm,
         numerics=numerics,
