@@ -43,6 +43,9 @@ class MultiSpeciesIsotherm:
         raise NotImplementedError
 
 
+EPS = 1e-10
+
+
 class CompetitiveFreundlichIsotherm(MultiSpeciesIsotherm):
     """Competitive Freundlich isotherm:
 
@@ -85,7 +88,7 @@ class CompetitiveFreundlichIsotherm(MultiSpeciesIsotherm):
 
     def C(self, q: np.ndarray):
         """Return liquid phase concentration."""
-        clip_q = _clip(np.asarray(q, dtype=float).ravel(), 0.0)
+        clip_q = _clip(np.asarray(q, dtype=float).ravel(), EPS)
 
         Q, S = self._summations(clip_q)
 
@@ -99,7 +102,7 @@ class CompetitiveFreundlichIsotherm(MultiSpeciesIsotherm):
 
     def dC_dq(self, q: np.ndarray):
         """Calculate derivative of liquid concentration by sorbed mass concentration."""
-        clip_q = _clip(np.asarray(q, dtype=float).ravel(), 0.0)
+        clip_q = _clip(np.asarray(q, dtype=float).ravel(), EPS)
 
         Q, S = self._summations(clip_q)
 
@@ -122,7 +125,7 @@ class CompetitiveFreundlichIsotherm(MultiSpeciesIsotherm):
 
     def d2C_dq2(self, q: np.ndarray) -> np.ndarray:
         """Calculate the second derivative."""
-        clip_q = _clip(np.asarray(q, dtype=float).ravel(), 0.0)
+        clip_q = _clip(np.asarray(q, dtype=float).ravel(), EPS)
 
         Q, S = self._summations(clip_q)
 

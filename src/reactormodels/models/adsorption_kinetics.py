@@ -1,23 +1,17 @@
 """adsorption_kinetics.py"""
 
 import numpy as np
-from enum import Enum, auto
-
 from .isotherm import Isotherm
 from .multi_species_isotherm import MultiSpeciesIsotherm
 from ..properties.breakthrough import Breakthrough
 from ..properties.column import Column
 
 
-class SolutionVariable(Enum):
-    """State dependent variable"""
-
-    C = auto()
-    Q = auto()
-
-
 def _is_implemented(isotherm, method_name: str) -> bool:
-    return getattr(type(isotherm), method_name) is not getattr(Isotherm, method_name)
+    base_class = (
+        MultiSpeciesIsotherm if isinstance(isotherm, MultiSpeciesIsotherm) else Isotherm
+    )
+    return getattr(type(isotherm), method_name) is not getattr(base_class, method_name)
 
 
 class AdsorptionKinetics:
@@ -29,7 +23,7 @@ class AdsorptionKinetics:
         self.isotherm: Isotherm | MultiSpeciesIsotherm
         self.n_nodes: int
         self.inlet_concentration: float
-        self.solution_variable: SolutionVariable
+        self.n_species = int
 
     def configure(
         self,
@@ -37,6 +31,7 @@ class AdsorptionKinetics:
         isotherm: Isotherm | MultiSpeciesIsotherm,
         n_nodes: int,
         inlet_concentration: float,
+        n_species,
     ) -> None:
         """Initialize convenient classes/quantities."""
         self.column = breakthrough[0].column
@@ -45,19 +40,6 @@ class AdsorptionKinetics:
         self.n_nodes = n_nodes
         self.inlet_concentration = inlet_concentration
         self.n_species = n_species
-
-        # if (
-        #     _is_implemented(isotherm, "q")
-        #     and _is_implemented(self.isotherm.dq_dC)
-        #     and _is_implemented(self.isotherm.d2q_dC2)
-        # ):
-        #     self.solution_variable = SolutionVariable.C
-        # elif (
-        #     _is_implemented(self.isotherm.C)
-        #     and _is_implemented(self.isotherm.dC_dq)
-        #     and _is_implemented(self.isotherm.d2C_dq2)
-        # ):
-        #     self.solution_variable = SolutionVariable.Q
 
     def _n_vars(self):
         """Total length of the IDA state vector."""
@@ -95,45 +77,21 @@ class LocalEquilibrium(AdsorptionKinetics):
         """Total length of the IDA state vector."""
         return self.n_nodes * self.n_species
 
-    def _split(self, y):
-        """Return (C, q)."""
-        C = y.reshape(self.n_species, self.n_nodes)
-        q = None
-        return C, q
+    @classmethod
+    def solution_variable(cls, isotherm):
+        from .solution_variable import Liquid, Solid
 
-    def _residual_kinetics(self, result, c, q, dcdt, dqdt) -> None:
-        """Return liquid phase residual."""
-        for i in range(1, self.n_nodes):
-            dqdC = self.isotherm.dq_dC(c[:, i])  # (n_species, n_species)
-            dqdt = dqdC @ dcdt[:, i]
-            result[:, i] += self.column.bed_density * dqdt
+        if all(
+            _is_implemented(isotherm, method) for method in ("q", "dq_dC", "d2q_dC2")
+        ):
+            return Liquid()
 
-    def _jacobian_kinetics(self, C, q, dCdt, J, cj) -> None:
-        """Return liquid phase jacobian."""
-        for i in range(1, self.axial_nodes):
-            interior_nodes = np.arange(self.n_species) * self.axial_nodes + i
+        if all(
+            _is_implemented(isotherm, method) for method in ("C", "dC_dq", "d2C_dq2")
+        ):
+            return Solid()
 
-            dqdC = self.isotherm.dq_dC(C[:, i])
-            d2qdC2 = self.isotherm.d2q_dC2(C[:, i])
-
-            for j in range(self.n_species):
-                J[interior_nodes[j], interior_nodes] += (
-                    self.column.bed_density * (d2qdC2[j] @ dCdt[:, i])
-                    + cj * self.column.bed_density * dqdC[j]
-                )
-                J[interior_nodes[j], interior_nodes[j]] += cj * self.column.porosity
-
-    def _set_initial_conditions(self, C0):
-        """Return y0 consistent with the algebraic constraint."""
-        return C0.copy()
-
-    def _parse_variables(self, y_out):
-        """Return C_out and q_out."""
-        C_out = y_out[:, : self.n_nodes]
-        q_out = np.array(
-            [self.isotherm.q(C_out[i]) for i in range(len(self.breakthrough.time))]
-        )
-        return C_out, q_out
+        raise ValueError("Unsupported isotherm formulation.")
 
 
 class DynamicAdsorptionKinetics(AdsorptionKinetics):

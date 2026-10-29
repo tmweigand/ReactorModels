@@ -54,7 +54,6 @@ def run_demo(
         breakthrough=breakthrough,
         isotherm=isotherm,
         numerics=numerics,
-        kinetics=reactormodels.models.SecondOrder(0.01),
     )
 
     x, C, q = model.solve()
@@ -67,7 +66,7 @@ def run_demo(
     for i, t in enumerate(t_eval):
         mask = x < 0.8 * domain_length
         C_analytical = ogata_banks.spatial_profile(time=t, x=x[mask])
-        C_numerical = C[i, mask]
+        C_numerical = C[i, 0, mask]
         max_error = np.abs(C_numerical - C_analytical).max()
 
         print(f"t={t:g} s, max error={max_error:.2e}")

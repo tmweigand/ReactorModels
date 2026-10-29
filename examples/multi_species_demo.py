@@ -7,7 +7,7 @@ import numpy as np
 
 
 def run_demo(
-    show: bool = True,
+    show: bool = False,
     save_path: str | Path = "data_out/multi_species_demo.png",
 ):
     """Plot the multi-species advection-diffusion-adsorption solution."""
@@ -18,12 +18,12 @@ def run_demo(
     diameter = 0.1
 
     # Freundlich params
-    n_species = 1
-    K = np.linspace(0.005, 0.01, n_species)
-    q_m = 1000
+    n_species = 5
+    K = np.linspace(20, 25, n_species)
+    n = np.linspace(1.2, 1.0, n_species)
     C_in = 1
-    axial_diffusion = np.linspace(0.2, 0.5, n_species)  # m^2/s
-    isotherm = reactormodels.models.CompetitiveLangmuirIsotherm(K, q_m)
+    axial_diffusion = np.linspace(0.2, 0.2, n_species)  # m^2/s
+    isotherm = reactormodels.models.CompetitiveFreundlichIsotherm(K, n)
 
     t_eval = np.linspace(1e-10, 75000, 200)
 
