@@ -1,0 +1,1 @@
+convert _static/RM_logo.png -fuzz 10% -transparent white _static/RM_logo.png

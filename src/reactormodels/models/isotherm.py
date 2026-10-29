@@ -170,11 +170,13 @@ class LinearIsotherm(Isotherm):
 
     def dq_dC(self, C: float | np.ndarray) -> np.ndarray:
         """Calculate the derivative of sorbed mass concentration by concentration."""
-        return self.K * np.ones_like(np.asarray(C, dtype=float))
+        dq_dC = self.K * np.ones_like(np.asarray(C, dtype=float))
+        return dq_dC[np.newaxis, :]
 
     def d2q_dC2(self, C: float | np.ndarray) -> np.ndarray:
         """Calculate the second derivative."""
-        return np.zeros_like(np.asarray(C, dtype=float))
+        d2q_dC2 = np.zeros_like(np.asarray(C, dtype=float))
+        return d2q_dC2[np.newaxis, np.newaxis, :]
 
     def C(self, q: float | np.ndarray) -> np.ndarray:
         """Return liquid phase concentration."""
@@ -182,16 +184,10 @@ class LinearIsotherm(Isotherm):
 
     def dC_dq(self, q: float | np.ndarray) -> np.ndarray:
         """Calculate derivative of liquid concentration by sorbed mass concentration."""
-        return np.ones_like(np.asarray(q, dtype=float)) / self.K
+        dC_dq = np.ones_like(np.asarray(q, dtype=float)) / self.K
+        return dC_dq[np.newaxis, :]
 
     def d2C_dq2(self, q: float | np.ndarray) -> np.ndarray:
         """Calculate the second derivative."""
-        return np.zeros_like(np.asarray(q, dtype=float))
-
-    def multi_dC_dq(self, q: float | np.ndarray) -> np.ndarray:
-        """Calculate derivative of C for multi-species structure."""
-        return self.dC_dq(q)[np.newaxis, :, :]
-
-    def multi_d2C_dq2(self, q: float | np.ndarray) -> np.ndarray:
-        """Calculate the second derivative for multi-species structure."""
-        return self.d2C_dq2(q)[np.newaxis, np.newaxis, :, :]
+        d2C_dq2 = np.zeros_like(np.asarray(q, dtype=float))
+        return d2C_dq2[np.newaxis, np.newaxis, :]
