@@ -179,69 +179,12 @@ class AdvectionDiffusionAdsorption(NumericModel):
 
     def _jacobian(self, t, y, ydot, result, cj, jac):
         """Build jacobian of _residual."""
-
-        # for i, bc in enumerate(self.inlet_bc):
-        #     # Species inlet rows: algebraic constraint, no Cdot term
-        #     inlet_node = i * self.axial_nodes
-        #     outlet_node = inlet_node + self.axial_nodes
-        #     species_nodes = slice(inlet_node, outlet_node)
-
-        #     J[inlet_node, species_nodes] = bc.jacobian_row(
-        #         self.numerics.collocation.first_derivative[0, :]
-        #     )
-        #     # Species interior and outlet rows: change in interior residual w.r.t to C
-        #     interior_nodes = slice(inlet_node + 1, outlet_node)
-        #     d_transport = (
-        #         -self.column.porosity
-        #         * self.velocity
-        #         * self.numerics.collocation.first_derivative
-        #         + self.column.porosity
-        #         * self.axial_diffusion[i]
-        #         * self.numerics.collocation.second_derivative
-        #     )
-        #     J[interior_nodes, species_nodes] = d_transport[1:, :]
-
         C, q = self.kinetics._split(y)
         dCdt, dqdt = self.kinetics._split(ydot)
         n = self.kinetics._n_vars()
         J = np.zeros((n, n))
-        dCdq = np.zeros((self.n_species, self.n_species, self.axial_nodes))
-        self.kinetics._jacobian_kinetics(C, q, dCdt, dqdt, dCdq, J, cj)
 
-        for i, bc in enumerate(self.inlet_bc):
-            # Species inlet rows: algebraic constraint, no Cdot term
-            inlet_node = i * self.axial_nodes
-            outlet_node = inlet_node + self.axial_nodes
-            interior_nodes = slice(inlet_node + 1, outlet_node)
-
-            # inlet state variable. bc_row is shape (axial_nodes,)
-            bc_row = bc.jacobian_row(self.numerics.collocation.first_derivative[0, :])
-            J[inlet_node, inlet_node] = bc_row[0]
-
-            # change in transport w.r.t. q. shape (axial_nodes, axial_nodes)
-            d_transport = (
-                self.column.porosity
-                * self.velocity
-                * self.numerics.collocation.first_derivative
-                - self.column.porosity
-                * self.axial_diffusion[i]
-                * self.numerics.collocation.second_derivative
-            )
-            J[interior_nodes, inlet_node] += d_transport[1:, 0]
-
-            # Species interior and outlet rows: change in interior residual w.r.t to q
-            for j in range(self.n_species):
-                species_start = j * self.axial_nodes
-                species_interior = slice(
-                    species_start + 1, species_start + self.axial_nodes
-                )
-                # change in inlet C w.r.t. q
-                J[inlet_node, species_interior] += bc_row[1:] * dCdq[i, j, 1:]
-
-                # change in transport w.r.t. interior q
-                J[interior_nodes, species_interior] += (
-                    d_transport[1:, 1:] * dCdq[i, j, 1:]
-                )
+        self.kinetics._jacobian_kinetics(C, q, dCdt, dqdt, J, cj)
 
         jac[:, :] = J
 
